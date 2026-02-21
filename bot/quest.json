@@ -1,0 +1,3778 @@
+{
+  "locations": {
+    "start": {
+      "id": "start",
+      "title": "🌲 Лесная опушка",
+      "description": "Ты появляешься в этом мире. В инвентаре у тебя короткий ржавый клинок. Вдали виднеется деревня.",
+      "image": "https://i.ibb.co/pBKzWmv5/IMG-0594.jpg",
+      "actions": [
+        {
+          "text": "🏘️ Пойти в деревню",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "village"
+        },
+        {
+          "text": "🌲 Пойти вглубь леса",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "forest_path"
+        }
+      ]
+    },
+    "start_night": {
+      "id": "start_night",
+      "title": "🌲 Лесная опушка (ночь)",
+      "description": "Ночь окутала лесную опушку. Лунный свет серебрит поляну, звёзды мерцают в вышине. Вдалеке уютно мерцают огоньки деревни. Таинственная, завораживающая атмосфера.",
+      "image": "https://i.ibb.co/gbrtHD4m/IMG-0774.jpg",
+      "actions": [
+        {
+          "text": "🏘️ Пойти в деревню",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "village_night"
+        },
+        {
+          "text": "🌲 Пойти вглубь леса",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "forest_path"
+        }
+      ]
+    },
+    "village": {
+      "id": "village",
+      "title": "🏘️ Деревенская площадь",
+      "description": "Ты на центральной площади деревни. Вокруг суетится народ. Перед тобой несколько зданий: таверна, лавка торговца, кузница и высокая башня мага.",
+      "image": "https://i.ibb.co/bj3KzzGn/IMG-0595.jpg",
+      "actions": [
+        {
+          "text": "🍺 Зайти в таверну",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "tavern"
+        },
+        {
+          "text": "🏪 Зайти к торговцу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "merchant"
+        },
+        {
+          "text": "⚒️ Зайти в кузницу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "crafting_bench"
+        },
+        {
+          "text": "🔮 Зайти в Башню Мага",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "magic_tower"
+        },
+        {
+          "text": "📋 Подойти к доске объявлений",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "quest_board"
+        },
+        {
+          "text": "🌱 Зайти в магазин семян",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "seed_shop"
+        },
+        {
+          "text": "🌲 Вернуться на опушку",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "start"
+        }
+      ]
+    },
+    "village_night": {
+      "id": "village_night",
+      "title": "🏘️ Деревенская площадь (ночь)",
+      "description": "Ночь опустилась на деревенскую площадь. Луна серебрит брусчатку, из окон таверны льётся тёплый свет. Фонари с магическим огнём горят по углам. Башня мага мерцает синим. Вдалеке за крышами домов виден силуэт вулкана с багровым свечением. Уютно и таинственно одновременно.",
+      "image": "https://i.ibb.co/BVKvW1rY/IMG-0776.jpg",
+      "actions": [
+        {
+          "text": "🍺 Зайти в таверну",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "tavern"
+        },
+        {
+          "text": "🏪 Зайти к торговцу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "merchant"
+        },
+        {
+          "text": "⚒️ Зайти в кузницу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "crafting_bench"
+        },
+        {
+          "text": "🔮 Зайти в Башню Мага",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "magic_tower"
+        },
+        {
+          "text": "📋 Подойти к доске объявлений",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "quest_board"
+        },
+        {
+          "text": "🌲 Вернуться на опушку",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "start"
+        }
+      ]
+    },
+    "tavern": {
+      "id": "tavern",
+      "title": "🌋 Таверна «Тень вулкана»",
+      "description": "Ты заходишь в просторный зал, наполненный тёплым светом камина и ароматом свежего эля. За длинными дубовыми столами сидят местные жители, неспешно попивая пенное. На стенах висят охотничьи трофеи — оленьи рога, старая волчья голова, ржавый меч. За массивной барной стойкой стоит трактирщик, приветливо протирая кружку. Свечи мягко мерцают, создавая уютную атмосферу. В углу потрескивает камин, согревая уставших путников.",
+      "image": "https://i.ibb.co/kVSCK58D/IMG-0596.jpg",
+      "actions": [
+        {
+          "text": "💬 Поговорить с трактирщиком",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "tavern_quest"
+        },
+        {
+          "text": "🛏️ Отдохнуть (+10 энергии, +5 магии, КД 1ч)",
+          "type": "rest",
+          "energy_gain": 10,
+          "magic_gain": 5,
+          "cooldown": 3600,
+          "next_location": "tavern"
+        },
+        {
+          "text": "🚪 Выйти на площадь",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "village"
+        }
+      ]
+    },
+    "tavern_quest": {
+      "id": "tavern_quest",
+      "title": "🍺 Разговор с трактирщиком",
+      "description": "Трактирщик: 'Слышал, в лесу появился волк. Местные боятся ходить за дровами. Прикончи его, а я отблагодарю — дам золота.'",
+      "image": "",
+      "actions": [
+        {
+          "text": "📜 Взять задание",
+          "type": "accept_quest",
+          "quest_id": "kill_wolf",
+          "next_location": "start"
+        }
+      ]
+    },
+    "merchant": {
+      "id": "merchant",
+      "title": "🏪 Лавка торговца",
+      "description": "Ты входишь в старую полуразвалившуюся лавку. Стены обшарпаны, сквозь дырявую крышу пробиваются пыльные лучи света. За шатким прилавком стоит маленький гоблин с хитрыми глазами и кривыми зубами. Он едва достаёт до столешницы, стоя на деревянном ящике. Полки до потолка завалены пыльными свитками, зельями, ржавым оружием и старыми безделушками. Гоблин жадно потирает руки: 'Что ищешь, путник? У меня есть всё... за правильную цену!'",
+      "image": "https://i.ibb.co/wFh1VFt5/IMG-0607.jpg",
+      "actions": [
+        {
+          "text": "💰 Продать ржавый клинок (1💰)",
+          "type": "sell_item",
+          "item": "rusty_blade",
+          "price": 1,
+          "next_location": "merchant"
+        },
+        {
+          "text": "🐟 Продать рыбу (5💰)",
+          "type": "sell_item",
+          "item": "fish",
+          "price": 5,
+          "next_location": "merchant"
+        },
+        {
+          "text": "🌿 Купить деревянный серп (⚪) - 20💰",
+          "type": "buy_item",
+          "item": "wooden_sickle",
+          "price": 20,
+          "next_location": "merchant"
+        },
+        {
+          "text": "🌿 Купить железный серп (🟢 +1 трава) - 60💰",
+          "type": "buy_item",
+          "item": "iron_sickle",
+          "price": 60,
+          "next_location": "merchant"
+        },
+        {
+          "text": "🌿 Купить золотой серп (🔵 +1 трава, 8% шанс) - 150💰",
+          "type": "buy_item",
+          "item": "golden_sickle",
+          "price": 150,
+          "next_location": "merchant"
+        },
+        {
+          "text": "✨ Купить алмазный серп (🟣 +2 травы, 15% шанс) - 50⭐",
+          "type": "premium_item",
+          "item": "diamond_sickle",
+          "stars": 50,
+          "next_location": "merchant"
+        },
+        {
+          "text": "🥕 Купить деревянную мотыгу (⚪) - 25💰",
+          "type": "buy_item",
+          "item": "wooden_hoe",
+          "price": 25,
+          "next_location": "merchant"
+        },
+        {
+          "text": "🥕 Купить железную мотыгу (🟢 +1 овощ) - 70💰",
+          "type": "buy_item",
+          "item": "iron_hoe",
+          "price": 70,
+          "next_location": "merchant"
+        },
+        {
+          "text": "🥕 Купить золотую мотыгу (🔵 +1 овощ, 8% шанс) - 180💰",
+          "type": "buy_item",
+          "item": "golden_hoe",
+          "price": 180,
+          "next_location": "merchant"
+        },
+        {
+          "text": "✨ Купить алмазную мотыгу (🟣 +2 овоща, 15% шанс) - 50⭐",
+          "type": "premium_item",
+          "item": "diamond_hoe",
+          "stars": 50,
+          "next_location": "merchant"
+        },
+        {
+          "text": "⛏️ Купить каменную кирку (30 прочности) - 20💰",
+          "type": "buy_item",
+          "item": "stone_pickaxe",
+          "price": 20,
+          "next_location": "merchant"
+        },
+        {
+          "text": "⛏️ Купить железную кирку (100 прочности) - 100💰",
+          "type": "buy_item",
+          "item": "iron_pickaxe",
+          "price": 100,
+          "next_location": "merchant"
+        },
+        {
+          "text": "✨ Купить алмазную кирку (500 прочности, 5% шанс) - 50⭐",
+          "type": "premium_item",
+          "item": "premium_pickaxe",
+          "stars": 50,
+          "next_location": "merchant"
+        },
+        {
+          "text": "🎣 Купить удочку Лесника (⚪) - 15💰",
+          "type": "buy_item",
+          "item": "wooden_fishing_rod",
+          "price": 15,
+          "next_location": "merchant"
+        },
+        {
+          "text": "🎣 Купить тростниковую удочку (🟢 +5% шанс) - 50💰",
+          "type": "buy_item",
+          "item": "bamboo_fishing_rod",
+          "price": 50,
+          "next_location": "merchant"
+        },
+        {
+          "text": "🎣 Купить удочку Буревестника (🔵 +10% шанс, +1 рыба) - 150💰",
+          "type": "buy_item",
+          "item": "carbon_fishing_rod",
+          "price": 150,
+          "next_location": "merchant"
+        },
+        {
+          "text": "✨ Купить удочку Лунного Света (🟣 +20% шанс, +2 рыбы, 3% шанс) - 50⭐",
+          "type": "premium_item",
+          "item": "premium_fishing_rod",
+          "stars": 50,
+          "next_location": "merchant"
+        },
+        {
+          "text": "🍯 Купить мёд (10💰)",
+          "type": "buy_item",
+          "item": "honey",
+          "price": 10,
+          "next_location": "merchant"
+        },
+        {
+          "text": "⚒️ Пойти в кузницу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "crafting_bench"
+        },
+        {
+          "text": "🚪 Выйти на площадь",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "village"
+        }
+      ]
+    },
+    "magic_tower": {
+      "id": "magic_tower",
+      "title": "🔮 Башня Мага",
+      "description": "Ты поднимаешься по винтовой лестнице и попадаешь в высокий круглый зал. Стеллажи с древними свитками и книгами уходят под самый потолок. В воздухе парят магические кристаллы, излучая мягкое синее свечение. На столах кипят алхимические приборы, в колбах мерцают разноцветные зелья. На полу светится магическая пентаграмма. Старый маг в синей мантии стоит у стола, задумчиво помешивая зелье. Сквозь высокое окно видно звёздное небо.",
+      "image": "https://i.ibb.co/yccfLkdx/IMG-0597.jpg",
+      "actions": [
+        {
+          "text": "🔮 Ослепление (10 маны, КД 6ч) - 50💰",
+          "type": "buy_spell",
+          "spell": "blind",
+          "price": 50,
+          "next_location": "magic_tower"
+        },
+        {
+          "text": "🔥 Огненный шар (25 маны, 30 урона, КД 12ч) - 100💰",
+          "type": "buy_spell",
+          "spell": "fireball",
+          "price": 100,
+          "next_location": "magic_tower"
+        },
+        {
+          "text": "🛡️ Ледяная броня (20 маны, +20 защиты, КД 8ч) - 80💰",
+          "type": "buy_spell",
+          "spell": "ice_armor",
+          "price": 80,
+          "next_location": "magic_tower"
+        },
+        {
+          "text": "⚡ Цепная молния (30 маны, 15 урона по всем, КД 24ч) - 150💰",
+          "type": "buy_spell",
+          "spell": "chain_lightning",
+          "price": 150,
+          "next_location": "magic_tower"
+        },
+        {
+          "text": "💫 Исцеление (15 маны, +25 здоровья, КД 4ч) - 60💰",
+          "type": "buy_spell",
+          "spell": "heal",
+          "price": 60,
+          "next_location": "magic_tower"
+        },
+        {
+          "text": "🚪 Выйти на площадь",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "village"
+        }
+      ]
+    },
+    "crafting_bench": {
+      "id": "crafting_bench",
+      "title": "⚒️ Кузница «Горячий металл»",
+      "description": "Ты входишь в кузницу, и тебя сразу обдаёт волной жара. В центре пылает горн, отбрасывая оранжевые блики на стены. Кузнец с могучими руками ритмично бьёт молотом по раскалённому мечу, искры летят во все стороны. Слева стоит массивный верстак, заваленный чертежами и инструментами. Стены увешаны готовыми мечами, топорами и доспехами. На полу — уголь и металлическая стружка. В задней стене виднеется дверь, откуда доносится запах выделанной кожи.",
+      "image": "https://i.ibb.co/XrCxNgnb/IMG-0598.jpg",
+      "actions": [
+        {
+          "text": "🛡️ Крафт брони",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "craft_armor_menu"
+        },
+        {
+          "text": "⚔️ Крафт оружия",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "craft_weapon_menu"
+        },
+        {
+          "text": "🔥 Обжечь стекло",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "glass_furnace"
+        },
+        {
+          "text": "🏭 Выйти на задний двор (к дубильне)",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "behind_crafting"
+        },
+        {
+          "text": "↩️ Вернуться к торговцу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "merchant"
+        }
+      ]
+    },
+    "glass_furnace": {
+      "id": "glass_furnace",
+      "title": "🔥 Печь для стекла",
+      "description": "Ты подходишь к специальной печи для обжига стекла. Здесь можно переплавить песок в стекло для окон и других нужд.",
+      "image": "https://i.ibb.co/nNyD1yBQ/IMG-0759.jpg",
+      "actions": [
+        {
+          "text": "🪟 Сделать стекло (5 песка → 1 стекло)",
+          "type": "craft_glass",
+          "sand_needed": 5,
+          "glass_output": 1,
+          "energy_cost": 2,
+          "next_location": "glass_furnace"
+        },
+        {
+          "text": "↩️ Вернуться в кузницу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "crafting_bench"
+        }
+      ]
+    },
+    "behind_crafting": {
+      "id": "behind_crafting",
+      "title": "⚒️ Задний двор кузницы",
+      "description": "Ты выходишь через чёрный ход кузницы на небольшой задний двор. Здесь сложены штабеля дров, стоят бочки с водой, а в углу примостилась старая телега. В воздухе пахнет дымом и сырой кожей. За кузницей виднеется невысокое здание с широкими дверями — это дубильня.",
+      "image": "",
+      "actions": [
+        {
+          "text": "🏭 Пройти в дубильню",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "tannery"
+        },
+        {
+          "text": "⚒️ Вернуться в кузницу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "crafting_bench"
+        },
+        {
+          "text": "🏘️ Вернуться на площадь",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "village"
+        }
+      ]
+    },
+    "tannery": {
+      "id": "tannery",
+      "title": "🏭 Дубильня",
+      "description": "Ты заходишь в невысокое деревянное здание за кузницей. Внутри полумрак, воздух пропитан запахом дубовой коры и выделанной кожи. На стенах развешаны шкуры, в больших дубовых чанах булькает дубильный раствор. Мастер-кожевенник, весь в грязном фартуке, сосредоточенно мешает раствор в чане. Сквозь маленькие окна пробиваются тусклые золотистые лучи, освещая пыль в воздухе. На земляном полу — стружки и обрезки кожи.",
+      "image": "https://i.ibb.co/L7Fqrh2/IMG-0602.jpg",
+      "actions": [
+        {
+          "text": "🦌 Выделать сырую шкуру (3 шт → 1 кожа)",
+          "type": "process_leather",
+          "input": "raw_leather",
+          "input_amount": 3,
+          "output": "leather",
+          "output_amount": 1,
+          "energy_cost": 3,
+          "next_location": "tannery"
+        },
+        {
+          "text": "🐺 Выделать волчью шкуру (2 шт → 1 кожа)",
+          "type": "process_leather",
+          "input": "wolf_skin",
+          "input_amount": 2,
+          "output": "leather",
+          "output_amount": 1,
+          "energy_cost": 2,
+          "next_location": "tannery"
+        },
+        {
+          "text": "🐻 Выделать медвежью шкуру (1 шт → 2 кожи)",
+          "type": "process_leather",
+          "input": "bear_skin",
+          "input_amount": 1,
+          "output": "leather",
+          "output_amount": 2,
+          "energy_cost": 3,
+          "next_location": "tannery"
+        },
+        {
+          "text": "🦌 Выделать лосиную шкуру (1 шт → 2 кожи)",
+          "type": "process_leather",
+          "input": "moose_skin",
+          "input_amount": 1,
+          "output": "leather",
+          "output_amount": 2,
+          "energy_cost": 3,
+          "next_location": "tannery"
+        },
+        {
+          "text": "❄️ Выделать шкуру снежного зверя (1 шт → 3 кожи + шанс)",
+          "type": "process_leather",
+          "input": "beast_fur",
+          "input_amount": 1,
+          "output": "leather",
+          "output_amount": 3,
+          "extra_output": "magic_dust",
+          "extra_chance": 30,
+          "energy_cost": 4,
+          "next_location": "tannery"
+        },
+        {
+          "text": "🧪 Купить дубильный раствор (10💰)",
+          "type": "buy_item",
+          "item": "tanning_solution",
+          "price": 10,
+          "next_location": "tannery"
+        },
+        {
+          "text": "⚒️ Вернуться в кузницу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "crafting_bench"
+        }
+      ]
+    },
+    "craft_armor_menu": {
+      "id": "craft_armor_menu",
+      "title": "🛡️ Крафт брони",
+      "description": "Выбери тип брони для крафта:",
+      "image": "",
+      "actions": [
+        {
+          "text": "⚪ Обычная броня",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "craft_armor_common"
+        },
+        {
+          "text": "🟢 Необычная броня",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "craft_armor_uncommon"
+        },
+        {
+          "text": "🔵 Редкая броня",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "craft_armor_rare"
+        },
+        {
+          "text": "🟣 Эпическая броня",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "craft_armor_epic"
+        },
+        {
+          "text": "✨ Легендарная броня",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "craft_armor_legendary"
+        },
+        {
+          "text": "↩️ Назад",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "crafting_bench"
+        }
+      ]
+    },
+    "craft_weapon_menu": {
+      "id": "craft_weapon_menu",
+      "title": "⚔️ Крафт оружия",
+      "description": "Выбери тип оружия для крафта:",
+      "image": "",
+      "actions": [
+        {
+          "text": "⚪ Обычное оружие",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "craft_weapon_common"
+        },
+        {
+          "text": "🟢 Необычное оружие",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "craft_weapon_uncommon"
+        },
+        {
+          "text": "🔵 Редкое оружие",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "craft_weapon_rare"
+        },
+        {
+          "text": "🟣 Эпическое оружие",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "craft_weapon_epic"
+        },
+        {
+          "text": "✨ Легендарное оружие",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "craft_weapon_legendary"
+        },
+        {
+          "text": "↩️ Назад",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "crafting_bench"
+        }
+      ]
+    },
+    "seed_shop": {
+      "id": "seed_shop",
+      "title": "🌱 Магазин семян",
+      "description": "Ты заходишь в уютную деревянную лавку. Прилавок заставлен пакетиками с семенами, на полках стоят банки и мешочки. Под потолком висят связки лука и чеснока. Продавец-садовник в фартуке приветливо улыбается. Через открытую дверь видна деревенская площадь. Настоящий рай для садовода!",
+      "image": "https://i.ibb.co/TMpQbbXS/IMG-0765.jpg",
+      "actions": [
+        {
+          "text": "🥕 Семена моркови (2💰)",
+          "type": "buy_item",
+          "item": "carrot_seeds",
+          "price": 2,
+          "next_location": "seed_shop"
+        },
+        {
+          "text": "🥔 Семена картофеля (3💰)",
+          "type": "buy_item",
+          "item": "potato_seeds",
+          "price": 3,
+          "next_location": "seed_shop"
+        },
+        {
+          "text": "🥬 Семена капусты (4💰)",
+          "type": "buy_item",
+          "item": "cabbage_seeds",
+          "price": 4,
+          "next_location": "seed_shop"
+        },
+        {
+          "text": "💎 Золотая морковь (5⭐) - даёт DSTN",
+          "type": "buy_premium_seeds",
+          "item": "golden_carrot_seeds",
+          "stars": 5,
+          "next_location": "seed_shop"
+        },
+        {
+          "text": "💎 Кристальный картофель (10⭐) - даёт DSTN",
+          "type": "buy_premium_seeds",
+          "item": "crystal_potato_seeds",
+          "stars": 10,
+          "next_location": "seed_shop"
+        },
+        {
+          "text": "💎 Алмазная капуста (20⭐) - даёт DSTN",
+          "type": "buy_premium_seeds",
+          "item": "diamond_cabbage_seeds",
+          "stars": 20,
+          "next_location": "seed_shop"
+        },
+        {
+          "text": "💎 Мифриловая тыква (50⭐) - даёт DSTN",
+          "type": "buy_premium_seeds",
+          "item": "mithril_pumpkin_seeds",
+          "stars": 50,
+          "next_location": "seed_shop"
+        },
+        {
+          "text": "💎 Звёздная клубника (100⭐) - даёт DSTN",
+          "type": "buy_premium_seeds",
+          "item": "star_strawberry_seeds",
+          "stars": 100,
+          "next_location": "seed_shop"
+        },
+        {
+          "text": "↩️ Вернуться на площадь",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "village"
+        }
+      ]
+    },
+    "quest_board": {
+      "id": "quest_board",
+      "title": "📋 Доска объявлений",
+      "description": "На стене висит доска с заданиями. Можно взять новое или сдать выполненное.",
+      "image": "",
+      "actions": [
+        {
+          "text": "📜 Доступные задания",
+          "type": "show_available_quests",
+          "next_location": "quest_board"
+        },
+        {
+          "text": "✅ Текущие задания",
+          "type": "show_active_quests",
+          "next_location": "quest_board"
+        },
+        {
+          "text": "↩️ Вернуться на площадь",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "village"
+        }
+      ]
+    },
+    "forest_path": {
+      "id": "forest_path",
+      "title": "🌲 Лесная тропа",
+      "description": "Ты идёшь по лесной тропе. Вокруг вековые деревья. Тропа разветвляется.",
+      "image": "",
+      "actions": [
+        {
+          "text": "🌿 Пойти на травяное поле",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "herb_field"
+        },
+        {
+          "text": "🥕 Пойти на огород",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "vegetable_garden"
+        },
+        {
+          "text": "⛰️ Подняться к вулкану",
+          "type": "move",
+          "energy_cost": 2,
+          "next_location": "volcano_path_start"
+        },
+        {
+          "text": "🌊 Спуститься к озеру",
+          "type": "move",
+          "energy_cost": 2,
+          "next_location": "lake_path"
+        },
+        {
+          "text": "🏔️ Пойти в горы",
+          "type": "move",
+          "energy_cost": 2,
+          "next_location": "mountain_path"
+        },
+        {
+          "text": "↩️ Вернуться на опушку",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "start"
+        }
+      ]
+    },
+    "herb_field": {
+      "id": "herb_field",
+      "title": "🌿 Травяное поле",
+      "description": "Зелёное поле, усеянное разными травами. Ветер колышет высокую траву.",
+      "image": "https://i.ibb.co/V0NCQjmB/IMG-0672.jpg",
+      "actions": [
+        {
+          "text": "🌿 Собрать травы (2 энергии)",
+          "type": "gather_herbs",
+          "energy_cost": 2,
+          "next_location": "herb_field"
+        },
+        {
+          "text": "↩️ Вернуться на тропу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "forest_path"
+        }
+      ]
+    },
+    "vegetable_garden": {
+      "id": "vegetable_garden",
+      "title": "🥕 Огород",
+      "description": "Заброшенный огород у старой хижины. Здесь всё ещё растут овощи.",
+      "image": "https://i.ibb.co/vxpwz0qH/IMG-0674.jpg",
+      "actions": [
+        {
+          "text": "🥔 Собрать овощи (3 энергии)",
+          "type": "gather_vegetables",
+          "energy_cost": 3,
+          "next_location": "vegetable_garden"
+        },
+        {
+          "text": "↩️ Вернуться на тропу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "forest_path"
+        }
+      ]
+    },
+    "volcano_path_start": {
+      "id": "volcano_path_start",
+      "title": "⛰️ Тропа к вулкану (начало)",
+      "description": "Ты поднимаешься выше. Воздух становится теплее. Впереди виден путь к вулкану.",
+      "image": "",
+      "actions": [
+        {
+          "text": "🚶 Продолжить путь",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "volcano_path_middle"
+        },
+        {
+          "text": "↩️ Вернуться на лесную тропу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "forest_path"
+        }
+      ]
+    },
+    "volcano_path_middle": {
+      "id": "volcano_path_middle",
+      "title": "⛰️ Тропа к вулкану (середина)",
+      "description": "Ты поднимаешься выше. Воздух становится теплее. Впереди виден привал у вулкана.",
+      "image": "",
+      "actions": [
+        {
+          "text": "🚶 Продолжить путь",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "volcano_rest"
+        },
+        {
+          "text": "↩️ Вернуться назад",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "volcano_path_start"
+        }
+      ]
+    },
+    "volcano_rest": {
+      "id": "volcano_rest",
+      "title": "🔥 Привал у вулкана",
+      "description": "Ты находишь тёплый источник у подножия вулкана. Пар поднимается от воды, можно погреть ноги. Рядом стоит сундук, светящийся багровым светом.",
+      "image": "https://i.ibb.co/p6pjTKFK/IMG-0688.jpg",
+      "actions": [
+        {
+          "text": "🪵 Отдохнуть (+10 энергии)",
+          "type": "free_rest",
+          "energy_gain": 10,
+          "next_location": "volcano_rest"
+        },
+        {
+          "text": "🎁 Открыть вулканический сундук (20⭐)",
+          "type": "premium_chest",
+          "chest_type": "volcano",
+          "stars_cost": 20,
+          "next_location": "volcano_rest"
+        },
+        {
+          "text": "🚶 Подняться к жерлу (2⚡)",
+          "type": "move",
+          "energy_cost": 2,
+          "next_location": "volcano_crater"
+        },
+        {
+          "text": "↩️ Вернуться на тропу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "volcano_path_middle"
+        }
+      ]
+    },
+    "volcano_crater": {
+      "id": "volcano_crater",
+      "title": "🌋 Жерло вулкана",
+      "description": "Ты стоишь на краю огромного кратера. Внизу бурлит раскалённая лава, освещая чёрные скалы багровым светом. Густой дым и пепел поднимаются к ночному небу. Из огненной реки поднимается огромная фигура — огненный элементаль, сотканный из чистого пламени. Его горящие глаза смотрят прямо на тебя. Воздух раскалён до предела, каждый вдох обжигает лёгкие.",
+      "image": "https://i.ibb.co/5gyWh2Fd/IMG-0609.jpg",
+      "actions": [
+        {
+          "text": "⚔️ Атаковать элементаля",
+          "type": "combat_melee",
+          "enemy": "fire_elemental",
+          "next_location": "combat_result_fire"
+        },
+        {
+          "text": "🔮 Использовать магию",
+          "type": "show_spells",
+          "enemy": "fire_elemental",
+          "next_location": "combat_result_fire"
+        },
+        {
+          "text": "↩️ Вернуться к привалу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "volcano_rest"
+        }
+      ]
+    },
+    "fire_elemental_phase1": {
+      "id": "fire_elemental_phase1",
+      "title": "🔥 Огненный элементаль (100% HP)",
+      "image": "https://i.ibb.co/5gyWh2Fd/IMG-0609.jpg"
+    },
+    "fire_elemental_phase2": {
+      "id": "fire_elemental_phase2",
+      "title": "🔥 Огненный элементаль (50% HP)",
+      "image": "https://i.ibb.co/k26KKbcF/IMG-0773.jpg"
+    },
+    "combat_result_fire": {
+      "id": "combat_result_fire",
+      "title": "⚔️ Бой с элементалем",
+      "description": "Бой закончен. Проверяем результат...",
+      "image": "",
+      "actions": [
+        {
+          "text": "▶️ Далее",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "victory_fire"
+        }
+      ]
+    },
+    "victory_fire": {
+      "id": "victory_fire",
+      "title": "🎉 Победа!",
+      "description": "Ты одолел огненного элементаля! Из его останков ты вынимаешь раскалённый самоцвет.",
+      "image": "",
+      "actions": [
+        {
+          "text": "🌲 Вернуться на опушку",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "start"
+        },
+        {
+          "text": "🏘️ Пойти в деревню",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "village"
+        },
+        {
+          "text": "⛰️ Вернуться на тропу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "volcano_path_middle"
+        }
+      ]
+    },
+    "mountain_path": {
+      "id": "mountain_path",
+      "title": "⛰️ Горная тропа",
+      "description": "Ты поднимаешься выше в горы. Тропа становится уже, вокруг только острые скалы и холодный ветер.",
+      "image": "https://i.ibb.co/0VjvvT9R/IMG-0676.jpg",
+      "actions": [
+        {
+          "text": "🏕️ Зайти в грот (привал)",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mountain_rest"
+        },
+        {
+          "text": "🏔️ Пойти на перевал",
+          "type": "move",
+          "energy_cost": 2,
+          "next_location": "mountain_pass"
+        },
+        {
+          "text": "↩️ Вернуться на лесную тропу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "forest_path"
+        }
+      ]
+    },
+    "mountain_rest": {
+      "id": "mountain_rest",
+      "title": "🏕️ Горный привал",
+      "description": "Ты находишь небольшой уютный грот в скале. В центре горит костёр, согревая пространство тёплым светом. Справа на пушистой шкуре стоит деревянная кружка и лежит рюкзак — кто-то недавно здесь отдыхал. Слева у стены стоит большой каменный сундук, покрытый мхом. Из входа открывается захватывающий вид на заснеженные горы и облака внизу. Идеальное место для привала.",
+      "image": "https://i.ibb.co/wr4BwxDv/IMG-0684.jpg",
+      "actions": [
+        {
+          "text": "🪵 Отдохнуть (+10 энергии)",
+          "type": "free_rest",
+          "energy_gain": 10,
+          "next_location": "mountain_rest"
+        },
+        {
+          "text": "🎁 Открыть сундук (КД 12ч)",
+          "type": "mountain_chest",
+          "cooldown": 43200,
+          "next_location": "mountain_rest"
+        },
+        {
+          "text": "↩️ Продолжить путь",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mountain_path"
+        }
+      ]
+    },
+    "mountain_pass": {
+      "id": "mountain_pass",
+      "title": "🏔️ Горный перевал",
+      "description": "Ты добираешься до горного перевала. Отсюда открываются два пути: налево тропа ведёт к заброшенной шахте, направо — ко входу в таинственную пещеру, за которой скрывается древний лабиринт. Вокруг только острые скалы и холодный ветер.",
+      "image": "",
+      "actions": [
+        {
+          "text": "⛏️ Пойти к шахте (2⚡)",
+          "type": "move",
+          "energy_cost": 2,
+          "next_location": "mine_entrance"
+        },
+        {
+          "text": "🏛️ Пойти к пещере (3⚡)",
+          "type": "move",
+          "energy_cost": 3,
+          "next_location": "cave_entrance"
+        },
+        {
+          "text": "↩️ Вернуться на горную тропу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mountain_path"
+        }
+      ]
+    },
+    "lake_path": {
+      "id": "lake_path",
+      "title": "🌊 Тропа к озеру",
+      "description": "Ты спускаешься ниже. В воздухе пахнет влагой. Тропа становится длинной и извилистой. Ты проходишь через небольшую рощу, слышишь пение птиц.",
+      "image": "",
+      "actions": [
+        {
+          "text": "🏞️ Пойти к озеру",
+          "type": "move",
+          "energy_cost": 2,
+          "next_location": "lake_shore"
+        },
+        {
+          "text": "🌲 Пойти в кедровый пролесок",
+          "type": "move",
+          "energy_cost": 2,
+          "next_location": "cedar_forest"
+        },
+        {
+          "text": "↩️ Вернуться на лесную тропу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "forest_path"
+        }
+      ]
+    },
+    "lake_shore": {
+      "id": "lake_shore",
+      "title": "🏞️ Берег озера",
+      "description": "Ты выходишь на берег живописного озера. Вода прозрачная, видно, как плещется рыба. На берегу стоит домик рыбака, рядом место для копки, а вдалеке виднеется пирс. Чуть дальше есть свободное место, идеально подходящее для постройки собственного домика.",
+      "image": "https://i.ibb.co/gbJb1BV0/IMG-0618.jpg",
+      "actions": [
+        {
+          "text": "🏠 Построить домик",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "house_construction",
+          "condition": "house_not_built"
+        },
+        {
+          "text": "🏠 Зайти в домик рыбака",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "fisher_house"
+        },
+        {
+          "text": "⛏️ Пойти копать червей",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "digging_spot"
+        },
+        {
+          "text": "🎣 Пойти на пирс",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "fishing_pier"
+        },
+        {
+          "text": "↩️ Вернуться на тропу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "lake_path"
+        }
+      ]
+    },
+    "fisher_house": {
+      "id": "fisher_house",
+      "title": "🏠 Домик рыбака",
+      "description": "Ты заходишь в уютный домик. Старый рыбак сидит у камина и чистит снасти.",
+      "image": "https://i.ibb.co/k2DPqcy7/IMG-0629.jpg",
+      "actions": [
+        {
+          "text": "📜 Взять задание 'Поймать 5 карасей'",
+          "type": "accept_quest",
+          "quest_id": "catch_carp",
+          "next_location": "fisher_house"
+        },
+        {
+          "text": "📜 Взять задание 'Поймать щуку'",
+          "type": "accept_quest",
+          "quest_id": "catch_pike",
+          "next_location": "fisher_house"
+        },
+        {
+          "text": "📜 Взять задание 'Поймать золотую рыбку'",
+          "type": "accept_quest",
+          "quest_id": "catch_golden",
+          "next_location": "fisher_house"
+        },
+        {
+          "text": "🍞 Купить хлебный мякиш (2💰)",
+          "type": "buy_item",
+          "item": "bread",
+          "price": 2,
+          "next_location": "fisher_house"
+        },
+        {
+          "text": "🥖 Купить тесто (3💰)",
+          "type": "buy_item",
+          "item": "dough",
+          "price": 3,
+          "next_location": "fisher_house"
+        },
+        {
+          "text": "🔥 Пожарить рыбу",
+          "type": "cook_fish",
+          "next_location": "fisher_house"
+        },
+        {
+          "text": "🔥 Пожарить мясо",
+          "type": "cook_meat",
+          "next_location": "fisher_house"
+        },
+        {
+          "text": "🚪 Выйти на берег",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "lake_shore"
+        }
+      ]
+    },
+    "digging_spot": {
+      "id": "digging_spot",
+      "title": "⛏️ Место для копки",
+      "description": "Влажная земля у озера. Здесь можно накопать червей для рыбалки.",
+      "image": "",
+      "actions": [
+        {
+          "text": "🪱 Копать червей (2 энергии)",
+          "type": "dig_worms",
+          "energy_cost": 2,
+          "next_location": "digging_spot"
+        },
+        {
+          "text": "↩️ Вернуться на берег",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "lake_shore"
+        }
+      ]
+    },
+    "fishing_pier": {
+      "id": "fishing_pier",
+      "title": "🎣 Рыбацкий пирс",
+      "description": "Ты стоишь на деревянном пирсе. Вода плещется о сваи. Самое время порыбачить!",
+      "image": "",
+      "actions": [
+        {
+          "text": "🎣 Рыбачить с червяком",
+          "type": "fish_with_bait",
+          "bait": "worm",
+          "energy_cost": 2,
+          "next_location": "fishing_pier"
+        },
+        {
+          "text": "🎣 Рыбачить с хлебом",
+          "type": "fish_with_bait",
+          "bait": "bread",
+          "energy_cost": 2,
+          "next_location": "fishing_pier"
+        },
+        {
+          "text": "🎣 Рыбачить с тестом",
+          "type": "fish_with_bait",
+          "bait": "dough",
+          "energy_cost": 2,
+          "next_location": "fishing_pier"
+        },
+        {
+          "text": "↩️ Вернуться на берег",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "lake_shore"
+        }
+      ]
+    },
+    "cedar_forest": {
+      "id": "cedar_forest",
+      "title": "🌲 Кедровый пролесок",
+      "description": "Ты заходишь в кедровый лес. Здесь светло и пахнет смолой. Вокруг много шишек и кедровых орешков. Вдруг из-за кустов слышится злобное хрюканье — огромный кабан!",
+      "image": "https://i.ibb.co/FqKXk87K/IMG-0630.jpg",
+      "actions": [
+        {
+          "text": "⚔️ Атаковать кабана",
+          "type": "combat_melee",
+          "enemy": "wild_boar",
+          "next_location": "combat_result_boar"
+        },
+        {
+          "text": "🔮 Использовать магию",
+          "type": "show_spells",
+          "enemy": "wild_boar",
+          "next_location": "combat_result_boar"
+        },
+        {
+          "text": "↩️ Вернуться на тропу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "lake_path"
+        }
+      ]
+    },
+    "cave_entrance": {
+      "id": "cave_entrance",
+      "title": "🕳️ Вход в пещеру",
+      "description": "Ты стоишь перед тёмным зевом пещеры, скрытым под переплетёнными корнями древних деревьев. Из глубины доносится слабое голубоватое свечение, манящее и пугающее одновременно. Свисающие сталактиты напоминают зубы гигантского чудовища.",
+      "image": "https://i.ibb.co/vx4yzZcK/IMG-0636.jpg",
+      "actions": [
+        {
+          "text": "🚶 Войти в пещеру",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_entrance"
+        },
+        {
+          "text": "↩️ Вернуться на перевал",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mountain_pass"
+        }
+      ]
+    },
+    "maze_entrance": {
+      "id": "maze_entrance",
+      "title": "🏛️ Вход в лабиринт",
+      "description": "Ты подходишь к огромным каменным воротам, покрытым древними рунами. По бокам возвышаются статуи стражей, их пустые глазницы, кажется, следят за каждым твоим движением. Факелы отбрасывают пляшущие тени, а туман стелется по земле, скрывая то, что ждёт впереди. Лабиринт не хочет пускать непрошеных гостей...",
+      "image": "https://i.ibb.co/zHnTs4Yy/IMG-0638.jpg",
+      "actions": [
+        {
+          "text": "⬆️ Пойти на север",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_north"
+        },
+        {
+          "text": "➡️ Пойти на восток",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_east"
+        },
+        {
+          "text": "⬅️ Пойти на запад",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_west"
+        },
+        {
+          "text": "⬇️ Пойти на юг",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_south"
+        }
+      ]
+    },
+    "maze_north": {
+      "id": "maze_north",
+      "title": "🏛️ Северный коридор",
+      "description": "Ты вступаешь в северный коридор лабиринта. Узкий проход из древнего камня уходит в темноту. Факелы на стенах отбрасывают пляшущие тени, туман стелется по каменным плитам. Где-то впереди слышен писк — похоже, здесь обитают гигантские крысы.",
+      "image": "https://i.ibb.co/N6gy2SMf/IMG-0689.jpg",
+      "actions": [
+        {
+          "text": "⚔️ Атаковать крыс",
+          "type": "combat_melee",
+          "enemy": "giant_rat",
+          "next_location": "combat_result_rat"
+        },
+        {
+          "text": "🚶 Пройти дальше",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_treasure"
+        },
+        {
+          "text": "↩️ Вернуться к входу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_entrance"
+        }
+      ]
+    },
+    "maze_east": {
+      "id": "maze_east",
+      "title": "🏛️ Восточный коридор",
+      "description": "Ты вступаешь в широкий восточный коридор. На стенах мерцают древние руны, отбрасывая слабое голубое свечение. Факелы горят редко, создавая глубокие тени. На полу валяются кости и обломки — здесь явно кто-то погиб. Из темноты доносится странный шорох.",
+      "image": "https://i.ibb.co/GQc545b6/IMG-0690.jpg",
+      "actions": [
+        {
+          "text": "⚔️ Атаковать пауков",
+          "type": "combat_melee",
+          "enemy": "cave_spider",
+          "next_location": "combat_result_spider"
+        },
+        {
+          "text": "🚶 Пройти дальше",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_monster_empty"
+        },
+        {
+          "text": "↩️ Вернуться к входу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_entrance"
+        }
+      ]
+    },
+    "maze_west": {
+      "id": "maze_west",
+      "title": "🏛️ Западный коридор",
+      "description": "Ты вступаешь в извилистый западный коридор. Стены грубо обработаны, на них растёт светящийся зелёный мох, отбрасывающий мягкое свечение. Факелы расставлены неравномерно, создавая глубокие тени. Пол неровный, с камнями и ямами — нужно быть осторожным. Туман стелется по земле, скрывая то, что ждёт впереди.",
+      "image": "https://i.ibb.co/rGWCqbhR/IMG-0692.jpg",
+      "actions": [
+        {
+          "text": "⚔️ Атаковать мышей",
+          "type": "combat_melee",
+          "enemy": "cave_bat",
+          "next_location": "combat_result_bat"
+        },
+        {
+          "text": "🔍 Осмотреть стену",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_secret"
+        },
+        {
+          "text": "↩️ Вернуться к входу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_entrance"
+        }
+      ]
+    },
+    "maze_south": {
+      "id": "maze_south",
+      "title": "🏛️ Южный коридор",
+      "description": "Ты вступаешь в прямой, как стрела, южный коридор. Стены идеально ровные, покрыты древними барельефами с изображениями битв. Факелы горят ровным пламенем. В самом конце коридора виднеется огромный проём, из которого бьёт красное свечение и доносится тяжёлый гул. Там, без сомнения, находится что-то могущественное.",
+      "image": "https://i.ibb.co/RGY1VfxN/IMG-0694.jpg",
+      "actions": [
+        {
+          "text": "⚔️ Атаковать скелета",
+          "type": "combat_melee",
+          "enemy": "skeleton_warrior",
+          "next_location": "combat_result_skeleton"
+        },
+        {
+          "text": "🚶 Пойти к выходу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "cave_entrance"
+        },
+        {
+          "text": "↩️ Вернуться к входу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_entrance"
+        }
+      ]
+    },
+    "maze_secret": {
+      "id": "maze_secret",
+      "title": "🏛️ Секретный проход",
+      "description": "Ты нажимаешь на странный камень, и стена бесшумно отъезжает в сторону. За ней открывается узкий проход, которого нет на карте! В нише стоит древний сундук, покрытый письменами.",
+      "image": "",
+      "actions": [
+        {
+          "text": "🎁 Открыть древний сундук (50⭐)",
+          "type": "premium_chest",
+          "chest_type": "ancient",
+          "stars_cost": 50,
+          "next_location": "maze_secret"
+        },
+        {
+          "text": "🚶 Пройти в тайный ход",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_hidden_treasure"
+        },
+        {
+          "text": "↩️ Вернуться в коридор",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_west"
+        }
+      ]
+    },
+    "maze_hidden_treasure": {
+      "id": "maze_hidden_treasure",
+      "title": "💎 Тайная комната",
+      "description": "Ты попадаешь в маленькую круглую комнату, скрытую от посторонних глаз. В центре возвышается древний каменный алтарь, на котором стоят три сундука. Древние письмена на стенах и алтаре светятся таинственным синим светом. В воздухе искрится магическая энергия. Это место дышит силой веков.",
+      "image": "https://i.ibb.co/jYRJNXP/IMG-0641.jpg",
+      "actions": [
+        {
+          "text": "📚 Открыть сундук мудрости (50⭐)",
+          "type": "premium_chest",
+          "chest_type": "wisdom",
+          "stars_cost": 50,
+          "next_location": "maze_hidden_treasure"
+        },
+        {
+          "text": "⚔️ Открыть сундук силы (50⭐)",
+          "type": "premium_chest",
+          "chest_type": "strength",
+          "stars_cost": 50,
+          "next_location": "maze_hidden_treasure"
+        },
+        {
+          "text": "🍀 Открыть сундук удачи (50⭐)",
+          "type": "premium_chest",
+          "chest_type": "luck",
+          "stars_cost": 50,
+          "next_location": "maze_hidden_treasure"
+        },
+        {
+          "text": "↩️ Вернуться в проход",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_secret"
+        }
+      ]
+    },
+    "maze_treasure": {
+      "id": "maze_treasure",
+      "title": "💎 Сокровищница",
+      "description": "Ты входишь в древний зал. В центре стоит резной сундук с приоткрытой крышкой, из которого льётся тёплый золотистый свет. Рядом с сундуком лежит скелет в истлевшей одежде — предыдущий искатель приключений, добравшийся до сокровища, но не сумевший уйти. На полу разбросано всего несколько золотых монет. Стены покрыты древними письменами. Воздух пропитан трагедией и тайной.",
+      "image": "https://i.ibb.co/cKKWdvCm/IMG-0643.jpg",
+      "actions": [
+        {
+          "text": "🔓 Открыть сундук (ежедневно)",
+          "type": "daily_chest",
+          "cooldown": 86400,
+          "rewards": {
+            "gold": 50,
+            "token": 10,
+            "items": ["fire_gem"]
+          },
+          "next_location": "maze_treasure"
+        },
+        {
+          "text": "↩️ Вернуться в коридор",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_north"
+        }
+      ]
+    },
+    "maze_monster_empty": {
+      "id": "maze_monster_empty",
+      "title": "🏛️ Древний зал",
+      "description": "Ты входишь в огромный подземный зал. Массивные каменные колонны уходят высоко в темноту. Туман стелется по полу. В центре зала возвышается каменный алтарь, за которым угадывается тёмный проход. Вокруг разбросаны обломки статуй и древние руины — возможно, здесь можно что-то найти.",
+      "image": "https://i.ibb.co/wr4BwxDv/IMG-0647.jpg",
+      "actions": [
+        {
+          "text": "🔍 Обыскать зал (2⚡, шанс 40%)",
+          "type": "search_room",
+          "energy_cost": 2,
+          "gold_min": 5,
+          "gold_max": 15,
+          "token_min": 2,
+          "token_max": 8,
+          "success_chance": 40,
+          "next_location": "maze_monster_empty"
+        },
+        {
+          "text": "🚶 Пройти к алтарю",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_altar"
+        }
+      ]
+    },
+    "maze_altar": {
+      "id": "maze_altar",
+      "title": "🏛️ Древний алтарь",
+      "description": "Ты подходишь к массивному каменному алтарю. Он покрыт древними рунами, которые слабо светятся в темноте. За алтарём виднеется огромный проход, откуда доносится тяжёлое дыхание. Похоже, там и находится голем. Обыск алтаря потребует больше сил, но и награда выше.",
+      "image": "https://i.ibb.co/XrrYcxxy/IMG-0662.jpg",
+      "actions": [
+        {
+          "text": "🔍 Обыскать алтарь (3⚡, шанс 30%)",
+          "type": "search_altar",
+          "energy_cost": 3,
+          "gold_min": 10,
+          "gold_max": 25,
+          "token_min": 5,
+          "token_max": 15,
+          "success_chance": 30,
+          "next_location": "maze_altar"
+        },
+        {
+          "text": "⚔️ Пройти к голему (1⚡)",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_monster"
+        },
+        {
+          "text": "↩️ Вернуться в зал",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_monster_empty"
+        }
+      ]
+    },
+    "maze_monster": {
+      "id": "maze_monster",
+      "title": "🏛️ Логово чудовища",
+      "description": "В центре зала возвышается огромный каменный голем. Он медленно поднимается, стряхивая вековую пыль. Его глаза загораются красным. Это мини-босс этого подземелья!",
+      "image": "",
+      "actions": [
+        {
+          "text": "⚔️ Атаковать голема",
+          "type": "combat_melee",
+          "enemy": "stone_golem",
+          "next_location": "combat_result_golem"
+        },
+        {
+          "text": "🔮 Использовать магию",
+          "type": "show_spells",
+          "enemy": "stone_golem",
+          "next_location": "combat_result_golem"
+        },
+        {
+          "text": "🏃 Сбежать",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_east"
+        }
+      ]
+    },
+    "golem_100hp": {
+      "id": "golem_100hp",
+      "title": "🗿 Каменный голем (100% HP)",
+      "image": "https://i.ibb.co/bRQLjNJm/IMG-0658.jpg"
+    },
+    "golem_50hp": {
+      "id": "golem_50hp",
+      "title": "🗿 Каменный голем (50% HP)",
+      "image": "https://i.ibb.co/qMq0fVgX/IMG-0660.jpg"
+    },
+    "golem_20hp": {
+      "id": "golem_20hp",
+      "title": "🗿 Каменный голем (20% HP)",
+      "image": "https://i.ibb.co/LDhbpd2t/IMG-0659.jpg"
+    },
+    "combat_result_golem": {
+      "id": "combat_result_golem",
+      "title": "⚔️ Битва с мини-боссом",
+      "description": "Бой закончен. Проверяем результат...",
+      "image": "",
+      "actions": [
+        {
+          "text": "▶️ Далее",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "victory_golem"
+        }
+      ]
+    },
+    "victory_golem": {
+      "id": "victory_golem",
+      "title": "🎉 Победа над мини-боссом!",
+      "description": "Ты одолел каменного голема! Из его останков ты собираешь ценные трофеи.",
+      "image": "",
+      "actions": [
+        {
+          "text": "🌲 Вернуться на опушку",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "start"
+        },
+        {
+          "text": "🏘️ Пойти в деревню",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "village"
+        },
+        {
+          "text": "🏛️ Вернуться в лабиринт",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_entrance"
+        }
+      ]
+    },
+    "combat_result_rat": {
+      "id": "combat_result_rat",
+      "title": "⚔️ Бой с крысой",
+      "description": "Бой закончен. Проверяем результат...",
+      "image": "",
+      "actions": [
+        {
+          "text": "▶️ Далее",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_north"
+        }
+      ]
+    },
+    "combat_result_spider": {
+      "id": "combat_result_spider",
+      "title": "⚔️ Бой с пауком",
+      "description": "Бой закончен. Проверяем результат...",
+      "image": "",
+      "actions": [
+        {
+          "text": "▶️ Далее",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_east"
+        }
+      ]
+    },
+    "combat_result_bat": {
+      "id": "combat_result_bat",
+      "title": "⚔️ Бой с мышами",
+      "description": "Бой закончен. Проверяем результат...",
+      "image": "",
+      "actions": [
+        {
+          "text": "▶️ Далее",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_west"
+        }
+      ]
+    },
+    "combat_result_skeleton": {
+      "id": "combat_result_skeleton",
+      "title": "⚔️ Бой со скелетом",
+      "description": "Бой закончен. Проверяем результат...",
+      "image": "",
+      "actions": [
+        {
+          "text": "▶️ Далее",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "maze_south"
+        }
+      ]
+    },
+    "mine_entrance": {
+      "id": "mine_entrance",
+      "title": "⛏️ Вход в шахту",
+      "description": "Ты подходишь к огромному тёмному проёму в скале. Вход укреплён старыми деревянными балками — некоторые из них сгнили и покосились. Ржавые инструменты разбросаны у входа, рельсы уходят в темноту. Из шахты тянет сыростью и холодом, туман выползает наружу. На камнях растёт мох. Здесь давно никто не был, но кто знает, что скрывается в глубине?",
+      "image": "https://i.ibb.co/chYVbLTF/IMG-0696.jpg",
+      "actions": [
+        {
+          "text": "🚶 Войти в шахту",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mine_deposits_common"
+        },
+        {
+          "text": "↩️ Вернуться на перевал",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mountain_pass"
+        }
+      ]
+    },
+    "mine_deposits_common": {
+      "id": "mine_deposits_common",
+      "title": "🪨 Залежи обычных руд",
+      "description": "Ты подходишь к стене шахты с богатыми прожилками. Здесь видны ярко-зелёная медная руда, серебристо-серая железная и тёмно-серая оловянная. В центре виден широкий проход с лестницей, ведущей на нижние уровни. На полу стоят тачка и кирка, разбросаны куски руды.",
+      "image": "https://i.ibb.co/TBzK79Js/IMG-0706.jpg",
+      "actions": [
+        {
+          "text": "⛏️ Добывать руду",
+          "type": "mine_ore",
+          "energy_cost": 2,
+          "next_location": "mine_deposits_common"
+        },
+        {
+          "text": "🚶 Спуститься на 2 этаж",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mine_descent_1_2"
+        },
+        {
+          "text": "↩️ Вернуться ко входу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mine_entrance"
+        }
+      ]
+    },
+    "mine_descent_1_2": {
+      "id": "mine_descent_1_2",
+      "title": "🕳️ Спуск на второй уровень",
+      "description": "Узкая каменная лестница, вырубленная в скале, уходит круто вниз в темноту. Стены постепенно меняются от обычного камня к прожилкам редких руд. Туман поднимается снизу, на стенах тускло мерцают кристаллы.",
+      "image": "https://i.ibb.co/P8YMMwb/IMG-0725.jpg",
+      "actions": [
+        {
+          "text": "⬇️ Спуститься",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mine_deposits_rare"
+        },
+        {
+          "text": "⬆️ Вернуться на 1 этаж",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mine_deposits_common"
+        }
+      ]
+    },
+    "mine_deposits_rare": {
+      "id": "mine_deposits_rare",
+      "title": "💎 Залежи редких руд",
+      "description": "Ты спускаешься на уровень редких руд. Стена светится золотыми самородками, голубым мифрилом и серебристой платиной. Магическое сияние заменяет факелы. В глубине виден узкий проход, ведущий ещё ниже. На полу стоят редкие инструменты и тачка.",
+      "image": "https://i.ibb.co/BKPqZqz5/IMG-0708.jpg",
+      "actions": [
+        {
+          "text": "⛏️ Добывать руду",
+          "type": "mine_ore",
+          "energy_cost": 3,
+          "next_location": "mine_deposits_rare"
+        },
+        {
+          "text": "🚶 Спуститься на 3 этаж",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mine_descent_2_3"
+        },
+        {
+          "text": "↩️ Вернуться на 2 этаж",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mine_descent_1_2"
+        }
+      ]
+    },
+    "mine_descent_2_3": {
+      "id": "mine_descent_2_3",
+      "title": "🕳️ Спуск на третий уровень",
+      "description": "Ты спускаешься по крутой каменной лестнице. Стены начинают светиться красным и фиолетовым — ты приближаешься к легендарным рудам. Снизу поднимается густой туман, чувствуется пульсация древней магии.",
+      "image": "https://i.ibb.co/ymsmzZDn/IMG-0722.jpg",
+      "actions": [
+        {
+          "text": "⬇️ Спуститься",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mine_deposits_legendary"
+        },
+        {
+          "text": "⬆️ Вернуться на 2 этаж",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mine_deposits_rare"
+        }
+      ]
+    },
+    "mine_deposits_legendary": {
+      "id": "mine_deposits_legendary",
+      "title": "🔥 Залежи легендарных руд",
+      "description": "Ты спускаешься на самый глубокий уровень шахты. Стены пульсируют красным светом кровавого камня, фиолетовым сиянием аметистов и холодным блеском титана. Густой туман стелется по полу. Вдалеке виден тёмный проход, уходящий ещё ниже. Древние инструменты разбросаны вокруг — здесь давно никто не был.",
+      "image": "https://i.ibb.co/Q7xRJR9n/IMG-0717.jpg",
+      "actions": [
+        {
+          "text": "⛏️ Добывать руду",
+          "type": "mine_ore",
+          "energy_cost": 4,
+          "next_location": "mine_deposits_legendary"
+        },
+        {
+          "text": "🚶 Спуститься на 4 этаж",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mine_descent_3_4"
+        },
+        {
+          "text": "↩️ Вернуться на 3 этаж",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mine_descent_2_3"
+        }
+      ]
+    },
+    "mine_descent_3_4": {
+      "id": "mine_descent_3_4",
+      "title": "🕳️ Спуск на четвёртый уровень",
+      "description": "Ты спускаешься глубже. Стены становятся гладкими, на них проступают древние руны, светящиеся голубым светом. Туман сгущается. Внизу уже угадываются очертания каменных колонн — ты приближаешься к древним руинам.",
+      "image": "https://i.ibb.co/P8YMMwb/IMG-0725.jpg",
+      "actions": [
+        {
+          "text": "⬇️ Спуститься",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mine_ruins"
+        },
+        {
+          "text": "⬆️ Вернуться на 3 этаж",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mine_deposits_legendary"
+        }
+      ]
+    },
+    "mine_ruins": {
+      "id": "mine_ruins",
+      "title": "🏛️ Древние руины",
+      "description": "Ты попадаешь в огромный подземный зал. Высокие каменные колонны, покрытые древними рунами, уходят в темноту. Голубое свечение исходит от письмен и кристаллов в углах. В центре стоит разрушенный алтарь, вокруг разбросаны обломки статуй. Туман стелется по каменному полу. Это место дышит древностью и силой.",
+      "image": "https://i.ibb.co/KcvFgRsq/IMG-0729.jpg",
+      "actions": [
+        {
+          "text": "🔍 Исследовать руины",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mine_ruins_explore"
+        },
+        {
+          "text": "⚔️ Пройти к стражу",
+          "type": "move",
+          "energy_cost": 2,
+          "next_location": "ancient_guardian"
+        },
+        {
+          "text": "↩️ Вернуться на спуск",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mine_descent_3_4"
+        }
+      ]
+    },
+    "ancient_guardian": {
+      "id": "ancient_guardian",
+      "title": "🗿 Древний страж",
+      "description": "Перед тобой возвышается огромная каменная статуя, ожившая древней магией. В полных боевых доспехах, с гигантским мечом и щитом, покрытым рунами. Его глаза горят ярко-голубым светом, из трещин в доспехах сочится магия. Он стоит на страже перед проходом к дракону, и просто так не пропустит.",
+      "image": "https://i.ibb.co/0RbygYWv/IMG-0749.jpg",
+      "actions": [
+        {
+          "text": "⚔️ Атаковать стража",
+          "type": "combat_melee",
+          "enemy": "ancient_guardian",
+          "next_location": "combat_result_guardian"
+        },
+        {
+          "text": "🔮 Использовать магию",
+          "type": "show_spells",
+          "enemy": "ancient_guardian",
+          "next_location": "combat_result_guardian"
+        },
+        {
+          "text": "↩️ Вернуться в руины",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mine_ruins"
+        }
+      ]
+    },
+    "combat_result_guardian": {
+      "id": "combat_result_guardian",
+      "title": "⚔️ Битва со стражем",
+      "description": "Бой закончен. Проверяем результат...",
+      "image": "",
+      "actions": [
+        {
+          "text": "▶️ Далее",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "victory_guardian"
+        }
+      ]
+    },
+    "victory_guardian": {
+      "id": "victory_guardian",
+      "title": "🎉 Победа над стражем!",
+      "description": "Древний страж повержен! Из его останков ты вынимаешь ключ от нижних уровней.",
+      "image": "",
+      "actions": [
+        {
+          "text": "🚶 Пройти к спуску",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "bridge_before_dragon"
+        },
+        {
+          "text": "↩️ Вернуться в руины",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mine_ruins"
+        }
+      ]
+    },
+    "bridge_before_dragon": {
+      "id": "bridge_before_dragon",
+      "title": "🌉 Мост над пропастью",
+      "description": "Ты выходишь на древний каменный мост, перекинутый через бесконечную чёрную пропасть. Туман поднимается снизу, скрывая глубину. У самого входа на мост обустроен привал — горит костёр, расстелена шкура, стоит рюкзак. Вдалеке, на другом конце моста, пульсирует зловещее красное свечение и слышен глубокий гул — там логово дракона. Уютно и страшно одновременно.",
+      "image": "https://i.ibb.co/fG1KQ1F0/IMG-0755.jpg",
+      "actions": [
+        {
+          "text": "🪵 Отдохнуть (+10 энергии)",
+          "type": "rest_on_bridge",
+          "energy_gain": 10,
+          "next_location": "bridge_before_dragon"
+        },
+        {
+          "text": "🚶 Пойти по мосту к дракону",
+          "type": "move",
+          "energy_cost": 2,
+          "next_location": "dragon_lair"
+        }
+      ]
+    },
+    "dragon_lair": {
+      "id": "dragon_lair",
+      "title": "🐉 Логово дракона",
+      "description": "Огромная пещера, освещённая красным пульсирующим светом. В центре на груде золота лежит древний дракон. Его глаза открываются, и он медленно поднимает голову. Бой начинается!",
+      "image": "",
+      "actions": [
+        {
+          "text": "⚔️ Атаковать дракона",
+          "type": "combat_melee",
+          "enemy": "dragon",
+          "next_location": "combat_result_dragon"
+        },
+        {
+          "text": "🔮 Использовать магию",
+          "type": "show_spells",
+          "enemy": "dragon",
+          "next_location": "combat_result_dragon"
+        }
+      ]
+    },
+    "dragon_100hp": {
+      "id": "dragon_100hp",
+      "title": "🐉 Древний дракон (100% HP)",
+      "image": "https://i.ibb.co/zKkKpGT/IMG-0730.jpg"
+    },
+    "dragon_75hp": {
+      "id": "dragon_75hp",
+      "title": "🐉 Древний дракон (75% HP)",
+      "image": "https://i.ibb.co/nTgwSDv/IMG-0731.jpg"
+    },
+    "dragon_50hp": {
+      "id": "dragon_50hp",
+      "title": "🐉 Древний дракон (50% HP)",
+      "image": "https://i.ibb.co/cSgcQHCN/IMG-0732.jpg"
+    },
+    "dragon_15hp": {
+      "id": "dragon_15hp",
+      "title": "🐉 Древний дракон (15% HP)",
+      "image": "https://i.ibb.co/DgWBMRdG/IMG-0734.jpg"
+    },
+    "combat_result_dragon": {
+      "id": "combat_result_dragon",
+      "title": "⚔️ Битва с драконом",
+      "description": "Бой закончен. Проверяем результат...",
+      "image": "",
+      "actions": [
+        {
+          "text": "▶️ Далее",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "victory_dragon"
+        }
+      ]
+    },
+    "victory_dragon": {
+      "id": "victory_dragon",
+      "title": "🎉 Победа над драконом!",
+      "description": "Древний дракон повержен! Перед тобой открывается проход в сокровищницу.",
+      "image": "",
+      "actions": [
+        {
+          "text": "💰 Войти в сокровищницу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "treasury_final"
+        },
+        {
+          "text": "↩️ Вернуться на мост",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "bridge_before_dragon"
+        }
+      ]
+    },
+    "treasury_final": {
+      "id": "treasury_final",
+      "title": "💎 Финальная сокровищница",
+      "description": "Перед тобой открывается огромная пещера, доверху заполненная сокровищами. Горы золотых монет, сундуки с драгоценными камнями, древние артефакты — всё это мерцает в тёплом золотом свете. На переднем плане лежит тело поверженного дракона — стража, павшего в битве. Его глаза потухли, но даже в смерти он величественен. Ты заслужил эту награду.",
+      "image": "https://i.ibb.co/Qv6n8790/IMG-0737.jpg",
+      "actions": [
+        {
+          "text": "💰 Забрать сокровища",
+          "type": "treasure_reward",
+          "next_location": "treasury_final"
+        },
+        {
+          "text": "🚪 Вернуться на мост",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "bridge_before_dragon"
+        }
+      ]
+    },
+    "forgotten_altar": {
+      "id": "forgotten_altar",
+      "title": "🏚️ Забытый алтарь",
+      "description": "Ты находишь небольшой алтарь в глубине шахты. Древний камень покрыт рунами, слабо светящимися голубым. Вокруг стоят каменные стражи с лицами, стёртыми временем. Магическая энергия искрится в воздухе, из-под алтаря поднимается туман. Кристаллы на стенах мерцают, создавая завораживающую атмосферу. Это место дышит древней силой.",
+      "image": "https://i.ibb.co/xKh1bxd9/IMG-0739.jpg",
+      "actions": [
+        {
+          "text": "🔮 Исследовать алтарь",
+          "type": "investigate_altar",
+          "energy_cost": 2,
+          "next_location": "forgotten_altar"
+        },
+        {
+          "text": "↩️ Вернуться",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mine_ruins"
+        }
+      ]
+    },
+    "house_construction": {
+      "id": "house_construction",
+      "title": "🏗️ Стройка домика",
+      "description": "Ты выбрал уютное место на берегу озера. Ровная зелёная поляна, аккуратно сложены доски и камни. Здесь будет твой собственный дом. Осталось только построить!",
+      "image": "https://i.ibb.co/60pFRYPk/IMG-0742.jpg",
+      "actions": [
+        {
+          "text": "🏠 Построить домик",
+          "type": "build_house",
+          "next_location": "house_construction"
+        },
+        {
+          "text": "↩️ Вернуться на берег",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "lake_shore"
+        }
+      ]
+    },
+    "house_level1": {
+      "id": "house_level1",
+      "title": "🏠 Маленький домик",
+      "description": "Твой первый собственный домик на берегу озера. Одна комната, соломенная крыша, маленькое окошко с тёплым светом. Из трубы идёт дымок — здесь уютно. Рядом аккуратно сложены дрова. Самое время отдохнуть после долгих приключений.",
+      "image": "https://i.ibb.co/Y7vTBWnR/IMG-0743.jpg",
+      "actions": [
+        {
+          "text": "🛏️ Отдохнуть (+20 энергии, КД 1ч)",
+          "type": "rest",
+          "energy_gain": 20,
+          "cooldown": 3600,
+          "next_location": "house_level1"
+        },
+        {
+          "text": "📦 Открыть сундук",
+          "type": "open_storage",
+          "storage_size": 20,
+          "next_location": "house_level1"
+        },
+        {
+          "text": "🔨 Улучшить домик",
+          "type": "upgrade_house",
+          "next_level": 2,
+          "next_location": "house_level2"
+        },
+        {
+          "text": "🚪 Выйти на берег",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "lake_shore"
+        }
+      ]
+    },
+    "house_level1_night": {
+      "id": "house_level1_night",
+      "title": "🏠 Маленький домик (ночь)",
+      "description": "Ночь окутала твой уютный домик на берегу озера. Полная луна отражается в спокойной воде, создавая серебристую дорожку. Из окон льётся тёплый свет, из трубы идёт лёгкий дымок. В саду мерцают светлячки, у причала покачивается лодка. Волшебная, умиротворяющая атмосфера.",
+      "image": "https://i.ibb.co/tTGJN0Vg/IMG-0781.jpg",
+      "actions": [
+        {
+          "text": "🛏️ Отдохнуть (+20 энергии, КД 1ч)",
+          "type": "rest",
+          "energy_gain": 20,
+          "cooldown": 3600,
+          "next_location": "house_level1_night"
+        },
+        {
+          "text": "📦 Открыть сундук",
+          "type": "open_storage",
+          "storage_size": 20,
+          "next_location": "house_level1_night"
+        },
+        {
+          "text": "🔨 Улучшить домик",
+          "type": "upgrade_house",
+          "next_level": 2,
+          "next_location": "house_level2"
+        },
+        {
+          "text": "🚪 Выйти на берег",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "lake_shore"
+        }
+      ]
+    },
+    "house_level2": {
+      "id": "house_level2",
+      "title": "🏠 Уютный домик",
+      "description": "Твой домик стал больше и уютнее. Две комнаты, черепичная крыша, два окна с тёплым светом. Из трубы идёт дымок, рядом появился небольшой огород. Мечта!",
+      "image": "https://i.ibb.co/20PqbdYN/IMG-0744.jpg",
+      "actions": [
+        {
+          "text": "🛏️ Отдохнуть (+30 энергии, КД 1ч)",
+          "type": "rest",
+          "energy_gain": 30,
+          "cooldown": 3600,
+          "next_location": "house_level2"
+        },
+        {
+          "text": "📦 Открыть сундук",
+          "type": "open_storage",
+          "storage_size": 30,
+          "next_location": "house_level2"
+        },
+        {
+          "text": "🔥 Пожарить мясо на мангале",
+          "type": "cook_meat",
+          "next_location": "house_level2"
+        },
+        {
+          "text": "🔨 Улучшить домик",
+          "type": "upgrade_house",
+          "next_level": 3,
+          "next_location": "house_level3"
+        },
+        {
+          "text": "🚪 Выйти на берег",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "lake_shore"
+        }
+      ]
+    },
+    "house_level3": {
+      "id": "house_level3",
+      "title": "🏠 Просторный дом",
+      "description": "Твой дом вырос до двух этажей! Каменная труба, несколько окон с тёплым светом, большое крыльцо. Рядом появились сарайчик для инструментов и уютная беседка у воды. Здесь хочется жить!",
+      "image": "https://i.ibb.co/99F20Xzy/IMG-0745.jpg",
+      "actions": [
+        {
+          "text": "🛏️ Отдохнуть (+40 энергии, КД 1ч)",
+          "type": "rest",
+          "energy_gain": 40,
+          "cooldown": 3600,
+          "next_location": "house_level3"
+        },
+        {
+          "text": "📦 Открыть сундук",
+          "type": "open_storage",
+          "storage_size": 40,
+          "next_location": "house_level3"
+        },
+        {
+          "text": "🔥 Обжечь стекло",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "house_glass_furnace"
+        },
+        {
+          "text": "🔨 Улучшить домик",
+          "type": "upgrade_house",
+          "next_level": 4,
+          "next_location": "house_level4"
+        },
+        {
+          "text": "🚪 Выйти на берег",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "lake_shore"
+        }
+      ]
+    },
+    "house_glass_furnace": {
+      "id": "house_glass_furnace",
+      "title": "🔥 Мастерская стекла",
+      "description": "В твоём доме появилась настоящая стекольная мастерская. Большая каменная печь для обжига, полки с готовыми изделиями, инструменты на столе. Здесь можно создавать стекло для окон и других нужд.",
+      "image": "https://i.ibb.co/nNyD1yBQ/IMG-0759.jpg",
+      "actions": [
+        {
+          "text": "🪟 Сделать стекло (5 песка → 1 стекло)",
+          "type": "craft_glass",
+          "sand_needed": 5,
+          "glass_output": 1,
+          "energy_cost": 2,
+          "next_location": "house_glass_furnace"
+        },
+        {
+          "text": "↩️ Вернуться в дом",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "house_level3"
+        }
+      ]
+    },
+    "house_level4": {
+      "id": "house_level4",
+      "title": "🏠 Деревянный особняк",
+      "description": "Твой дом превратился в настоящий особняк! Два этажа с мансардой, большие окна, просторная веранда. Вокруг цветущий сад, ухоженный огород, а у воды появился маленький причал с лодкой. Мечта стала реальностью!",
+      "image": "https://i.ibb.co/jkQDVdpy/IMG-0746.jpg",
+      "actions": [
+        {
+          "text": "🛏️ Отдохнуть (+50 энергии, КД 1ч)",
+          "type": "rest",
+          "energy_gain": 50,
+          "cooldown": 3600,
+          "next_location": "house_level4"
+        },
+        {
+          "text": "📦 Открыть сундук",
+          "type": "open_storage",
+          "storage_size": 50,
+          "next_location": "house_level4"
+        },
+        {
+          "text": "✨ Использовать телепорт",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "house_teleport"
+        },
+        {
+          "text": "🔨 Улучшить домик",
+          "type": "upgrade_house",
+          "next_level": 5,
+          "next_location": "house_level5"
+        },
+        {
+          "text": "🚪 Выйти на берег",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "lake_shore"
+        }
+      ]
+    },
+    "house_teleport": {
+      "id": "house_teleport",
+      "title": "✨ Магический телепорт",
+      "description": "В углу просторного зала возвышается светящаяся арка. Голубые искры магии танцуют в воздухе, древние руны на каменном основании пульсируют мягким светом. Этот телепорт может мгновенно перенести тебя в любую знакомую локацию.",
+      "image": "https://i.ibb.co/BHspH3xg/IMG-0760.jpg",
+      "actions": [
+        {
+          "text": "✨ Телепортироваться",
+          "type": "teleport_menu",
+          "next_location": "house_teleport"
+        },
+        {
+          "text": "↩️ Вернуться в дом",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "house_level4"
+        }
+      ]
+    },
+    "house_level5": {
+      "id": "house_level5",
+      "title": "🏠 Великая усадьба",
+      "description": "Твой дом достиг величия! Трёхэтажная усадьба с башенкой, множество окон, просторная терраса. Вокруг раскинулся ухоженный парк, цветущий сад, фонтан и собственный причал. Это настоящий дворец!",
+      "image": "https://i.ibb.co/CK57Z49j/IMG-0747.jpg",
+      "actions": [
+        {
+          "text": "🛏️ Отдохнуть (+60 энергии, КД 1ч)",
+          "type": "rest",
+          "energy_gain": 60,
+          "cooldown": 3600,
+          "next_location": "house_level5"
+        },
+        {
+          "text": "📦 Открыть сундук",
+          "type": "open_storage",
+          "storage_size": 60,
+          "next_location": "house_level5"
+        },
+        {
+          "text": "✨ Использовать телепорт",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "house_teleport"
+        },
+        {
+          "text": "🏠 Пойти в баню",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "house_bathhouse"
+        },
+        {
+          "text": "🌱 Пойти в теплицу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "house_greenhouse"
+        },
+        {
+          "text": "🚪 Выйти на берег",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "lake_shore"
+        }
+      ]
+    },
+    "house_grill": {
+      "id": "house_grill",
+      "title": "🔥 Мангал у дома",
+      "description": "Во дворе твоего домика стоит каменный мангал. На нём аппетитно жарятся овощи и мясо, дымок поднимается к вечернему небу. Рядом столик с продуктами. Озеро на закате отражает розовые лучи. Идеальное место для ужина после приключений.",
+      "image": "https://i.ibb.co/HLmjSz2b/IMG-0757.jpg",
+      "actions": [
+        {
+          "text": "🔥 Пожарить еду",
+          "type": "cook_meat",
+          "next_location": "house_grill"
+        },
+        {
+          "text": "↩️ Вернуться в дом",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "house_level2"
+        }
+      ]
+    },
+    "house_bathhouse": {
+      "id": "house_bathhouse",
+      "title": "🏠 Баня у озера",
+      "description": "Рядом с твоей усадьбой появилась настоящая деревянная баня. Из трубы валит пар, рядом стоит купель с прохладной водой. Вечернее небо усыпано звёздами, озеро отражает их свет. Идеальное место, чтобы расслабиться после тяжёлых боёв.",
+      "image": "https://i.ibb.co/4ZxvPsnM/IMG-0762.jpg",
+      "actions": [
+        {
+          "text": "🛁 Попариться (+20 здоровья, КД 1ч)",
+          "type": "bath",
+          "health_gain": 20,
+          "cooldown": 3600,
+          "next_location": "house_bathhouse"
+        },
+        {
+          "text": "↩️ Вернуться в усадьбу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "house_level5"
+        }
+      ]
+    },
+    "house_greenhouse": {
+      "id": "house_greenhouse",
+      "title": "🌱 Теплица",
+      "description": "В саду у твоей усадьбы стоит стеклянная теплица. Внутри буйство зелени: овощи, травы, цветы. Солнечный свет проникает сквозь стекло, создавая тёплую атмосферу. Здесь можно выращивать растения круглый год.",
+      "image": "https://i.ibb.co/7dCCMVPz/IMG-0763.jpg",
+      "actions": [
+        {
+          "text": "🌱 Посадить семена",
+          "type": "greenhouse_plant",
+          "next_location": "house_greenhouse"
+        },
+        {
+          "text": "🌾 Собрать урожай",
+          "type": "greenhouse_harvest",
+          "next_location": "house_greenhouse"
+        },
+        {
+          "text": "↩️ Вернуться в усадьбу",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "house_level5"
+        }
+      ]
+    },
+    "sand_pit": {
+      "id": "sand_pit",
+      "title": "🏝️ Песчаный карьер",
+      "description": "Ты приходишь в оживлённый песчаный карьер у подножия гор. Гномы в рабочих фартуках толкают тачки с песком, по рельсам ездят вагонетки, уходящие в туннель. Рядом стоит сарай для инструментов, а чуть поодаль виднеется таверна с дымком из трубы — место, где рабочие отдыхают после трудовой смены. Привязаны ослики с мешками песка. Здесь кипит работа, но чувствуется и уют.",
+      "image": "https://i.ibb.co/39b4pv2X/IMG-0769.jpg",
+      "actions": [
+        {
+          "text": "🏖️ Копать песок (3⚡)",
+          "type": "gather_sand",
+          "energy_cost": 3,
+          "sand_min": 3,
+          "sand_max": 6,
+          "next_location": "sand_pit"
+        },
+        {
+          "text": "🪣 Промывать песок (4⚡)",
+          "type": "wash_sand",
+          "energy_cost": 4,
+          "next_location": "sand_pit"
+        },
+        {
+          "text": "🕳️ Искать в отвалах (2⚡)",
+          "type": "search_debris",
+          "energy_cost": 2,
+          "next_location": "sand_pit"
+        },
+        {
+          "text": "🍺 Пойти в таверну",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "sand_pit_tavern"
+        },
+        {
+          "text": "↩️ Вернуться",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "mountain_path"
+        }
+      ]
+    },
+    "sand_pit_tavern": {
+      "id": "sand_pit_tavern",
+      "title": "🍺 Таверна «У песчаного гнома»",
+      "description": "Ты подходишь к уютной деревянной таверне прямо у карьера. Из трубы идёт дымок, из окон льётся тёплый свет. На скамейках сидят уставшие рабочие-гномы с кружками пива. На вывеске нарисованы кружка и лопата. Рядом привязаны ослики. Внутри слышен шум голосов и смех. Отличное место, чтобы отдохнуть!",
+      "image": "https://i.ibb.co/4nxw3mjV/IMG-0771.jpg",
+      "actions": [
+        {
+          "text": "🍺 Купить кружку эля (5💰) +5⚡",
+          "type": "buy_beer",
+          "price": 5,
+          "energy_gain": 5,
+          "next_location": "sand_pit_tavern"
+        },
+        {
+          "text": "💬 Послушать слухи (1⚡)",
+          "type": "gather_rumors",
+          "energy_cost": 1,
+          "next_location": "sand_pit_tavern"
+        },
+        {
+          "text": "📜 Взять квест",
+          "type": "move",
+          "next_location": "sand_pit_quests"
+        },
+        {
+          "text": "🚪 Выйти в карьер",
+          "type": "move",
+          "energy_cost": 1,
+          "next_location": "sand_pit"
+        }
+      ]
+    }
+  },
+  "items": {
+    "rusty_blade": {
+      "id": "rusty_blade",
+      "name": "🗡️ Короткий ржавый клинок",
+      "type": "weapon",
+      "rarity": "common",
+      "damage": 3,
+      "value": 1,
+      "description": "Стартовое оружие. Даёт +3 к урону."
+    },
+    "iron_sword": {
+      "id": "iron_sword",
+      "name": "⚔️ Железный меч",
+      "type": "weapon",
+      "rarity": "uncommon",
+      "damage": 8,
+      "value": 50,
+      "description": "Качественный железный меч. Даёт +8 к урону."
+    },
+    "golden_sword": {
+      "id": "golden_sword",
+      "name": "⚔️ Золотой меч",
+      "type": "weapon",
+      "rarity": "rare",
+      "damage": 12,
+      "value": 150,
+      "description": "Золотой меч с рубином. Даёт +12 к урону."
+    },
+    "diamond_sword": {
+      "id": "diamond_sword",
+      "name": "⚔️ Алмазный меч",
+      "type": "weapon",
+      "rarity": "epic",
+      "damage": 18,
+      "value": 400,
+      "description": "Легендарный алмазный меч. Даёт +18 к урону."
+    },
+    "wooden_fishing_rod": {
+      "id": "wooden_fishing_rod",
+      "name": "⚪ Удочка Лесника",
+      "type": "fishing_rod",
+      "rarity": "common",
+      "durability": 30,
+      "value": 15,
+      "bait_bonus": 0,
+      "description": "Простая деревянная удочка. Хватит на 30 забросов."
+    },
+    "bamboo_fishing_rod": {
+      "id": "bamboo_fishing_rod",
+      "name": "🟢 Тростниковая удочка",
+      "type": "fishing_rod",
+      "rarity": "uncommon",
+      "durability": 60,
+      "value": 50,
+      "bait_bonus": 5,
+      "description": "Бамбуковая удочка. Хватит на 60 забросов. +5% к шансу поймать редкую рыбу."
+    },
+    "carbon_fishing_rod": {
+      "id": "carbon_fishing_rod",
+      "name": "🔵 Удочка Буревестника",
+      "type": "fishing_rod",
+      "rarity": "rare",
+      "durability": 120,
+      "value": 150,
+      "bait_bonus": 10,
+      "description": "Карбоновая удочка. Хватит на 120 забросов. +10% к шансу поймать редкую рыбу, +1 рыба за раз."
+    },
+    "premium_fishing_rod": {
+      "id": "premium_fishing_rod",
+      "name": "🟣 Удочка Лунного Света",
+      "type": "fishing_rod",
+      "rarity": "epic",
+      "durability": 300,
+      "value": 500,
+      "bait_bonus": 20,
+      "gem_chance": 3,
+      "description": "Волшебная удочка. Хватит на 300 забросов. +20% к шансу поймать редкую рыбу, +2 рыбы за раз, 3% шанс найти драгоценный камень."
+    },
+    "wooden_sickle": {
+      "id": "wooden_sickle",
+      "name": "⚪ Деревянный серп",
+      "type": "tool",
+      "rarity": "common",
+      "durability": 30,
+      "value": 20,
+      "harvest_bonus": 0,
+      "rare_chance": 0,
+      "description": "Простой деревянный серп. Хватит на 30 сборов трав."
+    },
+    "iron_sickle": {
+      "id": "iron_sickle",
+      "name": "🟢 Железный серп",
+      "type": "tool",
+      "rarity": "uncommon",
+      "durability": 80,
+      "value": 60,
+      "harvest_bonus": 1,
+      "rare_chance": 0,
+      "description": "Железный серп. Хватит на 80 сборов. +1 трава за сбор."
+    },
+    "golden_sickle": {
+      "id": "golden_sickle",
+      "name": "🔵 Золотой серп",
+      "type": "tool",
+      "rarity": "rare",
+      "durability": 150,
+      "value": 150,
+      "harvest_bonus": 1,
+      "rare_chance": 8,
+      "description": "Золотой серп. Хватит на 150 сборов. +1 трава за сбор, 8% шанс найти редкую траву."
+    },
+    "diamond_sickle": {
+      "id": "diamond_sickle",
+      "name": "🟣 Алмазный серп",
+      "type": "tool",
+      "rarity": "epic",
+      "durability": 300,
+      "value": 400,
+      "harvest_bonus": 2,
+      "rare_chance": 15,
+      "description": "Алмазный серп. Хватит на 300 сборов. +2 травы за сбор, 15% шанс найти редкую траву."
+    },
+    "wooden_hoe": {
+      "id": "wooden_hoe",
+      "name": "⚪ Деревянная мотыга",
+      "type": "tool",
+      "rarity": "common",
+      "durability": 30,
+      "value": 25,
+      "harvest_bonus": 0,
+      "rare_chance": 0,
+      "description": "Простая деревянная мотыга. Хватит на 30 сборов овощей."
+    },
+    "iron_hoe": {
+      "id": "iron_hoe",
+      "name": "🟢 Железная мотыга",
+      "type": "tool",
+      "rarity": "uncommon",
+      "durability": 80,
+      "value": 70,
+      "harvest_bonus": 1,
+      "rare_chance": 0,
+      "description": "Железная мотыга. Хватит на 80 сборов. +1 овощ за сбор."
+    },
+    "golden_hoe": {
+      "id": "golden_hoe",
+      "name": "🔵 Золотая мотыга",
+      "type": "tool",
+      "rarity": "rare",
+      "durability": 150,
+      "value": 180,
+      "harvest_bonus": 1,
+      "rare_chance": 8,
+      "description": "Золотая мотыга. Хватит на 150 сборов. +1 овощ за сбор, 8% шанс найти редкий овощ."
+    },
+    "diamond_hoe": {
+      "id": "diamond_hoe",
+      "name": "🟣 Алмазная мотыга",
+      "type": "tool",
+      "rarity": "epic",
+      "durability": 300,
+      "value": 450,
+      "harvest_bonus": 2,
+      "rare_chance": 15,
+      "description": "Алмазная мотыга. Хватит на 300 сборов. +2 овоща за сбор, 15% шанс найти редкий овощ."
+    },
+    "stone_pickaxe": {
+      "id": "stone_pickaxe",
+      "name": "⛏️ Каменная кирка",
+      "type": "tool",
+      "rarity": "common",
+      "durability": 30,
+      "value": 20,
+      "description": "Простая каменная кирка. Хватит на 30 ударов."
+    },
+    "iron_pickaxe": {
+      "id": "iron_pickaxe",
+      "name": "⛏️ Железная кирка",
+      "type": "tool",
+      "rarity": "uncommon",
+      "durability": 100,
+      "value": 100,
+      "description": "Железная кирка. Хватит на 100 ударов."
+    },
+    "premium_pickaxe": {
+      "id": "premium_pickaxe",
+      "name": "✨ Алмазная кирка",
+      "type": "tool",
+      "rarity": "epic",
+      "durability": 500,
+      "value": 500,
+      "gem_chance": 5,
+      "description": "Алмазная кирка. Хватит на 500 ударов. 5% шанс найти редкий камень."
+    },
+    "copper_ore": {
+      "id": "copper_ore",
+      "name": "⚪ Медная руда",
+      "type": "ore",
+      "rarity": "common",
+      "value": 5
+    },
+    "iron_ore": {
+      "id": "iron_ore",
+      "name": "🟢 Железная руда",
+      "type": "ore",
+      "rarity": "uncommon",
+      "value": 8
+    },
+    "tin_ore": {
+      "id": "tin_ore",
+      "name": "🟢 Оловянная руда",
+      "type": "ore",
+      "rarity": "uncommon",
+      "value": 6
+    },
+    "gold_ore": {
+      "id": "gold_ore",
+      "name": "🔵 Золотая руда",
+      "type": "ore",
+      "rarity": "rare",
+      "value": 20
+    },
+    "mithril_ore": {
+      "id": "mithril_ore",
+      "name": "🟣 Мифриловая руда",
+      "type": "ore",
+      "rarity": "epic",
+      "value": 50
+    },
+    "copper_ingot": {
+      "id": "copper_ingot",
+      "name": "⚪ Медный слиток",
+      "type": "material",
+      "rarity": "common",
+      "value": 15
+    },
+    "iron_ingot": {
+      "id": "iron_ingot",
+      "name": "🟢 Железный слиток",
+      "type": "material",
+      "rarity": "uncommon",
+      "value": 25
+    },
+    "tin_ingot": {
+      "id": "tin_ingot",
+      "name": "🟢 Оловянный слиток",
+      "type": "material",
+      "rarity": "uncommon",
+      "value": 18
+    },
+    "gold_ingot": {
+      "id": "gold_ingot",
+      "name": "🔵 Золотой слиток",
+      "type": "material",
+      "rarity": "rare",
+      "value": 50
+    },
+    "mithril_ingot": {
+      "id": "mithril_ingot",
+      "name": "🟣 Мифриловый слиток",
+      "type": "material",
+      "rarity": "epic",
+      "value": 150
+    },
+    "ruby": {
+      "id": "ruby",
+      "name": "💎 Рубин",
+      "type": "gem",
+      "rarity": "rare",
+      "value": 200
+    },
+    "diamond": {
+      "id": "diamond",
+      "name": "💎 Алмаз",
+      "type": "gem",
+      "rarity": "rare",
+      "value": 300
+    },
+    "sapphire": {
+      "id": "sapphire",
+      "name": "💎 Сапфир",
+      "type": "gem",
+      "rarity": "rare",
+      "value": 250
+    },
+    "emerald": {
+      "id": "emerald",
+      "name": "💎 Изумруд",
+      "type": "gem",
+      "rarity": "rare",
+      "value": 280
+    },
+    "ancient_coin": {
+      "id": "ancient_coin",
+      "name": "🪙 Древняя монета",
+      "type": "treasure",
+      "rarity": "epic",
+      "value": 500
+    },
+    "worm": {
+      "id": "worm",
+      "name": "🪱 Червяк",
+      "type": "bait",
+      "rarity": "common",
+      "value": 1
+    },
+    "bread": {
+      "id": "bread",
+      "name": "🍞 Хлебный мякиш",
+      "type": "bait",
+      "rarity": "common",
+      "value": 2
+    },
+    "dough": {
+      "id": "dough",
+      "name": "🥖 Тесто",
+      "type": "bait",
+      "rarity": "common",
+      "value": 3
+    },
+    "carp": {
+      "id": "carp",
+      "name": "🐟 Карась",
+      "type": "fish",
+      "rarity": "common",
+      "value": 5,
+      "heal": 10,
+      "energy_restore": 5
+    },
+    "perch": {
+      "id": "perch",
+      "name": "🐟 Окунь",
+      "type": "fish",
+      "rarity": "common",
+      "value": 8,
+      "heal": 15,
+      "energy_restore": 8
+    },
+    "pike": {
+      "id": "pike",
+      "name": "🐟 Щука",
+      "type": "fish",
+      "rarity": "uncommon",
+      "value": 15,
+      "heal": 25,
+      "energy_restore": 12
+    },
+    "golden_fish": {
+      "id": "golden_fish",
+      "name": "🐟 Золотая рыбка",
+      "type": "fish",
+      "rarity": "rare",
+      "value": 50,
+      "heal": 50,
+      "energy_restore": 30
+    },
+    "oregano": {
+      "id": "oregano",
+      "name": "🌿 Орегано",
+      "type": "herb",
+      "rarity": "common",
+      "value": 2
+    },
+    "basil": {
+      "id": "basil",
+      "name": "🌿 Базилик",
+      "type": "herb",
+      "rarity": "common",
+      "value": 2
+    },
+    "thyme": {
+      "id": "thyme",
+      "name": "🌿 Тимьян",
+      "type": "herb",
+      "rarity": "common",
+      "value": 2
+    },
+    "mint": {
+      "id": "mint",
+      "name": "🌱 Мята",
+      "type": "herb",
+      "rarity": "common",
+      "value": 3
+    },
+    "forest_berries": {
+      "id": "forest_berries",
+      "name": "🫐 Лесные ягоды",
+      "type": "herb",
+      "rarity": "uncommon",
+      "value": 5
+    },
+    "fire_flower": {
+      "id": "fire_flower",
+      "name": "🔥 Огненный цветок",
+      "type": "herb",
+      "rarity": "rare",
+      "value": 15
+    },
+    "honey": {
+      "id": "honey",
+      "name": "🍯 Мёд",
+      "type": "ingredient",
+      "rarity": "uncommon",
+      "value": 8
+    },
+    "potato": {
+      "id": "potato",
+      "name": "🥔 Картофель",
+      "type": "vegetable",
+      "rarity": "common",
+      "value": 3
+    },
+    "cabbage": {
+      "id": "cabbage",
+      "name": "🥬 Капуста",
+      "type": "vegetable",
+      "rarity": "common",
+      "value": 4
+    },
+    "carrot": {
+      "id": "carrot",
+      "name": "🥕 Морковь",
+      "type": "vegetable",
+      "rarity": "common",
+      "value": 3
+    },
+    "onion": {
+      "id": "onion",
+      "name": "🧅 Лук",
+      "type": "vegetable",
+      "rarity": "common",
+      "value": 2
+    },
+    "bear_meat": {
+      "id": "bear_meat",
+      "name": "🥩 Медвежатина",
+      "type": "food",
+      "rarity": "uncommon",
+      "value": 15,
+      "heal": 25,
+      "energy_restore": 15
+    },
+    "moose_meat": {
+      "id": "moose_meat",
+      "name": "🥩 Лосятина",
+      "type": "food",
+      "rarity": "uncommon",
+      "value": 12,
+      "heal": 20,
+      "energy_restore": 12
+    },
+    "wolf_meat": {
+      "id": "wolf_meat",
+      "name": "🥩 Волчатина",
+      "type": "food",
+      "rarity": "common",
+      "value": 10,
+      "heal": 15,
+      "energy_restore": 10
+    },
+    "beast_meat": {
+      "id": "beast_meat",
+      "name": "🥩 Мясо снежного зверя",
+      "type": "food",
+      "rarity": "rare",
+      "value": 25,
+      "heal": 40,
+      "energy_restore": 25
+    },
+    "carrot_seeds": {
+      "id": "carrot_seeds",
+      "name": "🥕 Семена моркови",
+      "type": "seed",
+      "value": 2,
+      "description": "Пакетик семян моркови. Даст 3-5 морковок через 30 минут."
+    },
+    "potato_seeds": {
+      "id": "potato_seeds",
+      "name": "🥔 Семена картофеля",
+      "type": "seed",
+      "value": 3,
+      "description": "Пакетик семян картофеля. Даст 4-6 картофелин через 1 час."
+    },
+    "cabbage_seeds": {
+      "id": "cabbage_seeds",
+      "name": "🥬 Семена капусты",
+      "type": "seed",
+      "value": 4,
+      "description": "Пакетик семян капусты. Даст 2-3 кочана через 2 часа."
+    },
+    "golden_carrot_seeds": {
+      "id": "golden_carrot_seeds",
+      "name": "💎 Семена золотой моркови",
+      "type": "premium_seed",
+      "stars": 5,
+      "grow_time": 3600,
+      "token_min": 5,
+      "token_max": 10,
+      "description": "Редкие семена, дающие золотую морковь. При сборе даёт 5-10 DSTN."
+    },
+    "crystal_potato_seeds": {
+      "id": "crystal_potato_seeds",
+      "name": "💎 Семена кристального картофеля",
+      "type": "premium_seed",
+      "stars": 10,
+      "grow_time": 7200,
+      "token_min": 15,
+      "token_max": 25,
+      "description": "Переливается всеми цветами радуги. 15-25 DSTN за урожай."
+    },
+    "diamond_cabbage_seeds": {
+      "id": "diamond_cabbage_seeds",
+      "name": "💎 Семена алмазной капусты",
+      "type": "premium_seed",
+      "stars": 20,
+      "grow_time": 14400,
+      "token_min": 30,
+      "token_max": 50,
+      "description": "Твёрдая как алмаз, но очень ценная. 30-50 DSTN."
+    },
+    "mithril_pumpkin_seeds": {
+      "id": "mithril_pumpkin_seeds",
+      "name": "💎 Семена мифриловой тыквы",
+      "type": "premium_seed",
+      "stars": 50,
+      "grow_time": 28800,
+      "token_min": 100,
+      "token_max": 150,
+      "description": "Легчайшая тыква в мире. 100-150 DSTN за урожай."
+    },
+    "star_strawberry_seeds": {
+      "id": "star_strawberry_seeds",
+      "name": "💎 Семена звёздной клубники",
+      "type": "premium_seed",
+      "stars": 100,
+      "grow_time": 43200,
+      "token_min": 200,
+      "token_max": 300,
+      "extra_bonus": "10% шанс на двойной урожай",
+      "description": "Светится в темноте. 200-300 DSTN + шанс на бонус."
+    },
+    "sand": {
+      "id": "sand",
+      "name": "🏖️ Песок",
+      "type": "material",
+      "value": 1,
+      "description": "Обычный песок. Нужен для изготовления стекла."
+    },
+    "glass": {
+      "id": "glass",
+      "name": "🪟 Стекло",
+      "type": "material",
+      "value": 5,
+      "description": "Прозрачное стекло. Нужно для окон и теплиц."
+    },
+    "wood": {
+      "id": "wood",
+      "name": "🪵 Древесина",
+      "type": "material",
+      "value": 2,
+      "description": "Обычная древесина для строительства."
+    },
+    "stone": {
+      "id": "stone",
+      "name": "🪨 Камень",
+      "type": "material",
+      "value": 3,
+      "description": "Обычный камень для строительства."
+    },
+    "wolf_skin": {
+      "id": "wolf_skin",
+      "name": "🐺 Волчья шкура",
+      "type": "leather",
+      "rarity": "common",
+      "value": 20
+    },
+    "bear_skin": {
+      "id": "bear_skin",
+      "name": "🐻 Медвежья шкура",
+      "type": "leather",
+      "rarity": "uncommon",
+      "value": 30
+    },
+    "moose_skin": {
+      "id": "moose_skin",
+      "name": "🦌 Лосиная шкура",
+      "type": "leather",
+      "rarity": "uncommon",
+      "value": 25
+    },
+    "beast_fur": {
+      "id": "beast_fur",
+      "name": "❄️ Мех снежного зверя",
+      "type": "leather",
+      "rarity": "rare",
+      "value": 50
+    },
+    "raw_leather": {
+      "id": "raw_leather",
+      "name": "🟫 Сырая шкура",
+      "type": "material",
+      "rarity": "common",
+      "value": 3
+    },
+    "leather": {
+      "id": "leather",
+      "name": "🪢 Выделанная кожа",
+      "type": "material",
+      "rarity": "common",
+      "value": 8
+    },
+    "tanning_solution": {
+      "id": "tanning_solution",
+      "name": "🧪 Дубильный раствор",
+      "type": "consumable",
+      "rarity": "common",
+      "value": 5
+    },
+    "magic_dust": {
+      "id": "magic_dust",
+      "name": "✨ Волшебная пыльца",
+      "type": "material",
+      "rarity": "rare",
+      "value": 30
+    },
+    "wolf_fang": {
+      "id": "wolf_fang",
+      "name": "🐺 Волчий клык",
+      "type": "crafting",
+      "rarity": "uncommon",
+      "value": 15
+    },
+    "wolf_paw": {
+      "id": "wolf_paw",
+      "name": "🐾 Волчья лапа",
+      "type": "crafting",
+      "rarity": "rare",
+      "value": 20
+    },
+    "alpha_fang": {
+      "id": "alpha_fang",
+      "name": "👑 Клык альфы",
+      "type": "crafting",
+      "rarity": "epic",
+      "value": 50
+    },
+    "fire_gem": {
+      "id": "fire_gem",
+      "name": "💎 Раскалённый самоцвет",
+      "type": "gem",
+      "rarity": "rare",
+      "value": 50
+    },
+    "monster_scale": {
+      "id": "monster_scale",
+      "name": "🐟 Чешуя монстра",
+      "type": "crafting",
+      "rarity": "uncommon",
+      "value": 20
+    },
+    "rat_tail": {
+      "id": "rat_tail",
+      "name": "🐀 Крысиный хвост",
+      "type": "crafting",
+      "rarity": "common",
+      "value": 2
+    },
+    "bat_wing": {
+      "id": "bat_wing",
+      "name": "🦇 Крыло летучей мыши",
+      "type": "crafting",
+      "rarity": "common",
+      "value": 3
+    },
+    "spider_silk": {
+      "id": "spider_silk",
+      "name": "🕷️ Паучий шёлк",
+      "type": "crafting",
+      "rarity": "uncommon",
+      "value": 8
+    },
+    "spider_venom": {
+      "id": "spider_venom",
+      "name": "🧪 Паучий яд",
+      "type": "crafting",
+      "rarity": "uncommon",
+      "value": 10
+    },
+    "old_sword": {
+      "id": "old_sword",
+      "name": "⚔️ Древний меч",
+      "type": "weapon",
+      "rarity": "uncommon",
+      "damage": 8,
+      "value": 50
+    },
+    "old_shield": {
+      "id": "old_shield",
+      "name": "🛡️ Древний щит",
+      "type": "armor",
+      "rarity": "uncommon",
+      "defense": 5,
+      "value": 40
+    },
+    "golem_heart": {
+      "id": "golem_heart",
+      "name": "💎 Сердце голема",
+      "type": "gem",
+      "rarity": "epic",
+      "value": 200
+    },
+    "stone_armor": {
+      "id": "stone_armor",
+      "name": "🪨 Каменная броня",
+      "type": "armor",
+      "rarity": "epic",
+      "defense": 15,
+      "value": 150
+    },
+    "golem_fist": {
+      "id": "golem_fist",
+      "name": "👊 Кулак голема",
+      "type": "weapon",
+      "rarity": "epic",
+      "damage": 15,
+      "value": 180
+    },
+    "ancient_relic": {
+      "id": "ancient_relic",
+      "name": "🏺 Древний артефакт",
+      "type": "treasure",
+      "rarity": "epic",
+      "value": 200
+    }
+  },
+  "spells": {
+    "blind": {
+      "id": "blind",
+      "name": "🔮 Ослепление",
+      "magic_cost": 10,
+      "cooldown": 6,
+      "description": "Враг промахивается в следующей атаке."
+    },
+    "fireball": {
+      "id": "fireball",
+      "name": "🔥 Огненный шар",
+      "damage": 30,
+      "magic_cost": 25,
+      "cooldown": 12,
+      "description": "Наносит 30 урона врагу."
+    },
+    "ice_armor": {
+      "id": "ice_armor",
+      "name": "🛡️ Ледяная броня",
+      "defense": 20,
+      "magic_cost": 20,
+      "cooldown": 8,
+      "description": "Увеличивает защиту на 20 в этом бою."
+    },
+    "chain_lightning": {
+      "id": "chain_lightning",
+      "name": "⚡ Цепная молния",
+      "damage": 15,
+      "magic_cost": 30,
+      "cooldown": 24,
+      "description": "Наносит 15 урона всем врагам."
+    },
+    "heal": {
+      "id": "heal",
+      "name": "💫 Исцеление",
+      "heal": 25,
+      "magic_cost": 15,
+      "cooldown": 4,
+      "description": "Восстанавливает 25 здоровья."
+    }
+  },
+  "enemies": {
+    "wolf": {
+      "id": "wolf",
+      "name": "🐺 Голодный волк",
+      "health": 50,
+      "damage": 8,
+      "rewards": {
+        "exp": 50,
+        "gold": 10,
+        "token": 1,
+        "items": ["wolf_meat"]
+      },
+      "drop_chance": {
+        "wolf_meat": 100
+      }
+    },
+    "wild_boar": {
+      "id": "wild_boar",
+      "name": "🐗 Дикий кабан",
+      "health": 80,
+      "damage": 12,
+      "rewards": {
+        "exp": 80,
+        "gold": 15,
+        "token": 2,
+        "items": ["boar_meat"]
+      },
+      "drop_chance": {
+        "boar_meat": 100
+      }
+    },
+    "bear": {
+      "id": "bear",
+      "name": "🐻 Бурый медведь",
+      "health": 150,
+      "damage": 18,
+      "rewards": {
+        "exp": 120,
+        "gold": 30,
+        "token": 5,
+        "items": ["bear_meat"]
+      },
+      "drop_chance": {
+        "bear_meat": 100,
+        "bear_skin": 80
+      }
+    },
+    "moose": {
+      "id": "moose",
+      "name": "🦌 Лось",
+      "health": 120,
+      "damage": 12,
+      "rewards": {
+        "exp": 90,
+        "gold": 20,
+        "token": 3,
+        "items": ["moose_meat"]
+      },
+      "drop_chance": {
+        "moose_meat": 100,
+        "moose_skin": 70
+      }
+    },
+    "fire_elemental": {
+      "id": "fire_elemental",
+      "name": "🔥 Огненный элементаль",
+      "health": 300,
+      "damage": 25,
+      "phases": 2,
+      "rewards": {
+        "exp": 300,
+        "gold": 150,
+        "token": 30,
+        "items": ["fire_gem", "elemental_core", "volcanic_ash"]
+      },
+      "drop_chance": {
+        "fire_gem": 100,
+        "elemental_core": 80,
+        "volcanic_ash": 100
+      }
+    },
+    "lake_monster": {
+      "id": "lake_monster",
+      "name": "🐉 Озёрный монстр",
+      "health": 100,
+      "damage": 10,
+      "rewards": {
+        "exp": 100,
+        "gold": 20,
+        "token": 3,
+        "items": ["monster_scale"]
+      },
+      "drop_chance": {
+        "monster_scale": 80,
+        "fish": 100
+      }
+    },
+    "snow_beast": {
+      "id": "snow_beast",
+      "name": "❄️ Снежный зверь",
+      "health": 200,
+      "damage": 20,
+      "rewards": {
+        "exp": 200,
+        "gold": 60,
+        "token": 12,
+        "items": ["beast_meat"]
+      },
+      "drop_chance": {
+        "beast_meat": 100,
+        "beast_fur": 60
+      }
+    },
+    "giant_rat": {
+      "id": "giant_rat",
+      "name": "🐀 Гигантская крыса",
+      "health": 40,
+      "damage": 6,
+      "rewards": {
+        "exp": 30,
+        "gold": 5,
+        "token": 1,
+        "items": ["rat_tail"]
+      },
+      "drop_chance": {
+        "rat_tail": 80
+      }
+    },
+    "cave_bat": {
+      "id": "cave_bat",
+      "name": "🦇 Пещерная летучая мышь",
+      "health": 35,
+      "damage": 5,
+      "rewards": {
+        "exp": 25,
+        "gold": 4,
+        "token": 1,
+        "items": ["bat_wing"]
+      },
+      "drop_chance": {
+        "bat_wing": 70
+      }
+    },
+    "cave_spider": {
+      "id": "cave_spider",
+      "name": "🕷️ Пещерный паук",
+      "health": 55,
+      "damage": 9,
+      "rewards": {
+        "exp": 40,
+        "gold": 8,
+        "token": 2,
+        "items": ["spider_silk"]
+      },
+      "drop_chance": {
+        "spider_silk": 60,
+        "spider_venom": 40
+      }
+    },
+    "skeleton_warrior": {
+      "id": "skeleton_warrior",
+      "name": "💀 Скелет-воин",
+      "health": 70,
+      "damage": 12,
+      "rewards": {
+        "exp": 60,
+        "gold": 15,
+        "token": 3,
+        "items": ["old_sword"]
+      },
+      "drop_chance": {
+        "old_sword": 20,
+        "old_shield": 20
+      }
+    },
+    "stone_golem": {
+      "id": "stone_golem",
+      "name": "🗿 Каменный голем (Мини-босс)",
+      "health": 250,
+      "damage": 22,
+      "phases": 3,
+      "rewards": {
+        "exp": 300,
+        "gold": 100,
+        "token": 20,
+        "items": ["golem_heart", "stone_armor", "golem_fist"]
+      },
+      "drop_chance": {
+        "golem_heart": 100,
+        "stone_armor": 50,
+        "golem_fist": 30
+      }
+    },
+    "ancient_guardian": {
+      "id": "ancient_guardian",
+      "name": "🗿 Древний страж",
+      "health": 350,
+      "damage": 30,
+      "rewards": {
+        "exp": 400,
+        "gold": 200,
+        "token": 50,
+        "items": ["ancient_key", "guardian_shard"]
+      },
+      "drop_chance": {
+        "ancient_key": 100,
+        "guardian_shard": 80
+      }
+    },
+    "dragon": {
+      "id": "dragon",
+      "name": "🐉 Древний дракон",
+      "health": 1000,
+      "damage": 40,
+      "phases": 4,
+      "rewards": {
+        "exp": 1000,
+        "gold": 500,
+        "token": 200,
+        "items": ["dragon_heart", "dragon_scale", "dragon_blood"]
+      },
+      "drop_chance": {
+        "dragon_heart": 100,
+        "dragon_scale": 100,
+        "dragon_blood": 100
+      }
+    }
+  },
+  "quests": {
+    "kill_wolf": {
+      "id": "kill_wolf",
+      "name": "🐺 Убить волка",
+      "description": "Трактирщик просит прикончить волка в лесу.",
+      "rewards": {
+        "gold": 50,
+        "token": 5
+      }
+    },
+    "catch_carp": {
+      "id": "catch_carp",
+      "name": "🐟 Улов карасей",
+      "description": "Поймай 5 карасей для старого рыбака.",
+      "required_item": "carp",
+      "required_amount": 5,
+      "rewards": {
+        "gold": 30,
+        "exp": 50,
+        "item": "dough"
+      }
+    },
+    "catch_pike": {
+      "id": "catch_pike",
+      "name": "🐟 Хищница",
+      "description": "Поймай щуку. Рыбак хочет сварить уху.",
+      "required_item": "pike",
+      "required_amount": 1,
+      "rewards": {
+        "gold": 50,
+        "exp": 100,
+        "item": "carbon_fishing_rod"
+      }
+    },
+    "catch_golden": {
+      "id": "catch_golden",
+      "name": "✨ Золотая рыбка",
+      "description": "Поймай золотую рыбку. Рыбак хочет загадать желание.",
+      "required_item": "golden_fish",
+      "required_amount": 1,
+      "rewards": {
+        "gold": 200,
+        "exp": 300,
+        "token": 10
+      }
+    }
+  },
+  "daily_rewards": {
+    "day1": {
+      "day": 1,
+      "rewards": {
+        "gold": 50,
+        "token": 5,
+        "energy_refill": 20
+      }
+    },
+    "day2": {
+      "day": 2,
+      "rewards": {
+        "gold": 75,
+        "token": 8,
+        "item": "bread"
+      }
+    },
+    "day3": {
+      "day": 3,
+      "rewards": {
+        "gold": 100,
+        "token": 12,
+        "item": "dough"
+      }
+    },
+    "day4": {
+      "day": 4,
+      "rewards": {
+        "gold": 125,
+        "token": 15,
+        "item": "worm"
+      }
+    },
+    "day5": {
+      "day": 5,
+      "rewards": {
+        "gold": 150,
+        "token": 20,
+        "item": "wooden_fishing_rod"
+      }
+    },
+    "day6": {
+      "day": 6,
+      "rewards": {
+        "gold": 175,
+        "token": 25,
+        "item": "iron_pickaxe"
+      }
+    },
+    "day7": {
+      "day": 7,
+      "rewards": {
+        "gold": 300,
+        "token": 50,
+        "item": "golden_sickle"
+      }
+    }
+  },
+  "daily_quests": {
+    "hunt_wolves": {
+      "id": "hunt_wolves",
+      "name": "🌲 Охота на волков",
+      "description": "Убей 5 волков в лесу",
+      "type": "daily",
+      "reset": 86400,
+      "requirements": {
+        "enemy": "wolf",
+        "count": 5
+      },
+      "rewards": {
+        "gold": 50,
+        "token": 10,
+        "exp": 100
+      }
+    },
+    "catch_fish": {
+      "id": "catch_fish",
+      "name": "🎣 Рыбный день",
+      "description": "Поймай 10 рыб любого вида",
+      "type": "daily",
+      "reset": 86400,
+      "requirements": {
+        "fish": true,
+        "count": 10
+      },
+      "rewards": {
+        "gold": 40,
+        "token": 8,
+        "exp": 80
+      }
+    },
+    "mine_ore": {
+      "id": "mine_ore",
+      "name": "⛏️ Горняк",
+      "description": "Добудь 15 руды в шахте",
+      "type": "daily",
+      "reset": 86400,
+      "requirements": {
+        "ore": true,
+        "count": 15
+      },
+      "rewards": {
+        "gold": 60,
+        "token": 12,
+        "exp": 120
+      }
+    },
+    "defeat_spiders": {
+      "id": "defeat_spiders",
+      "name": "🕷️ Борьба с пауками",
+      "description": "Убей 8 пещерных пауков",
+      "type": "daily",
+      "reset": 86400,
+      "requirements": {
+        "enemy": "cave_spider",
+        "count": 8
+      },
+      "rewards": {
+        "gold": 70,
+        "token": 15,
+        "exp": 150
+      }
+    }
+  },
+  "premium_chests": {
+    "forest": {
+      "name": "🌲 Лесной сундук",
+      "stars": 5,
+      "token_min": 10,
+      "token_max": 20,
+      "items": {
+        "common": ["bread", "worm", "oregano", "basil"],
+        "uncommon": ["dough", "iron_ore", "thyme", "mint"],
+        "rare": ["gold_ore", "forest_berries", "iron_ingot"],
+        "epic": ["ruby", "ancient_coin"]
+      },
+      "chances": {
+        "common": 60,
+        "uncommon": 30,
+        "rare": 8,
+        "epic": 2
+      }
+    },
+    "mountain": {
+      "name": "⛰️ Горный сундук",
+      "stars": 10,
+      "token_min": 20,
+      "token_max": 40,
+      "items": {
+        "common": ["stone_pickaxe", "iron_ore", "copper_ore"],
+        "uncommon": ["iron_pickaxe", "tin_ore", "iron_ingot"],
+        "rare": ["gold_ore", "mithril_ore", "gold_ingot"],
+        "epic": ["sapphire", "diamond", "ancient_coin"]
+      },
+      "chances": {
+        "common": 40,
+        "uncommon": 40,
+        "rare": 15,
+        "epic": 5
+      }
+    },
+    "volcano": {
+      "name": "🌋 Вулканический сундук",
+      "stars": 20,
+      "token_min": 40,
+      "token_max": 80,
+      "items": {
+        "common": ["fire_gem", "gold_ore", "iron_ingot"],
+        "uncommon": ["gold_ingot", "fire_flower", "mithril_ore"],
+        "rare": ["ruby", "emerald", "golem_heart"],
+        "epic": ["ancient_coin", "diamond", "stone_armor"]
+      },
+      "chances": {
+        "common": 30,
+        "uncommon": 40,
+        "rare": 20,
+        "epic": 10
+      }
+    },
+    "lake": {
+      "name": "🌊 Озерный сундук",
+      "stars": 10,
+      "token_min": 20,
+      "token_max": 40,
+      "items": {
+        "common": ["worm", "fish", "carp"],
+        "uncommon": ["perch", "pike", "fishing_rod"],
+        "rare": ["golden_fish", "pearl", "water_essence"],
+        "epic": ["ancient_coin", "diamond", "premium_fishing_rod"]
+      },
+      "chances": {
+        "common": 50,
+        "uncommon": 35,
+        "rare": 12,
+        "epic": 3
+      }
+    },
+    "ancient": {
+      "name": "🏛️ Древний сундук",
+      "stars": 50,
+      "token_min": 100,
+      "token_max": 200,
+      "items": {
+        "common": ["gold_ingot", "mithril_ingot", "ancient_relic"],
+        "uncommon": ["golem_heart", "stone_armor", "golem_fist"],
+        "rare": ["diamond", "emerald", "sapphire"],
+        "epic": ["ancient_coin", "premium_pickaxe", "premium_fishing_rod"]
+      },
+      "chances": {
+        "common": 20,
+        "uncommon": 30,
+        "rare": 30,
+        "epic": 20
+      }
+    },
+    "wisdom": {
+      "name": "📚 Сундук мудрости",
+      "stars": 50,
+      "token_min": 100,
+      "token_max": 200,
+      "items": {
+        "spells": ["blind", "heal", "fireball", "ice_armor", "chain_lightning"],
+        "rare": ["ruby", "sapphire", "emerald"],
+        "epic": ["diamond", "ancient_coin"]
+      },
+      "spell_chance": 30
+    },
+    "strength": {
+      "name": "⚔️ Сундук силы",
+      "stars": 50,
+      "token_min": 100,
+      "token_max": 200,
+      "items": {
+        "weapons": ["old_sword", "golem_fist", "stone_armor"],
+        "rare": ["ruby", "sapphire"],
+        "epic": ["diamond", "ancient_coin"]
+      },
+      "weapon_chance": 40
+    },
+    "luck": {
+      "name": "🍀 Сундук удачи",
+      "stars": 50,
+      "token_min": 150,
+      "token_max": 300,
+      "items": {
+        "rare": ["ruby", "sapphire", "emerald", "diamond"],
+        "epic": ["ancient_coin", "premium_pickaxe", "premium_fishing_rod"]
+      },
+      "double_chance": 10
+    }
+  },
+  "player": {
+    "max_energy": 100,
+    "recovery_per_hour": 10,
+    "max_health": 100,
+    "max_magic": 100,
+    "recovery_magic_per_hour": 5,
+    "base_damage": 1,
+    "start_gold": 20,
+    "start_items": ["rusty_blade"],
+    "start_spells": []
+  }
+}
