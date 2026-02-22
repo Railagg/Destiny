@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destiny - Карта мира</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .map-page {
+            padding: 15px;
+        }
+        
+        .map-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .map-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e94560;
+            margin-bottom: 5px;
+        }
+        
+        .map-subtitle {
+            color: #ccc;
+            font-size: 14px;
+        }
+        
+        .region-section {
+            margin-bottom: 25px;
+        }
+        
+        .region-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e94560;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid rgba(233, 69, 96, 0.3);
+        }
+        
+        .region-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .region-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .region-card:hover {
+            border-color: #e94560;
+            transform: translateY(-2px);
+            background: rgba(233, 69, 96, 0.1);
+        }
+        
+        .region-card.locked {
+            opacity: 0.6;
+            filter: grayscale(0.5);
+        }
+        
+        .region-card.locked:hover {
+            border-color: #666;
+            transform: none;
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .region-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .region-name {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        
+        .region-level {
+            font-size: 12px;
+            color: #ccc;
+        }
+        
+        .region-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #e94560;
+            color: #fff;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        
+        .region-badge.boss {
+            background: #ffd700;
+            color: #000;
+        }
+        
+        .region-current {
+            border: 2px solid #e94560;
+            box-shadow: 0 0 10px rgba(233, 69, 96, 0.3);
+        }
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #ccc;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+        
+        .legend-color.current {
+            background: #e94560;
+        }
+        
+        .legend-color.boss {
+            background: #ffd700;
+        }
+        
+        .legend-color.locked {
+            background: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="main-screen">
+            <div class="top-panel">
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-icon">⚡</span>
+                        <span class="stat-value" id="energy">100/100</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">❤️</span>
+                        <span class="stat-value" id="health">100/100</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">💰</span>
+                        <span class="stat-value" id="gold">20</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">🪙</span>
+                        <span class="stat-value" id="dstn">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-content">
+                <div class="map-page">
+                    <div class="map-header">
+                        <div class="map-title">🗺️ КАРТА МИРА</div>
+                        <div class="map-subtitle">Исследуй неизведанные земли</div>
+                    </div>
+                    
+                    <div class="region-section">
+                        <div class="region-title">🟢 Начальные земли (ур. 1-10)</div>
+                        <div class="region-grid">
+                            <div class="region-card region-current" onclick="goToLocation('start')">
+                                <div class="region-icon">🌲</div>
+                                <div class="region-name">Лесная опушка</div>
+                                <div class="region-level">ур. 1</div>
+                                <div class="region-badge">текущая</div>
+                            </div>
+                            <div class="region-card" onclick="goToLocation('village')">
+                                <div class="region-icon">🏘️</div>
+                                <div class="region-name">Деревенская площадь</div>
+                                <div class="region-level">ур. 1</div>
+                            </div>
+                            <div class="region-card" onclick="goToLocation('lake_shore')">
+                                <div class="region-icon">🏞️</div>
+                                <div class="region-name">Берег озера</div>
+                                <div class="region-level">ур. 3</div>
+                            </div>
+                            <div class="region-card" onclick="goToLocation('deep_forest')">
+                                <div class="region-icon">🌳</div>
+                                <div class="region-name">Глухой лес</div>
+                                <div class="region-level">ур. 5</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="region-section">
+                        <div class="region-title">⛰️ Горные районы (ур. 10-25)</div>
+                        <div class="region-grid">
+                            <div class="region-card" onclick="goToLocation('mountain_path')">
+                                <div class="region-icon">⛰️</div>
+                                <div class="region-name">Горная тропа</div>
+                                <div class="region-level">ур. 10</div>
+                            </div>
+                            <div class="region-card" onclick="goToLocation('mine_entrance')">
+                                <div class="region-icon">⛏️</div>
+                                <div class="region-name">Вход в шахту</div>
+                                <div class="region-level">ур. 15</div>
+                            </div>
+                            <div class="region-card" onclick="goToLocation('mine_level3')">
+                                <div class="region-icon">⛏️</div>
+                                <div class="region-name">Шахта (3 ур)</div>
+                                <div class="region-level">ур. 20</div>
+                            </div>
+                            <div class="region-card" onclick="goToLocation('ancient_ruins')">
+                                <div class="region-icon">🏛️</div>
+                                <div class="region-name">Древние руины</div>
+                                <div class="region-level">ур. 25</div>
+                                <div class="region-badge boss">босс</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="region-section">
+                        <div class="region-title">🔥 Опасные земли (ур. 30-45)</div>
+                        <div class="region-grid">
+                            <div class="region-card" onclick="goToLocation('desert')">
+                                <div class="region-icon">🏜️</div>
+                                <div class="region-name">Пустыня забвения</div>
+                                <div class="region-level">ур. 30</div>
+                                <div class="region-badge boss">босс</div>
+                            </div>
+                            <div class="region-card" onclick="goToLocation('swamp')">
+                                <div class="region-icon">🌿</div>
+                                <div class="region-name">Болото туманов</div>
+                                <div class="region-level">ур. 35</div>
+                                <div class="region-badge boss">босс</div>
+                            </div>
+                            <div class="region-card" onclick="goToLocation('ice_plains')">
+                                <div class="region-icon">❄️</div>
+                                <div class="region-name">Ледяные равнины</div>
+                                <div class="region-level">ур. 40</div>
+                                <div class="region-badge boss">босс</div>
+                            </div>
+                            <div class="region-card" onclick="goToLocation('volcano_crater')">
+                                <div class="region-icon">🌋</div>
+                                <div class="region-name">Жерло вулкана</div>
+                                <div class="region-level">ур. 45</div>
+                                <div class="region-badge boss">босс</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="region-section">
+                        <div class="region-title">✨ Легендарные острова (ур. 50+)</div>
+                        <div class="region-grid">
+                            <div class="region-card locked" onclick="showLocked('volcanic_island')">
+                                <div class="region-icon">🌋</div>
+                                <div class="region-name">Огненный остров</div>
+                                <div class="region-level">ур. 50</div>
+                                <div class="region-badge">3 осколка</div>
+                            </div>
+                            <div class="region-card locked" onclick="showLocked('crystal_island')">
+                                <div class="region-icon">💎</div>
+                                <div class="region-name">Кристальный остров</div>
+                                <div class="region-level">ур. 55</div>
+                                <div class="region-badge">1 камень</div>
+                            </div>
+                            <div class="region-card locked" onclick="showLocked('dragon_island')">
+                                <div class="region-icon">🐉</div>
+                                <div class="region-name">Остров драконов</div>
+                                <div class="region-level">ур. 60</div>
+                                <div class="region-badge">5 камней</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-color current"></div>
+                            <span>Текущая локация</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color boss"></div>
+                            <span>Босс</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color locked"></div>
+                            <span>Закрыто</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-menu">
+                <button class="menu-btn" data-page="game">
+                    <span class="menu-icon">🎮</span>
+                    <span class="menu-text">Игра</span>
+                </button>
+                <button class="menu-btn active" data-page="map">
+                    <span class="menu-icon">🗺️</span>
+                    <span class="menu-text">Карта</span>
+                </button>
+                <button class="menu-btn" data-page="inventory">
+                    <span class="menu-icon">🎒</span>
+                    <span class="menu-text">Инвентарь</span>
+                </button>
+                <button class="menu-btn" data-page="profile">
+                    <span class="menu-icon">👤</span>
+                    <span class="menu-text">Профиль</span>
+                </button>
+                <button class="menu-btn" data-page="shop">
+                    <span class="menu-icon">🏪</span>
+                    <span class="menu-text">Магазин</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goToLocation(locationId) {
+            // Здесь будет переход на страницу локации
+            window.location.href = `../index.html?location=${locationId}`;
+        }
+        
+        function showLocked(locationId) {
+            alert('Эта локация пока недоступна. Требуются радужные осколки/камни.');
+        }
+    </script>
+    <script src="../script.js"></script>
+</body>
+</html>
