@@ -1,0 +1,156 @@
+{
+  "exchange": {
+    "name": "💱 DESTINY EXCHANGE",
+    "description": "Обмен TON на токены DESTINY и обратно",
+    "supported_pairs": ["TON/DSTN", "DSTN/TON"],
+    
+    "rates": {
+      "ton_to_dstn": {
+        "base_rate": 2500,
+        "formula": "ton_amount * base_rate",
+        "min_amount": 0.1,
+        "max_amount": 100,
+        "fee": 0
+      },
+      "dstn_to_ton": {
+        "base_rate": 2500,
+        "formula": "dstn_amount / base_rate",
+        "min_amount": 1000,
+        "max_amount": 1000000,
+        "fee": 5
+      }
+    },
+    
+    "bonus_rates": {
+      "first_monthly": {
+        "name": "Первый обмен в месяце",
+        "ton_to_dstn": 2600,
+        "fee": 0,
+        "reset": "monthly"
+      },
+      "premium_7days": {
+        "name": "Премиум 7 дней",
+        "ton_to_dstn": 2550,
+        "dstn_to_ton": 2400,
+        "fee_reduction": 50
+      },
+      "premium_28days": {
+        "name": "Премиум 28 дней",
+        "ton_to_dstn": 2600,
+        "dstn_to_ton": 2450,
+        "fee_reduction": 75
+      },
+      "premium_90days": {
+        "name": "Премиум 90 дней",
+        "ton_to_dstn": 2650,
+        "dstn_to_ton": 2500,
+        "fee_reduction": 90
+      },
+      "premium_180days": {
+        "name": "Премиум 180 дней",
+        "ton_to_dstn": 2700,
+        "dstn_to_ton": 2550,
+        "fee_free": true
+      },
+      "premium_365days": {
+        "name": "Премиум 365 дней",
+        "ton_to_dstn": 2800,
+        "dstn_to_ton": 2650,
+        "fee_free": true,
+        "priority": true
+      }
+    },
+    
+    "holder_bonuses": {
+      "bronze": {
+        "requirement": 1000,
+        "name": "Бронзовый холдер",
+        "ton_to_dstn": 2550,
+        "fee_discount": 20
+      },
+      "silver": {
+        "requirement": 5000,
+        "name": "Серебряный холдер",
+        "ton_to_dstn": 2600,
+        "fee_discount": 40
+      },
+      "gold": {
+        "requirement": 10000,
+        "name": "Золотой холдер",
+        "ton_to_dstn": 2650,
+        "fee_discount": 60
+      },
+      "platinum": {
+        "requirement": 50000,
+        "name": "Платиновый холдер",
+        "ton_to_dstn": 2700,
+        "fee_discount": 80
+      },
+      "diamond": {
+        "requirement": 100000,
+        "name": "Алмазный холдер",
+        "ton_to_dstn": 2750,
+        "fee_discount": 90
+      },
+      "legend": {
+        "requirement": 500000,
+        "name": "Легендарный холдер",
+        "ton_to_dstn": 2850,
+        "fee_free": true
+      },
+      "god": {
+        "requirement": 1000000,
+        "name": "Божественный холдер",
+        "ton_to_dstn": 3000,
+        "fee_free": true,
+        "priority": true
+      }
+    },
+    
+    "limits": {
+      "daily": {
+        "ton": 100,
+        "dstn": 250000
+      },
+      "weekly": {
+        "ton": 500,
+        "dstn": 1250000
+      },
+      "monthly": {
+        "ton": 2000,
+        "dstn": 5000000
+      }
+    },
+    
+    "fees": {
+      "base_fee": 5,
+      "fee_distribution": {
+        "burn": 40,
+        "treasury": 30,
+        "liquidity": 20,
+        "staking_rewards": 10
+      }
+    },
+    
+    "liquidity_pool": {
+      "total_liquidity": 0,
+      "ton_reserve": 0,
+      "dstn_reserve": 0,
+      "min_liquidity_ratio": 0.8,
+      "max_liquidity_ratio": 1.2
+    },
+    
+    "transaction_history": {
+      "max_entries": 100,
+      "storage_days": 30
+    },
+    
+    "commands": {
+      "/exchange": "Показать курс обмена",
+      "/exchange ton 10": "Обменять 10 TON на DSTN",
+      "/exchange dstn 10000": "Обменять 10000 DSTN на TON",
+      "/exchange history": "История обменов",
+      "/exchange limits": "Мои лимиты"
+    }
+  }
+}
