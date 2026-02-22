@@ -13,22 +13,53 @@ from models import User, Character
 # Импортируем все обработчики
 from handlers import start, game, pets, exchange, rainbow, premium, nft, guild, pvp, codex, events, shop, top, admin
 
-# Создаем таблицы в базе данных
-Base.metadata.create_all(bind=engine)
+print("🚀 Запуск бота Destiny...")
+print("=" * 50)
 
-# Токен бота из переменных окружения
+# ============================================
+# ПОДКЛЮЧЕНИЕ К БАЗЕ ДАННЫХ
+# ============================================
+try:
+    # Создаем таблицы в базе данных
+    Base.metadata.create_all(bind=engine)
+    print("✅ База данных подключена")
+except Exception as e:
+    print(f"❌ Ошибка подключения к БД: {e}")
+
+# ============================================
+# ТОКЕН БОТА
+# ============================================
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 if not BOT_TOKEN:
     print("❌ ОШИБКА: BOT_TOKEN не задан!")
+    print("👉 Добавь переменную окружения BOT_TOKEN в настройках Render")
     exit(1)
 
-bot = telebot.TeleBot(BOT_TOKEN)
+print(f"✅ BOT_TOKEN получен (первые 10 символов: {BOT_TOKEN[:10]}...)")
+
+# ============================================
+# СОЗДАНИЕ БОТА И ПРОВЕРКА ТОКЕНА
+# ============================================
+try:
+    bot = telebot.TeleBot(BOT_TOKEN)
+    print("✅ Экземпляр бота создан")
+    
+    # Проверяем, что токен рабочий
+    me = bot.get_me()
+    print(f"✅ Бот авторизован как: @{me.username} (ID: {me.id})")
+    print(f"📝 Имя бота: {me.first_name}")
+except Exception as e:
+    print(f"❌ Ошибка авторизации бота: {e}")
+    print("👉 Проверь, что BOT_TOKEN правильный и бот существует")
+    print("👉 Токен должен выглядеть так: 1234567890:ABCdefGHIjklMNOpqrSTUvwxYZ")
+    exit(1)
 
 # ============================================
 # ЗАГРУЗКА ДАННЫХ ИЗ JSON
 # ============================================
 
 DATA_DIR = Path(__file__).parent.parent / "data"
+print(f"📁 Путь к данным: {DATA_DIR}")
 
 def load_json(filename):
     """Загрузить JSON файл из папки data"""
@@ -38,6 +69,12 @@ def load_json(filename):
             data = json.load(f)
             print(f"✅ Загружен {filename}")
             return data
+    except FileNotFoundError:
+        print(f"⚠️ Файл не найден: {filename}")
+        return {}
+    except json.JSONDecodeError as e:
+        print(f"❌ Ошибка в JSON файле {filename}: {e}")
+        return {}
     except Exception as e:
         print(f"❌ Ошибка загрузки {filename}: {e}")
         return {}
@@ -87,6 +124,7 @@ def get_or_create_player(telegram_id, username=None, first_name=None):
         db.add(character)
         db.commit()
         db.refresh(character)
+        print(f"👤 Создан новый пользователь: {telegram_id}")
     else:
         character = db.query(Character).filter(Character.user_id == user.id).first()
         user.last_active = datetime.utcnow()
@@ -254,6 +292,8 @@ def get_daily_reward(streak):
 #         reply_markup=markup,
 #         parse_mode='Markdown'
 #     )
+
+print("📝 Регистрация обработчиков команд...")
 
 # ============================================
 # КОМАНДА /profile
@@ -706,6 +746,8 @@ def handle_callback(call):
         print(f"❌ Ошибка в handle_callback: {e}")
         bot.answer_callback_query(call.id, "⚠️ Произошла ошибка")
 
+print("✅ Обработчики команд зарегистрированы")
+
 # ============================================
 # HTTP СЕРВЕР ДЛЯ RENDER
 # ============================================
@@ -741,17 +783,12 @@ health_thread.start()
 # ЗАПУСК БОТА
 # ============================================
 
-print("=" * 40)
-print("🤖 Destiny Bot v2.0")
-print("=" * 40)
-print("✅ JSON файлы загружены")
-print("✅ База данных подключена")
-print("✅ Health server запущен")
-print("✅ Все команды загружены:")
-print("   /start, /profile, /status, /inventory, /location, /map")
-print("   /class, /craft, /house, /pets, /exchange, /rainbow")
-print("   /premium, /nft, /guild, /pvp, /codex, /events, /shop, /top")
-print("=" * 40)
+print("=" * 50)
+print("🤖 Destiny Bot v2.0 - ГОТОВ К РАБОТЕ")
+print("=" * 50)
+print("✅ Все системы запущены")
+print("🟢 Ожидание команд от пользователей...")
+print("=" * 50)
 
 if __name__ == "__main__":
     try:
