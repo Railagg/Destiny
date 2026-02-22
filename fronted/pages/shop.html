@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destiny - Магазин</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .shop-page {
+            padding: 15px;
+        }
+        
+        .shop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .shop-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e94560;
+        }
+        
+        .balance {
+            background: rgba(233, 69, 96, 0.1);
+            border: 1px solid #e94560;
+            border-radius: 20px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .balance-icon {
+            font-size: 18px;
+        }
+        
+        .balance-value {
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .shop-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        
+        .tab-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .tab-btn:hover {
+            background: rgba(233, 69, 96, 0.1);
+            border-color: #e94560;
+        }
+        
+        .tab-btn.active {
+            background: #e94560;
+            border-color: #e94560;
+        }
+        
+        .shop-section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e94560;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid rgba(233, 69, 96, 0.3);
+        }
+        
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .shop-item-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .shop-item-card:hover {
+            border-color: #e94560;
+            transform: translateY(-3px);
+            background: rgba(233, 69, 96, 0.1);
+            box-shadow: 0 5px 15px rgba(233, 69, 96, 0.2);
+        }
+        
+        .shop-item-card.premium {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.05);
+        }
+        
+        .shop-item-card.premium:hover {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .item-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e94560;
+            color: #fff;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+        
+        .item-badge.premium {
+            background: #ffd700;
+            color: #000;
+        }
+        
+        .item-badge.sale {
+            background: #4CAF50;
+        }
+        
+        .item-icon {
+            font-size: 40px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .item-name {
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        
+        .item-description {
+            color: #ccc;
+            font-size: 12px;
+            text-align: center;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        
+        .item-prices {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .price-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+        
+        .price-icon {
+            font-size: 16px;
+        }
+        
+        .price-value {
+            font-weight: bold;
+        }
+        
+        .price-value.stars {
+            color: #ffd700;
+        }
+        
+        .price-value.ton {
+            color: #0088cc;
+        }
+        
+        .price-value.dstn {
+            color: #e94560;
+        }
+        
+        .price-value.gold {
+            color: #ffd700;
+        }
+        
+        .price-old {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+        
+        .item-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+            margin-top: 10px;
+            font-size: 11px;
+            color: #ccc;
+        }
+        
+        .stat-tag {
+            background: rgba(255,255,255,0.1);
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+        
+        .buy-btn {
+            width: 100%;
+            background: #e94560;
+            border: none;
+            color: #fff;
+            padding: 10px;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .buy-btn:hover {
+            background: #d13e56;
+            transform: scale(1.02);
+        }
+        
+        .buy-btn.premium {
+            background: #ffd700;
+            color: #000;
+        }
+        
+        .buy-btn.premium:hover {
+            background: #e6c200;
+        }
+        
+        .currency-info {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+        }
+        
+        .currency-item {
+            text-align: center;
+        }
+        
+        .currency-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .currency-name {
+            font-size: 12px;
+            color: #ccc;
+            margin-bottom: 3px;
+        }
+        
+        .currency-rate {
+            font-size: 11px;
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="main-screen">
+            <div class="top-panel">
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-icon">⚡</span>
+                        <span class="stat-value" id="energy">100/100</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">❤️</span>
+                        <span class="stat-value" id="health">100/100</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">💰</span>
+                        <span class="stat-value" id="gold">1250</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">🪙</span>
+                        <span class="stat-value" id="dstn">350</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-content">
+                <div class="shop-page">
+                    <div class="shop-header">
+                        <div class="shop-title">🏪 МАГАЗИН</div>
+                        <div class="balance">
+                            <span class="balance-icon">⭐</span>
+                            <span class="balance-value">120</span>
+                        </div>
+                    </div>
+                    
+                    <div class="shop-tabs">
+                        <button class="tab-btn active" data-tab="all">Все</button>
+                        <button class="tab-btn" data-tab="weapons">⚔️ Оружие</button>
+                        <button class="tab-btn" data-tab="armor">🛡️ Броня</button>
+                        <button class="tab-btn" data-tab="tools">🛠️ Инструменты</button>
+                        <button class="tab-btn" data-tab="consumables">🧪 Зелья</button>
+                        <button class="tab-btn" data-tab="bait">🪱 Наживки</button>
+                        <button class="tab-btn" data-tab="chests">🎁 Сундуки</button>
+                        <button class="tab-btn" data-tab="premium">👑 Премиум</button>
+                    </div>
+                    
+                    <!-- Обычный магазин -->
+                    <div class="shop-section" id="regularShop">
+                        <div class="section-title">⚔️ ОРУЖИЕ</div>
+                        <div class="items-grid">
+                            <div class="shop-item-card" onclick="buyItem('copper_sword')">
+                                <div class="item-icon">⚔️</div>
+                                <div class="item-name">Медный меч</div>
+                                <div class="item-description">Обычный медный меч. Лёгкий и удобный.</div>
+                                <div class="item-prices">
+                                    <div class="price-row">
+                                        <span class="price-icon">💰</span>
+                                        <span class="price-value gold">20</span>
+                                    </div>
+                                </div>
+                                <div class="item-stats">
+                                    <span class="stat-tag">⚔️ +5 урон</span>
+                                    <span class="stat-tag">⚡ ур. 3</span>
+                                </div>
+                            </div>
+                            
+                            <div class="shop-item-card" onclick="buyItem('iron_sword')">
+                                <div class="item-icon">⚔️</div>
+                                <div class="item-name">Железный меч</div>
+                                <div class="item-description">Качественный железный меч. Острый и надёжный.</div>
+                                <div class="item-prices">
+                                    <div class="price-row">
+                                        <span class="price-icon">💰</span>
+                                        <span class="price-value gold">60</span>
+                                    </div>
+                                </div>
+                                <div class="item-stats">
+                                    <span class="stat-tag">⚔️ +10 урон</span>
+                                    <span class="stat-tag">⚡ ур. 8</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="section-title" style="margin-top:20px;">🛡️ БРОНЯ</div>
+                        <div class="items-grid">
+                            <div class="shop-item-card" onclick="buyItem('leather_armor')">
+                                <div class="item-icon">🛡️</div>
+                                <div class="item-name">Кожаная броня</div>
+                                <div class="item-description">Лёгкая кожаная броня. Не сковывает движений.</div>
+                                <div class="item-prices">
+                                    <div class="price-row">
+                                        <span class="price-icon">💰</span>
+                                        <span class="price-value gold">25</span>
+                                    </div>
+                                </div>
+                                <div class="item-stats">
+                                    <span class="stat-tag">🛡️ +5 защиты</span>
+                                    <span class="stat-tag">❤️ +15 HP</span>
+                                </div>
+                            </div>
+                            
+                            <div class="shop-item-card" onclick="buyItem('iron_armor')">
+                                <div class="item-icon">🛡️</div>
+                                <div class="item-name">Железная броня</div>
+                                <div class="item-description">Надёжная железная броня.</div>
+                                <div class="item-prices">
+                                    <div class="price-row">
+                                        <span class="price-icon">💰</span>
+                                        <span class="price-value gold">80</span>
+                                    </div>
+                                </div>
+                                <div class="item-stats">
+                                    <span class="stat-tag">🛡️ +12 защиты</span>
+                                    <span class="stat-tag">❤️ +25 HP</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="section-title" style="margin-top:20px;">🛠️ ИНСТРУМЕНТЫ</div>
+                        <div class="items-grid">
+                            <div class="shop-item-card" onclick="buyItem('iron_pickaxe')">
+                                <div class="item-icon">⛏️</div>
+                                <div class="item-name">Железная кирка</div>
+                                <div class="item-description">Прочная кирка для добычи руды.</div>
+                                <div class="item-prices">
+                                    <div class="price-row">
+                                        <span class="price-icon">💰</span>
+                                        <span class="price-value gold">100</span>
+                                    </div>
+                                </div>
+                                <div class="item-stats">
+                                    <span class="stat-tag">⚡ пр. 150</span>
+                                </div>
+                            </div>
+                            
+                            <div class="shop-item-card" onclick="buyItem('carbon_fishing_rod')">
+                                <div class="item-icon">🎣</div>
+                                <div class="item-name">Удочка Буревестника</div>
+                                <div class="item-description">+10% к редкой рыбе, +1 рыба.</div>
+                                <div class="item-prices">
+                                    <div class="price-row">
+                                        <span class="price-icon">💰</span>
+                                        <span class="price-value gold">150</span>
+                                    </div>
+                                </div>
+                                <div class="item-stats">
+                                    <span class="stat-tag">⚡ пр. 120</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="section-title" style="margin-top:20px;">🧪 ЗЕЛЬЯ</div>
+                        <div class="items-grid">
+                            <div class="shop-item-card" onclick="buyItem('health_potion')">
+                                <div class="item-icon">🧪</div>
+                                <div class="item-name">Зелье здоровья</div>
+                                <div class="item-description">Восстанавливает 50 здоровья.</div>
+                                <div class="item-prices">
+                                    <div class="price-row">
+                                        <span class="price-icon">💰</span>
+                                        <span class="price-value gold">10</span>
+                                    </div>
+                                </div>
+                                <div class="item-stats">
+                                    <span class="stat-tag">❤️ +50</span>
+                                </div>
+                            </div>
+                            
+                            <div class="shop-item-card" onclick="buyItem('mana_potion')">
+                                <div class="item-icon">🔮</div>
+                                <div class="item-name">Зелье маны</div>
+                                <div class="item-description">Восстанавливает 50 маны.</div>
+                                <div class="item-prices">
+                                    <div class="price-row">
+                                        <span class="price-icon">💰</span>
+                                        <span class="price-value gold">10</span>
+                                    </div>
+                                </div>
+                                <div class="item-stats">
+                                    <span class="stat-tag">🔮 +50</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="section-title" style="margin-top:20px;">🪱 НАЖИВКИ</div>
+                        <div class="items-grid">
+                            <div class="shop-item-card" onclick="buyItem('worm')">
+                                <div class="item-icon">🪱</div>
+                                <div class="item-name">Червяк</div>
+                                <div class="item-description">Обычный червяк. Сила 5.</div>
+                                <div class="item-prices">
+                                    <div class="price-row">
+                                        <span class="price-icon">💰</span>
+                                        <span class="price-value gold">1</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="shop-item-card" onclick="buyItem('maggot')">
+                                <div class="item-icon">🐛</div>
+                                <div class="item-name">Опарыш</div>
+                                <div class="item-description">+5% к редкой рыбе.</div>
+                                <div class="item-prices">
+                                    <div class="price-row">
+                                        <span class="price-icon">💰</span>
+                                        <span class="price-value gold">5</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Премиум магазин -->
+                    <div class="shop-section" id="premiumShop" style="display:none;">
+                        <div class="section-title">👑 ПРЕМИУМ ТОВАРЫ</div>
+                        <div class="items-grid">
+                            <div class="shop-item-card premium" onclick="buyPremium('energy_refill')">
+                                <span class="item-badge premium">⭐</span>
+                                <div class="item-icon">⚡</div>
+                                <div class="item-name">Восполнение энергии</div>
+                                <div class="item-description">+100 энергии мгновенно</div>
+                                <div class="item-prices">
+                                    <div class="price-row">
+                                        <span class="price-icon">⭐</span>
+                                        <span class="price-value stars">10</span>
+                                    </div>
+                                    <div class="price-row">
+                                        <span class="price-icon">💎</span>
+                                        <span class="price-value dstn">500</span>
+                                    </div>
+                                </div>
+                                <div class="item-stats">
+                                    <span class="stat-tag">ежедневно</span>
+                                </div>
+                            </div>
+                            
+                            <div class="shop-item-card premium" onclick="buyPremium('legendary_chest')">
+                                <span class="item-badge premium">⭐</span>
+                                <div class="item-icon">🎁</div>
+                                <div class="item-name">Легендарный сундук</div>
+                                <div class="item-description">Шанс на легендарные предметы</div>
+                                <div class="item-prices">
+                                    <div class="price-row">
+                                        <span class="price-icon">⭐</span>
+                                        <span class="price-value stars">50</span>
+                                    </div>
+                                    <div class="price-row">
+                                        <span class="price-icon">💎</span>
+                                        <span class="price-value dstn">2500</span>
+                                    </div>
+                                </div>
+                                <div class="item-stats">
+                                    <span class="stat-tag">еженедельно</span>
+                                </div>
+                            </div>
+                            
+                            <div class="shop-item-card premium" onclick="buyPremium('rainbow_shard_pack')">
+                                <span class="item-badge premium">⭐</span>
+                                <div class="item-icon">🌈</div>
+                                <div class="item-name">5 радужных осколков</div>
+                                <div class="item-description">Набор для крафта</div>
+                                <div class="item-prices">
+                                    <div class="price-row">
+                                        <span class="price-icon">⭐</span>
+                                        <span class="price-value stars">300</span>
+                                    </div>
+                                    <div class="price-row">
+                                        <span class="price-icon">💎</span>
+                                        <span class="price-value dstn">30000</span>
+                                    </div>
+                                </div>
+                                <div class="item-stats">
+                                    <span class="stat-tag">2/месяц</span>
+                                </div>
+                            </div>
+                            
+                            <div class="shop-item-card premium" onclick="buyPremium('rainbow_stone')">
+                                <span class="item-badge premium">⭐</span>
+                                <div class="item-icon">💎</div>
+                                <div class="item-name">Радужный камень</div>
+                                <div class="item-description">Легендарный материал</div>
+                                <div class="item-prices">
+                                    <div class="price-row">
+                                        <span class="price-icon">⭐</span>
+                                        <span class="price-value stars">500</span>
+                                    </div>
+                                    <div class="price-row">
+                                        <span class="price-icon">💎</span>
+                                        <span class="price-value dstn">50000</span>
+                                    </div>
+                                </div>
+                                <div class="item-stats">
+                                    <span class="stat-tag">1/месяц</span>
+                                </div>
+                            </div>
+                            
+                            <div class="shop-item-card premium" onclick="buyPremium('golden_grub')">
+                                <span class="item-badge premium">⭐</span>
+                                <div class="item-icon">✨</div>
+                                <div class="item-name">Золотой опарыш (3 шт)</div>
+                                <div class="item-description">+50% к редкой рыбе</div>
+                                <div class="item-prices">
+                                    <div class="price-row">
+                                        <span class="price-icon">⭐</span>
+                                        <span class="price-value stars">5</span>
+                                    </div>
+                                </div>
+                                <div class="item-stats">
+                                    <span class="stat-tag">ежедневно</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Информация о валютах -->
+                    <div class="currency-info">
+                        <div class="currency-item">
+                            <div class="currency-icon">⭐</div>
+                            <div class="currency-name">Telegram Stars</div>
+                            <div class="currency-rate">1⭐ = 100 DSTN</div>
+                        </div>
+                        <div class="currency-item">
+                            <div class="currency-icon">💎</div>
+                            <div class="currency-name">DSTN</div>
+                            <div class="currency-rate">1 DSTN = 10💰</div>
+                        </div>
+                        <div class="currency-item">
+                            <div class="currency-icon">💰</div>
+                            <div class="currency-name">Золото</div>
+                            <div class="currency-rate">игровая валюта</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-menu">
+                <button class="menu-btn" data-page="game">
+                    <span class="menu-icon">🎮</span>
+                    <span class="menu-text">Игра</span>
+                </button>
+                <button class="menu-btn" data-page="map">
+                    <span class="menu-icon">🗺️</span>
+                    <span class="menu-text">Карта</span>
+                </button>
+                <button class="menu-btn" data-page="inventory">
+                    <span class="menu-icon">🎒</span>
+                    <span class="menu-text">Инвентарь</span>
+                </button>
+                <button class="menu-btn" data-page="profile">
+                    <span class="menu-icon">👤</span>
+                    <span class="menu-text">Профиль</span>
+                </button>
+                <button class="menu-btn active" data-page="shop">
+                    <span class="menu-icon">🏪</span>
+                    <span class="menu-text">Магазин</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function buyItem(itemId) {
+            alert(`🛒 Покупка: ${itemId}\nФункция покупки будет доступна после интеграции с API.`);
+        }
+        
+        function buyPremium(itemId) {
+            alert(`👑 Премиум покупка: ${itemId}\nФункция покупки будет доступна после интеграции с TON Connect.`);
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Переключение табов
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    if (btn.dataset.tab === 'premium') {
+                        document.getElementById('regularShop').style.display = 'none';
+                        document.getElementById('premiumShop').style.display = 'block';
+                    } else {
+                        document.getElementById('regularShop').style.display = 'block';
+                        document.getElementById('premiumShop').style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+    <script src="../script.js"></script>
+</body>
+</html>
