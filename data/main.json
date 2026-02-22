@@ -1,8 +1,8 @@
 {
   "game": {
     "name": "Destiny",
-    "version": "2.0.0",
-    "description": "MMORPG в Telegram с элементами LitRPG, крафтом, питомцами и NFT",
+    "version": "2.1.0",
+    "description": "MMORPG в Telegram с элементами LitRPG, крафтом, питомцами, NFT и встроенным обменником TON",
     "developer": "Railagg",
     "website": "https://destiny-1-6m57.onrender.com"
   },
@@ -25,12 +25,14 @@
     "currency": {
       "gold": "игровая валюта",
       "dstn": "токен Destiny на TON",
-      "stars": "Telegram Stars"
+      "stars": "Telegram Stars",
+      "ton": "TON cryptocurrency"
     },
     "exchange_rates": {
       "dstn_to_gold": 10,
       "stars_to_dstn": 100,
-      "stars_to_gold": 1000
+      "stars_to_gold": 1000,
+      "ton_to_dstn": 2500
     },
     "daily_login": {
       "day1": {"gold": 100, "dstn": 5, "items": ["health_potion"]},
@@ -119,8 +121,9 @@
   
   "premium": {
     "plans": ["7days", "28days", "90days", "180days", "365days"],
-    "first_purchase_discount": 50,
-    "max_discounted_duration": 59
+    "first_purchase_discount_stars": 50,
+    "first_purchase_discount_ton": 25,
+    "ton_regular_discount": 10
   },
   
   "pets": {
@@ -146,8 +149,7 @@
   "guild": {
     "max_level": 5,
     "members_per_level": [10, 20, 30, 40, 50],
-    "create_cost": {"gold": 5000, "dstn": 500},
-    "buildings": ["guild_hall", "guild_shop", "guild_arena", "guild_altar"]
+    "create_cost": {"gold": 5000, "dstn": 500}
   },
   
   "pvp": {
@@ -180,6 +182,14 @@
     "legendary_islands": {"level_range": [50, 70], "danger": "legendary"}
   },
   
+  "exchange": {
+    "enabled": true,
+    "provider": "TON Connect",
+    "dex_integration": "STON.fi API",
+    "wallet_required": true,
+    "min_version": "2.0"
+  },
+  
   "data_includes": [
     "locations.json",
     "enemies.json",
@@ -195,12 +205,15 @@
     "codex.json",
     "biomes.json",
     "pets.json",
-    "secrets.json"
+    "secrets.json",
+    "exchange.json"
   ],
   
+  "version": "2.1.0",
   "version_history": {
     "1.0.0": "Базовый релиз",
-    "2.0.0": "Полное обновление: новые биомы, питомцы, NFT, радужные камни"
+    "2.0.0": "Новые биомы, питомцы, NFT, радужные камни",
+    "2.1.0": "TON интеграция, обменник, скидки за TON"
   },
   
   "credits": {
