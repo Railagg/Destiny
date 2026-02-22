@@ -708,6 +708,7 @@ def handle_callback(call):
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import threading
+import os  # <--- ВАЖНО: добавить этот импорт!
 
 class HealthHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -721,8 +722,13 @@ class HealthHandler(BaseHTTPRequestHandler):
 
 def run_health_server():
     try:
-        server = HTTPServer(('0.0.0.0', 10000), HealthHandler)
-        print(f"✅ Health server running on port 10000")
+        # БЕРЁМ ПОРТ ИЗ ПЕРЕМЕННОЙ ОКРУЖЕНИЯ RENDER
+        port = int(os.getenv("PORT", 10000))
+        
+        # СОЗДАЁМ СЕРВЕР НА ВСЕХ ИНТЕРФЕЙСАХ
+        server = HTTPServer(('0.0.0.0', port), HealthHandler)
+        
+        print(f"✅ Health server running on port {port}")
         server.serve_forever()
     except Exception as e:
         print(f"❌ Health server error: {e}")
@@ -730,7 +736,6 @@ def run_health_server():
 # Запускаем health-сервер в отдельном потоке
 health_thread = threading.Thread(target=run_health_server, daemon=True)
 health_thread.start()
-
 # ============================================
 # ЗАПУСК БОТА
 # ============================================
