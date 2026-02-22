@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destiny - Инвентарь</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .inventory-page {
+            padding: 15px;
+        }
+        
+        .inventory-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .inventory-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #e94560;
+        }
+        
+        .inventory-stats {
+            background: rgba(233, 69, 96, 0.1);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            border: 1px solid rgba(233, 69, 96, 0.3);
+        }
+        
+        .inventory-categories {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        
+        .category-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .category-btn:hover {
+            background: rgba(233, 69, 96, 0.1);
+            border-color: #e94560;
+        }
+        
+        .category-btn.active {
+            background: #e94560;
+            border-color: #e94560;
+        }
+        
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .item-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .item-card:hover {
+            border-color: #e94560;
+            transform: translateY(-2px);
+            background: rgba(233, 69, 96, 0.1);
+        }
+        
+        .item-card.equipped {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .item-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        
+        .item-name {
+            font-weight: bold;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+        
+        .item-rarity {
+            font-size: 10px;
+            text-align: center;
+            padding: 2px 6px;
+            border-radius: 10px;
+            display: inline-block;
+            margin: 0 auto 5px;
+            width: fit-content;
+        }
+        
+        .rarity-common { background: #808080; }
+        .rarity-uncommon { background: #00ff00; color: #000; }
+        .rarity-rare { background: #0000ff; }
+        .rarity-epic { background: #800080; }
+        .rarity-legendary { background: #ffd700; color: #000; }
+        .rarity-mythic { background: #ff0000; }
+        
+        .item-stats {
+            font-size: 12px;
+            color: #ccc;
+            text-align: center;
+        }
+        
+        .item-count {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #e94560;
+            color: #fff;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        
+        .item-equipped {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            font-size: 12px;
+            color: #ffd700;
+        }
+        
+        .item-actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .item-btn {
+            flex: 1;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+            padding: 5px;
+            border-radius: 15px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .item-btn:hover {
+            background: #e94560;
+        }
+        
+        .item-btn.equip {
+            background: #4CAF50;
+        }
+        
+        .item-btn.sell {
+            background: #f44336;
+        }
+        
+        .empty-slot {
+            background: rgba(255,255,255,0.02);
+            border: 1px dashed rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 120px;
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .empty-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+            opacity: 0.3;
+        }
+        
+        .item-detail-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .item-detail-modal.show {
+            display: flex;
+        }
+        
+        .item-detail-content {
+            background: linear-gradient(135deg, #16213e, #1a1a2e);
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 300px;
+            width: 90%;
+            border: 2px solid #e94560;
+        }
+        
+        .item-detail-icon {
+            font-size: 64px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .item-detail-name {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        
+        .item-detail-rarity {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .item-detail-description {
+            color: #ccc;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .item-detail-stats {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .stat-label {
+            color: #ccc;
+        }
+        
+        .stat-value {
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .stat-value.positive {
+            color: #4CAF50;
+        }
+        
+        .item-detail-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .detail-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .detail-btn.equip {
+            background: #4CAF50;
+            color: #fff;
+        }
+        
+        .detail-btn.sell {
+            background: #f44336;
+            color: #fff;
+        }
+        
+        .detail-btn.close {
+            background: #666;
+            color: #fff;
+        }
+        
+        .detail-btn:hover {
+            opacity: 0.8;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="main-screen">
+            <div class="top-panel">
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-icon">⚡</span>
+                        <span class="stat-value" id="energy">100/100</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">❤️</span>
+                        <span class="stat-value" id="health">100/100</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">💰</span>
+                        <span class="stat-value" id="gold">20</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">🪙</span>
+                        <span class="stat-value" id="dstn">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-content">
+                <div class="inventory-page">
+                    <div class="inventory-header">
+                        <div class="inventory-title">🎒 ИНВЕНТАРЬ</div>
+                        <div class="inventory-stats">35/100</div>
+                    </div>
+                    
+                    <div class="inventory-categories">
+                        <button class="category-btn active" data-category="all">Все</button>
+                        <button class="category-btn" data-category="weapons">⚔️ Оружие</button>
+                        <button class="category-btn" data-category="armor">🛡️ Броня</button>
+                        <button class="category-btn" data-category="consumables">🧪 Расходники</button>
+                        <button class="category-btn" data-category="materials">📦 Материалы</button>
+                        <button class="category-btn" data-category="bait">🪱 Наживки</button>
+                        <button class="category-btn" data-category="treasures">💎 Сокровища</button>
+                    </div>
+                    
+                    <div class="inventory-grid" id="inventoryGrid">
+                        <!-- Здесь будут предметы -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-menu">
+                <button class="menu-btn" data-page="game">
+                    <span class="menu-icon">🎮</span>
+                    <span class="menu-text">Игра</span>
+                </button>
+                <button class="menu-btn" data-page="map">
+                    <span class="menu-icon">🗺️</span>
+                    <span class="menu-text">Карта</span>
+                </button>
+                <button class="menu-btn active" data-page="inventory">
+                    <span class="menu-icon">🎒</span>
+                    <span class="menu-text">Инвентарь</span>
+                </button>
+                <button class="menu-btn" data-page="profile">
+                    <span class="menu-icon">👤</span>
+                    <span class="menu-text">Профиль</span>
+                </button>
+                <button class="menu-btn" data-page="shop">
+                    <span class="menu-icon">🏪</span>
+                    <span class="menu-text">Магазин</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно предмета -->
+    <div class="item-detail-modal" id="itemDetailModal">
+        <div class="item-detail-content">
+            <div class="item-detail-icon" id="detailIcon">⚔️</div>
+            <div class="item-detail-name" id="detailName">Железный меч</div>
+            <div class="item-detail-rarity" id="detailRarity">
+                <span class="rarity-uncommon" style="padding:3px 10px;">Необычный</span>
+            </div>
+            <div class="item-detail-description" id="detailDesc">
+                Качественный железный меч. Острый и надёжный.
+            </div>
+            <div class="item-detail-stats" id="detailStats">
+                <div class="stat-row">
+                    <span class="stat-label">⚔️ Урон</span>
+                    <span class="stat-value positive">+10</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">💰 Цена</span>
+                    <span class="stat-value">60</span>
+                </div>
+            </div>
+            <div class="item-detail-actions">
+                <button class="detail-btn equip" onclick="equipItem()">⚔️ Надеть</button>
+                <button class="detail-btn sell" onclick="sellItem()">💰 Продать</button>
+                <button class="detail-btn close" onclick="closeItemDetail()">✖️ Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Моковые данные для теста
+        const mockInventory = [
+            { id: 'iron_sword', name: 'Железный меч', icon: '⚔️', rarity: 'uncommon', type: 'weapon', damage: 10, value: 60, count: 1, equipped: true },
+            { id: 'leather_armor', name: 'Кожаная броня', icon: '🛡️', rarity: 'common', type: 'armor', defense: 5, health: 15, value: 25, count: 1, equipped: true },
+            { id: 'health_potion', name: 'Зелье здоровья', icon: '🧪', rarity: 'common', type: 'consumable', heal: 50, value: 10, count: 5 },
+            { id: 'mana_potion', name: 'Зелье маны', icon: '🔮', rarity: 'common', type: 'consumable', mana: 50, value: 10, count: 3 },
+            { id: 'iron_ore', name: 'Железная руда', icon: '⛏️', rarity: 'uncommon', type: 'material', value: 8, count: 15 },
+            { id: 'wolf_skin', name: 'Волчья шкура', icon: '🐺', rarity: 'common', type: 'material', value: 10, count: 3 },
+            { id: 'worm', name: 'Червяк', icon: '🪱', rarity: 'common', type: 'bait', value: 1, count: 12 },
+            { id: 'golden_carp', name: 'Золотой карп', icon: '🐟', rarity: 'legendary', type: 'treasure', value: 1000, count: 1 },
+            { id: 'ancient_coin', name: 'Древняя монета', icon: '🪙', rarity: 'epic', type: 'treasure', value: 500, count: 2 },
+        ];
+        
+        let currentCategory = 'all';
+        let selectedItem = null;
+        
+        function renderInventory(category = 'all') {
+            const grid = document.getElementById('inventoryGrid');
+            const filtered = category === 'all' ? mockInventory : mockInventory.filter(item => item.type === category);
+            
+            let html = '';
+            filtered.forEach(item => {
+                const rarityClass = `rarity-${item.rarity}`;
+                const equippedClass = item.equipped ? 'equipped' : '';
+                
+                html += `
+                    <div class="item-card ${equippedClass}" onclick="showItemDetail('${item.id}')">
+                        ${item.equipped ? '<div class="item-equipped">✅</div>' : ''}
+                        <div class="item-icon">${item.icon}</div>
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-rarity ${rarityClass}">${item.rarity}</div>
+                        <div class="item-stats">
+                            ${item.damage ? `⚔️ +${item.damage}` : ''}
+                            ${item.defense ? `🛡️ +${item.defense}` : ''}
+                            ${item.heal ? `❤️ +${item.heal}` : ''}
+                        </div>
+                        <div class="item-count">${item.count}</div>
+                    </div>
+                `;
+            });
+            
+            // Добавляем пустые слоты
+            const remaining = 12 - filtered.length;
+            for (let i = 0; i < remaining; i++) {
+                html += `
+                    <div class="empty-slot">
+                        <div class="empty-icon">❓</div>
+                        <div>Пусто</div>
+                    </div>
+                `;
+            }
+            
+            grid.innerHTML = html;
+        }
+        
+        function showItemDetail(itemId) {
+            const item = mockInventory.find(i => i.id === itemId);
+            if (!item) return;
+            
+            selectedItem = item;
+            
+            document.getElementById('detailIcon').textContent = item.icon;
+            document.getElementById('detailName').textContent = item.name;
+            
+            const raritySpan = document.getElementById('detailRarity').querySelector('span');
+            raritySpan.className = `rarity-${item.rarity}`;
+            raritySpan.style.padding = '3px 10px';
+            raritySpan.textContent = item.rarity;
+            
+            document.getElementById('detailDesc').textContent = `Качественный предмет.${item.equipped ? ' Уже надет.' : ''}`;
+            
+            let statsHtml = '';
+            if (item.damage) statsHtml += `<div class="stat-row"><span class="stat-label">⚔️ Урон</span><span class="stat-value positive">+${item.damage}</span></div>`;
+            if (item.defense) statsHtml += `<div class="stat-row"><span class="stat-label">🛡️ Защита</span><span class="stat-value positive">+${item.defense}</span></div>`;
+            if (item.health) statsHtml += `<div class="stat-row"><span class="stat-label">❤️ Здоровье</span><span class="stat-value positive">+${item.health}</span></div>`;
+            if (item.heal) statsHtml += `<div class="stat-row"><span class="stat-label">💊 Лечение</span><span class="stat-value positive">+${item.heal}</span></div>`;
+            if (item.mana) statsHtml += `<div class="stat-row"><span class="stat-label">🔮 Мана</span><span class="stat-value positive">+${item.mana}</span></div>`;
+            statsHtml += `<div class="stat-row"><span class="stat-label">💰 Цена</span><span class="stat-value">${item.value}</span></div>`;
+            statsHtml += `<div class="stat-row"><span class="stat-label">📦 Количество</span><span class="stat-value">${item.count}</span></div>`;
+            
+            document.getElementById('detailStats').innerHTML = statsHtml;
+            
+            document.getElementById('itemDetailModal').classList.add('show');
+        }
+        
+        function closeItemDetail() {
+            document.getElementById('itemDetailModal').classList.remove('show');
+        }
+        
+        function equipItem() {
+            if (selectedItem) {
+                alert(`⚔️ Предмет ${selectedItem.name} надет!`);
+                closeItemDetail();
+            }
+        }
+        
+        function sellItem() {
+            if (selectedItem) {
+                alert(`💰 Предмет ${selectedItem.name} продан за ${selectedItem.value} золота!`);
+                closeItemDetail();
+            }
+        }
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            renderInventory();
+            
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentCategory = btn.dataset.category;
+                    renderInventory(currentCategory);
+                });
+            });
+        });
+    </script>
+    <script src="../script.js"></script>
+</body>
+</html>
