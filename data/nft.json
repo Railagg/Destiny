@@ -1,1 +1,286 @@
-
+{
+  "nft": {
+    "shards": {
+      "red": {
+        "id": "red_shard",
+        "name": "🔴 КРАСНЫЙ ОСКОЛОК СИЛЫ",
+        "color": "red",
+        "element": "fire",
+        "description": "Древний осколок, хранящий силу огня и ярости. Дарует владельцу невероятную мощь в бою.",
+        "total_supply": 10,
+        "minted": 0,
+        "price_stars": 100,
+        "price_dstn": 5000,
+        "price_ton": 2,
+        "bonuses": {
+          "damage": 5,
+          "fire_damage": 5,
+          "strength": 2,
+          "crit_chance": 2,
+          "crit_multiplier": 0.1
+        },
+        "ability": {
+          "name": "🔥 ЯРОСТЬ",
+          "cooldown": 86400,
+          "duration": 60,
+          "effect": "+25% урона, каждое попадание поджигает врага",
+          "description": "Глаза горят красным, тело наполняется неистовой силой. Враги горят в огне твоего гнева."
+        },
+        "passive": {
+          "name": "Красная аура",
+          "effect": "Слабое красное свечение вокруг персонажа"
+        },
+        "title": "Огненный",
+        "aura": "red_glow",
+        "nick_color": "red",
+        "frame": "red_flame",
+        "house_item": "red_altar",
+        "house_item_bonus": "+5% к урону в доме",
+        "lore": "Говорят, этот осколок — капля крови самого бога войны. Тот, кто владеет им, становится непобедимым в бою."
+      },
+      
+      "blue": {
+        "id": "blue_shard",
+        "name": "🔵 СИНИЙ ОСКОЛОК ЗАЩИТЫ",
+        "color": "blue",
+        "element": "water",
+        "description": "Осколок, хранящий силу льда и непробиваемой защиты. Делает владельца неуязвимым.",
+        "total_supply": 10,
+        "minted": 0,
+        "price_stars": 100,
+        "price_dstn": 5000,
+        "price_ton": 2,
+        "bonuses": {
+          "defense": 5,
+          "magic_resist": 5,
+          "health": 50,
+          "block_chance": 2,
+          "health_regen": 1
+        },
+        "ability": {
+          "name": "❄️ ЛЕДЯНОЙ ЩИТ",
+          "cooldown": 86400,
+          "duration": 60,
+          "effect": "+50% защиты, замораживает атакующих врагов",
+          "description": "Вокруг тебя вращается ледяной щит, замораживающий любого, кто осмелится приблизиться."
+        },
+        "passive": {
+          "name": "Синяя аура",
+          "effect": "Слабое синее свечение вокруг персонажа"
+        },
+        "title": "Ледяной",
+        "aura": "blue_glow",
+        "nick_color": "blue",
+        "frame": "blue_ice",
+        "house_item": "blue_altar",
+        "house_item_bonus": "+5% к защите в доме",
+        "lore": "Создан из слезы ледяного великана. Дарует владельцу стойкость вековых льдов."
+      },
+      
+      "green": {
+        "id": "green_shard",
+        "name": "🟢 ЗЕЛЁНЫЙ ОСКОЛОК ЛОВКОСТИ",
+        "color": "green",
+        "element": "wind",
+        "description": "Осколок, хранящий скорость ветра и невероятную ловкость. Делает владельца неуловимым.",
+        "total_supply": 10,
+        "minted": 0,
+        "price_stars": 100,
+        "price_dstn": 5000,
+        "price_ton": 2,
+        "bonuses": {
+          "dodge": 5,
+          "crit_damage": 5,
+          "speed": 5,
+          "accuracy": 2,
+          "double_attack_chance": 2
+        },
+        "ability": {
+          "name": "🌪️ ВЕТЕР СКОРОСТИ",
+          "cooldown": 86400,
+          "duration": 60,
+          "effect": "+50% скорости, 100% уклонение на 3 секунды",
+          "description": "Ты становишься быстрее ветра, враги не могут даже коснуться тебя."
+        },
+        "passive": {
+          "name": "Зелёная аура",
+          "effect": "Слабое зелёное свечение вокруг персонажа"
+        },
+        "title": "Ветреный",
+        "aura": "green_glow",
+        "nick_color": "green",
+        "frame": "green_wind",
+        "house_item": "green_altar",
+        "house_item_bonus": "+5% к уклонению в доме",
+        "lore": "Вырезан из изумруда, упавшего с короны короля ветров. Дарует скорость мысли."
+      },
+      
+      "yellow": {
+        "id": "yellow_shard",
+        "name": "🟡 ЖЁЛТЫЙ ОСКОЛОК МАГИИ",
+        "color": "yellow",
+        "element": "lightning",
+        "description": "Осколок, хранящий силу молний и магии. Усиливает заклинания владельца.",
+        "total_supply": 10,
+        "minted": 0,
+        "price_stars": 100,
+        "price_dstn": 5000,
+        "price_ton": 2,
+        "bonuses": {
+          "magic_damage": 5,
+          "mana": 50,
+          "spell_cost": -5,
+          "lightning_damage": 5,
+          "mana_regen": 2
+        },
+        "ability": {
+          "name": "⚡ ЦЕПНАЯ МОЛНИЯ",
+          "cooldown": 86400,
+          "effect": "300% магического урона по 5 целям",
+          "description": "Молния вырывается из твоих рук и бьёт по всем врагам, не оставляя им шанса."
+        },
+        "passive": {
+          "name": "Жёлтая аура",
+          "effect": "Слабое жёлтое свечение вокруг персонажа"
+        },
+        "title": "Молниеносный",
+        "aura": "yellow_glow",
+        "nick_color": "yellow",
+        "frame": "yellow_thunder",
+        "house_item": "yellow_altar",
+        "house_item_bonus": "+5% к магии в доме",
+        "lore": "Осколок, оставшийся после удара молнии в древний алтарь. Наполнен невероятной магической энергией."
+      },
+      
+      "purple": {
+        "id": "purple_shard",
+        "name": "🟣 ФИОЛЕТОВЫЙ ОСКОЛОК УДАЧИ",
+        "color": "purple",
+        "element": "mystery",
+        "description": "Самый редкий осколок, хранящий силу судьбы и удачи. Владельцу всегда везёт.",
+        "total_supply": 10,
+        "minted": 0,
+        "price_stars": 200,
+        "price_dstn": 10000,
+        "price_ton": 4,
+        "bonuses": {
+          "luck": 7,
+          "rare_drop": 5,
+          "crit_chance": 3,
+          "double_drop": 2,
+          "treasure_find": 10
+        },
+        "ability": {
+          "name": "🍀 УДАЧА ГЕРОЯ",
+          "cooldown": 86400,
+          "duration": 1800,
+          "effect": "+50% к удаче на 30 минут, следующий сундук гарантированно легендарный",
+          "description": "Судьба на твоей стороне. Редкие находки падают чаще, а следующий сундук будет легендарным."
+        },
+        "passive": {
+          "name": "Фиолетовая аура",
+          "effect": "Слабое фиолетовое свечение вокруг персонажа"
+        },
+        "title": "Удачливый",
+        "aura": "purple_glow",
+        "nick_color": "purple",
+        "frame": "purple_luck",
+        "house_item": "purple_altar",
+        "house_item_bonus": "+7% к удаче в доме",
+        "lore": "Осколок, выпавший из короны самой богини удачи. Говорят, он исполняет желания."
+      }
+    },
+    
+    "set_bonuses": {
+      "2_pieces": {
+        "name": "Коллекционер",
+        "requirement": 2,
+        "bonus": "+2% ко всем характеристикам",
+        "aura": "weak_rainbow",
+        "description": "Ты начинаешь собирать силу стихий."
+      },
+      "3_pieces": {
+        "name": "Хранитель стихий",
+        "requirement": 3,
+        "bonus": "+3% ко всем характеристикам",
+        "aura": "medium_rainbow",
+        "description": "Три стихии подчиняются тебе."
+      },
+      "4_pieces": {
+        "name": "Повелитель стихий",
+        "requirement": 4,
+        "bonus": "+4% ко всем характеристикам",
+        "aura": "strong_rainbow",
+        "description": "Четыре стихии танцуют вокруг тебя."
+      },
+      "5_pieces": {
+        "name": "Бог стихий",
+        "requirement": 5,
+        "bonus": "+5% ко всем характеристикам",
+        "aura": "full_rainbow",
+        "nick_color": "rainbow",
+        "frame": "rainbow_master",
+        "house_item": "rainbow_altar",
+        "house_item_bonus": "+10% ко всем характеристикам в доме",
+        "description": "Ты достиг просветления. Все стихии подчиняются тебе полностью."
+      }
+    },
+    
+    "collection_stats": {
+      "total_nft": 50,
+      "total_owners": 0,
+      "most_owned": "red",
+      "rarest": "purple"
+    },
+    
+    "nft_shop": {
+      "red": {
+        "available": 10,
+        "price_stars": 100,
+        "price_dstn": 5000
+      },
+      "blue": {
+        "available": 10,
+        "price_stars": 100,
+        "price_dstn": 5000
+      },
+      "green": {
+        "available": 10,
+        "price_stars": 100,
+        "price_dstn": 5000
+      },
+      "yellow": {
+        "available": 10,
+        "price_stars": 100,
+        "price_dstn": 5000
+      },
+      "purple": {
+        "available": 10,
+        "price_stars": 200,
+        "price_dstn": 10000
+      }
+    },
+    
+    "nft_market": {
+      "listing_fee": 0.05,
+      "min_price": 100,
+      "max_price": 100000,
+      "categories": ["red", "blue", "green", "yellow", "purple"]
+    },
+    
+    "nft_events": {
+      "mint_event": {
+        "name": "Рождение осколка",
+        "description": "Каждую неделю разыгрывается один случайный осколок среди активных игроков",
+        "frequency": "weekly",
+        "reward": "random_shard"
+      },
+      "collection_contest": {
+        "name": "Конкурс коллекционеров",
+        "description": "Раз в месяц среди владельцев полных коллекций разыгрываются призы",
+        "frequency": "monthly",
+        "reward": "rainbow_stone"
+      }
+    }
+  }
+}
