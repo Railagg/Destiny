@@ -1,1 +1,660 @@
-
+{
+  "classes": {
+    "warrior": {
+      "id": "warrior",
+      "name": "⚔️ МЕЧНИК",
+      "description": "Мастер клинка, наносящий огромный урон. Специализируется на критических ударах и пробивании защиты. В бою полагается на силу и ярость, сокрушая врагов мощными ударами.",
+      "role": "damage_dealer",
+      "icon": "⚔️",
+      "color": "red",
+      "difficulty": "⭐",
+      "base_stats": {
+        "health": 120,
+        "damage": 15,
+        "defense": 8,
+        "crit_chance": 10,
+        "crit_multiplier": 2.0,
+        "speed": 5
+      },
+      "per_level": {
+        "health": 12,
+        "damage": 2.5,
+        "defense": 1,
+        "crit_chance": 0.5,
+        "crit_multiplier": 0.05
+      },
+      "stats_at_level_30": {
+        "health": 468,
+        "damage": 87.5,
+        "defense": 37,
+        "crit_chance": 24.5,
+        "crit_multiplier": 3.45
+      },
+      "abilities": [
+        {
+          "id": "warrior_1",
+          "name": "⚡ Рассекающий удар",
+          "level": 1,
+          "description": "Мощный удар, наносящий 150% урона одной цели.",
+          "cooldown": 2,
+          "mana_cost": 10,
+          "damage_multiplier": 1.5,
+          "icon": "⚡"
+        },
+        {
+          "id": "warrior_2",
+          "name": "🌀 Вихрь клинков",
+          "level": 5,
+          "description": "Круговой удар, атакующий всех врагов с 80% урона.",
+          "cooldown": 4,
+          "mana_cost": 20,
+          "damage_multiplier": 0.8,
+          "aoe": true,
+          "icon": "🌀"
+        },
+        {
+          "id": "warrior_3",
+          "name": "🔥 Огненный меч",
+          "level": 10,
+          "description": "На 3 хода меч воспламеняется, добавляя 30% огненного урона к каждой атаке.",
+          "cooldown": 5,
+          "mana_cost": 25,
+          "duration": 3,
+          "buff": {"fire_damage": 0.3},
+          "icon": "🔥"
+        },
+        {
+          "id": "warrior_4",
+          "name": "⚡ Ускорение",
+          "level": 15,
+          "description": "Увеличивает скорость атаки на 50% на 2 хода.",
+          "cooldown": 4,
+          "mana_cost": 20,
+          "duration": 2,
+          "buff": {"attack_speed": 1.5},
+          "icon": "⚡"
+        },
+        {
+          "id": "warrior_5",
+          "name": "🗡️ Танец смерти",
+          "level": 20,
+          "description": "Серия из 3 быстрых ударов, каждый с 60% урона.",
+          "cooldown": 5,
+          "mana_cost": 30,
+          "hits": 3,
+          "damage_multiplier": 0.6,
+          "icon": "🗡️"
+        },
+        {
+          "id": "warrior_6",
+          "name": "✨ Клинок правосудия",
+          "level": 25,
+          "description": "Мощный удар с 250% урона, игнорирующий 50% защиты цели.",
+          "cooldown": 6,
+          "mana_cost": 40,
+          "damage_multiplier": 2.5,
+          "armor_penetration": 50,
+          "icon": "✨"
+        },
+        {
+          "id": "warrior_7",
+          "name": "🌪️ Ураган стали",
+          "level": 30,
+          "description": "Неистовый вихрь из 5 ударов по 100% урона по всем врагам.",
+          "cooldown": 8,
+          "mana_cost": 60,
+          "hits": 5,
+          "damage_multiplier": 1.0,
+          "aoe": true,
+          "icon": "🌪️"
+        }
+      ],
+      "mastery": {
+        "id": "warrior_mastery",
+        "name": "Критическая мощь",
+        "description": "Критические удары наносят на 50% больше урона.",
+        "effect": {"crit_multiplier_bonus": 0.5}
+      },
+      "passives": {
+        "warrior_passive_1": {
+          "name": "Боевая ярость",
+          "level": 10,
+          "description": "Каждая атака увеличивает урон следующей на 2% (суммируется до 20%)."
+        },
+        "warrior_passive_2": {
+          "name": "Крепкая рука",
+          "level": 20,
+          "description": "+10% к пробиванию брони."
+        }
+      },
+      "playstyle": "Мечник — идеальный выбор для тех, кто любит наносить огромный урон одной цели. В бою нужно грамотно использовать усиления и добивать врагов мощными финишерами.",
+      "pros": ["Высокий урон", "Отличные криты", "Хорош против одиночных целей"],
+      "cons": ["Слабая защита", "Зависит от критических ударов", "Требует контроля маны"],
+      "equipment": {
+        "weapon": "🗡️ Мечи",
+        "armor": "🛡️ Средняя броня",
+        "preferred_stats": ["сила", "крит", "скорость"]
+      },
+      "image": "class_warrior.jpg",
+      "icon_image": "icon_warrior.jpg"
+    },
+    
+    "archer": {
+      "id": "archer",
+      "name": "🏹 ЛУЧНИК",
+      "description": "Меткий стрелок, поражающий цели издалека. Уклоняется от атак и наносит точные удары. Может замедлять и замораживать врагов специальными стрелами.",
+      "role": "ranged_dps",
+      "icon": "🏹",
+      "color": "green",
+      "difficulty": "⭐⭐",
+      "base_stats": {
+        "health": 100,
+        "damage": 12,
+        "defense": 5,
+        "dodge": 10,
+        "accuracy": 95,
+        "crit_chance": 8,
+        "speed": 7
+      },
+      "per_level": {
+        "health": 10,
+        "damage": 2,
+        "defense": 0.5,
+        "dodge": 1,
+        "accuracy": 0.5,
+        "crit_chance": 0.4,
+        "speed": 0.3
+      },
+      "stats_at_level_30": {
+        "health": 390,
+        "damage": 70,
+        "defense": 19.5,
+        "dodge": 39,
+        "accuracy": 109.5,
+        "crit_chance": 19.6,
+        "speed": 15.7
+      },
+      "abilities": [
+        {
+          "id": "archer_1",
+          "name": "🎯 Меткий выстрел",
+          "level": 1,
+          "description": "Прицельный выстрел с 120% урона и +20% точности.",
+          "cooldown": 2,
+          "mana_cost": 8,
+          "damage_multiplier": 1.2,
+          "accuracy_bonus": 20,
+          "icon": "🎯"
+        },
+        {
+          "id": "archer_2",
+          "name": "❄️ Ледяная стрела",
+          "level": 5,
+          "description": "Стрела, замораживающая цель с 30% шансом на 1 ход.",
+          "cooldown": 3,
+          "mana_cost": 15,
+          "damage_multiplier": 1.0,
+          "effect": {"freeze_chance": 30},
+          "icon": "❄️"
+        },
+        {
+          "id": "archer_3",
+          "name": "🔥 Огненный дождь",
+          "level": 10,
+          "description": "Град огненных стрел по всем врагам с 70% урона и 20% шансом поджечь.",
+          "cooldown": 4,
+          "mana_cost": 25,
+          "damage_multiplier": 0.7,
+          "aoe": true,
+          "effect": {"burn_chance": 20, "burn_damage": 10},
+          "icon": "🔥"
+        },
+        {
+          "id": "archer_4",
+          "name": "💨 Ускользание",
+          "level": 15,
+          "description": "На 2 хода уклонение повышается на 50%.",
+          "cooldown": 4,
+          "mana_cost": 15,
+          "duration": 2,
+          "buff": {"dodge_bonus": 50},
+          "icon": "💨"
+        },
+        {
+          "id": "archer_5",
+          "name": "🎯 Прицельный залп",
+          "level": 20,
+          "description": "Три стрелы в одну цель, каждая с 80% урона.",
+          "cooldown": 4,
+          "mana_cost": 30,
+          "hits": 3,
+          "damage_multiplier": 0.8,
+          "icon": "🎯"
+        },
+        {
+          "id": "archer_6",
+          "name": "👁️ Глаз сокола",
+          "level": 25,
+          "description": "На 3 хода +50% к криту и гарантированное попадание.",
+          "cooldown": 5,
+          "mana_cost": 35,
+          "duration": 3,
+          "buff": {"crit_chance_bonus": 50, "guaranteed_hit": true},
+          "icon": "👁️"
+        },
+        {
+          "id": "archer_7",
+          "name": "🌟 Звёздная стрела",
+          "level": 30,
+          "description": "Легендарная стрела с 400% урона, игнорирующая 100% защиты.",
+          "cooldown": 8,
+          "mana_cost": 60,
+          "damage_multiplier": 4.0,
+          "armor_penetration": 100,
+          "icon": "🌟"
+        }
+      ],
+      "mastery": {
+        "id": "archer_mastery",
+        "name": "Смертельная точность",
+        "description": "Критические удары игнорируют 50% защиты цели.",
+        "effect": {"crit_armor_penetration": 50}
+      },
+      "passives": {
+        "archer_passive_1": {
+          "name": "Острый глаз",
+          "level": 10,
+          "description": "+10% к дальности атаки и точности."
+        },
+        "archer_passive_2": {
+          "name": "Лёгкие ноги",
+          "level": 20,
+          "description": "После использования способности получаете +20% к уклонению на 1 ход."
+        }
+      },
+      "playstyle": "Лучник предпочитает держать дистанцию, ослабляя врагов специальными стрелами и избегая прямого столкновения. Важно правильно выбирать цели и использовать контроль.",
+      "pros": ["Дальний бой", "Высокое уклонение", "Контроль врагов"],
+      "cons": ["Хрупкость", "Зависимость от дистанции", "Средний урон"],
+      "equipment": {
+        "weapon": "🏹 Луки",
+        "armor": "🧥 Лёгкая броня",
+        "preferred_stats": ["ловкость", "крит", "уклонение"]
+      },
+      "image": "class_archer.jpg",
+      "icon_image": "icon_archer.jpg"
+    },
+    
+    "mage": {
+      "id": "mage",
+      "name": "🔮 МАГ",
+      "description": "Повелитель стихий, обрушивающий на врагов мощь магии. Обладает огромным запасом маны и мощными заклинаниями. Может использовать огонь, лёд, молнии и тайную магию.",
+      "role": "magic_dps",
+      "icon": "🔮",
+      "color": "blue",
+      "difficulty": "⭐⭐⭐",
+      "base_stats": {
+        "health": 80,
+        "magic_damage": 20,
+        "defense": 3,
+        "mana": 120,
+        "mana_regen": 5,
+        "crit_chance": 5,
+        "magic_crit_chance": 8
+      },
+      "per_level": {
+        "health": 8,
+        "magic_damage": 3,
+        "defense": 0.3,
+        "mana": 12,
+        "mana_regen": 0.5,
+        "crit_chance": 0.3,
+        "magic_crit_chance": 0.4
+      },
+      "stats_at_level_30": {
+        "health": 312,
+        "magic_damage": 107,
+        "defense": 11.7,
+        "mana": 468,
+        "mana_regen": 19.5,
+        "crit_chance": 13.7,
+        "magic_crit_chance": 19.6
+      },
+      "abilities": [
+        {
+          "id": "mage_1",
+          "name": "🔥 Огненный шар",
+          "level": 1,
+          "description": "Сгусток пламени, наносящий 140% магического урона цели.",
+          "cooldown": 2,
+          "mana_cost": 15,
+          "damage_multiplier": 1.4,
+          "icon": "🔥"
+        },
+        {
+          "id": "mage_2",
+          "name": "❄️ Ледяная стрела",
+          "level": 3,
+          "description": "Стрела льда с 120% магического урона и 30% шансом заморозить.",
+          "cooldown": 2,
+          "mana_cost": 12,
+          "damage_multiplier": 1.2,
+          "effect": {"freeze_chance": 30},
+          "icon": "❄️"
+        },
+        {
+          "id": "mage_3",
+          "name": "⚡ Молния",
+          "level": 5,
+          "description": "Разряд молнии по 3 целям с 130% магического урона.",
+          "cooldown": 3,
+          "mana_cost": 25,
+          "damage_multiplier": 1.3,
+          "targets": 3,
+          "icon": "⚡"
+        },
+        {
+          "id": "mage_4",
+          "name": "💧 Лечебный дождь",
+          "level": 8,
+          "description": "Восстанавливает 50 здоровья всем союзникам.",
+          "cooldown": 4,
+          "mana_cost": 30,
+          "heal": 50,
+          "aoe": true,
+          "icon": "💧"
+        },
+        {
+          "id": "mage_5",
+          "name": "🌀 Магический вихрь",
+          "level": 10,
+          "description": "Вихрь магии, наносящий 100% урона всем врагам.",
+          "cooldown": 3,
+          "mana_cost": 30,
+          "damage_multiplier": 1.0,
+          "aoe": true,
+          "icon": "🌀"
+        },
+        {
+          "id": "mage_6",
+          "name": "🛡️ Магический щит",
+          "level": 12,
+          "description": "На 3 хода +50% защиты от магии.",
+          "cooldown": 4,
+          "mana_cost": 20,
+          "duration": 3,
+          "buff": {"magic_resist": 50},
+          "icon": "🛡️"
+        },
+        {
+          "id": "mage_7",
+          "name": "💀 Проклятие",
+          "level": 15,
+          "description": "Цель получает +25% урона на 3 хода.",
+          "cooldown": 3,
+          "mana_cost": 25,
+          "duration": 3,
+          "debuff": {"damage_taken": 1.25},
+          "icon": "💀"
+        },
+        {
+          "id": "mage_8",
+          "name": "🔮 Призыв элементаля",
+          "level": 18,
+          "description": "Призывает элементаля с 50% силы на 3 хода.",
+          "cooldown": 6,
+          "mana_cost": 50,
+          "summon": "elemental",
+          "summon_power": 0.5,
+          "duration": 3,
+          "icon": "🔮"
+        },
+        {
+          "id": "mage_9",
+          "name": "🌊 Водяной дракон",
+          "level": 20,
+          "description": "Мощная водная атака с 250% магического урона.",
+          "cooldown": 4,
+          "mana_cost": 40,
+          "damage_multiplier": 2.5,
+          "icon": "🌊"
+        },
+        {
+          "id": "mage_10",
+          "name": "⏳ Замедление времени",
+          "level": 22,
+          "description": "На 3 хода враги ходят на 50% медленнее.",
+          "cooldown": 5,
+          "mana_cost": 35,
+          "duration": 3,
+          "debuff": {"speed": 0.5},
+          "aoe": true,
+          "icon": "⏳"
+        },
+        {
+          "id": "mage_11",
+          "name": "✨ Магический взрыв",
+          "level": 25,
+          "description": "Взрыв магии с 300% урона по площади.",
+          "cooldown": 5,
+          "mana_cost": 60,
+          "damage_multiplier": 3.0,
+          "aoe": true,
+          "icon": "✨"
+        },
+        {
+          "id": "mage_12",
+          "name": "🔥 Метеоритный дождь",
+          "level": 28,
+          "description": "5 метеоритов, каждый с 100% магического урона.",
+          "cooldown": 7,
+          "mana_cost": 90,
+          "hits": 5,
+          "damage_multiplier": 1.0,
+          "aoe": true,
+          "icon": "🔥"
+        },
+        {
+          "id": "mage_13",
+          "name": "🌌 Армагеддон",
+          "level": 30,
+          "description": "Катастрофическое заклинание с 500% урона всем врагам.",
+          "cooldown": 10,
+          "mana_cost": 120,
+          "damage_multiplier": 5.0,
+          "aoe": true,
+          "icon": "🌌"
+        }
+      ],
+      "mastery": {
+        "id": "mage_mastery",
+        "name": "Мастер стихий",
+        "description": "Заклинания стоят на 20% меньше маны.",
+        "effect": {"mana_cost_reduction": 0.2}
+      },
+      "passives": {
+        "mage_passive_1": {
+          "name": "Магическая концентрация",
+          "level": 10,
+          "description": "+20% к регенерации маны."
+        },
+        "mage_passive_2": {
+          "name": "Стихийное родство",
+          "level": 20,
+          "description": "+10% к урону стихий (огонь, лёд, молния)."
+        }
+      },
+      "playstyle": "Маг — сложный класс, требующий правильного управления маной и выбора заклинаний под ситуацию. В бою нужно комбинировать урон, контроль и поддержку.",
+      "pros": ["Огромный магический урон", "Много заклинаний", "Контроль"],
+      "cons": ["Очень хрупкий", "Зависит от маны", "Сложен в освоении"],
+      "equipment": {
+        "weapon": "🪄 Посохи",
+        "armor": "👘 Мантии",
+        "preferred_stats": ["интеллект", "мана", "маг. крит"]
+      },
+      "image": "class_mage.jpg",
+      "icon_image": "icon_mage.jpg"
+    },
+    
+    "guardian": {
+      "id": "guardian",
+      "name": "🛡️ СТРАЖ",
+      "description": "Несокрушимый защитник, принимающий удар на себя. Обладает огромной защитой и может защищать союзников. Щит и броня — его лучшие друзья.",
+      "role": "tank",
+      "icon": "🛡️",
+      "color": "brown",
+      "difficulty": "⭐",
+      "base_stats": {
+        "health": 180,
+        "damage": 8,
+        "defense": 15,
+        "block_chance": 15,
+        "block_amount": 50,
+        "health_regen": 2
+      },
+      "per_level": {
+        "health": 18,
+        "damage": 1,
+        "defense": 2,
+        "block_chance": 0.5,
+        "block_amount": 1,
+        "health_regen": 0.3
+      },
+      "stats_at_level_30": {
+        "health": 702,
+        "damage": 37,
+        "defense": 73,
+        "block_chance": 29.5,
+        "block_amount": 79,
+        "health_regen": 10.7
+      },
+      "abilities": [
+        {
+          "id": "guardian_1",
+          "name": "🛡️ Железная стена",
+          "level": 1,
+          "description": "На 2 хода защита увеличивается на 50%.",
+          "cooldown": 3,
+          "mana_cost": 10,
+          "duration": 2,
+          "buff": {"defense_multiplier": 1.5},
+          "icon": "🛡️"
+        },
+        {
+          "id": "guardian_2",
+          "name": "🔨 Щитовой удар",
+          "level": 5,
+          "description": "Удар щитом с 100% урона и 50% шансом оглушить на 1 ход.",
+          "cooldown": 3,
+          "mana_cost": 15,
+          "damage_multiplier": 1.0,
+          "effect": {"stun_chance": 50},
+          "icon": "🔨"
+        },
+        {
+          "id": "guardian_3",
+          "name": "⚡ Провокация",
+          "level": 10,
+          "description": "На 2 хода все враги атакуют только стража.",
+          "cooldown": 4,
+          "mana_cost": 20,
+          "duration": 2,
+          "effect": {"taunt": true},
+          "icon": "⚡"
+        },
+        {
+          "id": "guardian_4",
+          "name": "💪 Несокрушимость",
+          "level": 15,
+          "description": "На 3 хода получаемый урон снижается на 50%.",
+          "cooldown": 5,
+          "mana_cost": 30,
+          "duration": 3,
+          "buff": {"damage_taken": 0.5},
+          "icon": "💪"
+        },
+        {
+          "id": "guardian_5",
+          "name": "🔮 Зеркальный щит",
+          "level": 20,
+          "description": "На 2 хода 30% шанс отразить урон обратно врагу.",
+          "cooldown": 4,
+          "mana_cost": 25,
+          "duration": 2,
+          "effect": {"reflect_chance": 30},
+          "icon": "🔮"
+        },
+        {
+          "id": "guardian_6",
+          "name": "✨ Бастион света",
+          "level": 25,
+          "description": "На 1 ход защита всей группы увеличивается на 100%.",
+          "cooldown": 5,
+          "mana_cost": 40,
+          "duration": 1,
+          "buff": {"defense_multiplier": 2.0},
+          "aoe": true,
+          "icon": "✨"
+        },
+        {
+          "id": "guardian_7",
+          "name": "🏰 Стена героя",
+          "level": 30,
+          "description": "На 3 хода все союзники получают на 30% меньше урона.",
+          "cooldown": 8,
+          "mana_cost": 60,
+          "duration": 3,
+          "buff": {"damage_taken": 0.7},
+          "aoe": true,
+          "icon": "🏰"
+        }
+      ],
+      "mastery": {
+        "id": "guardian_mastery",
+        "name": "Непробиваемый",
+        "description": "Блокирует на 25% больше урона.",
+        "effect": {"block_amount_bonus": 25}
+      },
+      "passives": {
+        "guardian_passive_1": {
+          "name": "Крепкая броня",
+          "level": 10,
+          "description": "+20% к эффективности брони."
+        },
+        "guardian_passive_2": {
+          "name": "Стойкость",
+          "level": 20,
+          "description": "Каждые 5 ходов получает щит, поглощающий 10% здоровья."
+        }
+      },
+      "playstyle": "Страж — первый рубеж обороны. Его задача — принимать урон на себя и защищать более хрупких союзников. Важно правильно таймить провокации и защиты.",
+      "pros": ["Огромное здоровье", "Высокая защита", "Защищает союзников"],
+      "cons": ["Низкий урон", "Медленный", "Зависит от щита"],
+      "equipment": {
+        "weapon": "🛡️ Щиты + оружие",
+        "armor": "🪨 Тяжёлая броня",
+        "preferred_stats": ["сила", "защита", "здоровье"]
+      },
+      "image": "class_guardian.jpg",
+      "icon_image": "icon_guardian.jpg"
+    }
+  },
+  
+  "class_system": {
+    "max_level": 30,
+    "skill_points_per_level": 1,
+    "respec_cost": {"gold": 10000, "dstn": 500},
+    "class_change_cost": {"rainbow_stone": 1},
+    "class_balance": {
+      "warrior": {"damage": 5, "defense": 2, "utility": 2},
+      "archer": {"damage": 4, "defense": 1, "utility": 4},
+      "mage": {"damage": 5, "defense": 1, "utility": 3},
+      "guardian": {"damage": 1, "defense": 5, "utility": 3}
+    },
+    "popularity": {
+      "warrior": 30,
+      "archer": 25,
+      "mage": 30,
+      "guardian": 15
+    }
+  }
+}
