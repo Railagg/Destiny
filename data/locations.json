@@ -1,1 +1,18 @@
-
+{
+  "locations": {
+    "start": {
+      "id": "start",
+      "name": "🌲 Лесная опушка",
+      "description": "Ты стоишь на опушке леса. Солнце пробивается сквозь кроны деревьев.",
+      "image": "forest.jpg",
+      "level_req": 1
+    },
+    "village": {
+      "id": "village",
+      "name": "🏘️ Деревенская площадь",
+      "description": "Ты на центральной площади деревни. Вокруг суетится народ.",
+      "image": "village.jpg",
+      "level_req": 1
+    }
+  }
+}
