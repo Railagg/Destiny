@@ -55,25 +55,23 @@ except Exception as e:
     exit(1)
 
 # ============================================
-# ПРОСТЕЙШИЙ ПОИСК JSON
+# ПУТЬ К JSON - ИСПРАВЛЕНО
 # ============================================
 
-current_dir = Path(__file__).parent  # /bot
-parent_dir = current_dir.parent       # /
+current_dir = Path(__file__).parent          # /opt/render/project/src/bot
+data_dir = current_dir.parent / "data"       # /opt/render/project/src/data
 
 logging.info(f"📁 Текущая папка бота: {current_dir}")
-logging.info(f"📁 Родительская папка: {parent_dir}")
+logging.info(f"📁 Папка с данными: {data_dir}")
 
-# JSON лежат рядом с bot/, то есть в parent_dir/data/
-data_dir = parent_dir / "data"
-logging.info(f"📁 Ищем JSON в: {data_dir}")
-
-# Если папка существует — отлично
+# Проверяем существование папки
 if data_dir.exists():
     logging.info(f"✅ Папка data найдена в {data_dir}")
 else:
     logging.error(f"❌ Папка data НЕ НАЙДЕНА в {data_dir}")
-    # Создаём её на всякий случай
+    logging.info("📁 Содержимое родительской папки:")
+    for item in current_dir.parent.iterdir():
+        logging.info(f"   - {item.name}")
     data_dir.mkdir(parents=True, exist_ok=True)
     logging.info(f"✅ Папка data создана в {data_dir}")
 
@@ -221,9 +219,10 @@ threading.Thread(target=run_health, daemon=True).start()
 # ============================================
 logging.info("🚀 Бот запущен, ждем команды...")
 
-while True:
-    try:
-        bot.polling(none_stop=True, interval=0, timeout=20)
-    except Exception as e:
-        logging.error(f"❌ Polling error: {e}")
-        time.sleep(5)
+if __name__ == "__main__":
+    while True:
+        try:
+            bot.polling(none_stop=True, interval=0, timeout=20)
+        except Exception as e:
+            logging.error(f"❌ Polling error: {e}")
+            time.sleep(5)
