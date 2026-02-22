@@ -3,84 +3,100 @@ import json
 import time
 import random
 import os
+import sys
+import logging
 from datetime import datetime, timedelta
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 from pathlib import Path
 
+# ============================================
+# НАСТРОЙКА ЛОГИРОВАНИЯ ДЛЯ RENDER
+# ============================================
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    stream=sys.stdout,
+    force=True
+)
+
+# Принудительно сбрасываем буфер вывода
+sys.stdout.reconfigure(line_buffering=True)
+
+logging.info("🚀 Запуск бота Destiny...")
+logging.info("=" * 50)
+
 from database import engine, Base, get_db
 from models import User, Character
 
-# Импортируем все обработчики
-from handlers import start, game, pets, exchange, rainbow, premium, nft, guild, pvp, codex, events, shop, top, admin
-
-print("🚀 Запуск бота Destiny...")
-print("=" * 50)
+# Импортируем ВСЕ обработчики
+from handlers import (
+    game, pets, exchange, rainbow, premium, nft, 
+    guild, pvp, codex, events, shop, top, admin
+)
+from handlers.start import start_command, help_command, handle_webapp_data
 
 # ============================================
 # ПОДКЛЮЧЕНИЕ К БАЗЕ ДАННЫХ
 # ============================================
 try:
-    # Создаем таблицы в базе данных
     Base.metadata.create_all(bind=engine)
-    print("✅ База данных подключена")
+    logging.info("✅ База данных подключена")
 except Exception as e:
-    print(f"❌ Ошибка подключения к БД: {e}")
+    logging.error(f"❌ Ошибка подключения к БД: {e}")
+    logging.error("👉 Проверь переменную DATABASE_URL в настройках Render")
 
 # ============================================
 # ТОКЕН БОТА
 # ============================================
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 if not BOT_TOKEN:
-    print("❌ ОШИБКА: BOT_TOKEN не задан!")
-    print("👉 Добавь переменную окружения BOT_TOKEN в настройках Render")
+    logging.error("❌ ОШИБКА: BOT_TOKEN не задан!")
+    logging.error("👉 Добавь переменную окружения BOT_TOKEN в настройках Render")
     exit(1)
 
-print(f"✅ BOT_TOKEN получен (первые 10 символов: {BOT_TOKEN[:10]}...)")
+logging.info(f"✅ BOT_TOKEN получен (первые 10 символов: {BOT_TOKEN[:10]}...)")
 
 # ============================================
 # СОЗДАНИЕ БОТА И ПРОВЕРКА ТОКЕНА
 # ============================================
 try:
     bot = telebot.TeleBot(BOT_TOKEN)
-    print("✅ Экземпляр бота создан")
+    logging.info("✅ Экземпляр бота создан")
     
-    # Проверяем, что токен рабочий
     me = bot.get_me()
-    print(f"✅ Бот авторизован как: @{me.username} (ID: {me.id})")
-    print(f"📝 Имя бота: {me.first_name}")
+    logging.info(f"✅ Бот авторизован как: @{me.username} (ID: {me.id})")
+    logging.info(f"📝 Имя бота: {me.first_name}")
 except Exception as e:
-    print(f"❌ Ошибка авторизации бота: {e}")
-    print("👉 Проверь, что BOT_TOKEN правильный и бот существует")
-    print("👉 Токен должен выглядеть так: 1234567890:ABCdefGHIjklMNOpqrSTUvwxYZ")
+    logging.error(f"❌ Ошибка авторизации бота: {e}")
+    logging.error("👉 Проверь, что BOT_TOKEN правильный и бот существует")
     exit(1)
 
 # ============================================
-# ЗАГРУЗКА ДАННЫХ ИЗ JSON
+# ЗАГРУЗКА ВСЕХ JSON ФАЙЛОВ
 # ============================================
-
 DATA_DIR = Path(__file__).parent.parent / "data"
-print(f"📁 Путь к данным: {DATA_DIR}")
+logging.info(f"📁 Путь к данным: {DATA_DIR}")
 
 def load_json(filename):
-    """Загрузить JSON файл из папки data"""
     filepath = DATA_DIR / filename
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             data = json.load(f)
-            print(f"✅ Загружен {filename}")
+            logging.info(f"✅ Загружен {filename}")
             return data
     except FileNotFoundError:
-        print(f"⚠️ Файл не найден: {filename}")
+        logging.warning(f"⚠️ Файл не найден: {filename}")
         return {}
     except json.JSONDecodeError as e:
-        print(f"❌ Ошибка в JSON файле {filename}: {e}")
+        logging.error(f"❌ Ошибка в JSON {filename}: {e}")
         return {}
     except Exception as e:
-        print(f"❌ Ошибка загрузки {filename}: {e}")
+        logging.error(f"❌ Ошибка загрузки {filename}: {e}")
         return {}
 
-# Загружаем все JSON файлы
-print("🚀 Загрузка JSON файлов...")
+logging.info("🚀 Загрузка JSON файлов...")
+
+# Основные JSON
 locations_data = load_json("locations.json")
 enemies_data = load_json("enemies.json")
 items_data = load_json("items.json")
@@ -88,26 +104,28 @@ crafting_data = load_json("crafting.json")
 classes_data = load_json("classes.json")
 quests_data = load_json("quests.json")
 house_data = load_json("house.json")
+
+# Премиум и NFT
 premium_data = load_json("premium.json")
 nft_data = load_json("nft.json")
-rainbow_data = load_json("rainbow.json")
-events_data = load_json("events.json")
-codex_data = load_json("codex.json")
-biomes_data = load_json("biomes.json")
-pets_data = load_json("pets.json")
-secrets_data = load_json("secrets.json")
-exchange_data = load_json("exchange.json")
 
-print("✅ Все JSON загружены")
+# Специальные системы
+rainbow_data = load_json("rainbow.json")      # радужные камни
+events_data = load_json("events.json")        # ивенты
+codex_data = load_json("codex.json")          # энциклопедия
+biomes_data = load_json("biomes.json")        # биомы
+pets_data = load_json("pets.json")            # питомцы
+secrets_data = load_json("secrets.json")      # секреты
+exchange_data = load_json("exchange.json")    # обмен валют
+islands_data = load_json("islands.json")      # острова (новое!)
+
+logging.info("✅ Все JSON загружены")
 
 # ============================================
 # ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
 # ============================================
-
 def get_or_create_player(telegram_id, username=None, first_name=None):
-    """Получить игрока из БД или создать нового"""
     db = get_db()
-    
     user = db.query(User).filter(User.telegram_id == telegram_id).first()
     
     if not user:
@@ -124,7 +142,7 @@ def get_or_create_player(telegram_id, username=None, first_name=None):
         db.add(character)
         db.commit()
         db.refresh(character)
-        print(f"👤 Создан новый пользователь: {telegram_id}")
+        logging.info(f"👤 Создан новый пользователь: {telegram_id}")
     else:
         character = db.query(Character).filter(Character.user_id == user.id).first()
         user.last_active = datetime.utcnow()
@@ -134,14 +152,12 @@ def get_or_create_player(telegram_id, username=None, first_name=None):
     return user, character
 
 def save_character(character):
-    """Сохранить изменения персонажа"""
     db = get_db()
     db.merge(character)
     db.commit()
     db.close()
 
 def refresh_energy(character):
-    """Обновить энергию (10 в час)"""
     now = int(time.time())
     if character.last_update == 0:
         character.last_update = now
@@ -154,7 +170,6 @@ def refresh_energy(character):
         save_character(character)
 
 def refresh_magic(character):
-    """Обновить магию (5 в час)"""
     now = int(time.time())
     if character.last_magic_update == 0:
         character.last_magic_update = now
@@ -167,7 +182,6 @@ def refresh_magic(character):
         save_character(character)
 
 def calculate_damage(character):
-    """Посчитать урон"""
     weapon_damage = 0
     inventory = character.get_inventory()
     for item_id in inventory:
@@ -178,7 +192,6 @@ def calculate_damage(character):
     return character.base_damage + weapon_damage + (character.strength - 1)
 
 def calculate_defense(character):
-    """Посчитать защиту"""
     defense = character.defense_bonus
     inventory = character.get_inventory()
     for item_id in inventory:
@@ -189,17 +202,13 @@ def calculate_defense(character):
     return defense + (character.vitality - 1)
 
 def check_daily_login(character):
-    """Проверить ежедневный вход"""
     now = int(time.time())
     last_login = character.last_login if hasattr(character, 'last_login') else 0
     
-    # Прошло больше суток?
     if now - last_login > 86400:
-        # Сбрасываем стрик, если прошло больше 48 часов
         if now - last_login > 172800:
             character.login_streak = 0
         
-        # Увеличиваем счётчик дней
         character.login_streak += 1
         if character.login_streak > 7:
             character.login_streak = 1
@@ -210,7 +219,6 @@ def check_daily_login(character):
     return False, 0
 
 def get_daily_reward(streak):
-    """Получить награду за ежедневный вход"""
     rewards = {
         1: {"gold": 100, "dstn": 5, "items": ["health_potion"]},
         2: {"gold": 200, "dstn": 10, "items": ["mana_potion"]},
@@ -222,82 +230,18 @@ def get_daily_reward(streak):
     }
     return rewards.get(streak, rewards[1])
 
-# ============================================
-# ⚠️ КОМАНДА /start ЗАКОММЕНТИРОВАНА - используется из handlers/start.py
-# ============================================
-
-# @bot.message_handler(commands=['start'])
-# def start_command(message):
-#     user_id = message.from_user.id
-#     username = message.from_user.username
-#     first_name = message.from_user.first_name
-#
-#     user, character = get_or_create_player(user_id, username, first_name)
-#
-#     refresh_energy(character)
-#     refresh_magic(character)
-#    
-#     # Проверяем ежедневный вход
-#     claimed, streak = check_daily_login(character)
-#     if claimed:
-#         reward = get_daily_reward(streak)
-#         character.gold += reward["gold"]
-#         character.destiny_tokens += reward["dstn"]
-#         for item in reward["items"]:
-#             if isinstance(item, list):
-#                 for _ in range(item[1]):
-#                     character.add_item(item[0])
-#             else:
-#                 character.add_item(item)
-#         save_character(character)
-#        
-#         bot.send_message(
-#             message.chat.id,
-#             f"🎁 *Ежедневная награда!*\nДень {streak}\n"
-#             f"💰 +{reward['gold']} золота\n"
-#             f"🪙 +{reward['dstn']} DSTN",
-#             parse_mode='Markdown'
-#         )
-#
-#     # Создаем клавиатуру с WebApp
-#     markup = InlineKeyboardMarkup()
-#     webapp_button = InlineKeyboardButton(
-#         text="🎮 ОТКРЫТЬ ИГРУ",
-#         web_app=WebAppInfo(url="https://destiny-1-6m57.onrender.com")
-#     )
-#     markup.add(webapp_button)
-#    
-#     # Добавляем кнопки для команд
-#     markup.row(
-#         InlineKeyboardButton("📊 Статус", callback_data="game:status"),
-#         InlineKeyboardButton("🎒 Инвентарь", callback_data="game:inventory")
-#     )
-#     markup.row(
-#         InlineKeyboardButton("🗺️ Карта", callback_data="game:map"),
-#         InlineKeyboardButton("📜 Квесты", callback_data="game:quests")
-#     )
-#     markup.row(
-#         InlineKeyboardButton("🐾 Питомцы", callback_data="pets:menu"),
-#         InlineKeyboardButton("💱 Обмен", callback_data="exchange:menu")
-#     )
-#
-#     bot.send_message(
-#         message.chat.id,
-#         f"👋 *Добро пожаловать, {first_name}!*\n\n"
-#         f"⚡ Энергия: {character.energy}/{character.max_energy}\n"
-#         f"💰 Золото: {character.gold}\n"
-#         f"🪙 DSTN: {character.destiny_tokens}\n"
-#         f"❤️ Здоровье: {character.health}/{character.max_health}\n\n"
-#         f"📅 Стрик входа: {character.login_streak or 0} дней",
-#         reply_markup=markup,
-#         parse_mode='Markdown'
-#     )
-
-print("📝 Регистрация обработчиков команд...")
+logging.info("📝 Регистрация обработчиков команд...")
 
 # ============================================
-# КОМАНДА /profile
+# ОСНОВНЫЕ КОМАНДЫ
 # ============================================
+@bot.message_handler(commands=['start'])
+def start_handler(message):
+    start_command(message, bot)
+
+@bot.message_handler(commands=['help'])
+def help_handler(message):
+    help_command(message, bot)
 
 @bot.message_handler(commands=['profile'])
 def profile_command(message):
@@ -322,12 +266,7 @@ def profile_command(message):
     
     markup = InlineKeyboardMarkup()
     markup.add(InlineKeyboardButton("🔙 Назад", callback_data="game:back_to_start"))
-    
     bot.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
-
-# ============================================
-# КОМАНДА /status
-# ============================================
 
 @bot.message_handler(commands=['status'])
 def status_command(message):
@@ -354,12 +293,7 @@ def status_command(message):
     
     markup = InlineKeyboardMarkup()
     markup.add(InlineKeyboardButton("🔙 Назад", callback_data="game:back_to_start"))
-    
     bot.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
-
-# ============================================
-# КОМАНДА /inventory
-# ============================================
 
 @bot.message_handler(commands=['inventory'])
 def inventory_command(message):
@@ -372,16 +306,10 @@ def inventory_command(message):
         text = "🎒 *Инвентарь пуст*"
     else:
         text = "🎒 *Твой инвентарь:*\n\n"
-        
-        # Группируем предметы
         items_count = {}
         for item_id in inventory:
-            if item_id in items_count:
-                items_count[item_id] += 1
-            else:
-                items_count[item_id] = 1
+            items_count[item_id] = items_count.get(item_id, 0) + 1
         
-        # Показываем с количеством
         for item_id, count in items_count.items():
             if item_id in items_data.get("items", {}):
                 item = items_data["items"][item_id]
@@ -391,17 +319,11 @@ def inventory_command(message):
                 if item.get('rarity'):
                     text += f" ({item['rarity']})"
                 text += "\n"
-        
         text += f"\n📦 Всего предметов: {len(inventory)}"
     
     markup = InlineKeyboardMarkup()
     markup.add(InlineKeyboardButton("🔙 Назад", callback_data="game:back_to_start"))
-    
     bot.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
-
-# ============================================
-# КОМАНДА /location
-# ============================================
 
 @bot.message_handler(commands=['location'])
 def location_command(message):
@@ -412,58 +334,31 @@ def location_command(message):
     location = locations_data.get("locations", {}).get(location_id, {})
     
     if not location:
-        location = {
-            "name": "Неизвестная локация",
-            "description": "Ты находишься в неизвестном месте."
-        }
+        location = {"name": "Неизвестная локация", "description": "Ты в неизвестном месте."}
     
-    text = f"📍 *{location.get('name', 'Локация')}*\n\n"
-    text += location.get('description', '')
+    text = f"📍 *{location.get('name', 'Локация')}*\n\n{location.get('description', '')}"
     text += f"\n\n⚡ Энергия: {character.energy}/{character.max_energy}"
     
-    # Добавляем информацию о монстрах
     if location.get('mobs'):
         text += f"\n\n👾 Враги: {', '.join(location['mobs'])}"
     
     markup = InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton("🗺️ Карта мира", callback_data="game:map"))
+    markup.add(InlineKeyboardButton("🗺️ Карта", callback_data="game:map"))
     markup.add(InlineKeyboardButton("🔙 Назад", callback_data="game:back_to_start"))
-    
     bot.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
-
-# ============================================
-# КОМАНДА /map
-# ============================================
 
 @bot.message_handler(commands=['map'])
 def map_command(message):
     text = "🗺️ *Карта мира*\n\n"
-    text += "🌲 *Начальные локации (1-10)*\n"
-    text += "├ Лесная опушка\n"
-    text += "├ Деревенская площадь\n"
-    text += "└ Берег озера\n\n"
-    text += "⛰️ *Средние локации (10-20)*\n"
-    text += "├ Горная тропа\n"
-    text += "├ Шахта\n"
-    text += "└ Древние руины\n\n"
-    text += "🔥 *Сложные локации (20-30)*\n"
-    text += "├ Жерло вулкана\n"
-    text += "├ Логово дракона\n"
-    text += "└ Лабиринт\n\n"
-    text += "🏜️ *Биомы (30-50)*\n"
-    text += "├ Пустыня забвения\n"
-    text += "├ Болото туманов\n"
-    text += "└ Ледяные равнины"
+    text += "🌲 *Начальные (1-10)*\n├ Лесная опушка\n├ Деревня\n└ Берег озера\n\n"
+    text += "⛰️ *Средние (10-20)*\n├ Горная тропа\n├ Шахта\n└ Руины\n\n"
+    text += "🔥 *Сложные (20-30)*\n├ Вулкан\n├ Логово дракона\n└ Лабиринт\n\n"
+    text += "🏜️ *Биомы (30-50)*\n├ Пустыня\n├ Болото\n└ Ледяные равнины"
     
     markup = InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton("📍 Текущая локация", callback_data="game:location"))
+    markup.add(InlineKeyboardButton("📍 Текущая", callback_data="game:location"))
     markup.add(InlineKeyboardButton("🔙 Назад", callback_data="game:back_to_start"))
-    
     bot.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
-
-# ============================================
-# КОМАНДА /class
-# ============================================
 
 @bot.message_handler(commands=['class'])
 def class_command(message):
@@ -484,30 +379,17 @@ def class_command(message):
     
     bot.send_message(
         message.chat.id,
-        "🌟 *Выбери свой класс:*\n\n"
-        "⚔️ *Мечник* - высокий урон, криты\n"
-        "🏹 *Лучник* - дальний бой, уклонение\n"
-        "🔮 *Маг* - магический урон, много маны\n"
-        "🛡️ *Страж* - защита, много здоровья",
-        reply_markup=markup,
-        parse_mode='Markdown'
+        "🌟 *Выбери класс:*\n\n"
+        "⚔️ Мечник - урон, криты\n"
+        "🏹 Лучник - дальний бой, уклонение\n"
+        "🔮 Маг - магия, мана\n"
+        "🛡️ Страж - защита, здоровье",
+        reply_markup=markup, parse_mode='Markdown'
     )
-
-# ============================================
-# КОМАНДА /craft
-# ============================================
 
 @bot.message_handler(commands=['craft'])
 def craft_command(message):
-    text = "🔨 *Крафт предметов*\n\n"
-    text += "Выбери категорию:\n\n"
-    text += "⚔️ Оружие\n"
-    text += "🛡️ Броня\n"
-    text += "🛠️ Инструменты\n"
-    text += "⚗️ Зелья\n"
-    text += "🍲 Еда\n"
-    text += "🪱 Наживки"
-    
+    text = "🔨 *Крафт*\n\nВыбери категорию:"
     markup = InlineKeyboardMarkup(row_width=2)
     markup.add(
         InlineKeyboardButton("⚔️ Оружие", callback_data="game:craft:weapons"),
@@ -518,126 +400,65 @@ def craft_command(message):
         InlineKeyboardButton("🪱 Наживки", callback_data="game:craft:bait")
     )
     markup.add(InlineKeyboardButton("🔙 Назад", callback_data="game:back_to_start"))
-    
     bot.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
-
-# ============================================
-# КОМАНДА /house
-# ============================================
 
 @bot.message_handler(commands=['house'])
 def house_command(message):
     user_id = message.from_user.id
     user, character = get_or_create_player(user_id)
-    
     house_level = character.house_level or 0
     
     if house_level == 0:
-        text = "🏗️ *У тебя пока нет домика*\n\n"
-        text += "Отправляйся на Берег озера, чтобы построить его!\n"
-        text += "Требуется: 100🪵, 100🪨, 20🔩, 10🪟"
+        text = "🏗️ *Нет домика*\nПострой на берегу озера:\n100🪵 100🪨 20🔩 10🪟"
     else:
         house_info = house_data.get("house", {}).get("levels", {}).get(str(house_level), {})
-        text = f"🏠 *Твой домик (уровень {house_level})*\n\n"
-        text += house_info.get('description', '') + "\n\n"
-        text += "⚡ Отдых восстанавливает больше энергии\n"
-        text += "📦 Есть сундук для хранения\n"
-        if house_level >= 2:
-            text += "🔥 Есть мангал для готовки\n"
-        if house_level >= 3:
-            text += "🪟 Есть печь для стекла\n"
-        if house_level >= 4:
-            text += "✨ Есть телепорт\n"
-        if house_level >= 5:
-            text += "🏠 Есть баня и теплица\n"
+        text = f"🏠 *Домик {house_level} ур.*\n{house_info.get('description', '')}\n\n"
+        text += "⚡ Отдых +энергия\n📦 Сундук\n"
+        if house_level >= 2: text += "🔥 Мангал\n"
+        if house_level >= 3: text += "🪟 Печь для стекла\n"
+        if house_level >= 4: text += "✨ Телепорт\n"
+        if house_level >= 5: text += "🏠 Баня и теплица\n"
     
     markup = InlineKeyboardMarkup()
     if house_level == 0:
         markup.add(InlineKeyboardButton("🏗️ Построить", callback_data="game:house:build"))
     else:
-        markup.add(InlineKeyboardButton("🚪 Войти в домик", callback_data="game:house:enter"))
+        markup.add(InlineKeyboardButton("🚪 Войти", callback_data="game:house:enter"))
     markup.add(InlineKeyboardButton("🔙 Назад", callback_data="game:back_to_start"))
-    
     bot.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
 
 # ============================================
-# КОМАНДА /help
+# ОБРАБОТКА КОЛБЭКОВ
 # ============================================
-
-@bot.message_handler(commands=['help'])
-def help_command(message):
-    text = "❓ *Помощь*\n\n"
-    text += "📋 *Основные команды:*\n"
-    text += "/start - начать игру\n"
-    text += "/profile - профиль\n"
-    text += "/status - статус\n"
-    text += "/inventory - инвентарь\n"
-    text += "/location - локация\n"
-    text += "/map - карта мира\n\n"
-    text += "⚔️ *Боевые:*\n"
-    text += "/class - выбор класса\n"
-    text += "/pvp - PvP арена\n\n"
-    text += "🏠 *Домик:*\n"
-    text += "/house - домик\n"
-    text += "/craft - крафт\n\n"
-    text += "🐾 *Питомцы:*\n"
-    text += "/pets - питомцы\n\n"
-    text += "👥 *Социальное:*\n"
-    text += "/guild - гильдия\n"
-    text += "/top - рейтинги\n\n"
-    text += "📚 *Информация:*\n"
-    text += "/codex - энциклопедия\n"
-    text += "/events - ивенты\n\n"
-    text += "💎 *Премиум:*\n"
-    text += "/premium - подписка\n"
-    text += "/nft - NFT осколки\n"
-    text += "/rainbow - радужные камни\n"
-    text += "/shop - магазин\n\n"
-    text += "💱 *Экономика:*\n"
-    text += "/exchange - обмен TON/DSTN"
-    
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
-
-# ============================================
-# ОБРАБОТКА КОЛБЭКОВ (КНОПОК)
-# ============================================
-
 @bot.callback_query_handler(func=lambda call: True)
 def handle_callback(call):
-    """Обработка всех колбэков"""
     try:
         parts = call.data.split(':')
         handler = parts[0]
         
         if handler == "game":
-            # Обработка игровых кнопок
             if len(parts) > 1:
                 action = parts[1]
                 
                 if action == "back_to_start":
-                    # Вызываем start_command из handlers
-                    from handlers.start import start_command
-                    start_command(call.message, bot, get_or_create_player, locations_data)
-                
+                    start_command(call.message, bot)
                 elif action == "status":
                     status_command(call.message)
-                
                 elif action == "inventory":
                     inventory_command(call.message)
-                
                 elif action == "map":
                     map_command(call.message)
-                
                 elif action == "location":
                     location_command(call.message)
-                
+                elif action == "house":
+                    house_command(call.message)
                 elif action.startswith("class:"):
                     class_name = action.split(':')[1]
                     user_id = call.from_user.id
                     user, character = get_or_create_player(user_id)
                     
                     if character.player_class:
-                        bot.answer_callback_query(call.id, "❌ Ты уже выбрал класс")
+                        bot.answer_callback_query(call.id, "❌ Класс уже выбран")
                         return
                     
                     character.player_class = class_name
@@ -660,101 +481,54 @@ def handle_callback(call):
                     save_character(character)
                     bot.answer_callback_query(call.id, f"✅ Ты стал {class_name}!")
                     bot.delete_message(call.message.chat.id, call.message.message_id)
-                    # Вызываем start_command из handlers
-                    from handlers.start import start_command
-                    start_command(call.message, bot, get_or_create_player, locations_data)
-                
+                    start_command(call.message, bot)
                 else:
-                    bot.answer_callback_query(call.id, "⏳ Эта функция в разработке")
+                    bot.answer_callback_query(call.id, "⏳ В разработке")
         
-        elif handler == "pets":
-            if hasattr(pets, 'handle_callback'):
-                pets.handle_callback(call, bot, get_or_create_player, pets_data)
-            else:
-                bot.answer_callback_query(call.id, "🐾 Система питомцев в разработке")
-        
-        elif handler == "exchange":
-            if hasattr(exchange, 'handle_callback'):
-                exchange.handle_callback(call, bot, get_or_create_player, exchange_data)
-            else:
-                bot.answer_callback_query(call.id, "💱 Обменник в разработке")
-        
-        elif handler == "rainbow":
-            if hasattr(rainbow, 'handle_callback'):
-                rainbow.handle_callback(call, bot, get_or_create_player, rainbow_data)
-            else:
-                bot.answer_callback_query(call.id, "🌈 Радужные камни в разработке")
-        
-        elif handler == "premium":
-            if hasattr(premium, 'handle_callback'):
-                premium.handle_callback(call, bot, get_or_create_player, premium_data)
-            else:
-                bot.answer_callback_query(call.id, "👑 Премиум в разработке")
-        
-        elif handler == "nft":
-            if hasattr(nft, 'handle_callback'):
-                nft.handle_callback(call, bot, get_or_create_player, nft_data)
-            else:
-                bot.answer_callback_query(call.id, "💎 NFT в разработке")
-        
-        elif handler == "guild":
-            if hasattr(guild, 'handle_callback'):
-                guild.handle_callback(call, bot, get_or_create_player)
-            else:
-                bot.answer_callback_query(call.id, "🏛️ Гильдии в разработке")
-        
-        elif handler == "pvp":
-            if hasattr(pvp, 'handle_callback'):
-                pvp.handle_callback(call, bot, get_or_create_player)
-            else:
-                bot.answer_callback_query(call.id, "⚔️ PvP в разработке")
-        
-        elif handler == "codex":
-            if hasattr(codex, 'handle_callback'):
-                codex.handle_callback(call, bot, codex_data)
-            else:
-                bot.answer_callback_query(call.id, "📚 Энциклопедия в разработке")
-        
-        elif handler == "events":
-            if hasattr(events, 'handle_callback'):
-                events.handle_callback(call, bot, events_data)
-            else:
-                bot.answer_callback_query(call.id, "🎪 Ивенты в разработке")
-        
-        elif handler == "shop":
-            if hasattr(shop, 'handle_callback'):
-                shop.handle_callback(call, bot, get_or_create_player, items_data)
-            else:
-                bot.answer_callback_query(call.id, "🏪 Магазин в разработке")
-        
-        elif handler == "top":
-            if hasattr(top, 'handle_callback'):
-                top.handle_callback(call, bot, get_or_create_player)
-            else:
-                bot.answer_callback_query(call.id, "🏆 Рейтинги в разработке")
-        
-        elif handler == "admin":
-            if hasattr(admin, 'handle_callback'):
-                admin.handle_callback(call, bot, get_or_create_player)
-            else:
-                bot.answer_callback_query(call.id, "👨‍💻 Админка")
-        
+        # Подключаем все остальные модули
+        elif handler == "pets" and hasattr(pets, 'handle_callback'):
+            pets.handle_callback(call, bot, get_or_create_player, pets_data)
+        elif handler == "exchange" and hasattr(exchange, 'handle_callback'):
+            exchange.handle_callback(call, bot, get_or_create_player, exchange_data)
+        elif handler == "rainbow" and hasattr(rainbow, 'handle_callback'):
+            rainbow.handle_callback(call, bot, get_or_create_player, rainbow_data)
+        elif handler == "premium" and hasattr(premium, 'handle_callback'):
+            premium.handle_callback(call, bot, get_or_create_player, premium_data)
+        elif handler == "nft" and hasattr(nft, 'handle_callback'):
+            nft.handle_callback(call, bot, get_or_create_player, nft_data)
+        elif handler == "guild" and hasattr(guild, 'handle_callback'):
+            guild.handle_callback(call, bot, get_or_create_player)
+        elif handler == "pvp" and hasattr(pvp, 'handle_callback'):
+            pvp.handle_callback(call, bot, get_or_create_player)
+        elif handler == "codex" and hasattr(codex, 'handle_callback'):
+            codex.handle_callback(call, bot, codex_data)
+        elif handler == "events" and hasattr(events, 'handle_callback'):
+            events.handle_callback(call, bot, events_data)
+        elif handler == "shop" and hasattr(shop, 'handle_callback'):
+            shop.handle_callback(call, bot, get_or_create_player, items_data)
+        elif handler == "top" and hasattr(top, 'handle_callback'):
+            top.handle_callback(call, bot, get_or_create_player)
+        elif handler == "admin" and hasattr(admin, 'handle_callback'):
+            admin.handle_callback(call, bot, get_or_create_player)
         else:
-            bot.answer_callback_query(call.id, "⏳ Эта функция в разработке")
+            bot.answer_callback_query(call.id, "⏳ Модуль в разработке")
     
     except Exception as e:
-        print(f"❌ Ошибка в handle_callback: {e}")
-        bot.answer_callback_query(call.id, "⚠️ Произошла ошибка")
+        logging.error(f"❌ Ошибка в handle_callback: {e}")
+        bot.answer_callback_query(call.id, "⚠️ Ошибка")
 
-print("✅ Обработчики команд зарегистрированы")
+# ============================================
+# WEBAPP DATA
+# ============================================
+@bot.message_handler(content_types=['web_app_data'])
+def webapp_data_handler(message):
+    handle_webapp_data(message, bot)
 
 # ============================================
 # HTTP СЕРВЕР ДЛЯ RENDER
 # ============================================
-
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import threading
-import os
 
 class HealthHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -770,29 +544,28 @@ def run_health_server():
     try:
         port = int(os.getenv("PORT", 10000))
         server = HTTPServer(('0.0.0.0', port), HealthHandler)
-        print(f"✅ Health server running on port {port}")
+        logging.info(f"✅ Health server running on port {port}")
         server.serve_forever()
     except Exception as e:
-        print(f"❌ Health server error: {e}")
+        logging.error(f"❌ Health server error: {e}")
 
-# Запускаем health-сервер в отдельном потоке
 health_thread = threading.Thread(target=run_health_server, daemon=True)
 health_thread.start()
 
 # ============================================
 # ЗАПУСК БОТА
 # ============================================
-
-print("=" * 50)
-print("🤖 Destiny Bot v2.0 - ГОТОВ К РАБОТЕ")
-print("=" * 50)
-print("✅ Все системы запущены")
-print("🟢 Ожидание команд от пользователей...")
-print("=" * 50)
+logging.info("=" * 50)
+logging.info("🤖 Destiny Bot v2.0 - ГОТОВ К РАБОТЕ")
+logging.info("=" * 50)
+logging.info("✅ Все системы запущены")
+logging.info(f"✅ Загружено модулей: pets, rainbow, exchange, premium, nft, guild, pvp, codex, events, shop, top, admin")
+logging.info("🟢 Ожидание команд...")
+logging.info("=" * 50)
 
 if __name__ == "__main__":
     try:
         bot.infinity_polling()
     except Exception as e:
-        print(f"❌ Ошибка бота: {e}")
+        logging.error(f"❌ Ошибка бота: {e}")
         time.sleep(5)
