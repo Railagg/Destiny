@@ -1,1 +1,12 @@
-
+{
+  "enemies": {
+    "wolf": {
+      "id": "wolf",
+      "name": "🐺 Волк",
+      "health": 50,
+      "damage": 8,
+      "exp": 50,
+      "gold": 10
+    }
+  }
+}
