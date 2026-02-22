@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
 from routes import game, pvp, guild, premium, nft
+import utils
 
 # Создаем таблицы в базе данных
 Base.metadata.create_all(bind=engine)
