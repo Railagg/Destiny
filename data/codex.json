@@ -1,1 +1,2332 @@
-
+{
+  "codex": {
+    "bestiary": {
+      "name": "👾 БЕСТИАРИЙ",
+      "description": "Все существа, обитающие в мире Destiny",
+      "icon": "👾",
+      "color": "red",
+      "categories": {
+        "forest": {
+          "name": "🌲 Лесные",
+          "icon": "🌲",
+          "description": "Обитатели лесов и полян",
+          "creatures": [
+            {
+              "id": "wolf",
+              "name": "🐺 Волк",
+              "level": 2,
+              "health": 50,
+              "damage": 8,
+              "exp": 50,
+              "gold": 10,
+              "drops": ["волчья шкура", "волчий клык"],
+              "location": "🌲 Лесная опушка",
+              "lore": "Обычный лесной хищник. Держится стаями, но в одиночку не так опасен.",
+              "image": "codex_wolf.jpg",
+              "weakness": "серебро"
+            },
+            {
+              "id": "wolf_alpha",
+              "name": "🐺👑 Альфа-волк",
+              "level": 8,
+              "health": 150,
+              "damage": 18,
+              "exp": 200,
+              "gold": 50,
+              "drops": ["альфа-клык", "волчья шкура"],
+              "location": "🌳 Глухой лес",
+              "lore": "Вожак стаи. Крупнее, сильнее и умнее обычных волков. Может призвать подмогу.",
+              "image": "codex_alpha_wolf.jpg",
+              "weakness": "серебро"
+            },
+            {
+              "id": "wild_boar",
+              "name": "🐗 Дикий кабан",
+              "level": 4,
+              "health": 80,
+              "damage": 12,
+              "exp": 80,
+              "gold": 15,
+              "drops": ["кабанье мясо", "кабанья шкура"],
+              "location": "🌳 Глухой лес",
+              "lore": "Агрессивный зверь с острыми клыками. Защищает свою территорию.",
+              "image": "codex_boar.jpg"
+            },
+            {
+              "id": "bear",
+              "name": "🐻 Бурый медведь",
+              "level": 8,
+              "health": 150,
+              "damage": 18,
+              "exp": 120,
+              "gold": 30,
+              "drops": ["медвежатина", "медвежья шкура", "медвежий коготь"],
+              "location": "⛰️ Горная тропа",
+              "lore": "Хозяин леса. Огромный и сильный, лучше не злить.",
+              "image": "codex_bear.jpg"
+            },
+            {
+              "id": "moose",
+              "name": "🦌 Лось",
+              "level": 6,
+              "health": 120,
+              "damage": 12,
+              "exp": 90,
+              "gold": 20,
+              "drops": ["лосятина", "лосиная шкура", "лосиный рог"],
+              "location": "🌲 Лесная опушка",
+              "lore": "Величественный лесной великан с огромными рогами. Обычно мирный, но в сезон гона опасен.",
+              "image": "codex_moose.jpg"
+            },
+            {
+              "id": "fox",
+              "name": "🦊 Лиса",
+              "level": 3,
+              "health": 40,
+              "damage": 6,
+              "exp": 40,
+              "gold": 8,
+              "drops": ["лисий мех"],
+              "location": "🌲 Лесная опушка",
+              "lore": "Хитрая и ловкая, редко вступает в бой.",
+              "image": "codex_fox.jpg"
+            }
+          ]
+        },
+        
+        "mountain": {
+          "name": "⛰️ Горные",
+          "icon": "⛰️",
+          "description": "Обитатели гор и скал",
+          "creatures": [
+            {
+              "id": "goat",
+              "name": "🐐 Горный козёл",
+              "level": 5,
+              "health": 70,
+              "damage": 8,
+              "exp": 60,
+              "gold": 12,
+              "drops": ["козья шерсть", "козлятина"],
+              "location": "⛰️ Горная тропа",
+              "lore": "Ловко прыгает по скалам, редко вступает в бой."
+            },
+            {
+              "id": "eagle",
+              "name": "🦅 Орёл",
+              "level": 7,
+              "health": 60,
+              "damage": 10,
+              "exp": 70,
+              "gold": 15,
+              "drops": ["перо", "клюв"],
+              "location": "🏔️ Горная вершина",
+              "lore": "Царь птиц, атакует с неба."
+            }
+          ]
+        },
+        
+        "mine": {
+          "name": "⛏️ Подземные",
+          "icon": "⛏️",
+          "description": "Обитатели шахт и пещер",
+          "creatures": [
+            {
+              "id": "giant_rat",
+              "name": "🐀 Гигантская крыса",
+              "level": 1,
+              "health": 30,
+              "damage": 4,
+              "exp": 20,
+              "gold": 3,
+              "drops": ["крысиный хвост"],
+              "location": "⛏️ Шахта",
+              "lore": "Расплодилась в тёмных местах. Не опасна поодиночке, но в стае может быть проблемой."
+            },
+            {
+              "id": "cave_bat",
+              "name": "🦇 Пещерная летучая мышь",
+              "level": 1,
+              "health": 25,
+              "damage": 3,
+              "exp": 15,
+              "gold": 2,
+              "drops": ["крыло летучей мыши"],
+              "location": "⛏️ Шахта",
+              "lore": "Обитает в пещерах и шахтах. Ориентируется с помощью эхолокации."
+            },
+            {
+              "id": "cave_spider",
+              "name": "🕷️ Пещерный паук",
+              "level": 3,
+              "health": 45,
+              "damage": 7,
+              "exp": 35,
+              "gold": 6,
+              "drops": ["паучий шёлк", "паучий яд"],
+              "location": "⛏️ Шахта",
+              "lore": "Ядовитый паук, плетущий сети в тёмных углах."
+            },
+            {
+              "id": "skeleton_warrior",
+              "name": "💀 Скелет-воин",
+              "level": 5,
+              "health": 60,
+              "damage": 10,
+              "exp": 50,
+              "gold": 12,
+              "drops": ["древний меч", "древний щит", "кость"],
+              "location": "⛏️ Шахта",
+              "lore": "Древний воин, поднятый тёмной магией. В руках держит ржавое оружие."
+            },
+            {
+              "id": "stone_golem",
+              "name": "🗿 Каменный голем",
+              "level": 12,
+              "health": 250,
+              "damage": 22,
+              "exp": 300,
+              "gold": 100,
+              "drops": ["сердце голема", "каменная броня", "кулак голема"],
+              "location": "⛏️ Шахта (4 уровень)",
+              "lore": "Древнее создание из камня, охраняющее подземные богатства. Медленный, но очень сильный."
+            }
+          ]
+        },
+        
+        "desert": {
+          "name": "🏜️ Пустынные",
+          "icon": "🏜️",
+          "description": "Обитатели бескрайних песков",
+          "creatures": [
+            {
+              "id": "scorpion",
+              "name": "🦂 Пустынный скорпион",
+              "level": 12,
+              "health": 120,
+              "damage": 15,
+              "exp": 100,
+              "gold": 25,
+              "drops": ["скорпионий хвост", "скорпионий яд", "панцирь"],
+              "location": "🏜️ Пустыня",
+              "lore": "Ядовитый хищник пустыни. Быстрый и опасный."
+            },
+            {
+              "id": "sand_worm",
+              "name": "🪱 Песчаный червь",
+              "level": 15,
+              "health": 200,
+              "damage": 18,
+              "exp": 150,
+              "gold": 40,
+              "drops": ["чешуя червя", "песчаная кислота"],
+              "location": "🏜️ Пустыня",
+              "lore": "Огромный червь, обитающий в песках. Выпрыгивает из-под земли, застигая врасплох."
+            },
+            {
+              "id": "sand_dragon",
+              "name": "🐉 Песчаный дракон",
+              "level": 20,
+              "health": 600,
+              "damage": 35,
+              "exp": 500,
+              "gold": 300,
+              "drops": ["песчаное сердце", "золотая чешуя", "пустынная роза"],
+              "location": "🏜️ Пустыня",
+              "lore": "Король пустыни. Его чешуя переливается золотом в лучах солнца.",
+              "boss": true
+            }
+          ]
+        },
+        
+        "swamp": {
+          "name": "🌿 Болотные",
+          "icon": "🌿",
+          "description": "Обитатели зловонных топей",
+          "creatures": [
+            {
+              "id": "zombie",
+              "name": "🧟 Зомби",
+              "level": 8,
+              "health": 80,
+              "damage": 8,
+              "exp": 60,
+              "gold": 10,
+              "drops": ["гнилая плоть", "старая ткань"],
+              "location": "🌿 Болото",
+              "lore": "Поднятый из болота мертвец. Медленный, но упорный."
+            },
+            {
+              "id": "witch",
+              "name": "🧙 Болотная ведьма",
+              "level": 10,
+              "health": 60,
+              "damage": 15,
+              "exp": 80,
+              "gold": 25,
+              "drops": ["магическая пыль", "зелье ведьмы", "шляпа ведьмы"],
+              "location": "🌿 Болото",
+              "lore": "Старуха, живущая на болоте. Варит зелья и насылает проклятия."
+            },
+            {
+              "id": "swamp_monster",
+              "name": "👹 Болотный монстр",
+              "level": 18,
+              "health": 500,
+              "damage": 30,
+              "exp": 400,
+              "gold": 200,
+              "drops": ["болотное сердце", "глаз монстра", "болотная эссенция"],
+              "location": "🌿 Болото",
+              "lore": "Древнее зло, пробудившееся в глубинах болота. Состоит из тины и гнили.",
+              "boss": true
+            }
+          ]
+        },
+        
+        "ice": {
+          "name": "❄️ Ледяные",
+          "icon": "❄️",
+          "description": "Обитатели ледяных равнин",
+          "creatures": [
+            {
+              "id": "ice_wolf",
+              "name": "❄️ Снежный волк",
+              "level": 22,
+              "health": 220,
+              "damage": 24,
+              "exp": 220,
+              "gold": 55,
+              "drops": ["ледяная шкура", "ледяной клык", "ледяное мясо"],
+              "location": "❄️ Ледяные равнины",
+              "lore": "Волк с белоснежной шерстью, адаптировавшийся к холоду."
+            },
+            {
+              "id": "white_bear",
+              "name": "🐻❄️ Белый медведь",
+              "level": 25,
+              "health": 350,
+              "damage": 32,
+              "exp": 300,
+              "gold": 80,
+              "drops": ["медвежатина", "ледяная шкура", "ледяное сердце"],
+              "location": "❄️ Ледяные равнины",
+              "lore": "Хозяин ледяных равнин. Огромный и свирепый хищник."
+            },
+            {
+              "id": "ice_spirit",
+              "name": "👻 Ледяной дух",
+              "level": 15,
+              "health": 100,
+              "damage": 20,
+              "exp": 150,
+              "gold": 35,
+              "drops": ["ледяной кристалл", "ледяная эссенция", "духовная пыль"],
+              "location": "❄️ Ледяные равнины",
+              "lore": "Бестелесное существо из чистого холода. Проходит сквозь стены."
+            },
+            {
+              "id": "ice_giant",
+              "name": "🧊 Ледяной гигант",
+              "level": 22,
+              "health": 800,
+              "damage": 45,
+              "exp": 600,
+              "gold": 300,
+              "drops": ["сердце ледяного гиганта", "ледяной кристалл", "ледяная броня"],
+              "location": "🧊 Ледяная пещера",
+              "lore": "Древний великан, заточённый в ледяной пещере. Его дыхание замораживает всё вокруг.",
+              "boss": true
+            }
+          ]
+        },
+        
+        "volcanic": {
+          "name": "🌋 Вулканические",
+          "icon": "🌋",
+          "description": "Обитатели огненных недр",
+          "creatures": [
+            {
+              "id": "fire_elemental",
+              "name": "🔥 Огненный элементаль",
+              "level": 15,
+              "health": 300,
+              "damage": 25,
+              "exp": 300,
+              "gold": 150,
+              "drops": ["огненный самоцвет", "ядро элементаля", "вулканический пепел"],
+              "location": "🌋 Жерло вулкана",
+              "lore": "Существо из чистого пламени. Чем меньше у него здоровья, тем ярче он горит.",
+              "boss": true
+            },
+            {
+              "id": "lava_golem",
+              "name": "🌋 Лавовый голем",
+              "level": 18,
+              "health": 350,
+              "damage": 30,
+              "exp": 300,
+              "gold": 150,
+              "drops": ["лавовое ядро", "обсидиан", "огненный самоцвет"],
+              "location": "🌋 Огненный остров",
+              "lore": "Голем, созданный из лавы и камня. От него исходит невыносимый жар."
+            }
+          ]
+        },
+        
+        "ancient": {
+          "name": "🏛️ Древние",
+          "icon": "🏛️",
+          "description": "Древние стражи и легендарные создания",
+          "creatures": [
+            {
+              "id": "ancient_guardian",
+              "name": "🗿 Древний страж",
+              "level": 18,
+              "health": 350,
+              "damage": 30,
+              "exp": 400,
+              "gold": 200,
+              "drops": ["древний ключ", "осколок стража", "сердце стража"],
+              "location": "🏛️ Древние руины",
+              "lore": "Огромная каменная статуя, ожившая древней магией. Стоит на страже тысячелетия.",
+              "boss": true
+            },
+            {
+              "id": "dragon",
+              "name": "🐉 Древний дракон",
+              "level": 25,
+              "health": 1000,
+              "damage": 40,
+              "exp": 1000,
+              "gold": 500,
+              "drops": ["сердце дракона", "чешуя дракона", "кровь дракона", "зуб дракона"],
+              "location": "🐉 Логово дракона",
+              "lore": "Легендарное создание, хранящее древние сокровища. Бой с ним — испытание для настоящего героя.",
+              "boss": true
+            }
+          ]
+        },
+        
+        "legendary": {
+          "name": "✨ Легендарные",
+          "icon": "✨",
+          "description": "Величайшие существа этого мира",
+          "creatures": [
+            {
+              "id": "crystal_dragon",
+              "name": "💎 Кристальный дракон",
+              "level": 25,
+              "health": 900,
+              "damage": 45,
+              "exp": 800,
+              "gold": 400,
+              "drops": ["сердце кристального дракона", "идеальный кристалл", "алмаз", "рубин"],
+              "location": "💎 Кристальный остров",
+              "lore": "Дракон, чешуя которого состоит из драгоценных камней. Его сияние ослепляет врагов.",
+              "boss": true
+            },
+            {
+              "id": "volcano_king",
+              "name": "👑 Король вулкана",
+              "level": 28,
+              "health": 1200,
+              "damage": 55,
+              "exp": 1000,
+              "gold": 500,
+              "drops": ["сердце вулкана", "лавовое ядро", "огненный самоцвет", "рубин"],
+              "location": "🌋 Огненный остров",
+              "lore": "Повелитель огненного острова. Его тело состоит из чистой магмы.",
+              "boss": true
+            },
+            {
+              "id": "dragon_king",
+              "name": "👑 Король драконов",
+              "level": 30,
+              "health": 2000,
+              "damage": 70,
+              "exp": 2000,
+              "gold": 1000,
+              "drops": ["корона дракона", "сердце дракона", "чешуя дракона", "кровь дракона", "радужный камень"],
+              "location": "🐉 Остров драконов",
+              "lore": "Легендарный повелитель всех драконов. Его сила безгранична.",
+              "boss": true
+            },
+            {
+              "id": "phoenix",
+              "name": "🔥 Феникс",
+              "level": 28,
+              "health": 800,
+              "damage": 50,
+              "exp": 900,
+              "gold": 450,
+              "drops": ["перо феникса", "слеза феникса", "огненная эссенция"],
+              "location": "🌋 Жерло вулкана",
+              "lore": "Легендарная птица, возрождающаяся из пепла. Появляется раз в тысячу лет.",
+              "boss": true
+            }
+          ]
+        }
+      }
+    },
+    
+    "items": {
+      "name": "⚔️ ПРЕДМЕТЫ",
+      "description": "Все предметы в игре",
+      "icon": "⚔️",
+      "color": "orange",
+      "categories": {
+        "weapons": {
+          "name": "⚔️ Оружие",
+          "icon": "⚔️",
+          "description": "Мечи, луки, посохи и другое оружие",
+          "subcategories": {
+            "swords": {
+              "name": "🗡️ Мечи",
+              "icon": "🗡️",
+              "items": [
+                {
+                  "id": "rusty_sword",
+                  "name": "🗑️ Ржавый меч",
+                  "rarity": "junk",
+                  "damage": 2,
+                  "value": 5,
+                  "description": "Старый ржавый меч. Чуть лучше, чем ничего.",
+                  "location": "🌲 Лесная опушка"
+                },
+                {
+                  "id": "copper_sword",
+                  "name": "⚪ Медный меч",
+                  "rarity": "common",
+                  "damage": 5,
+                  "value": 20,
+                  "description": "Обычный медный меч. Лёгкий и удобный.",
+                  "craft": true
+                },
+                {
+                  "id": "bronze_sword",
+                  "name": "🟢 Бронзовый меч",
+                  "rarity": "uncommon",
+                  "damage": 8,
+                  "value": 40,
+                  "description": "Прочный бронзовый меч. Хороший баланс.",
+                  "craft": true
+                },
+                {
+                  "id": "iron_sword",
+                  "name": "🟢 Железный меч",
+                  "rarity": "uncommon",
+                  "damage": 10,
+                  "value": 60,
+                  "description": "Качественный железный меч. Острый и надёжный.",
+                  "craft": true
+                },
+                {
+                  "id": "steel_sword",
+                  "name": "🔵 Стальной меч",
+                  "rarity": "rare",
+                  "damage": 16,
+                  "value": 150,
+                  "description": "Прочный стальной меч. Отличный баланс.",
+                  "craft": true
+                },
+                {
+                  "id": "mythril_sword",
+                  "name": "🟣 Мифриловый меч",
+                  "rarity": "epic",
+                  "damage": 24,
+                  "value": 400,
+                  "description": "Лёгкий и острый мифриловый меч.",
+                  "craft": true
+                },
+                {
+                  "id": "crystal_sword",
+                  "name": "🟡 Кристальный меч",
+                  "rarity": "legendary",
+                  "damage": 32,
+                  "magic_damage": 10,
+                  "value": 800,
+                  "description": "Меч из чистого кристалла. Проводит магию.",
+                  "craft": true
+                },
+                {
+                  "id": "dragon_sword",
+                  "name": "🔴 Драконий меч",
+                  "rarity": "mythic",
+                  "damage": 48,
+                  "fire_damage": 20,
+                  "value": 2500,
+                  "description": "Выкован из зуба дракона. Пылает огнём.",
+                  "craft": true
+                }
+              ]
+            },
+            "bows": {
+              "name": "🏹 Луки",
+              "icon": "🏹",
+              "items": [
+                {
+                  "id": "hunting_bow",
+                  "name": "⚪ Охотничий лук",
+                  "rarity": "common",
+                  "damage": 5,
+                  "value": 20,
+                  "description": "Простой деревянный лук для охоты.",
+                  "craft": true
+                },
+                {
+                  "id": "longbow",
+                  "name": "🟢 Длинный лук",
+                  "rarity": "uncommon",
+                  "damage": 10,
+                  "value": 60,
+                  "description": "Длинный деревянный лук. Отличная дальность.",
+                  "craft": true
+                },
+                {
+                  "id": "recurve_bow",
+                  "name": "🔵 Изогнутый лук",
+                  "rarity": "rare",
+                  "damage": 15,
+                  "crit_chance": 3,
+                  "value": 150,
+                  "description": "Изогнутый лук. Быстрее и точнее.",
+                  "craft": true
+                },
+                {
+                  "id": "elven_bow",
+                  "name": "🟣 Эльфийский лук",
+                  "rarity": "epic",
+                  "damage": 24,
+                  "crit_chance": 8,
+                  "accuracy": 10,
+                  "value": 450,
+                  "description": "Лёгкий эльфийский лук. Невероятно точный.",
+                  "craft": true
+                },
+                {
+                  "id": "dragonbone_bow",
+                  "name": "🟡 Драконий костяной лук",
+                  "rarity": "legendary",
+                  "damage": 36,
+                  "fire_damage": 12,
+                  "crit_chance": 12,
+                  "value": 1200,
+                  "description": "Лук из костей дракона. Стрелы воспламеняются.",
+                  "craft": true
+                },
+                {
+                  "id": "phoenix_bow",
+                  "name": "🔴 Лук феникса",
+                  "rarity": "mythic",
+                  "damage": 48,
+                  "fire_damage": 25,
+                  "crit_chance": 15,
+                  "value": 3000,
+                  "description": "Легендарный лук из пера феникса.",
+                  "craft": true
+                }
+              ]
+            },
+            "staves": {
+              "name": "🪄 Посохи",
+              "icon": "🪄",
+              "items": [
+                {
+                  "id": "apprentice_staff",
+                  "name": "⚪ Посох ученика",
+                  "rarity": "common",
+                  "magic_damage": 4,
+                  "mana": 15,
+                  "value": 20,
+                  "description": "Простой деревянный посох для начинающих магов.",
+                  "craft": true
+                },
+                {
+                  "id": "mage_staff",
+                  "name": "🟢 Посох мага",
+                  "rarity": "uncommon",
+                  "magic_damage": 8,
+                  "mana": 30,
+                  "value": 60,
+                  "description": "Посох опытного мага с кристаллом.",
+                  "craft": true
+                },
+                {
+                  "id": "wizard_staff",
+                  "name": "🔵 Посох чародея",
+                  "rarity": "rare",
+                  "magic_damage": 14,
+                  "mana": 50,
+                  "spell_power": 5,
+                  "value": 160,
+                  "description": "Посох чародея с рунами.",
+                  "craft": true
+                },
+                {
+                  "id": "archmage_staff",
+                  "name": "🟣 Посох архимага",
+                  "rarity": "epic",
+                  "magic_damage": 24,
+                  "mana": 90,
+                  "spell_power": 12,
+                  "mana_regen": 2,
+                  "value": 500,
+                  "description": "Древний посох архимага.",
+                  "craft": true
+                },
+                {
+                  "id": "elemental_staff",
+                  "name": "🟡 Посох стихий",
+                  "rarity": "legendary",
+                  "magic_damage": 35,
+                  "fire_damage": 20,
+                  "mana": 130,
+                  "spell_power": 18,
+                  "value": 1400,
+                  "description": "Посох, наполненный силой огненного элементаля.",
+                  "craft": true
+                },
+                {
+                  "id": "dragon_staff",
+                  "name": "🔴 Посох дракона",
+                  "rarity": "mythic",
+                  "magic_damage": 48,
+                  "fire_damage": 30,
+                  "mana": 180,
+                  "spell_power": 25,
+                  "mana_regen": 5,
+                  "value": 3500,
+                  "description": "Посох из кости дракона.",
+                  "craft": true
+                }
+              ]
+            }
+          }
+        },
+        
+        "armor": {
+          "name": "🛡️ Броня",
+          "icon": "🛡️",
+          "description": "Доспехи, щиты и защитные предметы",
+          "subcategories": {
+            "helmets": {
+              "name": "⛑️ Шлемы",
+              "icon": "⛑️",
+              "items": [
+                {
+                  "id": "leather_helmet",
+                  "name": "⚪ Кожаный шлем",
+                  "rarity": "common",
+                  "defense": 3,
+                  "health": 8,
+                  "value": 15,
+                  "description": "Лёгкий кожаный шлем.",
+                  "craft": true
+                },
+                {
+                  "id": "iron_helmet",
+                  "name": "🟢 Железный шлем",
+                  "rarity": "uncommon",
+                  "defense": 7,
+                  "health": 15,
+                  "value": 45,
+                  "description": "Тяжёлый железный шлем.",
+                  "craft": true
+                },
+                {
+                  "id": "steel_helmet",
+                  "name": "🔵 Стальной шлем",
+                  "rarity": "rare",
+                  "defense": 12,
+                  "health": 25,
+                  "value": 120,
+                  "description": "Прочный стальной шлем.",
+                  "craft": true
+                },
+                {
+                  "id": "mythril_helmet",
+                  "name": "🟣 Мифриловый шлем",
+                  "rarity": "epic",
+                  "defense": 18,
+                  "health": 35,
+                  "magic_resist": 5,
+                  "value": 300,
+                  "description": "Лёгкий мифриловый шлем.",
+                  "craft": true
+                },
+                {
+                  "id": "dragon_helmet",
+                  "name": "🔴 Драконий шлем",
+                  "rarity": "mythic",
+                  "defense": 28,
+                  "health": 60,
+                  "fire_resist": 20,
+                  "value": 1200,
+                  "description": "Шлем из чешуи дракона.",
+                  "craft": true
+                }
+              ]
+            },
+            "chestplates": {
+              "name": "👕 Нагрудники",
+              "icon": "👕",
+              "items": [
+                {
+                  "id": "leather_chestplate",
+                  "name": "⚪ Кожаный нагрудник",
+                  "rarity": "common",
+                  "defense": 5,
+                  "health": 15,
+                  "value": 25,
+                  "description": "Лёгкий кожаный доспех.",
+                  "craft": true
+                },
+                {
+                  "id": "iron_chestplate",
+                  "name": "🟢 Железный нагрудник",
+                  "rarity": "uncommon",
+                  "defense": 12,
+                  "health": 25,
+                  "value": 80,
+                  "description": "Надёжная железная броня.",
+                  "craft": true
+                },
+                {
+                  "id": "steel_chestplate",
+                  "name": "🔵 Стальной нагрудник",
+                  "rarity": "rare",
+                  "defense": 20,
+                  "health": 40,
+                  "value": 200,
+                  "description": "Прочная стальная броня.",
+                  "craft": true
+                },
+                {
+                  "id": "mythril_chestplate",
+                  "name": "🟣 Мифриловый нагрудник",
+                  "rarity": "epic",
+                  "defense": 30,
+                  "health": 60,
+                  "magic_resist": 10,
+                  "value": 500,
+                  "description": "Лёгкая мифриловая броня.",
+                  "craft": true
+                },
+                {
+                  "id": "dragon_chestplate",
+                  "name": "🔴 Драконий нагрудник",
+                  "rarity": "mythic",
+                  "defense": 45,
+                  "health": 100,
+                  "fire_resist": 30,
+                  "value": 1500,
+                  "description": "Броня из чешуи дракона.",
+                  "craft": true
+                }
+              ]
+            },
+            "shields": {
+              "name": "🛡️ Щиты",
+              "icon": "🛡️",
+              "items": [
+                {
+                  "id": "wooden_shield",
+                  "name": "⚪ Деревянный щит",
+                  "rarity": "common",
+                  "defense": 5,
+                  "health": 15,
+                  "block_chance": 3,
+                  "value": 25,
+                  "description": "Простой деревянный щит.",
+                  "craft": true
+                },
+                {
+                  "id": "iron_shield",
+                  "name": "🟢 Железный щит",
+                  "rarity": "uncommon",
+                  "defense": 10,
+                  "health": 25,
+                  "block_chance": 5,
+                  "value": 70,
+                  "description": "Надёжный железный щит.",
+                  "craft": true
+                },
+                {
+                  "id": "steel_shield",
+                  "name": "🔵 Стальной щит",
+                  "rarity": "rare",
+                  "defense": 18,
+                  "health": 40,
+                  "block_chance": 8,
+                  "value": 180,
+                  "description": "Прочный стальной щит.",
+                  "craft": true
+                },
+                {
+                  "id": "mythril_shield",
+                  "name": "🟣 Мифриловый щит",
+                  "rarity": "epic",
+                  "defense": 28,
+                  "health": 60,
+                  "block_chance": 12,
+                  "magic_resist": 10,
+                  "value": 450,
+                  "description": "Лёгкий мифриловый щит.",
+                  "craft": true
+                },
+                {
+                  "id": "dragon_shield",
+                  "name": "🔴 Драконий щит",
+                  "rarity": "mythic",
+                  "defense": 42,
+                  "health": 100,
+                  "block_chance": 18,
+                  "fire_resist": 30,
+                  "value": 1200,
+                  "description": "Щит из чешуи дракона.",
+                  "craft": true
+                }
+              ]
+            }
+          }
+        },
+        
+        "materials": {
+          "name": "📦 Материалы",
+          "icon": "📦",
+          "description": "Руды, слитки, кожа и другие материалы для крафта",
+          "items": [
+            {
+              "id": "wood",
+              "name": "🪵 Древесина",
+              "rarity": "common",
+              "value": 2,
+              "description": "Обычная древесина. Нужна для строительства и крафта.",
+              "source": "🌲 Лес"
+            },
+            {
+              "id": "stone",
+              "name": "🪨 Камень",
+              "rarity": "common",
+              "value": 3,
+              "description": "Обычный камень. Нужен для строительства.",
+              "source": "⛰️ Горы"
+            },
+            {
+              "id": "copper_ore",
+              "name": "⚪ Медная руда",
+              "rarity": "common",
+              "value": 5,
+              "description": "Обычная медная руда. Переплавляется в слитки.",
+              "source": "⛏️ Шахта"
+            },
+            {
+              "id": "tin_ore",
+              "name": "⚪ Оловянная руда",
+              "rarity": "common",
+              "value": 4,
+              "description": "Обычная оловянная руда.",
+              "source": "⛏️ Шахта"
+            },
+            {
+              "id": "copper_ingot",
+              "name": "⚪ Медный слиток",
+              "rarity": "common",
+              "value": 15,
+              "description": "Слиток меди. Используется для крафта.",
+              "craft": true
+            },
+            {
+              "id": "tin_ingot",
+              "name": "⚪ Оловянный слиток",
+              "rarity": "common",
+              "value": 12,
+              "description": "Слиток олова.",
+              "craft": true
+            },
+            {
+              "id": "bronze_ingot",
+              "name": "⚪ Бронзовый слиток",
+              "rarity": "common",
+              "value": 20,
+              "description": "Слиток бронзы. Прочнее меди.",
+              "craft": true
+            },
+            {
+              "id": "iron_ore",
+              "name": "🟢 Железная руда",
+              "rarity": "uncommon",
+              "value": 8,
+              "description": "Железная руда. Ценный материал.",
+              "source": "⛏️ Шахта"
+            },
+            {
+              "id": "iron_ingot",
+              "name": "🟢 Железный слиток",
+              "rarity": "uncommon",
+              "value": 25,
+              "description": "Слиток железа. Основной материал для крафта.",
+              "craft": true
+            },
+            {
+              "id": "steel_ingot",
+              "name": "🔵 Стальной слиток",
+              "rarity": "rare",
+              "value": 50,
+              "description": "Слиток стали. Очень прочный материал.",
+              "craft": true
+            },
+            {
+              "id": "gold_ore",
+              "name": "🔵 Золотая руда",
+              "rarity": "rare",
+              "value": 20,
+              "description": "Золотая руда. Редкая и ценная.",
+              "source": "⛏️ Шахта"
+            },
+            {
+              "id": "gold_ingot",
+              "name": "🔵 Золотой слиток",
+              "rarity": "rare",
+              "value": 60,
+              "description": "Слиток золота. Используется для дорогих предметов.",
+              "craft": true
+            },
+            {
+              "id": "mythril_ore",
+              "name": "🟣 Мифриловая руда",
+              "rarity": "epic",
+              "value": 50,
+              "description": "Мифриловая руда. Очень редкая.",
+              "source": "⛏️ Шахта (глубокие уровни)"
+            },
+            {
+              "id": "mythril_ingot",
+              "name": "🟣 Мифриловый слиток",
+              "rarity": "epic",
+              "value": 150,
+              "description": "Слиток мифрила. Невероятно лёгкий и прочный.",
+              "craft": true
+            },
+            {
+              "id": "perfect_crystal",
+              "name": "🟡 Идеальный кристалл",
+              "rarity": "legendary",
+              "value": 200,
+              "description": "Кристалл чистейшей формы. Светится магией.",
+              "source": "💎 Кристальный остров"
+            },
+            {
+              "id": "dragon_scale",
+              "name": "🔴 Чешуя дракона",
+              "rarity": "mythic",
+              "value": 500,
+              "description": "Чешуя древнего дракона. Почти не пробиваема.",
+              "source": "🐉 Дракон"
+            },
+            {
+              "id": "dragon_fang",
+              "name": "🔴 Клык дракона",
+              "rarity": "mythic",
+              "value": 400,
+              "description": "Острый клык дракона. Идеален для оружия.",
+              "source": "🐉 Дракон"
+            },
+            {
+              "id": "dragon_heart",
+              "name": "🔴 Сердце дракона",
+              "rarity": "mythic",
+              "value": 1000,
+              "description": "Пульсирующее сердце дракона. Источник огромной силы.",
+              "source": "🐉 Дракон"
+            },
+            {
+              "id": "dragon_blood",
+              "name": "🔴 Кровь дракона",
+              "rarity": "mythic",
+              "value": 300,
+              "description": "Густая светящаяся кровь. Используется в алхимии.",
+              "source": "🐉 Дракон"
+            },
+            {
+              "id": "phoenix_feather",
+              "name": "🔴 Перо феникса",
+              "rarity": "mythic",
+              "value": 600,
+              "description": "Перо легендарной птицы. Горит, но не сгорает.",
+              "source": "🔥 Феникс"
+            }
+          ]
+        },
+        
+        "consumables": {
+          "name": "⚗️ Расходники",
+          "icon": "⚗️",
+          "description": "Зелья, еда и другие расходуемые предметы",
+          "items": [
+            {
+              "id": "health_potion",
+              "name": "⚪ Зелье здоровья",
+              "rarity": "common",
+              "heal": 50,
+              "value": 10,
+              "description": "Восстанавливает 50 здоровья.",
+              "craft": true
+            },
+            {
+              "id": "mana_potion",
+              "name": "⚪ Зелье маны",
+              "rarity": "common",
+              "mana": 50,
+              "value": 10,
+              "description": "Восстанавливает 50 маны.",
+              "craft": true
+            },
+            {
+              "id": "strong_health_potion",
+              "name": "🟢 Сильное зелье здоровья",
+              "rarity": "uncommon",
+              "heal": 120,
+              "value": 30,
+              "description": "Восстанавливает 120 здоровья.",
+              "craft": true
+            },
+            {
+              "id": "strong_mana_potion",
+              "name": "🟢 Сильное зелье маны",
+              "rarity": "uncommon",
+              "mana": 120,
+              "value": 30,
+              "description": "Восстанавливает 120 маны.",
+              "craft": true
+            },
+            {
+              "id": "desert_elixir",
+              "name": "🏜️ Эликсир пустыни",
+              "rarity": "rare",
+              "effect": "утоляет жажду, +30 энергии",
+              "value": 50,
+              "description": "Помогает выжить в пустыне.",
+              "craft": true
+            },
+            {
+              "id": "frost_elixir",
+              "name": "❄️ Морозный эликсир",
+              "rarity": "rare",
+              "effect": "защита от холода",
+              "value": 50,
+              "description": "Защищает от ледяного холода.",
+              "craft": true
+            },
+            {
+              "id": "lava_elixir",
+              "name": "🌋 Лавовый эликсир",
+              "rarity": "epic",
+              "effect": "защита от огня, +70% сопротивления",
+              "value": 100,
+              "description": "Позволяет ходить по лаве.",
+              "craft": true
+            },
+            {
+              "id": "dragon_blood_elixir",
+              "name": "🐉 Эликсир драконьей крови",
+              "rarity": "legendary",
+              "effect": "+30 ко всем характеристикам на 1 час",
+              "value": 500,
+              "description": "Напиток богов.",
+              "craft": true
+            },
+            {
+              "id": "bread",
+              "name": "⚪ Хлеб",
+              "rarity": "common",
+              "heal": 20,
+              "energy": 5,
+              "value": 5,
+              "description": "Простой хлеб.",
+              "craft": true
+            },
+            {
+              "id": "fried_fish",
+              "name": "⚪ Жареная рыба",
+              "rarity": "common",
+              "heal": 30,
+              "energy": 10,
+              "value": 8,
+              "description": "Вкусная жареная рыба.",
+              "craft": true
+            },
+            {
+              "id": "fried_meat",
+              "name": "⚪ Жареное мясо",
+              "rarity": "common",
+              "heal": 40,
+              "energy": 15,
+              "value": 12,
+              "description": "Сочный кусок мяса.",
+              "craft": true
+            },
+            {
+              "id": "meat_stew",
+              "name": "🟢 Мясное рагу",
+              "rarity": "uncommon",
+              "heal": 80,
+              "energy": 30,
+              "value": 25,
+              "description": "Сытное рагу с мясом и овощами.",
+              "craft": true
+            },
+            {
+              "id": "dragon_steak",
+              "name": "🔴 Драконий стейк",
+              "rarity": "mythic",
+              "heal": 300,
+              "energy": 100,
+              "buff": "урон +50%",
+              "value": 1000,
+              "description": "Блюдо из мяса дракона.",
+              "craft": true
+            }
+          ]
+        },
+        
+        "treasures": {
+          "name": "💎 Сокровища",
+          "icon": "💎",
+          "description": "Редкие и ценные предметы",
+          "items": [
+            {
+              "id": "ancient_coin",
+              "name": "🪙 Древняя монета",
+              "rarity": "epic",
+              "value": 500,
+              "description": "Монета древней цивилизации."
+            },
+            {
+              "id": "ancient_relic",
+              "name": "🏺 Древний артефакт",
+              "rarity": "legendary",
+              "value": 1000,
+              "description": "Загадочный артефакт из древних руин."
+            },
+            {
+              "id": "rainbow_shard",
+              "name": "🌈 Осколок радуги",
+              "rarity": "legendary",
+              "value": 1000,
+              "description": "Осколок радужного камня. 9 таких дают целый камень."
+            },
+            {
+              "id": "rainbow_stone",
+              "name": "💎 Радужный камень",
+              "rarity": "mythic",
+              "value": 10000,
+              "description": "Камень, хранящий силу всех стихий."
+            }
+          ]
+        }
+      }
+    },
+    
+    "locations": {
+      "name": "🗺️ ЛОКАЦИИ",
+      "description": "Все места, которые можно посетить",
+      "icon": "🗺️",
+      "color": "green",
+      "categories": {
+        "starting": {
+          "name": "🟢 Начальные",
+          "icon": "🌲",
+          "description": "Локации для новичков (1-10 уровень)",
+          "locations": [
+            {
+              "id": "start",
+              "name": "🌲 Лесная опушка",
+              "level_req": 1,
+              "danger": "🟢 Низкая",
+              "resources": ["ягоды", "трава", "древесина"],
+              "mobs": ["волк", "кабан"],
+              "lore": "Место, где начинается твоё приключение. Отсюда видна деревня.",
+              "image": "location_start.jpg"
+            },
+            {
+              "id": "village",
+              "name": "🏘️ Деревенская площадь",
+              "level_req": 1,
+              "danger": "🟢 Низкая",
+              "services": ["таверна", "торговец", "кузница", "башня мага"],
+              "lore": "Центр деревенской жизни. Здесь можно отдохнуть, купить припасы и взять задания.",
+              "image": "location_village.jpg"
+            },
+            {
+              "id": "lake_shore",
+              "name": "🏞️ Берег озера",
+              "level_req": 3,
+              "danger": "🟢 Низкая",
+              "resources": ["рыба", "черви", "вода"],
+              "activities": ["рыбалка", "отдых"],
+              "lore": "Живописное озеро с чистой водой. Идеальное место для рыбалки.",
+              "image": "location_lake.jpg"
+            }
+          ]
+        },
+        
+        "forest": {
+          "name": "🌲 Лесные",
+          "icon": "🌲",
+          "description": "Густые леса и чащи (5-15 уровень)",
+          "locations": [
+            {
+              "id": "deep_forest",
+              "name": "🌳 Глухой лес",
+              "level_req": 5,
+              "danger": "🟡 Средняя",
+              "resources": ["древесина", "травы", "ягоды"],
+              "mobs": ["волк", "альфа-волк", "кабан"],
+              "lore": "Дремучий лес, куда редко заходят люди. Здесь водятся опасные хищники.",
+              "image": "location_deep_forest.jpg"
+            },
+            {
+              "id": "forest_path",
+              "name": "🌲 Лесная тропа",
+              "level_req": 3,
+              "danger": "🟢 Низкая",
+              "connects": ["горы", "озеро"],
+              "lore": "Тропа, ведущая через лес к горам и озеру.",
+              "image": "location_path.jpg"
+            }
+          ]
+        },
+        
+        "mountains": {
+          "name": "⛰️ Горные",
+          "icon": "⛰️",
+          "description": "Горы и перевалы (10-20 уровень)",
+          "locations": [
+            {
+              "id": "mountain_path",
+              "name": "⛰️ Горная тропа",
+              "level_req": 10,
+              "danger": "🟡 Средняя",
+              "resources": ["камень", "железная руда"],
+              "mobs": ["медведь", "горный козёл"],
+              "lore": "Извилистая тропа, ведущая в горы. Отсюда открывается красивый вид.",
+              "image": "location_mountain.jpg"
+            },
+            {
+              "id": "mountain_peak",
+              "name": "🏔️ Горная вершина",
+              "level_req": 15,
+              "danger": "🔴 Высокая",
+              "resources": ["редкие кристаллы"],
+              "mobs": ["орёл"],
+              "lore": "Самая высокая точка в округе. Отсюда видно весь мир.",
+              "image": "location_peak.jpg"
+            }
+          ]
+        },
+        
+        "mine": {
+          "name": "⛏️ Шахта",
+          "icon": "⛏️",
+          "description": "Подземелья и рудники (15-30 уровень)",
+          "locations": [
+            {
+              "id": "mine_entrance",
+              "name": "⛏️ Вход в шахту",
+              "level_req": 15,
+              "danger": "🟡 Средняя",
+              "lore": "Старый вход в заброшенную шахту. Оттуда тянет сыростью.",
+              "image": "location_mine_entrance.jpg"
+            },
+            {
+              "id": "mine_level1",
+              "name": "⛏️ Шахта (1 уровень)",
+              "level_req": 15,
+              "danger": "🟡 Средняя",
+              "resources": ["медная руда", "железная руда"],
+              "mobs": ["гигантская крыса"],
+              "lore": "Первый уровень шахты. Здесь ещё видны следы работы шахтёров.",
+              "image": "location_mine1.jpg"
+            },
+            {
+              "id": "mine_level2",
+              "name": "⛏️ Шахта (2 уровень)",
+              "level_req": 18,
+              "danger": "🟡 Средняя",
+              "resources": ["железная руда", "золотая руда"],
+              "mobs": ["пещерный паук", "летучая мышь"],
+              "lore": "Второй уровень. Здесь темнее и больше опасностей.",
+              "image": "location_mine2.jpg"
+            },
+            {
+              "id": "mine_level3",
+              "name": "⛏️ Шахта (3 уровень)",
+              "level_req": 22,
+              "danger": "🔴 Высокая",
+              "resources": ["золотая руда", "мифриловая руда"],
+              "mobs": ["пещерный паук", "скелет-воин"],
+              "lore": "Третий уровень. Здесь уже давно никто не был.",
+              "image": "location_mine3.jpg"
+            },
+            {
+              "id": "mine_level4",
+              "name": "⛏️ Шахта (4 уровень)",
+              "level_req": 25,
+              "danger": "🔴 Высокая",
+              "resources": ["мифриловая руда", "кристаллы"],
+              "boss": "каменный голем",
+              "lore": "Четвёртый уровень. Здесь обитает каменный голем.",
+              "image": "location_mine4.jpg"
+            },
+            {
+              "id": "mine_level5",
+              "name": "⛏️ Шахта (5 уровень)",
+              "level_req": 30,
+              "danger": "💀 Опасная",
+              "resources": ["редкие кристаллы", "древние артефакты"],
+              "connects": ["древние руины"],
+              "lore": "Самый глубокий уровень. Здесь находится вход в древние руины.",
+              "image": "location_mine5.jpg"
+            }
+          ]
+        },
+        
+        "ancient": {
+          "name": "🏛️ Древние",
+          "icon": "🏛️",
+          "description": "Руины и лабиринты (20-35 уровень)",
+          "locations": [
+            {
+              "id": "cave_entrance",
+              "name": "🕳️ Вход в пещеру",
+              "level_req": 20,
+              "danger": "🟡 Средняя",
+              "connects": ["лабиринт"],
+              "lore": "Тёмный вход в пещеру, скрытый корнями деревьев.",
+              "image": "location_cave.jpg"
+            },
+            {
+              "id": "maze_entrance",
+              "name": "🏛️ Вход в лабиринт",
+              "level_req": 20,
+              "danger": "🔴 Высокая",
+              "lore": "Древний лабиринт, полный ловушек и монстров.",
+              "image": "location_maze.jpg"
+            },
+            {
+              "id": "ancient_ruins",
+              "name": "🏛️ Древние руины",
+              "level_req": 30,
+              "danger": "💀 Опасная",
+              "boss": "древний страж",
+              "lore": "Развалины древней цивилизации. Здесь обитает древний страж.",
+              "image": "location_ruins.jpg"
+            }
+          ]
+        },
+        
+        "desert": {
+          "name": "🏜️ Пустыня",
+          "icon": "🏜️",
+          "description": "Бескрайние пески (30-40 уровень)",
+          "locations": [
+            {
+              "id": "desert",
+              "name": "🏜️ Пустыня забвения",
+              "level_req": 30,
+              "danger": "🔴 Высокая",
+              "resources": ["песок", "кактусы"],
+              "mobs": ["скорпион", "песчаный червь"],
+              "boss": "песчаный дракон",
+              "lore": "Бескрайние пески, где водятся опасные твари.",
+              "image": "location_desert.jpg"
+            },
+            {
+              "id": "desert_oasis",
+              "name": "🏝️ Оазис",
+              "level_req": 30,
+              "danger": "🟢 Низкая",
+              "resources": ["вода", "финики"],
+              "lore": "Зелёный уголок посреди пустыни. Место отдыха.",
+              "image": "location_oasis.jpg"
+            }
+          ]
+        },
+        
+        "swamp": {
+          "name": "🌿 Болото",
+          "icon": "🌿",
+          "description": "Зловонные топи (35-45 уровень)",
+          "locations": [
+            {
+              "id": "swamp",
+              "name": "🌿 Болото туманов",
+              "level_req": 35,
+              "danger": "🔴 Высокая",
+              "resources": ["тина", "болотные травы"],
+              "mobs": ["зомби", "ведьма"],
+              "boss": "болотный монстр",
+              "lore": "Зловонное болото, окутанное туманом.",
+              "image": "location_swamp.jpg"
+            },
+            {
+              "id": "witch_hut",
+              "name": "🏚️ Хижина ведьмы",
+              "level_req": 35,
+              "danger": "🟡 Средняя",
+              "lore": "Хижина болотной ведьмы. Здесь пахнет зельями.",
+              "image": "location_witch.jpg"
+            }
+          ]
+        },
+        
+        "ice": {
+          "name": "❄️ Лёд",
+          "icon": "❄️",
+          "description": "Ледяные равнины (40-50 уровень)",
+          "locations": [
+            {
+              "id": "ice_plains",
+              "name": "❄️ Ледяные равнины",
+              "level_req": 40,
+              "danger": "🔴 Высокая",
+              "resources": ["лёд", "ледяные кристаллы"],
+              "mobs": ["снежный волк", "белый медведь", "ледяной дух"],
+              "lore": "Бескрайние снежные просторы, где всегда зима.",
+              "image": "location_ice.jpg"
+            },
+            {
+              "id": "ice_cave",
+              "name": "🧊 Ледяная пещера",
+              "level_req": 42,
+              "danger": "💀 Опасная",
+              "boss": "ледяной гигант",
+              "lore": "Пещера из вечного льда. Здесь спит ледяной гигант.",
+              "image": "location_ice_cave.jpg"
+            }
+          ]
+        },
+        
+        "volcanic": {
+          "name": "🌋 Вулкан",
+          "icon": "🌋",
+          "description": "Огненные недра (45-55 уровень)",
+          "locations": [
+            {
+              "id": "volcano_path",
+              "name": "🌋 Тропа к вулкану",
+              "level_req": 45,
+              "danger": "🔴 Высокая",
+              "lore": "Тропа, ведущая к жерлу вулкана. Воздух раскалён.",
+              "image": "location_volcano_path.jpg"
+            },
+            {
+              "id": "volcano_crater",
+              "name": "🌋 Жерло вулкана",
+              "level_req": 48,
+              "danger": "💀 Опасная",
+              "boss": "огненный элементаль",
+              "lore": "Кратер вулкана, наполненный лавой. Здесь обитает огненный элементаль.",
+              "image": "location_crater.jpg"
+            }
+          ]
+        },
+        
+        "legendary": {
+          "name": "✨ Легендарные",
+          "icon": "✨",
+          "description": "Острова легенд (50+ уровень)",
+          "locations": [
+            {
+              "id": "bridge_before_dragon",
+              "name": "🌉 Мост перед драконом",
+              "level_req": 50,
+              "danger": "🔴 Высокая",
+              "lore": "Мост через пропасть, ведущий к логову дракона.",
+              "image": "location_bridge.jpg"
+            },
+            {
+              "id": "dragon_lair",
+              "name": "🐉 Логово дракона",
+              "level_req": 50,
+              "danger": "💀 Опасная",
+              "boss": "древний дракон",
+              "lore": "Огромная пещера, где спит древний дракон на горе сокровищ.",
+              "image": "location_dragon.jpg"
+            },
+            {
+              "id": "volcanic_island",
+              "name": "🌋 Огненный остров",
+              "level_req": 55,
+              "danger": "💀💀 Очень опасная",
+              "entry_cost": {"rainbow_shard": 3},
+              "boss": "король вулкана",
+              "lore": "Остров посреди лавового моря. Доступен за радужные осколки.",
+              "image": "location_volcanic_island.jpg"
+            },
+            {
+              "id": "crystal_island",
+              "name": "💎 Кристальный остров",
+              "level_req": 60,
+              "danger": "💀💀 Очень опасная",
+              "entry_cost": {"rainbow_stone": 1},
+              "boss": "кристальный дракон",
+              "lore": "Остров из чистых кристаллов. Доступен за радужный камень.",
+              "image": "location_crystal_island.jpg"
+            },
+            {
+              "id": "dragon_island",
+              "name": "🐉 Остров драконов",
+              "level_req": 70,
+              "danger": "💀💀💀 Легендарная",
+              "entry_cost": {"rainbow_stone": 5},
+              "boss": "король драконов",
+              "lore": "Легендарный остров, где обитают драконы. Доступен за 5 радужных камней.",
+              "image": "location_dragon_island.jpg"
+            }
+          ]
+        },
+        
+        "secret": {
+          "name": "🤫 Секретные",
+          "icon": "🤫",
+          "description": "Тайные места",
+          "locations": [
+            {
+              "id": "hidden_cave",
+              "name": "🤫 Тайная пещера",
+              "how_to_find": "1% шанс при добыче руды",
+              "reward": "10000💰 + 500 DSTN + осколки",
+              "lore": "Секретная пещера, полная сокровищ.",
+              "image": "location_hidden.jpg"
+            },
+            {
+              "id": "treasure_room",
+              "name": "💰 Комната сокровищ",
+              "how_to_find": "Ключ с древнего стража (10%)",
+              "reward": "100000💰 + 5000 DSTN + легендарный сундук",
+              "lore": "Комната, полная золота и драгоценностей.",
+              "image": "location_treasure.jpg"
+            }
+          ]
+        }
+      }
+    },
+    
+    "achievements": {
+      "name": "🏆 ДОСТИЖЕНИЯ",
+      "description": "Все достижения, которые можно получить",
+      "icon": "🏆",
+      "color": "gold",
+      "categories": {
+        "combat": {
+          "name": "⚔️ Боевые",
+          "icon": "⚔️",
+          "description": "Достижения за убийство монстров и боссов",
+          "achievements": [
+            {
+              "id": "first_kill",
+              "name": "🔰 Первая кровь",
+              "requirement": "Убить первого моба",
+              "reward": {"dstn": 50, "title": "Новичок"},
+              "image": "ach_first_kill.jpg"
+            },
+            {
+              "id": "veteran",
+              "name": "⚔️ Ветеран",
+              "requirement": "Убить 1000 мобов",
+              "reward": {"dstn": 500, "title": "Ветеран"},
+              "image": "ach_veteran.jpg"
+            },
+            {
+              "id": "elite",
+              "name": "💪 Элита",
+              "requirement": "Убить 5000 мобов",
+              "reward": {"dstn": 2000, "title": "Элита"},
+              "image": "ach_elite.jpg"
+            },
+            {
+              "id": "legend",
+              "name": "👑 Легенда",
+              "requirement": "Убить 10000 мобов",
+              "reward": {"dstn": 5000, "title": "Легенда", "rainbow_shard": 3},
+              "image": "ach_legend.jpg"
+            },
+            {
+              "id": "wolf_slayer",
+              "name": "🐺 Волкодав",
+              "requirement": "Убить 100 волков",
+              "reward": {"dstn": 200, "title": "Волкодав"},
+              "image": "ach_wolf.jpg"
+            },
+            {
+              "id": "bear_slayer",
+              "name": "🐻 Медвежатник",
+              "requirement": "Убить 50 медведей",
+              "reward": {"dstn": 300, "title": "Медвежатник"},
+              "image": "ach_bear.jpg"
+            },
+            {
+              "id": "spider_slayer",
+              "name": "🕷️ Арахнофоб",
+              "requirement": "Убить 100 пауков",
+              "reward": {"dstn": 200, "title": "Арахнофоб"},
+              "image": "ach_spider.jpg"
+            },
+            {
+              "id": "dragon_slayer",
+              "name": "🐉 Драконобойца",
+              "requirement": "Убить дракона 10 раз",
+              "reward": {"dstn": 2000, "title": "Драконобойца", "rainbow_stone": 1},
+              "image": "ach_dragon.jpg"
+            },
+            {
+              "id": "boss_hunter",
+              "name": "👾 Охотник за боссами",
+              "requirement": "Убить всех боссов",
+              "reward": {"dstn": 5000, "title": "Босс-хантер", "rainbow_stone": 2},
+              "image": "ach_boss.jpg"
+            }
+          ]
+        },
+        
+        "crafting": {
+          "name": "🔨 Крафт",
+          "icon": "🔨",
+          "description": "Достижения за создание предметов",
+          "achievements": [
+            {
+              "id": "blacksmith",
+              "name": "⚒️ Кузнец",
+              "requirement": "Скрафтить 100 предметов",
+              "reward": {"dstn": 300, "title": "Кузнец"},
+              "image": "ach_blacksmith.jpg"
+            },
+            {
+              "id": "master_crafter",
+              "name": "🔨 Мастер крафта",
+              "requirement": "Скрафтить 500 предметов",
+              "reward": {"dstn": 1000, "title": "Мастер крафта"},
+              "image": "ach_master_crafter.jpg"
+            },
+            {
+              "id": "legendary_crafter",
+              "name": "✨ Легендарный мастер",
+              "requirement": "Скрафтить 10 легендарных предметов",
+              "reward": {"dstn": 2000, "title": "Легендарный мастер", "rainbow_shard": 2},
+              "image": "ach_legendary_crafter.jpg"
+            },
+            {
+              "id": "alchemist",
+              "name": "⚗️ Алхимик",
+              "requirement": "Создать 100 зелий",
+              "reward": {"dstn": 500, "title": "Алхимик"},
+              "image": "ach_alchemist.jpg"
+            },
+            {
+              "id": "cook",
+              "name": "🍳 Повар",
+              "requirement": "Приготовить 100 блюд",
+              "reward": {"dstn": 500, "title": "Повар"},
+              "image": "ach_cook.jpg"
+            }
+          ]
+        },
+        
+        "exploration": {
+          "name": "🗺️ Исследование",
+          "icon": "🗺️",
+          "description": "Достижения за открытие локаций",
+          "achievements": [
+            {
+              "id": "traveler",
+              "name": "🗺️ Путешественник",
+              "requirement": "Посетить 10 локаций",
+              "reward": {"dstn": 100, "title": "Путешественник"},
+              "image": "ach_traveler.jpg"
+            },
+            {
+              "id": "explorer",
+              "name": "🧭 Исследователь",
+              "requirement": "Посетить 30 локаций",
+              "reward": {"dstn": 500, "title": "Исследователь"},
+              "image": "ach_explorer.jpg"
+            },
+            {
+              "id": "pathfinder",
+              "name": "🌟 Первопроходец",
+              "requirement": "Посетить все локации",
+              "reward": {"dstn": 2000, "title": "Первопроходец", "rainbow_shard": 3},
+              "image": "ach_pathfinder.jpg"
+            },
+            {
+              "id": "secret_finder",
+              "name": "🤫 Секретоискатель",
+              "requirement": "Найти все секретные комнаты",
+              "reward": {"dstn": 1000, "title": "Секретоискатель"},
+              "image": "ach_secret.jpg"
+            }
+          ]
+        },
+        
+        "collection": {
+          "name": "📦 Коллекционирование",
+          "icon": "📦",
+          "description": "Достижения за сбор предметов",
+          "achievements": [
+            {
+              "id": "collector",
+              "name": "📦 Коллекционер",
+              "requirement": "Собрать 100 предметов",
+              "reward": {"dstn": 200, "title": "Коллекционер"},
+              "image": "ach_collector.jpg"
+            },
+            {
+              "id": "rich",
+              "name": "💰 Богач",
+              "requirement": "Накопить 1 млн золота",
+              "reward": {"dstn": 1000, "title": "Богач", "rainbow_shard": 1},
+              "image": "ach_rich.jpg"
+            },
+            {
+              "id": "hoarder",
+              "name": "💎 Собиратель",
+              "requirement": "Собрать все виды осколков",
+              "reward": {"dstn": 5000, "title": "Собиратель", "rainbow_stone": 2},
+              "image": "ach_hoarder.jpg"
+            },
+            {
+              "id": "nft_collector",
+              "name": "🎨 Коллекционер NFT",
+              "requirement": "Собрать все 5 NFT осколков",
+              "reward": {"dstn": 10000, "title": "NFT-мастер", "rainbow_stone": 3},
+              "image": "ach_nft.jpg"
+            },
+            {
+              "id": "rainbow_master",
+              "name": "🌈 Хранитель радуги",
+              "requirement": "Собрать 9 радужных камней",
+              "reward": {"dstn": 20000, "title": "Хранитель радуги", "divine_essence": 1},
+              "image": "ach_rainbow.jpg"
+            }
+          ]
+        },
+        
+        "house": {
+          "name": "🏠 Домик",
+          "icon": "🏠",
+          "description": "Достижения за обустройство дома",
+          "achievements": [
+            {
+              "id": "homeowner",
+              "name": "🏠 Домовладелец",
+              "requirement": "Построить домик",
+              "reward": {"dstn": 100, "title": "Домовладелец"},
+              "image": "ach_homeowner.jpg"
+            },
+            {
+              "id": "decorator",
+              "name": "🎨 Декоратор",
+              "requirement": "Купить 10 предметов мебели",
+              "reward": {"dstn": 300, "title": "Декоратор"},
+              "image": "ach_decorator.jpg"
+            },
+            {
+              "id": "gardener",
+              "name": "🌱 Садовод",
+              "requirement": "Собрать 1000 урожая",
+              "reward": {"dstn": 500, "title": "Садовод"},
+              "image": "ach_gardener.jpg"
+            },
+            {
+              "id": "architect",
+              "name": "🏗️ Архитектор",
+              "requirement": "Улучшить дом до 5 уровня",
+              "reward": {"dstn": 1000, "title": "Архитектор", "rainbow_shard": 1},
+              "image": "ach_architect.jpg"
+            }
+          ]
+        },
+        
+        "pets": {
+          "name": "🐾 Питомцы",
+          "icon": "🐾",
+          "description": "Достижения за воспитание питомцев",
+          "achievements": [
+            {
+              "id": "pet_owner",
+              "name": "🐾 Хозяин",
+              "requirement": "Завести первого питомца",
+              "reward": {"dstn": 100, "title": "Хозяин"},
+              "image": "ach_pet_owner.jpg"
+            },
+            {
+              "id": "pet_lover",
+              "name": "❤️ Любитель животных",
+              "requirement": "Завести 3 питомцев",
+              "reward": {"dstn": 300, "title": "Любитель животных"},
+              "image": "ach_pet_lover.jpg"
+            },
+            {
+              "id": "pet_master",
+              "name": "🌟 Мастер питомцев",
+              "requirement": "Прокачать питомца до 50 уровня",
+              "reward": {"dstn": 1000, "title": "Мастер питомцев", "rainbow_shard": 1},
+              "image": "ach_pet_master.jpg"
+            }
+          ]
+        },
+        
+        "pvp": {
+          "name": "⚔️ PvP",
+          "icon": "⚔️",
+          "description": "Достижения за бои с игроками",
+          "achievements": [
+            {
+              "id": "gladiator",
+              "name": "🥊 Гладиатор",
+              "requirement": "Выиграть 10 PvP боёв",
+              "reward": {"dstn": 200, "title": "Гладиатор"},
+              "image": "ach_gladiator.jpg"
+            },
+            {
+              "id": "champion",
+              "name": "🏆 Чемпион",
+              "requirement": "Выиграть 100 PvP боёв",
+              "reward": {"dstn": 1000, "title": "Чемпион"},
+              "image": "ach_champion.jpg"
+            },
+            {
+              "id": "legendary_fighter",
+              "name": "👑 Легендарный боец",
+              "requirement": "Выиграть 1000 PvP боёв",
+              "reward": {"dstn": 5000, "title": "Легендарный боец", "rainbow_stone": 1},
+              "image": "ach_legendary_fighter.jpg"
+            },
+            {
+              "id": "tournament_winner",
+              "name": "🏅 Победитель турнира",
+              "requirement": "Выиграть PvP турнир",
+              "reward": {"dstn": 2000, "title": "Чемпион турнира", "rainbow_shard": 2},
+              "image": "ach_tournament.jpg"
+            }
+          ]
+        },
+        
+        "guild": {
+          "name": "🏛️ Гильдии",
+          "icon": "🏛️",
+          "description": "Достижения за участие в гильдиях",
+          "achievements": [
+            {
+              "id": "guild_member",
+              "name": "🤝 Член гильдии",
+              "requirement": "Вступить в гильдию",
+              "reward": {"dstn": 100, "title": "Член гильдии"},
+              "image": "ach_guild_member.jpg"
+            },
+            {
+              "id": "guild_hero",
+              "name": "🏛️ Герой гильдии",
+              "requirement": "Внести 10000 вклада в гильдию",
+              "reward": {"dstn": 500, "title": "Герой гильдии"},
+              "image": "ach_guild_hero.jpg"
+            },
+            {
+              "id": "guild_leader",
+              "name": "👑 Лидер гильдии",
+              "requirement": "Создать гильдию и прокачать её до 5 уровня",
+              "reward": {"dstn": 2000, "title": "Лидер гильдии", "rainbow_shard": 2},
+              "image": "ach_guild_leader.jpg"
+            }
+          ]
+        },
+        
+        "event": {
+          "name": "🎪 Ивенты",
+          "icon": "🎪",
+          "description": "Достижения за участие в ивентах",
+          "achievements": [
+            {
+              "id": "event_participant",
+              "name": "🎪 Участник ивентов",
+              "requirement": "Участвовать в 10 ивентах",
+              "reward": {"dstn": 200, "title": "Участник ивентов"},
+              "image": "ach_event_participant.jpg"
+            },
+            {
+              "id": "event_winner",
+              "name": "🏆 Победитель ивентов",
+              "requirement": "Победить в 5 ивентах",
+              "reward": {"dstn": 1000, "title": "Победитель ивентов", "rainbow_shard": 2},
+              "image": "ach_event_winner.jpg"
+            }
+          ]
+        },
+        
+        "special": {
+          "name": "✨ Особые",
+          "icon": "✨",
+          "description": "Особые достижения",
+          "achievements": [
+            {
+              "id": "premium",
+              "name": "👑 Премиум",
+              "requirement": "Купить любую подписку",
+              "reward": {"dstn": 500, "title": "Премиум"},
+              "image": "ach_premium.jpg"
+            },
+            {
+              "id": "first_premium",
+              "name": "🥇 Первый премиум",
+              "requirement": "Купить первую подписку",
+              "reward": {"dstn": 200, "title": "Первый премиум"},
+              "image": "ach_first_premium.jpg"
+            },
+            {
+              "id": "loyal",
+              "name": "🤝 Верный",
+              "requirement": "Продлевать премиум 3 месяца подряд",
+              "reward": {"dstn": 1000, "title": "Верный"},
+              "image": "ach_loyal.jpg"
+            },
+            {
+              "id": "devoted",
+              "name": "💖 Преданный",
+              "requirement": "Продлевать премиум 6 месяцев подряд",
+              "reward": {"dstn": 2000, "title": "Преданный", "rainbow_shard": 1},
+              "image": "ach_devoted.jpg"
+            },
+            {
+              "id": "immortal",
+              "name": "🌟 Бессмертный",
+              "requirement": "Продлевать премиум 1 год подряд",
+              "reward": {"dstn": 5000, "title": "Бессмертный", "rainbow_stone": 1},
+              "image": "ach_immortal.jpg"
+            },
+            {
+              "id": "god",
+              "name": "✨ Бог",
+              "requirement": "Продлевать премиум 3 года подряд",
+              "reward": {"dstn": 20000, "title": "Бог", "rainbow_stone": 5},
+              "image": "ach_god.jpg"
+            }
+          ]
+        }
+      }
+    },
+    
+    "crafting": {
+      "name": "🔨 КРАФТ",
+      "description": "Все рецепты крафта",
+      "icon": "🔨",
+      "color": "brown",
+      "categories": {
+        "weapons": {
+          "name": "⚔️ Оружие",
+          "icon": "⚔️",
+          "recipes": [
+            {
+              "id": "copper_sword",
+              "name": "⚪ Медный меч",
+              "materials": {"copper_ingot": 3},
+              "result": "+5 урона",
+              "station": "наковальня",
+              "level_req": 3
+            },
+            {
+              "id": "iron_sword",
+              "name": "🟢 Железный меч",
+              "materials": {"iron_ingot": 3},
+              "result": "+10 урона",
+              "station": "наковальня",
+              "level_req": 8
+            },
+            {
+              "id": "steel_sword",
+              "name": "🔵 Стальной меч",
+              "materials": {"steel_ingot": 3},
+              "result": "+16 урона",
+              "station": "наковальня",
+              "level_req": 15
+            },
+            {
+              "id": "mythril_sword",
+              "name": "🟣 Мифриловый меч",
+              "materials": {"mythril_ingot": 3},
+              "result": "+24 урона",
+              "station": "магическая наковальня",
+              "level_req": 25
+            },
+            {
+              "id": "crystal_sword",
+              "name": "🟡 Кристальный меч",
+              "materials": {"perfect_crystal": 3, "mythril_ingot": 1},
+              "result": "+32 урона, +10 маг. урона",
+              "station": "магический алтарь",
+              "level_req": 35
+            },
+            {
+              "id": "dragon_sword",
+              "name": "🔴 Драконий меч",
+              "materials": {"dragon_fang": 3, "dragon_scale": 2},
+              "result": "+48 урона, +20 огненного урона",
+              "station": "алтарь дракона",
+              "level_req": 45
+            }
+          ]
+        },
+        "armor": {
+          "name": "🛡️ Броня",
+          "icon": "🛡️",
+          "recipes": [
+            {
+              "id": "leather_armor",
+              "name": "⚪ Кожаная броня",
+              "materials": {"leather": 5},
+              "result": "+5 защиты",
+              "station": "верстак",
+              "level_req": 3
+            },
+            {
+              "id": "iron_armor",
+              "name": "🟢 Железная броня",
+              "materials": {"iron_ingot": 5, "leather": 2},
+              "result": "+12 защиты",
+              "station": "наковальня",
+              "level_req": 8
+            },
+            {
+              "id": "steel_armor",
+              "name": "🔵 Стальная броня",
+              "materials": {"steel_ingot": 5, "leather": 2},
+              "result": "+20 защиты",
+              "station": "наковальня",
+              "level_req": 15
+            },
+            {
+              "id": "mythril_armor",
+              "name": "🟣 Мифриловая броня",
+              "materials": {"mythril_ingot": 5, "magic_crystal": 2},
+              "result": "+30 защиты, +10 маг. защиты",
+              "station": "магическая наковальня",
+              "level_req": 25
+            },
+            {
+              "id": "dragon_scale_armor",
+              "name": "🔴 Броня из чешуи дракона",
+              "materials": {"dragon_scale": 6, "mythril_ingot": 3},
+              "result": "+45 защиты, +30 огненной защиты",
+              "station": "алтарь дракона",
+              "level_req": 35
+            }
+          ]
+        },
+        "tools": {
+          "name": "🛠️ Инструменты",
+          "icon": "🛠️",
+          "recipes": [
+            {
+              "id": "copper_pickaxe",
+              "name": "⚪ Медная кирка",
+              "materials": {"copper_ingot": 3, "wood": 2},
+              "result": "прочность 80",
+              "station": "наковальня",
+              "level_req": 5
+            },
+            {
+              "id": "iron_pickaxe",
+              "name": "🟢 Железная кирка",
+              "materials": {"iron_ingot": 3, "wood": 2},
+              "result": "прочность 150",
+              "station": "наковальня",
+              "level_req": 10
+            },
+            {
+              "id": "steel_pickaxe",
+              "name": "🔵 Стальная кирка",
+              "materials": {"steel_ingot": 3, "wood": 2},
+              "result": "прочность 250",
+              "station": "наковальня",
+              "level_req": 18
+            },
+            {
+              "id": "mythril_pickaxe",
+              "name": "🟣 Мифриловая кирка",
+              "materials": {"mythril_ingot": 3, "magic_crystal": 1},
+              "result": "прочность 400",
+              "station": "магическая наковальня",
+              "level_req": 28
+            }
+          ]
+        },
+        "potions": {
+          "name": "🧪 Зелья",
+          "icon": "🧪",
+          "recipes": [
+            {
+              "id": "health_potion",
+              "name": "⚪ Зелье здоровья",
+              "materials": {"herb": 2, "water": 1},
+              "result": "+50 здоровья",
+              "station": "котёл",
+              "level_req": 1
+            },
+            {
+              "id": "mana_potion",
+              "name": "⚪ Зелье маны",
+              "materials": {"magic_herb": 2, "water": 1},
+              "result": "+50 маны",
+              "station": "котёл",
+              "level_req": 1
+            },
+            {
+              "id": "strong_health_potion",
+              "name": "🟢 Сильное зелье здоровья",
+              "materials": {"herb": 4, "water": 1, "honey": 1},
+              "result": "+120 здоровья",
+              "station": "котёл",
+              "level_req": 10
+            },
+            {
+              "id": "desert_elixir",
+              "name": "🏜️ Эликсир пустыни",
+              "materials": {"cactus_fruit": 2, "water": 1, "honey": 1},
+              "result": "утоляет жажду, +30 энергии",
+              "station": "котёл",
+              "level_req": 15
+            },
+            {
+              "id": "dragon_blood_elixir",
+              "name": "🐉 Эликсир драконьей крови",
+              "materials": {"dragon_blood": 2, "dragon_heart": 1, "rainbow_stone": 1},
+              "result": "+30 ко всем характеристикам на 1 час",
+              "station": "алтарь дракона",
+              "level_req": 40
+            }
+          ]
+        },
+        "food": {
+          "name": "🍲 Еда",
+          "icon": "🍲",
+          "recipes": [
+            {
+              "id": "bread",
+              "name": "⚪ Хлеб",
+              "materials": {"flour": 2, "water": 1},
+              "result": "+20❤️ +5⚡",
+              "station": "печь",
+              "level_req": 1
+            },
+            {
+              "id": "fried_fish",
+              "name": "⚪ Жареная рыба",
+              "materials": {"fish": 1},
+              "result": "+30❤️ +10⚡",
+              "station": "костёр",
+              "level_req": 1
+            },
+            {
+              "id": "meat_stew",
+              "name": "🟢 Мясное рагу",
+              "materials": {"meat": 2, "vegetables": 2, "water": 1},
+              "result": "+80❤️ +30⚡",
+              "station": "котёл",
+              "level_req": 5
+            },
+            {
+              "id": "dragon_steak",
+              "name": "🔴 Драконий стейк",
+              "materials": {"dragon_meat": 2, "dragon_blood": 1, "dragon_scale": 1},
+              "result": "+300❤️ +100⚡ +50% урона",
+              "station": "алтарь дракона",
+              "level_req": 40
+            }
+          ]
+        }
+      }
+    },
+    
+    "classes": {
+      "name": "🎭 КЛАССЫ",
+      "description": "Информация о классах",
+      "icon": "🎭",
+      "color": "blue",
+      "classes": [
+        {
+          "id": "warrior",
+          "name": "⚔️ Мечник",
+          "role": "Урон",
+          "description": "Мастер клинка, наносящий огромный урон. Специализируется на критических ударах и пробивании защиты.",
+          "health": 550,
+          "damage": 120,
+          "crit_chance": 30,
+          "crit_multiplier": 3,
+          "abilities": [
+            {"name": "Рассекающий удар", "level": 1, "description": "150% урона"},
+            {"name": "Вихрь клинков", "level": 5, "description": "80% урона по всем"},
+            {"name": "Огненный меч", "level": 10, "description": "+30% огненного урона"},
+            {"name": "Ураган стали", "level": 30, "description": "500% урона по всем"}
+          ],
+          "mastery": "+50% к критическому урону",
+          "image": "class_warrior.jpg"
+        },
+        {
+          "id": "archer",
+          "name": "🏹 Лучник",
+          "role": "Дальний бой",
+          "description": "Меткий стрелок, поражающий цели издалека. Уклоняется от атак и наносит точные удары.",
+          "health": 450,
+          "damage": 100,
+          "dodge": 45,
+          "crit_chance": 25,
+          "abilities": [
+            {"name": "Меткий выстрел", "level": 1, "description": "120% урона, +20% точности"},
+            {"name": "Ледяная стрела", "level": 5, "description": "30% шанс заморозить"},
+            {"name": "Прицельный залп", "level": 20, "description": "3 стрелы по 80% урона"},
+            {"name": "Звёздная стрела", "level": 30, "description": "400% урона, игнорирует защиту"}
+          ],
+          "mastery": "Критические удары игнорируют 50% защиты",
+          "image": "class_archer.jpg"
+        },
+        {
+          "id": "mage",
+          "name": "🔮 Маг",
+          "role": "Магический урон",
+          "description": "Повелитель стихий, обрушивающий на врагов мощь магии. Обладает огромным запасом маны.",
+          "health": 350,
+          "magic_damage": 150,
+          "mana": 550,
+          "mana_regen": 25,
+          "abilities": [
+            {"name": "Огненный шар", "level": 1, "description": "140% маг. урона"},
+            {"name": "Молния", "level": 5, "description": "130% урона по 3 целям"},
+            {"name": "Магический взрыв", "level": 25, "description": "300% маг. урона по площади"},
+            {"name": "Армагеддон", "level": 30, "description": "500% маг. урона всем врагам"}
+          ],
+          "mastery": "Заклинания стоят на 25% меньше маны",
+          "image": "class_mage.jpg"
+        },
+        {
+          "id": "guardian",
+          "name": "🛡️ Страж",
+          "role": "Танк",
+          "description": "Несокрушимый защитник, принимающий удар на себя. Обладает огромной защитой и может защищать союзников.",
+          "health": 850,
+          "defense": 120,
+          "block_chance": 25,
+          "abilities": [
+            {"name": "Железная стена", "level": 1, "description": "+50% защиты"},
+            {"name": "Провокация", "level": 10, "description": "Все враги атакуют стража"},
+            {"name": "Зеркальный щит", "level": 20, "description": "30% шанс отразить урон"},
+            {"name": "Стена героя", "level": 30, "description": "-30% урона союзникам"}
+          ],
+          "mastery": "Блокирует на 25% больше урона",
+          "image": "class_guardian.jpg"
+        }
+      ]
+    }
+  }
+}
