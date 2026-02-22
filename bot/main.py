@@ -55,32 +55,58 @@ except Exception as e:
     exit(1)
 
 # ============================================
-# ЖЁСТКИЙ ПУТЬ К JSON
+# ДИАГНОСТИКА И ПОИСК JSON
 # ============================================
 
-DATA_DIR = Path("/opt/render/project/src/data")
-logging.info(f"📁 Путь к данным: {DATA_DIR}")
+# Проверяем текущую директорию
+current_dir = Path(__file__).parent
+logging.info(f"📁 Текущая папка: {current_dir}")
 
-# Проверяем существование папки
-if DATA_DIR.exists():
-    logging.info(f"✅ Папка существует")
-    files = list(DATA_DIR.glob("*.json"))
-    logging.info(f"📄 Найдено JSON файлов: {len(files)}")
-    if files:
-        logging.info(f"📋 Первые 5 файлов:")
-        for f in files[:5]:
-            logging.info(f"   - {f.name}")
-else:
-    logging.error(f"❌ Папка НЕ СУЩЕСТВУЕТ!")
-    # Пробуем альтернативный путь
-    alt_path = Path("/data")
-    if alt_path.exists():
-        DATA_DIR = alt_path
-        logging.info(f"✅ Используем альтернативный путь: {DATA_DIR}")
+# Проверяем родительскую папку
+parent_dir = current_dir.parent
+logging.info(f"📁 Родительская папка: {parent_dir}")
+
+# Проверяем все возможные места
+possible_paths = [
+    parent_dir / "data",                          # /opt/render/project/src/data
+    parent_dir,                                    # /opt/render/project/src
+    Path("/opt/render/project/src/data"),
+    Path("/opt/render/project/src"),
+    Path("/data"),
+    current_dir / "data",                          # /bot/data
+]
+
+logging.info("🔍 Ищем JSON файлы...")
+DATA_DIR = None
+
+for path in possible_paths:
+    logging.info(f"📂 Проверяем: {path}")
+    if path.exists():
+        logging.info(f"   ✅ Папка существует")
+        json_files = list(path.glob("*.json"))
+        if json_files:
+            logging.info(f"   ✅ Найдено JSON: {len(json_files)}")
+            for f in json_files[:5]:
+                logging.info(f"      - {f.name}")
+            DATA_DIR = path
+            break
+        else:
+            logging.info(f"   ❌ В папке нет JSON файлов")
     else:
-        # Создаём папку
-        DATA_DIR.mkdir(parents=True, exist_ok=True)
-        logging.info(f"✅ Папка создана: {DATA_DIR}")
+        logging.info(f"   ❌ Папка не существует")
+
+if not DATA_DIR:
+    logging.error("❌ JSON ФАЙЛЫ НЕ НАЙДЕНЫ НИ В ОДНОЙ ПАПКЕ!")
+    logging.error("📌 Пожалуйста, проверь структуру проекта:")
+    logging.error(f"   - {parent_dir}/data/")
+    logging.error(f"   - {current_dir}/data/")
+    # Создаём папку для теста
+    test_dir = parent_dir / "data"
+    test_dir.mkdir(parents=True, exist_ok=True)
+    logging.info(f"✅ Создана тестовая папка: {test_dir}")
+    DATA_DIR = test_dir
+
+logging.info(f"📁 ИТОГОВЫЙ ПУТЬ: {DATA_DIR}")
 
 # ============================================
 # ЗАГРУЗКА JSON
@@ -105,7 +131,6 @@ def load_json(filename):
 
 logging.info("🚀 Загрузка JSON файлов...")
 
-# Загружаем все JSON
 locations_data = load_json("locations.json")
 enemies_data = load_json("enemies.json")
 items_data = load_json("items.json")
@@ -124,7 +149,6 @@ secrets_data = load_json("secrets.json")
 exchange_data = load_json("exchange.json")
 islands_data = load_json("islands.json")
 
-# Считаем загруженные
 loaded = [
     locations_data, enemies_data, items_data, crafting_data,
     classes_data, quests_data, house_data, premium_data, nft_data,
@@ -140,7 +164,6 @@ logging.info(f"✅ Загружено JSON: {loaded_count}/17")
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    # Информация о загруженных JSON
     json_info = []
     if locations_data:
         json_info.append(f"📍 Локаций: {len(locations_data.get('locations', {}))}")
@@ -154,51 +177,18 @@ def start(message):
     bot.send_message(
         message.chat.id,
         f"✅ БОТ РАБОТАЕТ!\n\n"
-        f"📊 JSON: {loaded_count}/17\n"
+        f"📂 JSON: {loaded_count}/17\n"
         f"{json_text}\n\n"
         f"🆔 ID: {message.from_user.id}\n"
         f"👤 Имя: {message.from_user.first_name}"
     )
     logging.info(f"✅ /start от {message.from_user.id}")
 
-@bot.message_handler(commands=['location'])
-def location_command(message):
-    if locations_data and locations_data.get("locations"):
-        # Берём первую локацию
-        first_loc = list(locations_data["locations"].values())[0]
-        text = f"📍 *{first_loc.get('name', 'Локация')}*\n\n"
-        text += first_loc.get('description', 'Описание отсутствует')
-        bot.send_message(message.chat.id, text, parse_mode='Markdown')
-    else:
-        bot.send_message(message.chat.id, "❌ Локации не загружены")
-
-@bot.message_handler(commands=['items'])
-def items_command(message):
-    if items_data and items_data.get("items"):
-        items = list(items_data["items"].items())[:10]
-        text = "📦 *Предметы:*\n\n"
-        for item_id, item in items:
-            name = item.get('name', item_id)
-            rarity = item.get('rarity', 'обычный')
-            text += f"• {name} ({rarity})\n"
-        bot.send_message(message.chat.id, text, parse_mode='Markdown')
-    else:
-        bot.send_message(message.chat.id, "❌ Предметы не загружены")
-
-@bot.message_handler(commands=['help'])
-def help_command(message):
-    text = "❓ *Доступные команды:*\n\n"
-    text += "/start - информация о боте\n"
-    text += "/location - первая локация\n"
-    text += "/items - список предметов\n"
-    text += "/help - это меню"
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
-
 @bot.message_handler(func=lambda m: True)
 def echo(message):
     bot.send_message(
         message.chat.id, 
-        f"❓ Неизвестная команда. Напиши /help\n\n"
+        f"❓ Неизвестная команда. Напиши /start\n\n"
         f"Твоё сообщение: {message.text}"
     )
     logging.info(f"✅ Сообщение от {message.from_user.id}: {message.text}")
