@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destiny - Профиль</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .profile-page {
+            padding: 15px;
+        }
+        
+        .profile-header {
+            background: linear-gradient(135deg, #e94560 0%, #d13e56 100%);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: #fff;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            border: 3px solid #fff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .profile-name {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .profile-class {
+            text-align: center;
+            margin-bottom: 5px;
+            font-size: 16px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .profile-level {
+            text-align: center;
+            font-size: 14px;
+            background: rgba(0,0,0,0.3);
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            border-color: #e94560;
+            background: rgba(233, 69, 96, 0.1);
+        }
+        
+        .stat-icon-large {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-name {
+            color: #ccc;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e94560;
+        }
+        
+        .stat-number.small {
+            font-size: 18px;
+        }
+        
+        .progress-section {
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .progress-title {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #ccc;
+            font-size: 14px;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e94560, #ffd700);
+            border-radius: 5px;
+            width: 45%;
+            transition: width 0.3s;
+        }
+        
+        .attributes-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .attribute-item {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .attribute-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .attribute-icon {
+            font-size: 20px;
+        }
+        
+        .attribute-name {
+            font-size: 14px;
+            color: #ccc;
+        }
+        
+        .attribute-value {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .badge {
+            background: rgba(233, 69, 96, 0.1);
+            border: 1px solid #e94560;
+            border-radius: 25px;
+            padding: 8px 15px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .badge-icon {
+            font-size: 16px;
+        }
+        
+        .badge.gold {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+        }
+        
+        .badge.purple {
+            background: rgba(128, 0, 128, 0.1);
+            border-color: #800080;
+        }
+        
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .achievement-item {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .achievement-item:hover {
+            border-color: #e94560;
+            background: rgba(233, 69, 96, 0.1);
+        }
+        
+        .achievement-item.completed {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .achievement-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .achievement-name {
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        
+        .achievement-progress {
+            font-size: 10px;
+            color: #ccc;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e94560;
+            margin: 20px 0 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid rgba(233, 69, 96, 0.3);
+        }
+        
+        .premium-status {
+            background: linear-gradient(135deg, #ffd700, #e6c200);
+            color: #000;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .premium-icon {
+            font-size: 40px;
+        }
+        
+        .premium-info {
+            flex: 1;
+        }
+        
+        .premium-title {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .premium-desc {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .premium-btn {
+            background: #000;
+            color: #ffd700;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .premium-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .premium-active {
+            background: #4CAF50;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="main-screen">
+            <div class="top-panel">
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-icon">⚡</span>
+                        <span class="stat-value" id="energy">100/100</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">❤️</span>
+                        <span class="stat-value" id="health">100/100</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">💰</span>
+                        <span class="stat-value" id="gold">1250</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">🪙</span>
+                        <span class="stat-value" id="dstn">350</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-content">
+                <div class="profile-page">
+                    <!-- Шапка профиля -->
+                    <div class="profile-header">
+                        <div class="profile-avatar">⚔️</div>
+                        <div class="profile-name">Railagg</div>
+                        <div class="profile-class">⚔️ Мечник • Уровень 30</div>
+                        <div class="profile-level">✨ Престиж 2</div>
+                    </div>
+                    
+                    <!-- Основные статы -->
+                    <div class="stats-cards">
+                        <div class="stat-card">
+                            <div class="stat-icon-large">⚔️</div>
+                            <div class="stat-name">Урон</div>
+                            <div class="stat-number">124</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-large">🛡️</div>
+                            <div class="stat-name">Защита</div>
+                            <div class="stat-number">58</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-large">⚡</div>
+                            <div class="stat-name">Крит</div>
+                            <div class="stat-number">24%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-large">💨</div>
+                            <div class="stat-name">Уклонение</div>
+                            <div class="stat-number">15%</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Прогресс уровня -->
+                    <div class="progress-section">
+                        <div class="progress-title">
+                            <span>Уровень 30 → 31</span>
+                            <span>1,450 / 2,000 опыта</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:72%"></div>
+                        </div>
+                        <div class="badge-container">
+                            <span class="badge"><span class="badge-icon">⚔️</span> Воин</span>
+                            <span class="badge gold"><span class="badge-icon">👑</span> Ветеран</span>
+                            <span class="badge purple"><span class="badge-icon">🐉</span> Драконобойца</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Атрибуты -->
+                    <div class="section-title">📊 АТРИБУТЫ</div>
+                    <div class="attributes-grid">
+                        <div class="attribute-item">
+                            <div class="attribute-label">
+                                <span class="attribute-icon">💪</span>
+                                <span class="attribute-name">Сила</span>
+                            </div>
+                            <span class="attribute-value">28</span>
+                        </div>
+                        <div class="attribute-item">
+                            <div class="attribute-label">
+                                <span class="attribute-icon">🏃</span>
+                                <span class="attribute-name">Ловкость</span>
+                            </div>
+                            <span class="attribute-value">15</span>
+                        </div>
+                        <div class="attribute-item">
+                            <div class="attribute-label">
+                                <span class="attribute-icon">🧠</span>
+                                <span class="attribute-name">Интеллект</span>
+                            </div>
+                            <span class="attribute-value">12</span>
+                        </div>
+                        <div class="attribute-item">
+                            <div class="attribute-label">
+                                <span class="attribute-icon">❤️</span>
+                                <span class="attribute-name">Живучесть</span>
+                            </div>
+                            <span class="attribute-value">22</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Достижения -->
+                    <div class="section-title">🏆 ДОСТИЖЕНИЯ (12/45)</div>
+                    <div class="achievement-grid">
+                        <div class="achievement-item completed">
+                            <div class="achievement-icon">⚔️</div>
+                            <div class="achievement-name">Первая кровь</div>
+                            <div class="achievement-progress">✅</div>
+                        </div>
+                        <div class="achievement-item completed">
+                            <div class="achievement-icon">🐺</div>
+                            <div class="achievement-name">Волкодав</div>
+                            <div class="achievement-progress">100/100</div>
+                        </div>
+                        <div class="achievement-item completed">
+                            <div class="achievement-icon">⛏️</div>
+                            <div class="achievement-name">Шахтёр</div>
+                            <div class="achievement-progress">1000/1000</div>
+                        </div>
+                        <div class="achievement-item">
+                            <div class="achievement-icon">🎣</div>
+                            <div class="achievement-name">Рыбак</div>
+                            <div class="achievement-progress">45/500</div>
+                        </div>
+                        <div class="achievement-item">
+                            <div class="achievement-icon">🐉</div>
+                            <div class="achievement-name">Драконобойца</div>
+                            <div class="achievement-progress">3/10</div>
+                        </div>
+                        <div class="achievement-item">
+                            <div class="achievement-icon">🏆</div>
+                            <div class="achievement-name">Чемпион</div>
+                            <div class="achievement-progress">15/50</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Статистика -->
+                    <div class="section-title">📈 СТАТИСТИКА</div>
+                    <div class="stats-cards">
+                        <div class="stat-card">
+                            <div class="stat-icon-large">👾</div>
+                            <div class="stat-name">Убито мобов</div>
+                            <div class="stat-number small">2,547</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-large">⚔️</div>
+                            <div class="stat-name">PvP побед</div>
+                            <div class="stat-number small">47</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-large">🔨</div>
+                            <div class="stat-name">Скрафчено</div>
+                            <div class="stat-number small">234</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-large">🎣</div>
+                            <div class="stat-name">Поймано рыб</div>
+                            <div class="stat-number small">892</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Премиум статус -->
+                    <div class="premium-status">
+                        <div class="premium-icon">👑</div>
+                        <div class="premium-info">
+                            <div class="premium-title">Премиум не активен</div>
+                            <div class="premium-desc">Купи подписку для бонусов</div>
+                        </div>
+                        <button class="premium-btn" onclick="window.location.href='shop.html?tab=premium'">Купить</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-menu">
+                <button class="menu-btn" data-page="game">
+                    <span class="menu-icon">🎮</span>
+                    <span class="menu-text">Игра</span>
+                </button>
+                <button class="menu-btn" data-page="map">
+                    <span class="menu-icon">🗺️</span>
+                    <span class="menu-text">Карта</span>
+                </button>
+                <button class="menu-btn" data-page="inventory">
+                    <span class="menu-icon">🎒</span>
+                    <span class="menu-text">Инвентарь</span>
+                </button>
+                <button class="menu-btn active" data-page="profile">
+                    <span class="menu-icon">👤</span>
+                    <span class="menu-text">Профиль</span>
+                </button>
+                <button class="menu-btn" data-page="shop">
+                    <span class="menu-icon">🏪</span>
+                    <span class="menu-text">Магазин</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Здесь будет загрузка реальных данных из API
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Profile page loaded');
+        });
+    </script>
+    <script src="../script.js"></script>
+</body>
+</html>
