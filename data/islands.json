@@ -1,1 +1,344 @@
-
+{
+  "islands": {
+    "volcanic_island": {
+      "id": "volcanic_island",
+      "name": "🌋 Огненный остров",
+      "description": "Остров посреди лавового моря. Воздух раскалён, из земли бьют гейзеры, а по застывшей лаве ползают огненные элементали. Доступен за радужные осколки.",
+      "image": "volcanic_island.jpg",
+      "level_req": 45,
+      "entry_cost": {
+        "rainbow_shard": 3
+      },
+      "enemies": ["lava_golem", "fire_elemental", "magma_snake"],
+      "boss": "volcano_king",
+      "resources": ["obsidian", "fire_gem", "sulfur"],
+      "hidden_stash": {
+        "name": "🌋 В жерле вулкана",
+        "description": "В самом центре кратера, окружённый бурлящей лавой, стоит древний сундук.",
+        "find_chance": 100,
+        "cooldown": 86400,
+        "guaranteed": {
+          "gold_min": 500,
+          "gold_max": 1000,
+          "dstn_min": 200,
+          "dstn_max": 400,
+          "rainbow_shard_min": 3,
+          "rainbow_shard_max": 5
+        },
+        "items": [
+          {"item": "lava_core", "chance": 80, "amount_min": 1, "amount_max": 1},
+          {"item": "obsidian", "chance": 70, "amount_min": 2, "amount_max": 4},
+          {"item": "fire_gem", "chance": 60, "amount_min": 1, "amount_max": 2},
+          {"item": "sulfur", "chance": 50, "amount_min": 2, "amount_max": 5}
+        ],
+        "rare_items": [
+          {"item": "volcano_heart", "chance": 20, "amount_min": 1, "amount_max": 1},
+          {"item": "rainbow_stone", "chance": 10, "amount_min": 1, "amount_max": 1},
+          {"item": "dragon_scale", "chance": 5, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🌊 Лагуна с лавой",
+        "description": "Небольшой грот с лавовым озером. Здесь удивительно прохладно.",
+        "energy_gain": 20,
+        "cooldown": 7200
+      },
+      "actions": [
+        {"text": "🌋 Исследовать остров (5⚡)", "type": "explore", "energy_cost": 5},
+        {"text": "🌊 Отдохнуть в лагуне (+20⚡)", "type": "rest", "energy_gain": 20, "cooldown": 7200, "next": "volcanic_island"},
+        {"text": "⚔️ Сразиться с королём вулкана", "type": "combat", "enemy": "volcano_king", "energy_cost": 10},
+        {"text": "💎 Открыть сундук расплавленной магмы", "type": "open_legendary_chest", "chest": "volcano"},
+        {"text": "🚪 Покинуть остров", "type": "move", "next": "volcano_crater"}
+      ],
+      "daily_bonus": {
+        "item": "rainbow_shard",
+        "amount": 1,
+        "chance": 30
+      }
+    },
+    
+    "crystal_island": {
+      "id": "crystal_island",
+      "name": "💎 Кристальный остров",
+      "description": "Остров, где всё состоит из кристаллов. Деревья, камни, даже вода переливается всеми цветами радуги. Воздух искрится магией. Доступен за радужные камни.",
+      "image": "crystal_island.jpg",
+      "level_req": 50,
+      "entry_cost": {
+        "rainbow_stone": 1
+      },
+      "enemies": ["crystal_golem", "living_crystal", "mana_spirit"],
+      "boss": "crystal_dragon",
+      "resources": ["perfect_crystal", "magic_crystal", "mana_essence"],
+      "hidden_stash": {
+        "name": "💎 Кристальный алтарь",
+        "description": "Алтарь из чистых кристаллов, излучающий ослепительный свет. В его основании скрыт тайник.",
+        "find_chance": 100,
+        "cooldown": 86400,
+        "guaranteed": {
+          "gold_min": 800,
+          "gold_max": 1500,
+          "dstn_min": 300,
+          "dstn_max": 600,
+          "rainbow_shard_min": 5,
+          "rainbow_shard_max": 7
+        },
+        "items": [
+          {"item": "perfect_crystal", "chance": 80, "amount_min": 1, "amount_max": 2},
+          {"item": "magic_crystal", "chance": 70, "amount_min": 1, "amount_max": 3},
+          {"item": "mana_essence", "chance": 60, "amount_min": 1, "amount_max": 2},
+          {"item": "diamond", "chance": 50, "amount_min": 1, "amount_max": 1}
+        ],
+        "rare_items": [
+          {"item": "crystal_heart", "chance": 15, "amount_min": 1, "amount_max": 1},
+          {"item": "rainbow_stone", "chance": 15, "amount_min": 1, "amount_max": 1},
+          {"item": "ancient_relic", "chance": 10, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🔮 Кристальный грот",
+        "description": "Пещера из светящихся кристаллов. Их мягкое сияние восстанавливает магические силы.",
+        "energy_gain": 35,
+        "magic_gain": 50,
+        "cooldown": 21600
+      },
+      "actions": [
+        {"text": "💎 Исследовать остров (5⚡)", "type": "explore", "energy_cost": 5},
+        {"text": "🔮 Отдохнуть в кристальном гроте (+35⚡, +50🔮)", "type": "rest", "energy_gain": 35, "magic_gain": 50, "cooldown": 21600, "next": "crystal_island"},
+        {"text": "⚔️ Сразиться с кристальным драконом", "type": "combat", "enemy": "crystal_dragon", "energy_cost": 12},
+        {"text": "💎 Открыть сундук сияющих глубин", "type": "open_legendary_chest", "chest": "crystal"},
+        {"text": "🚪 Покинуть остров", "type": "move", "next": "ancient_ruins"}
+      ],
+      "daily_bonus": {
+        "item": "magic_crystal",
+        "amount": 1,
+        "chance": 50
+      }
+    },
+    
+    "dragon_island": {
+      "id": "dragon_island",
+      "name": "🐉 Остров драконов",
+      "description": "Легендарный остров, где обитают древние драконы. Небо бороздят крылатые ящеры, а земля усеяна их костями и сокровищами. Доступен за 5 радужных камней.",
+      "image": "dragon_island.jpg",
+      "level_req": 60,
+      "entry_cost": {
+        "rainbow_stone": 5
+      },
+      "enemies": ["young_dragon", "dragon_knight", "fire_drake"],
+      "boss": "dragon_king",
+      "resources": ["dragon_scale", "dragon_blood", "dragon_heart"],
+      "hidden_stash": {
+        "name": "🦴 Кости древнего дракона",
+        "description": "Огромный скелет древнего дракона. В его грудной клетке, среди рёбер, что-то ярко блестит.",
+        "find_chance": 100,
+        "cooldown": 86400,
+        "guaranteed": {
+          "gold_min": 2000,
+          "gold_max": 5000,
+          "dstn_min": 1000,
+          "dstn_max": 2000,
+          "rainbow_stone_min": 1,
+          "rainbow_stone_max": 2
+        },
+        "items": [
+          {"item": "dragon_scale", "chance": 100, "amount_min": 3, "amount_max": 5},
+          {"item": "dragon_blood", "chance": 80, "amount_min": 1, "amount_max": 2},
+          {"item": "dragon_heart", "chance": 60, "amount_min": 1, "amount_max": 1},
+          {"item": "dragon_bone", "chance": 70, "amount_min": 2, "amount_max": 4}
+        ],
+        "rare_items": [
+          {"item": "dragon_crown", "chance": 10, "amount_min": 1, "amount_max": 1},
+          {"item": "dragon_sword", "chance": 5, "amount_min": 1, "amount_max": 1},
+          {"item": "dragon_armor", "chance": 5, "amount_min": 1, "amount_max": 1},
+          {"item": "rainbow_stone", "chance": 20, "amount_min": 1, "amount_max": 2}
+        ]
+      },
+      "rest_spot": {
+        "name": "🦴 Логово дракона",
+        "description": "Бывшее логово дракона, где до сих пор чувствуется его древняя сила и мощь.",
+        "energy_gain": 50,
+        "health_gain": 100,
+        "cooldown": 86400
+      },
+      "actions": [
+        {"text": "🐉 Исследовать остров (5⚡)", "type": "explore", "energy_cost": 5},
+        {"text": "🦴 Отдохнуть в логове (+50⚡, +100❤️)", "type": "rest", "energy_gain": 50, "health_gain": 100, "cooldown": 86400, "next": "dragon_island"},
+        {"text": "⚔️ Сразиться с королём драконов", "type": "combat", "enemy": "dragon_king", "energy_cost": 15},
+        {"text": "👑 Открыть сундук древних драконов", "type": "open_legendary_chest", "chest": "dragon"},
+        {"text": "🚪 Покинуть остров", "type": "move", "next": "dragon_lair"}
+      ],
+      "daily_bonus": {
+        "item": "rainbow_shard",
+        "amount": 3,
+        "chance": 40
+      }
+    },
+    
+    "time_island": {
+      "id": "time_island",
+      "name": "⏳ Временной остров",
+      "description": "Таинственный остров, где время течёт иначе. Здесь можно встретить отголоски прошлого и тени будущего. Доступен за радужные камни.",
+      "image": "time_island.jpg",
+      "level_req": 55,
+      "entry_cost": {
+        "rainbow_stone": 2
+      },
+      "enemies": ["time_wraith", "future_shadow", "past_echo"],
+      "boss": "time_guardian",
+      "resources": ["hourglass_fragment", "chrono_crystal", "time_essence"],
+      "hidden_stash": {
+        "name": "⏳ Разрыв времени",
+        "description": "Место, где пространство и время искажены. В центре воронки парит сундук.",
+        "find_chance": 100,
+        "cooldown": 86400,
+        "guaranteed": {
+          "gold_min": 1200,
+          "gold_max": 2500,
+          "dstn_min": 500,
+          "dstn_max": 1000,
+          "rainbow_shard_min": 4,
+          "rainbow_shard_max": 6
+        },
+        "items": [
+          {"item": "hourglass_fragment", "chance": 80, "amount_min": 1, "amount_max": 2},
+          {"item": "chrono_crystal", "chance": 70, "amount_min": 1, "amount_max": 2},
+          {"item": "time_essence", "chance": 60, "amount_min": 1, "amount_max": 2},
+          {"item": "ancient_relic", "chance": 40, "amount_min": 1, "amount_max": 1}
+        ],
+        "rare_items": [
+          {"item": "time_core", "chance": 15, "amount_min": 1, "amount_max": 1},
+          {"item": "rainbow_stone", "chance": 20, "amount_min": 1, "amount_max": 1},
+          {"item": "eternity_hourglass", "chance": 5, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "⏳ Временная петля",
+        "description": "Странное место, где время зациклилось. Отдых здесь восстанавливает, но ощущается как вечность.",
+        "energy_gain": 60,
+        "cooldown": 43200
+      },
+      "actions": [
+        {"text": "⏳ Исследовать остров (5⚡)", "type": "explore", "energy_cost": 5},
+        {"text": "⏳ Отдохнуть во временной петле (+60⚡)", "type": "rest", "energy_gain": 60, "cooldown": 43200, "next": "time_island"},
+        {"text": "⚔️ Сразиться со стражем времени", "type": "combat", "enemy": "time_guardian", "energy_cost": 12},
+        {"text": "⌛ Открыть сундук вечности", "type": "open_legendary_chest", "chest": "time"},
+        {"text": "🚪 Покинуть остров", "type": "move", "next": "ancient_ruins"}
+      ],
+      "daily_bonus": {
+        "item": "hourglass_fragment",
+        "amount": 1,
+        "chance": 30
+      }
+    },
+    
+    "abyss_island": {
+      "id": "abyss_island",
+      "name": "🌌 Остров бездны",
+      "description": "Остров, парящий в пустоте между мирами. Здесь обитают существа из кошмаров, а тьма кажется осязаемой. Доступен за 3 радужных камня.",
+      "image": "abyss_island.jpg",
+      "level_req": 65,
+      "entry_cost": {
+        "rainbow_stone": 3
+      },
+      "enemies": ["void_being", "nightmare_creature", "shadow_assassin"],
+      "boss": "abyss_leviathan",
+      "resources": ["void_crystal", "shadow_essence", "nightmare_dust"],
+      "hidden_stash": {
+        "name": "🌌 Сердце тьмы",
+        "description": "В центре острова пульсирует сгусток чистой тьмы. Внутри него угадываются очертания сундука.",
+        "find_chance": 100,
+        "cooldown": 86400,
+        "guaranteed": {
+          "gold_min": 1500,
+          "gold_max": 3000,
+          "dstn_min": 600,
+          "dstn_max": 1200,
+          "rainbow_stone_min": 1,
+          "rainbow_stone_max": 2
+        },
+        "items": [
+          {"item": "void_crystal", "chance": 80, "amount_min": 1, "amount_max": 2},
+          {"item": "shadow_essence", "chance": 70, "amount_min": 1, "amount_max": 2},
+          {"item": "nightmare_dust", "chance": 60, "amount_min": 1, "amount_max": 3},
+          {"item": "abyss_shard", "chance": 40, "amount_min": 1, "amount_max": 1}
+        ],
+        "rare_items": [
+          {"item": "void_heart", "chance": 15, "amount_min": 1, "amount_max": 1},
+          {"item": "shadow_armor", "chance": 5, "amount_min": 1, "amount_max": 1},
+          {"item": "abyss_blade", "chance": 5, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🌑 Островок света",
+        "description": "Крошечный клочок света посреди тьмы. Здесь можно перевести дух.",
+        "energy_gain": 40,
+        "health_gain": 40,
+        "cooldown": 28800
+      },
+      "actions": [
+        {"text": "🌌 Исследовать остров (5⚡)", "type": "explore", "energy_cost": 5},
+        {"text": "🌑 Отдохнуть на островке света (+40⚡, +40❤️)", "type": "rest", "energy_gain": 40, "health_gain": 40, "cooldown": 28800, "next": "abyss_island"},
+        {"text": "⚔️ Сразиться с левиафаном бездны", "type": "combat", "enemy": "abyss_leviathan", "energy_cost": 15},
+        {"text": "🌑 Открыть сундук бездны", "type": "open_legendary_chest", "chest": "abyss"},
+        {"text": "🚪 Покинуть остров", "type": "move", "next": "dragon_lair"}
+      ],
+      "daily_bonus": {
+        "item": "void_crystal",
+        "amount": 1,
+        "chance": 25
+      }
+    },
+    
+    "fortune_island": {
+      "id": "fortune_island",
+      "name": "🎰 Остров удачи",
+      "description": "Загадочный остров, где удача решает всё. Здесь можно выиграть всё или проиграть последнее. Доступен за радужные осколки.",
+      "image": "fortune_island.jpg",
+      "level_req": 40,
+      "entry_cost": {
+        "rainbow_shard": 2
+      },
+      "enemies": ["lucky_goblin", "dice_elemental"],
+      "boss": "fortune_spirit",
+      "hidden_stash": {
+        "name": "🎲 Игровой автомат",
+        "description": "Огромный автомат, который принимает монеты и иногда выдаёт джекпот.",
+        "find_chance": 100,
+        "cooldown": 43200,
+        "guaranteed": {
+          "gold_min": 100,
+          "gold_max": 5000,
+          "dstn_min": 50,
+          "dstn_max": 1000
+        },
+        "items": [
+          {"item": "lucky_coin", "chance": 70, "amount_min": 1, "amount_max": 3},
+          {"item": "four_leaf_clover", "chance": 30, "amount_min": 1, "amount_max": 1}
+        ],
+        "rare_items": [
+          {"item": "horseshoe", "chance": 10, "amount_min": 1, "amount_max": 1},
+          {"item": "rainbow_stone", "chance": 5, "amount_min": 1, "amount_max": 1},
+          {"item": "jackpot_token", "chance": 1, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🎰 Зал славы",
+        "description": "Место, где увековечены имена самых удачливых игроков.",
+        "energy_gain": 25,
+        "cooldown": 14400
+      },
+      "actions": [
+        {"text": "🎲 Испытать удачу (10💰)", "type": "gamble", "cost": 10},
+        {"text": "🎰 Крутить автомат (100💰)", "type": "slot_machine", "cost": 100},
+        {"text": "💫 Попытать счастья (10⭐)", "type": "premium_gamble", "cost": 10},
+        {"text": "🎰 Отдохнуть в зале славы (+25⚡)", "type": "rest", "energy_gain": 25, "cooldown": 14400, "next": "fortune_island"},
+        {"text": "🚪 Покинуть остров", "type": "move", "next": "village"}
+      ],
+      "daily_bonus": {
+        "item": "lucky_coin",
+        "amount": 1,
+        "chance": 50
+      }
+    }
+  }
+}
