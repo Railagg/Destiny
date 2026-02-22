@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destiny Game</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <div class="app" id="app">
+        <!-- Загрузка -->
+        <div class="loading-screen" id="loading">
+            <div class="spinner"></div>
+            <div class="loading-text">Загрузка Destiny...</div>
+        </div>
+
+        <!-- Основной интерфейс -->
+        <div class="main-screen hidden" id="mainScreen">
+            <!-- Верхняя панель -->
+            <div class="top-panel">
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-icon">⚡</span>
+                        <span class="stat-value" id="energy">100/100</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">❤️</span>
+                        <span class="stat-value" id="health">100/100</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">💰</span>
+                        <span class="stat-value" id="gold">20</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">🪙</span>
+                        <span class="stat-value" id="dstn">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Основной контент -->
+            <div class="game-content" id="gameContent">
+                <!-- Здесь будет динамический контент -->
+            </div>
+
+            <!-- Нижнее меню -->
+            <div class="bottom-menu">
+                <button class="menu-btn" data-page="game">
+                    <span class="menu-icon">🎮</span>
+                    <span class="menu-text">Игра</span>
+                </button>
+                <button class="menu-btn" data-page="map">
+                    <span class="menu-icon">🗺️</span>
+                    <span class="menu-text">Карта</span>
+                </button>
+                <button class="menu-btn" data-page="inventory">
+                    <span class="menu-icon">🎒</span>
+                    <span class="menu-text">Инвентарь</span>
+                </button>
+                <button class="menu-btn" data-page="profile">
+                    <span class="menu-icon">👤</span>
+                    <span class="menu-text">Профиль</span>
+                </button>
+                <button class="menu-btn" data-page="shop">
+                    <span class="menu-icon">🏪</span>
+                    <span class="menu-text">Магазин</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
