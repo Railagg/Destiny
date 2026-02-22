@@ -1,1 +1,476 @@
-
+{
+  "quests": {
+    "act1": {
+      "name": "📜 Акт 1: Пробуждение",
+      "description": "Ты очнулся в незнакомом мире на лесной опушке. Пора осмотреться и найти ответы.",
+      "level_req": 1,
+      "quests": [
+        {
+          "id": "quest_1_1",
+          "name": "🔰 Первые шаги",
+          "description": "Поговори со старостой деревни. Он расскажет об этом мире.",
+          "objectives": [
+            {"type": "talk", "target": "village_elder", "count": 1}
+          ],
+          "rewards": {
+            "exp": 50,
+            "gold": 100,
+            "items": ["health_potion", "rusty_sword"]
+          }
+        },
+        {
+          "id": "quest_1_2",
+          "name": "🌲 Волчья угроза",
+          "description": "Староста просит помочь — волки распоясались в лесу. Убей 5 волков.",
+          "objectives": [
+            {"type": "kill", "target": "wolf", "count": 5}
+          ],
+          "rewards": {
+            "exp": 150,
+            "gold": 200,
+            "items": ["leather_armor"]
+          }
+        },
+        {
+          "id": "quest_1_3",
+          "name": "🔮 Выбор пути",
+          "description": "Найди наставника своего класса в деревне: мечника в кузнице, лучника у озера, мага в башне, стража в казармах.",
+          "objectives": [
+            {"type": "choose_class", "count": 1}
+          ],
+          "rewards": {
+            "exp": 200,
+            "gold": 300,
+            "class_weapon": true
+          }
+        },
+        {
+          "id": "quest_1_4",
+          "name": "🏠 Свой угол",
+          "description": "Построй свой первый домик на берегу озера. Собери 100 дерева, 100 камня, 20 железных слитков и 10 стекла.",
+          "objectives": [
+            {"type": "build_house", "level": 1}
+          ],
+          "rewards": {
+            "exp": 300,
+            "gold": 500,
+            "items": ["house_blueprint", "bed"]
+          }
+        }
+      ]
+    },
+    
+    "act2": {
+      "name": "⛏️ Акт 2: Тайны шахты",
+      "description": "В старых шахтах что-то происходит. Люди пропадают, и из глубины доносятся странные звуки.",
+      "level_req": 10,
+      "quests": [
+        {
+          "id": "quest_2_1",
+          "name": "⛏️ Спуск во тьму",
+          "description": "Спустись на 1 уровень шахты и осмотрись.",
+          "objectives": [
+            {"type": "reach_location", "target": "mine_level1", "count": 1}
+          ],
+          "rewards": {
+            "exp": 300,
+            "gold": 300,
+            "items": ["torch", 5]
+          }
+        },
+        {
+          "id": "quest_2_2",
+          "name": "📉 Глубже и глубже",
+          "description": "Доберись до 3 уровня шахты.",
+          "objectives": [
+            {"type": "reach_location", "target": "mine_level3", "count": 1}
+          ],
+          "rewards": {
+            "exp": 400,
+            "gold": 400,
+            "items": ["iron_sword"]
+          }
+        },
+        {
+          "id": "quest_2_3",
+          "name": "🕷️ Паучье логово",
+          "description": "На 3 уровне шахты убей 10 пещерных пауков.",
+          "objectives": [
+            {"type": "kill", "target": "cave_spider", "count": 10}
+          ],
+          "rewards": {
+            "exp": 500,
+            "gold": 500,
+            "items": ["spider_silk", 3]
+          }
+        },
+        {
+          "id": "quest_2_4",
+          "name": "🗿 Каменное сердце",
+          "description": "Спустись на 4 уровень шахты и одолей каменного голема — стража подземных богатств.",
+          "objectives": [
+            {"type": "reach_location", "target": "mine_level4", "count": 1},
+            {"type": "kill_boss", "target": "stone_golem", "count": 1}
+          ],
+          "rewards": {
+            "exp": 800,
+            "gold": 1000,
+            "items": ["golem_heart", "stone_armor"]
+          }
+        },
+        {
+          "id": "quest_2_5",
+          "name": "🏛️ Древние руины",
+          "description": "Спустись на 5 уровень шахты и найди вход в древние руины.",
+          "objectives": [
+            {"type": "reach_location", "target": "ancient_ruins", "count": 1}
+          ],
+          "rewards": {
+            "exp": 600,
+            "gold": 600,
+            "items": ["ancient_relic"]
+          }
+        }
+      ]
+    },
+    
+    "act3": {
+      "name": "🔥 Акт 3: Пробуждение стихий",
+      "description": "Вулкан, дремавший веками, начинает пробуждаться. Вместе с ним приходят огненные элементали.",
+      "level_req": 20,
+      "quests": [
+        {
+          "id": "quest_3_1",
+          "name": "🌋 Восхождение",
+          "description": "Поднимись по тропе к вулкану и доберись до жерла.",
+          "objectives": [
+            {"type": "reach_location", "target": "volcano_crater", "count": 1}
+          ],
+          "rewards": {
+            "exp": 600,
+            "gold": 600,
+            "items": ["fire_resist_potion", 2]
+          }
+        },
+        {
+          "id": "quest_3_2",
+          "name": "🔥 Повелитель огня",
+          "description": "Одолей огненного элементаля в жерле вулкана.",
+          "objectives": [
+            {"type": "kill_boss", "target": "fire_elemental", "count": 1}
+          ],
+          "rewards": {
+            "exp": 1000,
+            "gold": 1500,
+            "items": ["fire_gem", "elemental_core"]
+          }
+        },
+        {
+          "id": "quest_3_3",
+          "name": "🗿 Древний страж",
+          "description": "В древних руинах за шахтой пробудился древний страж. Одолей его.",
+          "objectives": [
+            {"type": "kill_boss", "target": "ancient_guardian", "count": 1}
+          ],
+          "rewards": {
+            "exp": 1200,
+            "gold": 2000,
+            "items": ["guardian_shard", "ancient_key"]
+          }
+        }
+      ]
+    },
+    
+    "act4": {
+      "name": "🏜️ Акт 4: Испытания пустыни",
+      "description": "За высокими горами раскинулась бескрайняя пустыня. Говорят, там спрятаны древние сокровища.",
+      "level_req": 30,
+      "quests": [
+        {
+          "id": "quest_4_1",
+          "name": "🏜️ Пустыня забвения",
+          "description": "Найди путь через пустыню к оазису.",
+          "objectives": [
+            {"type": "reach_location", "target": "desert_oasis", "count": 1}
+          ],
+          "rewards": {
+            "exp": 800,
+            "gold": 800,
+            "items": ["water_flask", 3]
+          }
+        },
+        {
+          "id": "quest_4_2",
+          "name": "🦂 Царь скорпионов",
+          "description": "Убей 10 пустынных скорпионов.",
+          "objectives": [
+            {"type": "kill", "target": "scorpion", "count": 10}
+          ],
+          "rewards": {
+            "exp": 1000,
+            "gold": 1000,
+            "items": ["scorpion_venom", 3]
+          }
+        },
+        {
+          "id": "quest_4_3",
+          "name": "🐉 Песчаный дракон",
+          "description": "В глубине пустыни обитает песчаный дракон. Одолей его.",
+          "objectives": [
+            {"type": "kill_boss", "target": "sand_dragon", "count": 1}
+          ],
+          "rewards": {
+            "exp": 2000,
+            "gold": 3000,
+            "items": ["sand_heart", "gold_scale", 3]
+          }
+        }
+      ]
+    },
+    
+    "act5": {
+      "name": "🌿 Акт 5: Болотные топи",
+      "description": "Тёмные силы пробуждаются в болотах. Местные жители боятся туда ходить.",
+      "level_req": 35,
+      "quests": [
+        {
+          "id": "quest_5_1",
+          "name": "🌿 Болото туманов",
+          "description": "Найди хижину ведьмы в болоте.",
+          "objectives": [
+            {"type": "reach_location", "target": "witch_hut", "count": 1}
+          ],
+          "rewards": {
+            "exp": 800,
+            "gold": 800,
+            "items": ["magic_dust", 2]
+          }
+        },
+        {
+          "id": "quest_5_2",
+          "name": "🧙 Проклятие ведьмы",
+          "description": "Победи болотную ведьму, заколдовавшую эти земли.",
+          "objectives": [
+            {"type": "kill_boss", "target": "witch", "count": 1}
+          ],
+          "rewards": {
+            "exp": 1200,
+            "gold": 1500,
+            "items": ["witch_hat", "magic_potion", 2]
+          }
+        },
+        {
+          "id": "quest_5_3",
+          "name": "👹 Древнее зло",
+          "description": "В самом сердце болота пробудилось древнее зло. Одолей болотного монстра.",
+          "objectives": [
+            {"type": "kill_boss", "target": "swamp_monster", "count": 1}
+          ],
+          "rewards": {
+            "exp": 2500,
+            "gold": 4000,
+            "items": ["swamp_heart", "poison_gland", 2]
+          }
+        }
+      ]
+    },
+    
+    "act6": {
+      "name": "❄️ Акт 6: Ледяные равнины",
+      "description": "На севере, где вечная мерзлота, обитают древние великаны. Говорят, они охраняют вход в другое измерение.",
+      "level_req": 40,
+      "quests": [
+        {
+          "id": "quest_6_1",
+          "name": "❄️ Снежная пустошь",
+          "description": "Доберись до ледяной пещеры.",
+          "objectives": [
+            {"type": "reach_location", "target": "ice_cave", "count": 1}
+          ],
+          "rewards": {
+            "exp": 1000,
+            "gold": 1000,
+            "items": ["ice_fur", 2]
+          }
+        },
+        {
+          "id": "quest_6_2",
+          "name": "🐻❄️ Хозяин льдов",
+          "description": "Убей 5 белых медведей, терроризирующих окрестности.",
+          "objectives": [
+            {"type": "kill", "target": "white_bear", "count": 5}
+          ],
+          "rewards": {
+            "exp": 1500,
+            "gold": 2000,
+            "items": ["bear_meat", 5]
+          }
+        },
+        {
+          "id": "quest_6_3",
+          "name": "🧊 Ледяной гигант",
+          "description": "В глубине ледяной пещеры спит ледяной гигант. Разбудить его — плохая идея, но выбора нет.",
+          "objectives": [
+            {"type": "kill_boss", "target": "ice_giant", "count": 1}
+          ],
+          "rewards": {
+            "exp": 3000,
+            "gold": 5000,
+            "items": ["ice_giant_heart", "ice_crystal", 5]
+          }
+        }
+      ]
+    },
+    
+    "act7": {
+      "name": "🐉 Акт 7: Легендарный финал",
+      "description": "Древний дракон пробуждается в своём логове. Только истинный герой сможет его одолеть и открыть путь к легендарным островам.",
+      "level_req": 45,
+      "quests": [
+        {
+          "id": "quest_7_1",
+          "name": "🌉 Мост судьбы",
+          "description": "Перейди мост к логову дракона. Говорят, там есть тайник под мостом.",
+          "objectives": [
+            {"type": "reach_location", "target": "bridge_before_dragon", "count": 1}
+          ],
+          "rewards": {
+            "exp": 2000,
+            "gold": 3000,
+            "items": ["dragon_scale", 2]
+          }
+        },
+        {
+          "id": "quest_7_2",
+          "name": "🐉 Древний дракон",
+          "description": "Одолей древнего дракона в его логове. Бой будет нелёгким.",
+          "objectives": [
+            {"type": "kill_boss", "target": "dragon", "count": 1}
+          ],
+          "rewards": {
+            "exp": 5000,
+            "gold": 10000,
+            "items": ["dragon_heart", "dragon_sword", "dragon_armor"],
+            "title": "Драконобойца"
+          }
+        },
+        {
+          "id": "quest_7_3",
+          "name": "🗝️ Врата в легенды",
+          "description": "После победы над драконом тебе открылся путь к легендарным островам. Собери радужные осколки и камни, чтобы попасть туда.",
+          "objectives": [
+            {"type": "collect", "item": "rainbow_shard", "count": 3},
+            {"type": "collect", "item": "rainbow_stone", "count": 1}
+          ],
+          "rewards": {
+            "exp": 3000,
+            "gold": 5000,
+            "items": ["map_to_islands"]
+          }
+        }
+      ]
+    },
+    
+    "act8": {
+      "name": "🌋 Акт 8: Огненный остров",
+      "description": "Первый из легендарных островов. Здесь обитают лавовые големы и сам король вулкана.",
+      "level_req": 48,
+      "quests": [
+        {
+          "id": "quest_8_1",
+          "name": "🌋 Огненный остров",
+          "description": "Попади на Огненный остров (требуется 3 радужных осколка).",
+          "objectives": [
+            {"type": "reach_location", "target": "volcanic_island", "count": 1}
+          ],
+          "rewards": {
+            "exp": 2000,
+            "gold": 3000
+          }
+        },
+        {
+          "id": "quest_8_2",
+          "name": "👑 Король вулкана",
+          "description": "Одолей короля вулкана — повелителя Огненного острова.",
+          "objectives": [
+            {"type": "kill_boss", "target": "volcano_king", "count": 1}
+          ],
+          "rewards": {
+            "exp": 4000,
+            "gold": 8000,
+            "items": ["volcano_heart", "lava_core", 2],
+            "title": "Повелитель огня"
+          }
+        }
+      ]
+    },
+    
+    "act9": {
+      "name": "💎 Акт 9: Кристальный остров",
+      "description": "Второй легендарный остров. Здесь всё состоит из драгоценных камней.",
+      "level_req": 52,
+      "quests": [
+        {
+          "id": "quest_9_1",
+          "name": "💎 Кристальный остров",
+          "description": "Попади на Кристальный остров (требуется 1 радужный камень).",
+          "objectives": [
+            {"type": "reach_location", "target": "crystal_island", "count": 1}
+          ],
+          "rewards": {
+            "exp": 2500,
+            "gold": 4000
+          }
+        },
+        {
+          "id": "quest_9_2",
+          "name": "✨ Кристальный дракон",
+          "description": "Одолей кристального дракона — хранителя сокровищ острова.",
+          "objectives": [
+            {"type": "kill_boss", "target": "crystal_dragon", "count": 1}
+          ],
+          "rewards": {
+            "exp": 4500,
+            "gold": 9000,
+            "items": ["crystal_dragon_heart", "perfect_crystal", 3],
+            "title": "Хранитель кристаллов"
+          }
+        }
+      ]
+    },
+    
+    "act10": {
+      "name": "🐉 Акт 10: Остров драконов",
+      "description": "Последний и самый опасный остров. Здесь обитает сам король драконов.",
+      "level_req": 55,
+      "quests": [
+        {
+          "id": "quest_10_1",
+          "name": "🐉 Остров драконов",
+          "description": "Попади на Остров драконов (требуется 5 радужных камней).",
+          "objectives": [
+            {"type": "reach_location", "target": "dragon_island", "count": 1}
+          ],
+          "rewards": {
+            "exp": 3000,
+            "gold": 5000
+          }
+        },
+        {
+          "id": "quest_10_2",
+          "name": "👑 Король драконов",
+          "description": "Одолей короля драконов — величайшего из всех драконов.",
+          "objectives": [
+            {"type": "kill_boss", "target": "dragon_king", "count": 1}
+          ],
+          "rewards": {
+            "exp": 6000,
+            "gold": 15000,
+            "items": ["dragon_crown", "dragon_heart", 2, "rainbow_stone", 3],
+            "title": "Повелитель драконов"
+          }
+        }
+      ]
+    }
+  }
+}
