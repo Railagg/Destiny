@@ -3,16 +3,1617 @@
     "start": {
       "id": "start",
       "name": "🌲 Лесная опушка",
-      "description": "Ты стоишь на опушке леса. Солнце пробивается сквозь кроны деревьев.",
+      "description": "Ты стоишь на опушке леса. Солнце пробивается сквозь кроны деревьев, ветер тихо шелестит листвой. Под ногами валяется старый ржавый меч. Вдалеке виднеется деревня.",
       "image": "forest.jpg",
-      "level_req": 1
+      "level_req": 1,
+      "hidden_stash": {
+        "name": "🪵 Поваленное дерево",
+        "description": "Старое дерево, на котором можно посидеть. Под корой что-то блестит.",
+        "find_chance": 60,
+        "cooldown": 3600,
+        "guaranteed": {
+          "gold_min": 5,
+          "gold_max": 15
+        },
+        "items": [
+          {"item": "wood", "chance": 70, "amount_min": 1, "amount_max": 3},
+          {"item": "berry", "chance": 50, "amount_min": 1, "amount_max": 2},
+          {"item": "herb", "chance": 30, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "⚔️ Подобрать ржавый меч", "type": "take_item", "item": "rusty_sword"},
+        {"text": "🏘️ Пойти в деревню", "type": "move", "energy_cost": 1, "next": "village"},
+        {"text": "🌲 Пойти вглубь леса", "type": "move", "energy_cost": 2, "next": "deep_forest"}
+      ]
     },
+    
     "village": {
       "id": "village",
       "name": "🏘️ Деревенская площадь",
-      "description": "Ты на центральной площади деревни. Вокруг суетится народ.",
-      "image": "village.jpg",
-      "level_req": 1
+      "description": "Ты на центральной площади деревни. Вокруг суетится народ, торговцы зазывают покупателей. Перед тобой несколько зданий: таверна, лавка торговца, кузница и высокая башня мага.",
+      "image": "village_square.jpg",
+      "level_req": 1,
+      "hidden_stash": {
+        "name": "⛲ Старый колодец",
+        "description": "В глубине колодца, если присмотреться, что-то блестит.",
+        "find_chance": 30,
+        "cooldown": 7200,
+        "guaranteed": {
+          "gold_min": 10,
+          "gold_max": 25
+        },
+        "items": [
+          {"item": "bread", "chance": 40, "amount_min": 1, "amount_max": 2},
+          {"item": "ancient_coin", "chance": 5, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "🍺 Зайти в таверну", "type": "move", "next": "tavern"},
+        {"text": "🏪 Зайти к торговцу", "type": "move", "next": "merchant"},
+        {"text": "⚒️ Зайти в кузницу", "type": "move", "next": "crafting_bench"},
+        {"text": "🔮 Зайти в башню мага", "type": "move", "next": "magic_tower"},
+        {"text": "📋 Подойти к доске объявлений", "type": "move", "next": "quest_board"},
+        {"text": "🌱 Зайти в магазин семян", "type": "move", "next": "seed_shop"},
+        {"text": "🌲 Вернуться в лес", "type": "move", "next": "start"}
+      ]
+    },
+    
+    "tavern": {
+      "id": "tavern",
+      "name": "🍺 Таверна «Тень вулкана»",
+      "description": "Ты заходишь в просторный зал, наполненный тёплым светом камина и ароматом свежего эля. За длинными дубовыми столами сидят местные жители. За стойкой стоит трактирщик, приветливо протирая кружку.",
+      "image": "tavern.jpg",
+      "level_req": 1,
+      "hidden_stash": {
+        "name": "🍺 Под стойкой",
+        "description": "Забытая кем-то кружка с монетами.",
+        "find_chance": 25,
+        "cooldown": 14400,
+        "guaranteed": {
+          "gold_min": 15,
+          "gold_max": 30
+        },
+        "items": [
+          {"item": "beer", "chance": 50, "amount_min": 1, "amount_max": 1},
+          {"item": "bread", "chance": 30, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🪑 У камина",
+        "description": "Тёплое место у камина. Можно вздремнуть.",
+        "energy_gain": 15,
+        "health_gain": 10,
+        "cooldown": 7200
+      },
+      "actions": [
+        {"text": "💬 Поговорить с трактирщиком", "type": "move", "next": "tavern_quest"},
+        {"text": "🛏️ Отдохнуть у камина (+15 энергии, +10❤️)", "type": "rest", "energy_gain": 15, "health_gain": 10, "cooldown": 7200, "next": "tavern"},
+        {"text": "🍺 Выпить эля (+5 энергии, +5💰)", "type": "buy_item", "item": "beer", "price": 5},
+        {"text": "🚪 Выйти на площадь", "type": "move", "next": "village"}
+      ]
+    },
+    
+    "tavern_quest": {
+      "id": "tavern_quest",
+      "name": "🍺 Разговор с трактирщиком",
+      "description": "Трактирщик: 'Слышал, в лесу появился волк. Местные боятся ходить за дровами. Прикончи его, а я отблагодарю — дам золота.'",
+      "image": "barkeeper.jpg",
+      "level_req": 1,
+      "actions": [
+        {"text": "📜 Взять задание «Убить волка»", "type": "accept_quest", "quest": "kill_wolf", "next": "village"},
+        {"text": "🍺 Вернуться в зал", "type": "move", "next": "tavern"}
+      ]
+    },
+    
+    "merchant": {
+      "id": "merchant",
+      "name": "🏪 Лавка торговца",
+      "description": "Ты входишь в старую полуразвалившуюся лавку. Стены обшарпаны, сквозь дырявую крышу пробиваются пыльные лучи света. За шатким прилавком стоит маленький гоблин с хитрыми глазами.",
+      "image": "merchant_shop.jpg",
+      "level_req": 1,
+      "hidden_stash": {
+        "name": "📦 Под прилавком",
+        "description": "Ящик, который гоблин забыл запереть.",
+        "find_chance": 15,
+        "cooldown": 43200,
+        "guaranteed": {
+          "gold_min": 20,
+          "gold_max": 50
+        },
+        "items": [
+          {"item": "health_potion", "chance": 30, "amount_min": 1, "amount_max": 2},
+          {"item": "iron_ore", "chance": 40, "amount_min": 1, "amount_max": 3}
+        ]
+      },
+      "actions": [
+        {"text": "🛒 Купить товары", "type": "open_shop", "shop": "general"},
+        {"text": "💰 Продать предметы", "type": "sell_items"},
+        {"text": "🚪 Выйти на площадь", "type": "move", "next": "village"}
+      ]
+    },
+    
+    "seed_shop": {
+      "id": "seed_shop",
+      "name": "🌱 Магазин семян",
+      "description": "Ты заходишь в уютную деревянную лавку. Прилавок заставлен пакетиками с семенами, на полках стоят банки и мешочки. Продавец-садовник в фартуке приветливо улыбается.",
+      "image": "seed_shop.jpg",
+      "level_req": 1,
+      "hidden_stash": {
+        "name": "🪴 Горшок с сюрпризом",
+        "description": "В одном из горшков зарыт клад.",
+        "find_chance": 20,
+        "cooldown": 28800,
+        "guaranteed": {
+          "gold_min": 10,
+          "gold_max": 25
+        },
+        "items": [
+          {"item": "carrot_seeds", "chance": 50, "amount_min": 1, "amount_max": 3},
+          {"item": "rare_seed", "chance": 10, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "🌽 Купить семена", "type": "open_shop", "shop": "seeds"},
+        {"text": "🌿 Продать урожай", "type": "sell_crops"},
+        {"text": "🚪 Выйти на площадь", "type": "move", "next": "village"}
+      ]
+    },
+    
+    "quest_board": {
+      "id": "quest_board",
+      "name": "📋 Доска объявлений",
+      "description": "На стене висит доска с заданиями. Можно взять новое или сдать выполненное.",
+      "image": "quest_board.jpg",
+      "level_req": 1,
+      "actions": [
+        {"text": "📜 Доступные задания", "type": "show_quests"},
+        {"text": "✅ Сдать задание", "type": "complete_quest"},
+        {"text": "🚪 Выйти на площадь", "type": "move", "next": "village"}
+      ]
+    },
+    
+    "crafting_bench": {
+      "id": "crafting_bench",
+      "name": "⚒️ Кузница «Горячий металл»",
+      "description": "Ты входишь в кузницу, и тебя сразу обдаёт волной жара. В центре пылает горн, кузнец с могучими руками ритмично бьёт молотом по раскалённому металлу. Стены увешаны готовыми мечами и доспехами.",
+      "image": "crafting_bench.jpg",
+      "level_req": 5,
+      "hidden_stash": {
+        "name": "🔥 В золе",
+        "description": "В остывшей золе горна что-то блестит.",
+        "find_chance": 25,
+        "cooldown": 21600,
+        "guaranteed": {
+          "gold_min": 15,
+          "gold_max": 30
+        },
+        "items": [
+          {"item": "iron_ingot", "chance": 40, "amount_min": 1, "amount_max": 2},
+          {"item": "coal", "chance": 60, "amount_min": 1, "amount_max": 3}
+        ]
+      },
+      "actions": [
+        {"text": "🛡️ Крафт брони", "type": "craft_armor"},
+        {"text": "⚔️ Крафт оружия", "type": "craft_weapon"},
+        {"text": "🛠️ Крафт инструментов", "type": "craft_tools"},
+        {"text": "🚪 Выйти на площадь", "type": "move", "next": "village"}
+      ]
+    },
+    
+    "magic_tower": {
+      "id": "magic_tower",
+      "name": "🔮 Башня Мага",
+      "description": "Ты поднимаешься по винтовой лестнице в высокий круглый зал. Стеллажи с древними свитками и книгами уходят под самый потолок. В воздухе парят магические кристаллы, излучая мягкое синее свечение.",
+      "image": "magic_tower.jpg",
+      "level_req": 10,
+      "hidden_stash": {
+        "name": "📜 Тайный свиток",
+        "description": "Между книгами затерялся древний свиток.",
+        "find_chance": 15,
+        "cooldown": 43200,
+        "guaranteed": {
+          "gold_min": 20,
+          "gold_max": 40
+        },
+        "items": [
+          {"item": "magic_dust", "chance": 50, "amount_min": 1, "amount_max": 2},
+          {"item": "spell_scroll", "chance": 10, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "💺 Кресло мага",
+        "description": "Удобное кресло, пропитанное магией.",
+        "energy_gain": 20,
+        "magic_gain": 30,
+        "cooldown": 14400
+      },
+      "actions": [
+        {"text": "🔮 Купить заклинания", "type": "open_shop", "shop": "spells"},
+        {"text": "📚 Изучить свитки", "type": "learn_spell"},
+        {"text": "💺 Отдохнуть в кресле (+20 энергии, +30 маны)", "type": "rest", "energy_gain": 20, "magic_gain": 30, "cooldown": 14400, "next": "magic_tower"},
+        {"text": "🚪 Выйти на площадь", "type": "move", "next": "village"}
+      ]
+    },
+    
+    "deep_forest": {
+      "id": "deep_forest",
+      "name": "🌳 Глухой лес",
+      "description": "Ты заходишь в чащу. Здесь царит полумрак, ветви деревьев сплетаются в плотный полог. Вдруг ты слышишь рычание — из-за кустов появляется голодный волк!",
+      "image": "deep_forest.jpg",
+      "level_req": 2,
+      "enemies": ["wolf", "wild_boar"],
+      "hidden_stash": {
+        "name": "🌿 Лесной схрон",
+        "description": "Под корнями старого дуба ты замечаешь небольшой тайник.",
+        "find_chance": 40,
+        "cooldown": 7200,
+        "guaranteed": {
+          "gold_min": 8,
+          "gold_max": 20
+        },
+        "items": [
+          {"item": "herb", "chance": 60, "amount_min": 1, "amount_max": 2},
+          {"item": "berry", "chance": 60, "amount_min": 1, "amount_max": 3},
+          {"item": "wood", "chance": 50, "amount_min": 1, "amount_max": 2}
+        ],
+        "rare_items": [
+          {"item": "health_potion", "chance": 10, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🪵 Куча валежника",
+        "description": "Сухие ветки, на которых можно присесть.",
+        "energy_gain": 12,
+        "cooldown": 2700
+      },
+      "actions": [
+        {"text": "⚔️ Сразиться с волком", "type": "combat", "enemy": "wolf"},
+        {"text": "🐗 Поискать кабана", "type": "combat", "enemy": "wild_boar"},
+        {"text": "🌿 Собирать травы", "type": "gather_herbs", "energy_cost": 2},
+        {"text": "🌲 Вернуться на опушку", "type": "move", "next": "start"}
+      ]
+    },
+    
+    "lake_shore": {
+      "id": "lake_shore",
+      "name": "🏞️ Берег озера",
+      "description": "Ты выходишь на берег живописного озера. Вода прозрачная, видно, как плещется рыба. На берегу стоит домик рыбака, рядом место для копки червей.",
+      "image": "lake_shore.jpg",
+      "level_req": 3,
+      "hidden_stash": {
+        "name": "🪸 Коряга",
+        "description": "Старая коряга, выброшенная волнами. В ветвях что-то застряло.",
+        "find_chance": 45,
+        "cooldown": 5400,
+        "guaranteed": {
+          "gold_min": 5,
+          "gold_max": 15
+        },
+        "items": [
+          {"item": "worm", "chance": 70, "amount_min": 1, "amount_max": 3},
+          {"item": "fish", "chance": 30, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🪵 Пирс",
+        "description": "Старый деревянный пирс. Можно посидеть, свесив ноги в воду.",
+        "energy_gain": 15,
+        "cooldown": 3600
+      },
+      "actions": [
+        {"text": "🎣 Рыбачить", "type": "fish", "energy_cost": 2},
+        {"text": "🪱 Копать червей", "type": "dig_worms", "energy_cost": 2},
+        {"text": "🏠 Зайти в домик рыбака", "type": "move", "next": "fisher_house"},
+        {"text": "🏗️ Построить домик", "type": "build_house", "next": "house_construction"}
+      ]
+    },
+    
+    "fisher_house": {
+      "id": "fisher_house",
+      "name": "🏠 Домик рыбака",
+      "description": "Ты заходишь в уютный домик. Старый рыбак сидит у камина и чистит снасти.",
+      "image": "fisher_house.jpg",
+      "level_req": 3,
+      "hidden_stash": {
+        "name": "🎣 За печкой",
+        "description": "За старой печкой стоит банка с монетами.",
+        "find_chance": 30,
+        "cooldown": 14400,
+        "guaranteed": {
+          "gold_min": 15,
+          "gold_max": 30
+        },
+        "items": [
+          {"item": "fishing_bait", "chance": 50, "amount_min": 1, "amount_max": 3},
+          {"item": "fish", "chance": 40, "amount_min": 1, "amount_max": 2}
+        ]
+      },
+      "actions": [
+        {"text": "📜 Взять задание рыбака", "type": "accept_quest", "quest": "fisher_quests"},
+        {"text": "🔥 Пожарить рыбу", "type": "cook_fish"},
+        {"text": "🚪 Выйти на берег", "type": "move", "next": "lake_shore"}
+      ]
+    },
+    
+    "house_construction": {
+      "id": "house_construction",
+      "name": "🏗️ Стройка домика",
+      "description": "Ты выбрал уютное место на берегу озера. Ровная зелёная поляна, аккуратно сложены доски и камни. Здесь будет твой собственный дом.",
+      "image": "house_construction.jpg",
+      "level_req": 3,
+      "actions": [
+        {"text": "🏠 Построить домик (100🪵, 100🪨, 20🔩, 10🪟)", "type": "build_house", "next": "house_level1"},
+        {"text": "↩️ Вернуться на берег", "type": "move", "next": "lake_shore"}
+      ]
+    },
+    
+    "house_level1": {
+      "id": "house_level1",
+      "name": "🏠 Маленький домик",
+      "description": "Твой первый собственный домик на берегу озера. Одна комната, соломенная крыша, маленькое окошко с тёплым светом.",
+      "image": "house_level1.jpg",
+      "level_req": 3,
+      "hidden_stash": {
+        "name": "🏚️ В подполе",
+        "description": "Под половицей что-то спрятано.",
+        "find_chance": 100,
+        "cooldown": 86400,
+        "guaranteed": {
+          "gold_min": 30,
+          "gold_max": 50
+        },
+        "items": [
+          {"item": "wood", "chance": 100, "amount_min": 5, "amount_max": 10},
+          {"item": "iron_ingot", "chance": 50, "amount_min": 1, "amount_max": 3}
+        ]
+      },
+      "rest_spot": {
+        "name": "🛏️ Своя кровать",
+        "description": "Тёплая и уютная кровать.",
+        "energy_gain": 30,
+        "health_gain": 20,
+        "cooldown": 3600
+      },
+      "actions": [
+        {"text": "🛏️ Отдохнуть (+30 энергии, +20❤️)", "type": "rest", "energy_gain": 30, "health_gain": 20, "cooldown": 3600, "next": "house_level1"},
+        {"text": "📦 Открыть сундук", "type": "open_storage"},
+        {"text": "🔨 Улучшить домик", "type": "upgrade_house", "next": "house_level2"},
+        {"text": "🚪 Выйти на берег", "type": "move", "next": "lake_shore"}
+      ]
+    },
+    
+    "house_level2": {
+      "id": "house_level2",
+      "name": "🏠 Уютный домик",
+      "description": "Твой домик стал больше и уютнее. Две комнаты, черепичная крыша, два окна с тёплым светом. Во дворе появился мангал.",
+      "image": "house_level2.jpg",
+      "level_req": 5,
+      "hidden_stash": {
+        "name": "🔥 В мангале",
+        "description": "Под слоем золы что-то блестит.",
+        "find_chance": 100,
+        "cooldown": 43200,
+        "guaranteed": {
+          "gold_min": 40,
+          "gold_max": 70
+        },
+        "items": [
+          {"item": "coal", "chance": 100, "amount_min": 2, "amount_max": 5},
+          {"item": "iron_ingot", "chance": 60, "amount_min": 1, "amount_max": 2}
+        ]
+      },
+      "rest_spot": {
+        "name": "🛏️ Своя кровать",
+        "energy_gain": 35,
+        "health_gain": 25,
+        "cooldown": 3600
+      },
+      "actions": [
+        {"text": "🛏️ Отдохнуть (+35 энергии, +25❤️)", "type": "rest", "energy_gain": 35, "health_gain": 25, "cooldown": 3600, "next": "house_level2"},
+        {"text": "📦 Открыть сундук", "type": "open_storage"},
+        {"text": "🔥 Пожарить мясо на мангале", "type": "cook_meat"},
+        {"text": "🔨 Улучшить домик", "type": "upgrade_house", "next": "house_level3"},
+        {"text": "🚪 Выйти на берег", "type": "move", "next": "lake_shore"}
+      ]
+    },
+    
+    "house_level3": {
+      "id": "house_level3",
+      "name": "🏠 Просторный дом",
+      "description": "Твой дом вырос до двух этажей! Каменная труба, несколько окон с тёплым светом, большое крыльцо. Появилась печь для стекла.",
+      "image": "house_level3.jpg",
+      "level_req": 10,
+      "hidden_stash": {
+        "name": "🪟 В печи",
+        "description": "В старой печи, которой не пользовались, что-то лежит.",
+        "find_chance": 100,
+        "cooldown": 43200,
+        "guaranteed": {
+          "gold_min": 50,
+          "gold_max": 90
+        },
+        "items": [
+          {"item": "glass", "chance": 80, "amount_min": 1, "amount_max": 3},
+          {"item": "gold_ingot", "chance": 30, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🛏️ Своя кровать",
+        "energy_gain": 40,
+        "health_gain": 30,
+        "cooldown": 3600
+      },
+      "actions": [
+        {"text": "🛏️ Отдохнуть (+40 энергии, +30❤️)", "type": "rest", "energy_gain": 40, "health_gain": 30, "cooldown": 3600, "next": "house_level3"},
+        {"text": "📦 Открыть сундук", "type": "open_storage"},
+        {"text": "🔥 Пожарить мясо", "type": "cook_meat"},
+        {"text": "🪟 Сделать стекло", "type": "craft_glass"},
+        {"text": "🔨 Улучшить домик", "type": "upgrade_house", "next": "house_level4"},
+        {"text": "🚪 Выйти на берег", "type": "move", "next": "lake_shore"}
+      ]
+    },
+    
+    "house_level4": {
+      "id": "house_level4",
+      "name": "🏠 Деревянный особняк",
+      "description": "Твой дом превратился в настоящий особняк! Два этажа с мансардой, большие окна, просторная веранда. В главном зале установлен магический телепорт.",
+      "image": "house_level4.jpg",
+      "level_req": 15,
+      "hidden_stash": {
+        "name": "✨ Под телепортом",
+        "description": "Под платформой телепорта что-то искрит.",
+        "find_chance": 100,
+        "cooldown": 43200,
+        "guaranteed": {
+          "gold_min": 70,
+          "gold_max": 120
+        },
+        "items": [
+          {"item": "magic_crystal", "chance": 60, "amount_min": 1, "amount_max": 2},
+          {"item": "teleport_scroll", "chance": 40, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🛏️ Своя кровать",
+        "energy_gain": 45,
+        "health_gain": 35,
+        "cooldown": 3600
+      },
+      "actions": [
+        {"text": "🛏️ Отдохнуть (+45 энергии, +35❤️)", "type": "rest", "energy_gain": 45, "health_gain": 35, "cooldown": 3600, "next": "house_level4"},
+        {"text": "📦 Открыть сундук", "type": "open_storage"},
+        {"text": "✨ Использовать телепорт", "type": "teleport_menu"},
+        {"text": "🔨 Улучшить домик", "type": "upgrade_house", "next": "house_level5"},
+        {"text": "🚪 Выйти на берег", "type": "move", "next": "lake_shore"}
+      ]
+    },
+    
+    "house_level5": {
+      "id": "house_level5",
+      "name": "🏠 Великая усадьба",
+      "description": "Твой дом достиг величия! Трёхэтажная усадьба с башенкой, множество окон, просторная терраса. Отдельно стоят баня с купелью и большая стеклянная теплица.",
+      "image": "house_level5.jpg",
+      "level_req": 20,
+      "hidden_stash": {
+        "name": "🏰 В башне",
+        "description": "Под самой крышей, в тайнике, спрятано сокровище.",
+        "find_chance": 100,
+        "cooldown": 86400,
+        "guaranteed": {
+          "gold_min": 100,
+          "gold_max": 200,
+          "rainbow_shard": 1
+        },
+        "items": [
+          {"item": "ancient_relic", "chance": 50, "amount_min": 1, "amount_max": 1},
+          {"item": "diamond", "chance": 30, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🛏️ Своя кровать",
+        "energy_gain": 50,
+        "health_gain": 40,
+        "cooldown": 3600
+      },
+      "actions": [
+        {"text": "🛏️ Отдохнуть (+50 энергии, +40❤️)", "type": "rest", "energy_gain": 50, "health_gain": 40, "cooldown": 3600, "next": "house_level5"},
+        {"text": "📦 Открыть сундук", "type": "open_storage"},
+        {"text": "✨ Использовать телепорт", "type": "teleport_menu"},
+        {"text": "🏠 Пойти в баню", "type": "move", "next": "house_bathhouse"},
+        {"text": "🌱 Пойти в теплицу", "type": "move", "next": "house_greenhouse"},
+        {"text": "🚪 Выйти на берег", "type": "move", "next": "lake_shore"}
+      ]
+    },
+    
+    "house_bathhouse": {
+      "id": "house_bathhouse",
+      "name": "🏠 Баня у озера",
+      "description": "Рядом с твоей усадьбой появилась настоящая деревянная баня. Из трубы валит пар, рядом стоит купель с прохладной водой.",
+      "image": "house_bathhouse.jpg",
+      "level_req": 20,
+      "rest_spot": {
+        "name": "🧖 Парная",
+        "description": "Горячий пар расслабляет мышцы.",
+        "health_gain": 50,
+        "energy_gain": 30,
+        "cooldown": 14400
+      },
+      "actions": [
+        {"text": "🧖 Попариться в бане (+50❤️, +30⚡)", "type": "rest", "health_gain": 50, "energy_gain": 30, "cooldown": 14400, "next": "house_bathhouse"},
+        {"text": "💦 Окунуться в купель (+20⚡)", "type": "rest", "energy_gain": 20, "cooldown": 7200, "next": "house_bathhouse"},
+        {"text": "↩️ Вернуться в усадьбу", "type": "move", "next": "house_level5"}
+      ]
+    },
+    
+    "house_greenhouse": {
+      "id": "house_greenhouse",
+      "name": "🌱 Теплица",
+      "description": "В саду у твоей усадьбы стоит стеклянная теплица. Внутри буйство зелени: овощи, травы, цветы.",
+      "image": "house_greenhouse.jpg",
+      "level_req": 20,
+      "hidden_stash": {
+        "name": "🌿 Среди грядок",
+        "description": "Под листьями большого куста что-то спрятано.",
+        "find_chance": 70,
+        "cooldown": 21600,
+        "guaranteed": {
+          "gold_min": 30,
+          "gold_max": 60
+        },
+        "items": [
+          {"item": "herb", "chance": 100, "amount_min": 2, "amount_max": 5},
+          {"item": "rare_seed", "chance": 30, "amount_min": 1, "amount_max": 2}
+        ]
+      },
+      "actions": [
+        {"text": "🌱 Посадить семена", "type": "greenhouse_plant"},
+        {"text": "🌾 Собрать урожай", "type": "greenhouse_harvest"},
+        {"text": "↩️ Вернуться в усадьбу", "type": "move", "next": "house_level5"}
+      ]
+    },
+    
+    "mountain_path": {
+      "id": "mountain_path",
+      "name": "⛰️ Горная тропа",
+      "description": "Ты поднимаешься выше в горы. Тропа становится уже, вокруг только острые скалы и холодный ветер.",
+      "image": "mountain_path.jpg",
+      "level_req": 10,
+      "hidden_stash": {
+        "name": "🪨 Расщелина в скале",
+        "description": "Узкая расщелина, куда можно засунуть руку.",
+        "find_chance": 35,
+        "cooldown": 7200,
+        "guaranteed": {
+          "gold_min": 10,
+          "gold_max": 25
+        },
+        "items": [
+          {"item": "stone", "chance": 80, "amount_min": 1, "amount_max": 3},
+          {"item": "iron_ore", "chance": 30, "amount_min": 1, "amount_max": 2}
+        ]
+      },
+      "actions": [
+        {"text": "⛏️ Пойти к шахте", "type": "move", "next": "mine_entrance"},
+        {"text": "🏔️ Подняться на вершину", "type": "move", "next": "mountain_peak"},
+        {"text": "↩️ Вернуться в лес", "type": "move", "next": "start"}
+      ]
+    },
+    
+    "mountain_peak": {
+      "id": "mountain_peak",
+      "name": "🏔️ Горная вершина",
+      "description": "Ты достиг вершины горы. Отсюда открывается захватывающий вид на весь мир. Ветер здесь особенно сильный, но есть укрытие.",
+      "image": "mountain_peak.jpg",
+      "level_req": 12,
+      "hidden_stash": {
+        "name": "🦅 Гнездо орла",
+        "description": "Старое гнездо на вершине скалы. В нём что-то блестит.",
+        "find_chance": 40,
+        "cooldown": 14400,
+        "guaranteed": {
+          "gold_min": 15,
+          "gold_max": 30
+        },
+        "items": [
+          {"item": "feather", "chance": 70, "amount_min": 1, "amount_max": 3},
+          {"item": "ancient_coin", "chance": 15, "amount_min": 1, "amount_max": 1}
+        ],
+        "rare_items": [
+          {"item": "wind_essence", "chance": 5, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "⛰️ Смотровая площадка",
+        "description": "Ровная площадка с видом на долину. Здесь можно перевести дух.",
+        "energy_gain": 20,
+        "cooldown": 7200
+      },
+      "actions": [
+        {"text": "🦅 Осмотреть гнездо", "type": "search_stash", "stash": "mountain_peak"},
+        {"text": "⛏️ Спуститься к шахте", "type": "move", "next": "mine_entrance"},
+        {"text": "↩️ Вернуться на тропу", "type": "move", "next": "mountain_path"}
+      ]
+    },
+    
+    "mine_entrance": {
+      "id": "mine_entrance",
+      "name": "⛏️ Вход в шахту",
+      "description": "Ты подходишь к огромному тёмному проёму в скале. Вход укреплён старыми деревянными балками. Из шахты тянет сыростью и холодом.",
+      "image": "mine_entrance.jpg",
+      "level_req": 15,
+      "hidden_stash": {
+        "name": "🪣 У входа",
+        "description": "Старая бочка у входа. Внутри что-то есть.",
+        "find_chance": 30,
+        "cooldown": 7200,
+        "guaranteed": {
+          "gold_min": 10,
+          "gold_max": 20
+        },
+        "items": [
+          {"item": "coal", "chance": 60, "amount_min": 1, "amount_max": 3},
+          {"item": "iron_ore", "chance": 40, "amount_min": 1, "amount_max": 2}
+        ]
+      },
+      "actions": [
+        {"text": "🚶 Войти в шахту", "type": "move", "next": "mine_level1"},
+        {"text": "↩️ Вернуться на тропу", "type": "move", "next": "mountain_path"}
+      ]
+    },
+    
+    "mine_level1": {
+      "id": "mine_level1",
+      "name": "⛏️ Шахта (1 уровень)",
+      "description": "Первый уровень шахты. Стены богаты прожилками медной и железной руды. Вдоль стен валяются старые инструменты.",
+      "image": "mine_level1.jpg",
+      "level_req": 15,
+      "enemies": ["giant_rat"],
+      "hidden_stash": {
+        "name": "🛒 Старая тележка",
+        "description": "Ржавая тележка, оставленная шахтёрами. В ней что-то есть.",
+        "find_chance": 40,
+        "cooldown": 7200,
+        "guaranteed": {
+          "gold_min": 10,
+          "gold_max": 25
+        },
+        "items": [
+          {"item": "copper_ore", "chance": 70, "amount_min": 1, "amount_max": 3},
+          {"item": "iron_ore", "chance": 40, "amount_min": 1, "amount_max": 2}
+        ]
+      },
+      "actions": [
+        {"text": "⛏️ Добывать руду", "type": "mine_ore", "energy_cost": 2},
+        {"text": "⚔️ Сразиться с крысами", "type": "combat", "enemy": "giant_rat"},
+        {"text": "⬇️ Спуститься на 2 уровень", "type": "move", "next": "mine_level2"},
+        {"text": "⬆️ Вернуться ко входу", "type": "move", "next": "mine_entrance"}
+      ]
+    },
+    
+    "mine_level2": {
+      "id": "mine_level2",
+      "name": "⛏️ Шахта (2 уровень)",
+      "description": "Второй уровень шахты. Здесь темнее, факелы горят редко. По стенам ползают пещерные пауки.",
+      "image": "mine_level2.jpg",
+      "level_req": 18,
+      "enemies": ["cave_spider", "cave_bat"],
+      "hidden_stash": {
+        "name": "⚒️ Забытая кирка",
+        "description": "Кирка, воткнутая в стену. Рядом стоит ведро.",
+        "find_chance": 35,
+        "cooldown": 10800,
+        "guaranteed": {
+          "gold_min": 15,
+          "gold_max": 30
+        },
+        "items": [
+          {"item": "iron_ore", "chance": 60, "amount_min": 1, "amount_max": 3},
+          {"item": "gold_ore", "chance": 20, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "⛏️ Добывать руду", "type": "mine_ore", "energy_cost": 2},
+        {"text": "⚔️ Сразиться с пауками", "type": "combat", "enemy": "cave_spider"},
+        {"text": "⬇️ Спуститься на 3 уровень", "type": "move", "next": "mine_level3"},
+        {"text": "⬆️ Вернуться на 1 уровень", "type": "move", "next": "mine_level1"}
+      ]
+    },
+    
+    "mine_level3": {
+      "id": "mine_level3",
+      "name": "⛏️ Шахта (3 уровень)",
+      "description": "Третий уровень шахты. В стенах видны вкрапления золота и редких кристаллов. Воздух спёртый, но есть тяга откуда-то снизу.",
+      "image": "mine_level3.jpg",
+      "level_req": 22,
+      "enemies": ["cave_spider", "skeleton_warrior"],
+      "hidden_stash": {
+        "name": "💎 Кристальная стена",
+        "description": "Стена с вкраплениями кристаллов. Один из них выпадает.",
+        "find_chance": 30,
+        "cooldown": 14400,
+        "guaranteed": {
+          "gold_min": 20,
+          "gold_max": 40
+        },
+        "items": [
+          {"item": "gold_ore", "chance": 50, "amount_min": 1, "amount_max": 2},
+          {"item": "crystal", "chance": 30, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🛒 Старая тележка",
+        "description": "Ржавая, но надёжная тележка. Можно посидеть.",
+        "energy_gain": 15,
+        "cooldown": 3600
+      },
+      "actions": [
+        {"text": "⛏️ Добывать руду", "type": "mine_ore", "energy_cost": 2},
+        {"text": "⚔️ Сразиться со скелетом", "type": "combat", "enemy": "skeleton_warrior"},
+        {"text": "⬇️ Спуститься на 4 уровень", "type": "move", "next": "mine_level4"},
+        {"text": "⬆️ Вернуться на 2 уровень", "type": "move", "next": "mine_level2"}
+      ]
+    },
+    
+    "mine_level4": {
+      "id": "mine_level4",
+      "name": "⛏️ Шахта (4 уровень)",
+      "description": "Четвёртый уровень шахты. Здесь стены становятся гладкими, появляются древние символы. В центре зала стоит каменный голем.",
+      "image": "mine_level4.jpg",
+      "level_req": 25,
+      "enemies": ["stone_golem"],
+      "boss": "stone_golem",
+      "hidden_stash": {
+        "name": "🗿 За статуей",
+        "description": "За спиной голема есть тайник.",
+        "find_chance": 100,
+        "cooldown": 43200,
+        "unlock_condition": "defeat_golem",
+        "guaranteed": {
+          "gold_min": 50,
+          "gold_max": 100,
+          "rainbow_shard": 1
+        },
+        "items": [
+          {"item": "golem_heart", "chance": 80, "amount_min": 1, "amount_max": 1},
+          {"item": "stone_armor", "chance": 50, "amount_min": 1, "amount_max": 1},
+          {"item": "mithril_ore", "chance": 40, "amount_min": 1, "amount_max": 2}
+        ]
+      },
+      "actions": [
+        {"text": "⚔️ Сразиться с каменным големом", "type": "combat", "enemy": "stone_golem"},
+        {"text": "⬇️ Спуститься на 5 уровень", "type": "move", "next": "mine_level5"},
+        {"text": "⬆️ Вернуться на 3 уровень", "type": "move", "next": "mine_level3"}
+      ]
+    },
+    
+    "mine_level5": {
+      "id": "mine_level5",
+      "name": "⛏️ Шахта (5 уровень)",
+      "description": "Пятый уровень шахты. Здесь находится древний алтарь и проход в руины. Стены светятся голубым светом.",
+      "image": "mine_level5.jpg",
+      "level_req": 30,
+      "hidden_stash": {
+        "name": "🪦 У алтаря",
+        "description": "Под алтарём есть тайник.",
+        "find_chance": 60,
+        "cooldown": 21600,
+        "guaranteed": {
+          "gold_min": 40,
+          "gold_max": 80,
+          "rainbow_shard": 1
+        },
+        "items": [
+          {"item": "ancient_relic", "chance": 50, "amount_min": 1, "amount_max": 1},
+          {"item": "mithril_ingot", "chance": 40, "amount_min": 1, "amount_max": 2}
+        ]
+      },
+      "actions": [
+        {"text": "🏛️ Пройти в древние руины", "type": "move", "next": "ancient_ruins"},
+        {"text": "⬆️ Вернуться на 4 уровень", "type": "move", "next": "mine_level4"}
+      ]
+    },
+    
+    "ancient_ruins": {
+      "id": "ancient_ruins",
+      "name": "🏛️ Древние руины",
+      "description": "Ты попадаешь в огромный подземный зал. Высокие каменные колонны, покрытые древними рунами, уходят в темноту. Здесь обитает древний страж.",
+      "image": "ancient_ruins.jpg",
+      "level_req": 35,
+      "enemies": ["ancient_guardian"],
+      "boss": "ancient_guardian",
+      "hidden_stash": {
+        "name": "🏺 Под колонной",
+        "description": "Одна из колонн имеет тайную нишу.",
+        "find_chance": 40,
+        "cooldown": 28800,
+        "guaranteed": {
+          "gold_min": 60,
+          "gold_max": 120,
+          "rainbow_shard": 1
+        },
+        "items": [
+          {"item": "ancient_key", "chance": 30, "amount_min": 1, "amount_max": 1},
+          {"item": "guardian_shard", "chance": 50, "amount_min": 1, "amount_max": 2}
+        ]
+      },
+      "rest_spot": {
+        "name": "🪨 Каменная скамья",
+        "description": "Древняя скамья, на которой можно отдохнуть.",
+        "energy_gain": 20,
+        "cooldown": 7200
+      },
+      "actions": [
+        {"text": "⚔️ Сразиться с древним стражем", "type": "combat", "enemy": "ancient_guardian"},
+        {"text": "🌉 Пройти к мосту", "type": "move", "next": "bridge_before_dragon"},
+        {"text": "↩️ Вернуться в шахту", "type": "move", "next": "mine_level5"}
+      ]
+    },
+    
+    "cave_entrance": {
+      "id": "cave_entrance",
+      "name": "🕳️ Вход в пещеру",
+      "description": "Ты стоишь перед тёмным зевом пещеры, скрытым под переплетёнными корнями древних деревьев.",
+      "image": "cave_entrance.jpg",
+      "level_req": 20,
+      "actions": [
+        {"text": "🚶 Войти в пещеру", "type": "move", "next": "maze_entrance"},
+        {"text": "↩️ Вернуться на перевал", "type": "move", "next": "mountain_pass"}
+      ]
+    },
+    
+    "maze_entrance": {
+      "id": "maze_entrance",
+      "name": "🏛️ Вход в лабиринт",
+      "description": "Ты подходишь к огромным каменным воротам, покрытым древними рунами. Факелы отбрасывают пляшущие тени.",
+      "image": "maze_entrance.jpg",
+      "level_req": 20,
+      "hidden_stash": {
+        "name": "🪨 Каменная скамья",
+        "description": "У входа стоит каменная скамья. Под ней что-то есть.",
+        "find_chance": 30,
+        "cooldown": 7200,
+        "guaranteed": {
+          "gold_min": 15,
+          "gold_max": 30
+        },
+        "items": [
+          {"item": "ancient_coin", "chance": 20, "amount_min": 1, "amount_max": 1},
+          {"item": "torch", "chance": 50, "amount_min": 1, "amount_max": 2}
+        ]
+      },
+      "rest_spot": {
+        "name": "🪨 Каменная скамья",
+        "description": "Древняя, но крепкая скамья. Можно отдохнуть перед входом.",
+        "energy_gain": 15,
+        "cooldown": 3600
+      },
+      "actions": [
+        {"text": "⬆️ Пойти на север", "type": "move", "next": "maze_north"},
+        {"text": "➡️ Пойти на восток", "type": "move", "next": "maze_east"},
+        {"text": "⬅️ Пойти на запад", "type": "move", "next": "maze_west"},
+        {"text": "⬇️ Пойти на юг", "type": "move", "next": "maze_south"},
+        {"text": "🪨 Отдохнуть на скамье (+15⚡)", "type": "rest", "energy_gain": 15, "cooldown": 3600, "next": "maze_entrance"}
+      ]
+    },
+    
+    "maze_north": {
+      "id": "maze_north",
+      "name": "🏛️ Северный коридор",
+      "description": "Узкий проход из древнего камня уходит в темноту. Где-то впереди слышен писк крыс.",
+      "image": "maze_north.jpg",
+      "level_req": 20,
+      "enemies": ["giant_rat"],
+      "hidden_stash": {
+        "name": "🧱 В стене",
+        "description": "Один из камней шатается. За ним пустота.",
+        "find_chance": 35,
+        "cooldown": 7200,
+        "guaranteed": {
+          "gold_min": 10,
+          "gold_max": 25
+        },
+        "items": [
+          {"item": "ancient_coin", "chance": 30, "amount_min": 1, "amount_max": 1},
+          {"item": "rat_tail", "chance": 40, "amount_min": 1, "amount_max": 2}
+        ]
+      },
+      "actions": [
+        {"text": "⚔️ Атаковать крыс", "type": "combat", "enemy": "giant_rat"},
+        {"text": "🚶 Пройти дальше", "type": "move", "next": "maze_treasure"},
+        {"text": "↩️ Вернуться к входу", "type": "move", "next": "maze_entrance"}
+      ]
+    },
+    
+    "maze_east": {
+      "id": "maze_east",
+      "name": "🏛️ Восточный коридор",
+      "description": "Широкий коридор с мерцающими рунами на стенах. Здесь водятся пауки.",
+      "image": "maze_east.jpg",
+      "level_req": 20,
+      "enemies": ["cave_spider"],
+      "hidden_stash": {
+        "name": "🕸️ В паутине",
+        "description": "Старая паутина скрывает проход.",
+        "find_chance": 30,
+        "cooldown": 7200,
+        "guaranteed": {
+          "gold_min": 10,
+          "gold_max": 25
+        },
+        "items": [
+          {"item": "spider_silk", "chance": 50, "amount_min": 1, "amount_max": 2},
+          {"item": "spider_venom", "chance": 20, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "⚔️ Атаковать пауков", "type": "combat", "enemy": "cave_spider"},
+        {"text": "🚶 Пройти дальше", "type": "move", "next": "maze_monster_empty"},
+        {"text": "↩️ Вернуться к входу", "type": "move", "next": "maze_entrance"}
+      ]
+    },
+    
+    "maze_west": {
+      "id": "maze_west",
+      "name": "🏛️ Западный коридор",
+      "description": "Извилистый коридор со светящимся мхом на стенах. Здесь обитают летучие мыши.",
+      "image": "maze_west.jpg",
+      "level_req": 20,
+      "enemies": ["cave_bat"],
+      "hidden_stash": {
+        "name": "🕳️ В полу",
+        "description": "В полу есть небольшая яма, прикрытая камнем.",
+        "find_chance": 25,
+        "cooldown": 7200,
+        "guaranteed": {
+          "gold_min": 10,
+          "gold_max": 20
+        },
+        "items": [
+          {"item": "bat_wing", "chance": 50, "amount_min": 1, "amount_max": 2},
+          {"item": "ancient_coin", "chance": 15, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "⚔️ Атаковать мышей", "type": "combat", "enemy": "cave_bat"},
+        {"text": "🔍 Осмотреть стену", "type": "move", "next": "maze_secret"},
+        {"text": "↩️ Вернуться к входу", "type": "move", "next": "maze_entrance"}
+      ]
+    },
+    
+    "maze_south": {
+      "id": "maze_south",
+      "name": "🏛️ Южный коридор",
+      "description": "Прямой коридор с барельефами битв. В конце виднеется красное свечение.",
+      "image": "maze_south.jpg",
+      "level_req": 20,
+      "enemies": ["skeleton_warrior"],
+      "hidden_stash": {
+        "name": "🪦 В нише",
+        "description": "В стене есть ниша, прикрытая камнем.",
+        "find_chance": 30,
+        "cooldown": 7200,
+        "guaranteed": {
+          "gold_min": 15,
+          "gold_max": 30
+        },
+        "items": [
+          {"item": "old_sword", "chance": 15, "amount_min": 1, "amount_max": 1},
+          {"item": "ancient_coin", "chance": 30, "amount_min": 1, "amount_max": 2}
+        ]
+      },
+      "actions": [
+        {"text": "⚔️ Атаковать скелета", "type": "combat", "enemy": "skeleton_warrior"},
+        {"text": "🚶 Пойти к выходу", "type": "move", "next": "cave_entrance"},
+        {"text": "↩️ Вернуться к входу", "type": "move", "next": "maze_entrance"}
+      ]
+    },
+    
+    "maze_secret": {
+      "id": "maze_secret",
+      "name": "🏛️ Секретный проход",
+      "description": "Ты нажимаешь на странный камень, и стена отъезжает. За ней узкий проход с сундуком.",
+      "image": "maze_secret.jpg",
+      "level_req": 22,
+      "hidden_stash": {
+        "name": "📦 Древний сундук",
+        "description": "Небольшой, но богато украшенный сундук.",
+        "find_chance": 100,
+        "cooldown": 43200,
+        "guaranteed": {
+          "gold_min": 50,
+          "gold_max": 100,
+          "rainbow_shard": 1
+        },
+        "items": [
+          {"item": "ancient_relic", "chance": 40, "amount_min": 1, "amount_max": 1},
+          {"item": "gold_ingot", "chance": 60, "amount_min": 1, "amount_max": 2},
+          {"item": "ruby", "chance": 20, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "🎁 Открыть сундук", "type": "open_chest", "chest": "secret"},
+        {"text": "🚶 Пройти дальше", "type": "move", "next": "maze_hidden_treasure"},
+        {"text": "↩️ Вернуться в коридор", "type": "move", "next": "maze_west"}
+      ]
+    },
+    
+    "maze_hidden_treasure": {
+      "id": "maze_hidden_treasure",
+      "name": "💎 Тайная комната",
+      "description": "Маленькая круглая комната с тремя сундуками на алтаре. Стены светятся синим.",
+      "image": "maze_hidden_treasure.jpg",
+      "level_req": 25,
+      "actions": [
+        {"text": "📚 Сундук мудрости (50⭐)", "type": "premium_chest", "chest": "wisdom"},
+        {"text": "⚔️ Сундук силы (50⭐)", "type": "premium_chest", "chest": "strength"},
+        {"text": "🍀 Сундук удачи (50⭐)", "type": "premium_chest", "chest": "luck"},
+        {"text": "↩️ Вернуться", "type": "move", "next": "maze_secret"}
+      ]
+    },
+    
+    "maze_treasure": {
+      "id": "maze_treasure",
+      "name": "💎 Сокровищница",
+      "description": "В центре зала стоит резной сундук с приоткрытой крышкой, из которого льётся золотой свет.",
+      "image": "maze_treasure.jpg",
+      "level_req": 23,
+      "hidden_stash": {
+        "name": "🔓 Сундук",
+        "description": "Древний сундук с сокровищами.",
+        "find_chance": 100,
+        "cooldown": 86400,
+        "guaranteed": {
+          "gold_min": 100,
+          "gold_max": 200,
+          "rainbow_shard": 2
+        },
+        "items": [
+          {"item": "ancient_coin", "chance": 80, "amount_min": 1, "amount_max": 3},
+          {"item": "diamond", "chance": 30, "amount_min": 1, "amount_max": 1},
+          {"item": "legendary_sword", "chance": 5, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "🔓 Открыть сундук", "type": "open_chest", "chest": "treasure"},
+        {"text": "↩️ Вернуться", "type": "move", "next": "maze_north"}
+      ]
+    },
+    
+    "maze_monster_empty": {
+      "id": "maze_monster_empty",
+      "name": "🏛️ Древний зал",
+      "description": "Огромный подземный зал с колоннами. В центре возвышается каменный алтарь.",
+      "image": "maze_monster_empty.jpg",
+      "level_req": 22,
+      "hidden_stash": {
+        "name": "🪨 Под колонной",
+        "description": "У основания колонны есть тайник.",
+        "find_chance": 25,
+        "cooldown": 10800,
+        "guaranteed": {
+          "gold_min": 20,
+          "gold_max": 40
+        },
+        "items": [
+          {"item": "ancient_coin", "chance": 40, "amount_min": 1, "amount_max": 2},
+          {"item": "crystal", "chance": 30, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "🔍 Обыскать зал", "type": "search_room", "energy_cost": 2},
+        {"text": "🚶 Пройти к алтарю", "type": "move", "next": "maze_altar"}
+      ]
+    },
+    
+    "maze_altar": {
+      "id": "maze_altar",
+      "name": "🏛️ Древний алтарь",
+      "description": "Массивный каменный алтарь, покрытый светящимися рунами. За ним виднеется проход.",
+      "image": "maze_altar.jpg",
+      "level_req": 24,
+      "hidden_stash": {
+        "name": "🪦 В алтаре",
+        "description": "В алтаре есть тайная ниша.",
+        "find_chance": 30,
+        "cooldown": 14400,
+        "guaranteed": {
+          "gold_min": 30,
+          "gold_max": 60
+        },
+        "items": [
+          {"item": "guardian_shard", "chance": 20, "amount_min": 1, "amount_max": 1},
+          {"item": "ruby", "chance": 15, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "🔍 Обыскать алтарь", "type": "search_altar", "energy_cost": 3},
+        {"text": "⚔️ Пройти к голему", "type": "move", "next": "maze_monster"}
+      ]
+    },
+    
+    "maze_monster": {
+      "id": "maze_monster",
+      "name": "🏛️ Логово чудовища",
+      "description": "В центре зала возвышается огромный каменный голем. Он медленно поднимается, стряхивая вековую пыль.",
+      "image": "maze_monster.jpg",
+      "level_req": 25,
+      "enemies": ["stone_golem"],
+      "boss": "stone_golem",
+      "actions": [
+        {"text": "⚔️ Атаковать голема", "type": "combat", "enemy": "stone_golem"},
+        {"text": "🏃 Сбежать", "type": "move", "next": "maze_east"}
+      ]
+    },
+    
+    "volcano_path": {
+      "id": "volcano_path",
+      "name": "🌋 Тропа к вулкану",
+      "description": "Ты поднимаешься выше. Воздух становится горячее. Вдалеке виден силуэт вулкана.",
+      "image": "volcano_path.jpg",
+      "level_req": 25,
+      "hidden_stash": {
+        "name": "🌋 В расщелине",
+        "description": "В скале есть расщелина, откуда идёт жар.",
+        "find_chance": 25,
+        "cooldown": 10800,
+        "guaranteed": {
+          "gold_min": 20,
+          "gold_max": 40
+        },
+        "items": [
+          {"item": "obsidian", "chance": 50, "amount_min": 1, "amount_max": 2},
+          {"item": "fire_gem", "chance": 10, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "🚶 К жерлу", "type": "move", "next": "volcano_crater"},
+        {"text": "↩️ Назад", "type": "move", "next": "mountain_pass"}
+      ]
+    },
+    
+    "volcano_crater": {
+      "id": "volcano_crater",
+      "name": "🌋 Жерло вулкана",
+      "description": "Ты стоишь на краю огромного кратера. Внизу бурлит раскалённая лава. Из огненной реки поднимается огненный элементаль.",
+      "image": "volcano_crater.jpg",
+      "level_req": 28,
+      "enemies": ["fire_elemental"],
+      "boss": "fire_elemental",
+      "hidden_stash": {
+        "name": "🌋 В лаве",
+        "description": "В застывшей лаве видно что-то блестящее.",
+        "find_chance": 40,
+        "cooldown": 21600,
+        "unlock_condition": "defeat_elemental",
+        "guaranteed": {
+          "gold_min": 50,
+          "gold_max": 100,
+          "rainbow_shard": 1
+        },
+        "items": [
+          {"item": "fire_gem", "chance": 80, "amount_min": 1, "amount_max": 2},
+          {"item": "elemental_core", "chance": 60, "amount_min": 1, "amount_max": 1},
+          {"item": "ruby", "chance": 30, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "⚔️ Атаковать элементаля", "type": "combat", "enemy": "fire_elemental"},
+        {"text": "↩️ Вернуться на тропу", "type": "move", "next": "volcano_path"}
+      ]
+    },
+    
+    "bridge_before_dragon": {
+      "id": "bridge_before_dragon",
+      "name": "🌉 Мост перед драконом",
+      "description": "Ты выходишь на древний каменный мост, перекинутый через бесконечную чёрную пропасть. На другом конце моста пульсирует красное свечение.",
+      "image": "bridge_before_dragon.jpg",
+      "level_req": 40,
+      "hidden_stash": {
+        "name": "🪵 Под мостом",
+        "description": "Под настилом моста что-то застряло.",
+        "find_chance": 30,
+        "cooldown": 14400,
+        "guaranteed": {
+          "gold_min": 30,
+          "gold_max": 60
+        },
+        "items": [
+          {"item": "ancient_coin", "chance": 40, "amount_min": 1, "amount_max": 2},
+          {"item": "dragon_scale", "chance": 10, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🪵 У костра",
+        "description": "Горит костёр, расстелена шкура. Идеальное место для отдыха.",
+        "energy_gain": 30,
+        "health_gain": 30,
+        "cooldown": 14400
+      },
+      "actions": [
+        {"text": "🪵 Отдохнуть у костра (+30⚡, +30❤️)", "type": "rest", "energy_gain": 30, "health_gain": 30, "cooldown": 14400, "next": "bridge_before_dragon"},
+        {"text": "🚶 Пойти по мосту к дракону", "type": "move", "next": "dragon_lair"}
+      ]
+    },
+    
+    "dragon_lair": {
+      "id": "dragon_lair",
+      "name": "🐉 Логово дракона",
+      "description": "Огромная пещера, освещённая красным пульсирующим светом. В центре на груде золота лежит древний дракон. Его глаза открываются, и он медленно поднимает голову.",
+      "image": "dragon_lair.jpg",
+      "level_req": 50,
+      "enemies": ["dragon"],
+      "boss": "dragon",
+      "hidden_stash": {
+        "name": "💰 Гора золота",
+        "description": "Под грудой золота что-то блестит особенно ярко.",
+        "find_chance": 100,
+        "cooldown": 86400,
+        "unlock_condition": "defeat_dragon",
+        "guaranteed": {
+          "gold_min": 500,
+          "gold_max": 1000,
+          "rainbow_stone": 1
+        },
+        "items": [
+          {"item": "dragon_heart", "chance": 100, "amount_min": 1, "amount_max": 1},
+          {"item": "dragon_scale", "chance": 100, "amount_min": 3, "amount_max": 5},
+          {"item": "dragon_blood", "chance": 100, "amount_min": 2, "amount_max": 3},
+          {"item": "dragon_crown", "chance": 20, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "⚔️ Атаковать дракона", "type": "combat", "enemy": "dragon"},
+        {"text": "🔮 Использовать магию", "type": "show_spells", "enemy": "dragon"}
+      ]
+    },
+    
+    "desert": {
+      "id": "desert",
+      "name": "🏜️ Пустыня забвения",
+      "description": "Бескрайние пески, где водятся скорпионы и песчаные черви. Солнце нещадно палит, но вдалеке виднеется оазис.",
+      "image": "desert.jpg",
+      "level_req": 30,
+      "enemies": ["scorpion", "sand_worm"],
+      "boss": "sand_dragon",
+      "hidden_stash": {
+        "name": "🏜️ Под песком",
+        "description": "Ветер откопал что-то блестящее.",
+        "find_chance": 35,
+        "cooldown": 7200,
+        "guaranteed": {
+          "gold_min": 15,
+          "gold_max": 30
+        },
+        "items": [
+          {"item": "sand", "chance": 70, "amount_min": 2, "amount_max": 5},
+          {"item": "scorpion_tail", "chance": 20, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🏝️ Оазис",
+        "description": "Небольшой оазис с пальмами и пресной водой.",
+        "energy_gain": 15,
+        "cooldown": 3600
+      },
+      "actions": [
+        {"text": "🏜️ Исследовать пустыню", "type": "explore", "energy_cost": 3},
+        {"text": "🏝️ Отдохнуть в оазисе (+15⚡)", "type": "rest", "energy_gain": 15, "cooldown": 3600, "next": "desert"},
+        {"text": "🏪 Зайти в оазис", "type": "move", "next": "desert_oasis"}
+      ]
+    },
+    
+    "desert_oasis": {
+      "id": "desert_oasis",
+      "name": "🏝️ Оазис",
+      "description": "Зелёный уголок посреди пустыни. Пальмы дают тень, а вода в источнике кристально чистая. Несколько торговцев разбили здесь палатки.",
+      "image": "desert_oasis.jpg",
+      "level_req": 30,
+      "hidden_stash": {
+        "name": "🌴 Под пальмой",
+        "description": "Под большой пальмой зарыт клад.",
+        "find_chance": 40,
+        "cooldown": 10800,
+        "guaranteed": {
+          "gold_min": 20,
+          "gold_max": 40
+        },
+        "items": [
+          {"item": "date", "chance": 60, "amount_min": 1, "amount_max": 3},
+          {"item": "ancient_coin", "chance": 20, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🌴 Тенистая пальма",
+        "description": "Лучшее место для отдыха в пустыне.",
+        "energy_gain": 20,
+        "cooldown": 7200
+      },
+      "actions": [
+        {"text": "🌴 Отдохнуть под пальмой (+20⚡)", "type": "rest", "energy_gain": 20, "cooldown": 7200, "next": "desert_oasis"},
+        {"text": "💧 Набрать воды", "type": "take_item", "item": "water"},
+        {"text": "🏜️ Вернуться в пустыню", "type": "move", "next": "desert"}
+      ]
+    },
+    
+    "swamp": {
+      "id": "swamp",
+      "name": "🌿 Болото туманов",
+      "description": "Зловонное болото, окутанное густым туманом. Гнилые деревья тянутся к небу, из воды доносятся странные звуки.",
+      "image": "swamp.jpg",
+      "level_req": 35,
+      "enemies": ["zombie", "witch"],
+      "boss": "swamp_monster",
+      "hidden_stash": {
+        "name": "🍄 Под грибом",
+        "description": "Огромный гриб, под шляпкой что-то есть.",
+        "find_chance": 30,
+        "cooldown": 7200,
+        "guaranteed": {
+          "gold_min": 10,
+          "gold_max": 25
+        },
+        "items": [
+          {"item": "mushroom", "chance": 60, "amount_min": 1, "amount_max": 2},
+          {"item": "swamp_herb", "chance": 30, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🍄 Сухой островок",
+        "description": "Небольшой участок сухой земли среди трясины.",
+        "energy_gain": 10,
+        "cooldown": 1800
+      },
+      "actions": [
+        {"text": "🌿 Исследовать болото", "type": "explore", "energy_cost": 3},
+        {"text": "🍄 Отдохнуть на островке (+10⚡)", "type": "rest", "energy_gain": 10, "cooldown": 1800, "next": "swamp"},
+        {"text": "🏚️ Зайти в хижину ведьмы", "type": "move", "next": "witch_hut"}
+      ]
+    },
+    
+    "witch_hut": {
+      "id": "witch_hut",
+      "name": "🏚️ Хижина ведьмы",
+      "description": "Покосившаяся избушка на курьих ножках. Внутри пахнет травами и зельями.",
+      "image": "witch_hut.jpg",
+      "level_req": 35,
+      "hidden_stash": {
+        "name": "📚 За печкой",
+        "description": "За старой печкой стоит банка с зельями.",
+        "find_chance": 45,
+        "cooldown": 14400,
+        "guaranteed": {
+          "gold_min": 25,
+          "gold_max": 50
+        },
+        "items": [
+          {"item": "health_potion", "chance": 50, "amount_min": 1, "amount_max": 2},
+          {"item": "mana_potion", "chance": 40, "amount_min": 1, "amount_max": 1},
+          {"item": "magic_dust", "chance": 30, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🪑 Лавка у печи",
+        "description": "Тёплая печь и мягкая лавка.",
+        "energy_gain": 25,
+        "health_gain": 30,
+        "cooldown": 14400
+      },
+      "actions": [
+        {"text": "🪑 Отдохнуть у печи (+25⚡, +30❤️)", "type": "rest", "energy_gain": 25, "health_gain": 30, "cooldown": 14400, "next": "witch_hut"},
+        {"text": "🧪 Обыскать стол", "type": "search"},
+        {"text": "🌿 Вернуться на болото", "type": "move", "next": "swamp"}
+      ]
+    },
+    
+    "ice_plains": {
+      "id": "ice_plains",
+      "name": "❄️ Ледяные равнины",
+      "description": "Бескрайние снежные просторы, где ветер пронизывает до костей. В небе танцует северное сияние.",
+      "image": "ice_plains.jpg",
+      "level_req": 40,
+      "enemies": ["ice_wolf", "white_bear", "ice_spirit"],
+      "boss": "ice_giant",
+      "hidden_stash": {
+        "name": "❄️ Под снегом",
+        "description": "Снег провалился, открыв что-то твёрдое.",
+        "find_chance": 25,
+        "cooldown": 7200,
+        "guaranteed": {
+          "gold_min": 15,
+          "gold_max": 30
+        },
+        "items": [
+          {"item": "ice_crystal", "chance": 40, "amount_min": 1, "amount_max": 1},
+          {"item": "ice_fur", "chance": 30, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🪵 Пещера во льдах",
+        "description": "Небольшая пещера, укрытая от ветра.",
+        "energy_gain": 15,
+        "cooldown": 3600
+      },
+      "actions": [
+        {"text": "❄️ Исследовать равнины", "type": "explore", "energy_cost": 4},
+        {"text": "🪵 Отдохнуть в пещере (+15⚡)", "type": "rest", "energy_gain": 15, "cooldown": 3600, "next": "ice_plains"},
+        {"text": "🧊 Зайти в ледяную пещеру", "type": "move", "next": "ice_cave"}
+      ]
+    },
+    
+    "ice_cave": {
+      "id": "ice_cave",
+      "name": "🧊 Ледяная пещера",
+      "description": "Своды пещеры покрыты инеем, стены светятся голубым светом. Здесь обитает ледяной гигант.",
+      "image": "ice_cave.jpg",
+      "level_req": 42,
+      "enemies": ["ice_spirit"],
+      "boss": "ice_giant",
+      "hidden_stash": {
+        "name": "❄️ За сталагмитом",
+        "description": "За ледяным столбом что-то спрятано.",
+        "find_chance": 35,
+        "cooldown": 14400,
+        "guaranteed": {
+          "gold_min": 30,
+          "gold_max": 60,
+          "rainbow_shard": 1
+        },
+        "items": [
+          {"item": "ice_crystal", "chance": 60, "amount_min": 1, "amount_max": 2},
+          {"item": "ice_heart", "chance": 20, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "❄️ Тёплый источник",
+        "description": "Незамерзающий источник с тёплой водой.",
+        "energy_gain": 30,
+        "health_gain": 50,
+        "cooldown": 43200
+      },
+      "actions": [
+        {"text": "❄️ Отдохнуть у источника (+30⚡, +50❤️)", "type": "rest", "energy_gain": 30, "health_gain": 50, "cooldown": 43200, "next": "ice_cave"},
+        {"text": "⚔️ Сразиться с ледяным гигантом", "type": "combat", "enemy": "ice_giant"},
+        {"text": "↩️ Вернуться на равнины", "type": "move", "next": "ice_plains"}
+      ]
+    },
+    
+    "volcanic_island": {
+      "id": "volcanic_island",
+      "name": "🌋 Огненный остров",
+      "description": "Остров посреди лавового моря. Воздух раскалён, из земли бьют гейзеры. Доступен за радужные осколки.",
+      "image": "volcanic_island.jpg",
+      "level_req": 45,
+      "entry_cost": {"rainbow_shard": 3},
+      "enemies": ["lava_golem", "fire_elemental"],
+      "boss": "volcano_king",
+      "hidden_stash": {
+        "name": "🌋 В кратере",
+        "description": "В кратере вулкана, окружённый лавой, стоит сундук.",
+        "find_chance": 100,
+        "cooldown": 86400,
+        "guaranteed": {
+          "gold_min": 500,
+          "gold_max": 1000,
+          "dstn_min": 200,
+          "dstn_max": 400,
+          "rainbow_shard_min": 3,
+          "rainbow_shard_max": 5
+        },
+        "items": [
+          {"item": "lava_core", "chance": 80, "amount_min": 1, "amount_max": 1},
+          {"item": "obsidian", "chance": 70, "amount_min": 2, "amount_max": 4},
+          {"item": "fire_gem", "chance": 60, "amount_min": 1, "amount_max": 2}
+        ],
+        "rare_items": [
+          {"item": "volcano_heart", "chance": 20, "amount_min": 1, "amount_max": 1},
+          {"item": "rainbow_stone", "chance": 10, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🌊 Лагуна с лавой",
+        "description": "Небольшой грот с лавовым озером.",
+        "energy_gain": 20,
+        "cooldown": 7200
+      },
+      "actions": [
+        {"text": "🌋 Исследовать остров", "type": "explore", "energy_cost": 5},
+        {"text": "🌊 Отдохнуть в лагуне (+20⚡)", "type": "rest", "energy_gain": 20, "cooldown": 7200, "next": "volcanic_island"},
+        {"text": "🌋 Открыть сундук расплавленной магмы", "type": "open_legendary_chest", "chest": "volcano"}
+      ]
+    },
+    
+    "crystal_island": {
+      "id": "crystal_island",
+      "name": "💎 Кристальный остров",
+      "description": "Остров, где всё состоит из кристаллов. Деревья, камни, даже вода переливается всеми цветами радуги. Доступен за радужные камни.",
+      "image": "crystal_island.jpg",
+      "level_req": 50,
+      "entry_cost": {"rainbow_stone": 1},
+      "enemies": ["crystal_golem"],
+      "boss": "crystal_dragon",
+      "hidden_stash": {
+        "name": "💎 Кристальный алтарь",
+        "description": "Алтарь из чистых кристаллов, излучающий свет.",
+        "find_chance": 100,
+        "cooldown": 86400,
+        "guaranteed": {
+          "gold_min": 800,
+          "gold_max": 1500,
+          "dstn_min": 300,
+          "dstn_max": 600,
+          "rainbow_shard_min": 5,
+          "rainbow_shard_max": 7
+        },
+        "items": [
+          {"item": "perfect_crystal", "chance": 80, "amount_min": 1, "amount_max": 2},
+          {"item": "magic_crystal", "chance": 70, "amount_min": 1, "amount_max": 3},
+          {"item": "diamond", "chance": 50, "amount_min": 1, "amount_max": 1}
+        ],
+        "rare_items": [
+          {"item": "crystal_heart", "chance": 15, "amount_min": 1, "amount_max": 1},
+          {"item": "rainbow_stone", "chance": 15, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🔮 Кристальный грот",
+        "description": "Пещера из светящихся кристаллов.",
+        "energy_gain": 35,
+        "magic_gain": 50,
+        "cooldown": 21600
+      },
+      "actions": [
+        {"text": "💎 Исследовать остров", "type": "explore", "energy_cost": 5},
+        {"text": "🔮 Отдохнуть в кристальном гроте (+35⚡, +50🔮)", "type": "rest", "energy_gain": 35, "magic_gain": 50, "cooldown": 21600, "next": "crystal_island"},
+        {"text": "💎 Открыть сундук сияющих глубин", "type": "open_legendary_chest", "chest": "crystal"}
+      ]
+    },
+    
+    "dragon_island": {
+      "id": "dragon_island",
+      "name": "🐉 Остров драконов",
+      "description": "Легендарный остров, где обитают древние драконы. Доступен за 5 радужных камней.",
+      "image": "dragon_island.jpg",
+      "level_req": 60,
+      "entry_cost": {"rainbow_stone": 5},
+      "enemies": ["young_dragon"],
+      "boss": "dragon_king",
+      "hidden_stash": {
+        "name": "🦴 Кости дракона",
+        "description": "Огромный скелет древнего дракона. В грудной клетке что-то блестит.",
+        "find_chance": 100,
+        "cooldown": 86400,
+        "guaranteed": {
+          "gold_min": 2000,
+          "gold_max": 5000,
+          "dstn_min": 1000,
+          "dstn_max": 2000,
+          "rainbow_stone_min": 1,
+          "rainbow_stone_max": 2
+        },
+        "items": [
+          {"item": "dragon_scale", "chance": 100, "amount_min": 3, "amount_max": 5},
+          {"item": "dragon_blood", "chance": 80, "amount_min": 1, "amount_max": 2},
+          {"item": "dragon_heart", "chance": 60, "amount_min": 1, "amount_max": 1}
+        ],
+        "rare_items": [
+          {"item": "dragon_crown", "chance": 10, "amount_min": 1, "amount_max": 1},
+          {"item": "dragon_sword", "chance": 5, "amount_min": 1, "amount_max": 1},
+          {"item": "dragon_armor", "chance": 5, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🦴 Логово дракона",
+        "description": "Бывшее логово дракона, где ещё чувствуется его сила.",
+        "energy_gain": 50,
+        "health_gain": 100,
+        "cooldown": 86400
+      },
+      "actions": [
+        {"text": "🐉 Исследовать остров", "type": "explore", "energy_cost": 5},
+        {"text": "🦴 Отдохнуть в логове (+50⚡, +100❤️)", "type": "rest", "energy_gain": 50, "health_gain": 100, "cooldown": 86400, "next": "dragon_island"},
+        {"text": "👑 Открыть сундук древних драконов", "type": "open_legendary_chest", "chest": "dragon"}
+      ]
     }
   }
 }
