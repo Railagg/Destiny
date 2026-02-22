@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
 from routes import game, pvp, guild, premium, nft
 import utils  # Импортируем utils для загрузки данных
+print("👋 ЭТОТ ТЕКСТ ДОЛЖЕН БЫТЬ В ЛОГАХ!")
 
 # Создаем таблицы в базе данных
 Base.metadata.create_all(bind=engine)
