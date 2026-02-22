@@ -1,12 +1,14 @@
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 import os
+import json
+from datetime import datetime
 
 bot = telebot.TeleBot(os.getenv("BOT_TOKEN"))
 
 def start_command(message):
     """Обработчик команды /start"""
-    from main import get_or_create_player, refresh_energy, refresh_magic, check_daily_login, get_daily_reward
+    from main import get_or_create_player, refresh_energy, refresh_magic, check_daily_login, get_daily_reward, save_character
     
     user_id = message.from_user.id
     username = message.from_user.username
@@ -23,13 +25,17 @@ def start_command(message):
         reward = get_daily_reward(streak)
         character.gold += reward["gold"]
         character.destiny_tokens += reward["dstn"]
-        for item in reward["items"]:
+        
+        # Добавляем предметы
+        for item in reward.get("items", []):
             if isinstance(item, list):
-                for _ in range(item[1]):
-                    character.add_item(item[0])
+                item_name = item[0]
+                item_count = item[1] if len(item) > 1 else 1
+                for _ in range(item_count):
+                    character.add_item(item_name)
             else:
                 character.add_item(item)
-        from main import save_character
+        
         save_character(character)
         
         bot.send_message(
@@ -40,26 +46,28 @@ def start_command(message):
             parse_mode='Markdown'
         )
 
-    # Создаем клавиатуру с WebApp
+    # СОЗДАЁМ КНОПКУ С WEBAPP
     markup = InlineKeyboardMarkup()
+    
+    # Главная кнопка для открытия игры
     webapp_button = InlineKeyboardButton(
         text="🎮 ОТКРЫТЬ ИГРУ",
-        web_app=WebAppInfo(url="https://destiny-1-6m57.onrender.com")
+        web_app=WebAppInfo(url="https://destiny-1-6m57.onrender.com/fronted/")
     )
     markup.add(webapp_button)
     
-    # Добавляем кнопки для команд
+    # Дополнительные кнопки
     markup.row(
         InlineKeyboardButton("📊 Статус", callback_data="game:status"),
         InlineKeyboardButton("🎒 Инвентарь", callback_data="game:inventory")
     )
     markup.row(
-        InlineKeyboardButton("🗺️ Карта", callback_data="game:map"),
-        InlineKeyboardButton("📜 Квесты", callback_data="game:quests")
-    )
-    markup.row(
         InlineKeyboardButton("🐾 Питомцы", callback_data="pets:menu"),
         InlineKeyboardButton("💱 Обмен", callback_data="exchange:menu")
+    )
+    markup.row(
+        InlineKeyboardButton("🏠 Домик", callback_data="game:house"),
+        InlineKeyboardButton("⚔️ PvP", callback_data="pvp:menu")
     )
 
     bot.send_message(
@@ -68,8 +76,10 @@ def start_command(message):
         f"⚡ Энергия: {character.energy}/{character.max_energy}\n"
         f"💰 Золото: {character.gold}\n"
         f"🪙 DSTN: {character.destiny_tokens}\n"
-        f"❤️ Здоровье: {character.health}/{character.max_health}\n\n"
-        f"📅 Стрик входа: {character.login_streak or 0} дней",
+        f"❤️ Здоровье: {character.health}/{character.max_health}\n"
+        f"📈 Уровень: {character.level}\n\n"
+        f"📅 Стрик входа: {character.login_streak or 0} дней\n\n"
+        f"👇 Нажми кнопку ниже, чтобы открыть игру!",
         reply_markup=markup,
         parse_mode='Markdown'
     )
@@ -107,3 +117,57 @@ def help_command(message):
     text += "/exchange - обмен TON/DSTN"
     
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
+
+def handle_webapp_data(call):
+    """Обработка данных из WebApp"""
+    try:
+        data = json.loads(call.web_app_data.data)
+        print(f"📦 Получены данные из WebApp: {data}")
+        
+        action = data.get('action')
+        
+        if action == 'buy':
+            item_id = data.get('item_id')
+            price = data.get('price')
+            bot.send_message(
+                call.message.chat.id,
+                f"✅ *Покупка в WebApp!*\nПредмет: {item_id}\nЦена: {price}💰",
+                parse_mode='Markdown'
+            )
+            
+        elif action == 'move':
+            location = data.get('location')
+            bot.send_message(
+                call.message.chat.id,
+                f"🚶 *Перемещение*\nТы перешёл в локацию: {location}",
+                parse_mode='Markdown'
+            )
+            
+        elif action == 'level_up':
+            new_level = data.get('level')
+            bot.send_message(
+                call.message.chat.id,
+                f"🎉 *Поздравляю!*\nТы достиг {new_level} уровня в WebApp!",
+                parse_mode='Markdown'
+            )
+            
+        elif action == 'achievement':
+            achievement = data.get('name')
+            bot.send_message(
+                call.message.chat.id,
+                f"🏆 *Новое достижение!*\n{achievement}",
+                parse_mode='Markdown'
+            )
+            
+        else:
+            bot.send_message(
+                call.message.chat.id,
+                f"📦 Данные из игры: {data}",
+                parse_mode='Markdown'
+            )
+            
+        bot.answer_callback_query(call.id, "✅ Данные получены!")
+        
+    except Exception as e:
+        print(f"❌ Ошибка обработки WebApp данных: {e}")
+        bot.answer_callback_query(call.id, "❌ Ошибка")
