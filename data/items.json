@@ -1,1 +1,18 @@
-
+{
+  "items": {
+    "rusty_sword": {
+      "id": "rusty_sword",
+      "name": "⚔️ Ржавый меч",
+      "type": "weapon",
+      "damage": 3,
+      "value": 5
+    },
+    "health_potion": {
+      "id": "health_potion",
+      "name": "🧪 Зелье здоровья",
+      "type": "consumable",
+      "heal": 30,
+      "value": 10
+    }
+  }
+}
