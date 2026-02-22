@@ -1,1 +1,374 @@
-
+{
+  "premium": {
+    "plans": {
+      "7days": {
+        "id": "7days",
+        "name": "🟢 СТАРТОВЫЙ",
+        "description": "Попробуй премиум и получи вдвое больше бонусов при первой покупке!",
+        "price_stars": 50,
+        "price_ton": 1,
+        "price_dstn": 2500,
+        "duration": 7,
+        "discount": 0,
+        "first_purchase_discount": 50,
+        "bonuses": {
+          "max_energy": 150,
+          "gold_multiplier": 1.1,
+          "dstn_multiplier": 1.05,
+          "exp_multiplier": 1.1,
+          "luck": 5,
+          "chests_per_day": 1,
+          "house_rest_multiplier": 1.5,
+          "daily_quests": 3,
+          "inventory_slots": 50,
+          "pet_exp_gain": 1.1
+        },
+        "gift": {
+          "legendary_chest": 1,
+          "dstn": 100,
+          "gold": 5000,
+          "items": ["teleport_scroll", 3]
+        },
+        "nick_color": "green",
+        "frame": "premium_green",
+        "chat_access": false,
+        "description": "Для тех, кто хочет попробовать премиум"
+      },
+      
+      "28days": {
+        "id": "28days",
+        "name": "🔵 БАЗОВЫЙ",
+        "description": "Оптимальный выбор для регулярной игры — окупается уже через неделю!",
+        "price_stars": 150,
+        "price_ton": 3,
+        "price_dstn": 7500,
+        "duration": 28,
+        "discount": 25,
+        "first_purchase_discount": 50,
+        "bonuses": {
+          "max_energy": 175,
+          "gold_multiplier": 1.15,
+          "dstn_multiplier": 1.1,
+          "exp_multiplier": 1.15,
+          "luck": 8,
+          "chests_per_day": 2,
+          "house_rest_multiplier": 1.7,
+          "daily_quests": 4,
+          "inventory_slots": 75,
+          "pet_exp_gain": 1.15,
+          "shop_discount": 5
+        },
+        "gift": {
+          "legendary_chest": 3,
+          "dstn": 500,
+          "gold": 20000,
+          "items": ["teleport_scroll", 10, "health_potion", 5, "mana_potion", 5]
+        },
+        "nick_color": "blue",
+        "frame": "premium_blue",
+        "chat_access": false,
+        "description": "Оптимальный выбор для постоянных игроков"
+      },
+      
+      "90days": {
+        "id": "90days",
+        "name": "🟣 ПРОДВИНУТЫЙ",
+        "description": "Максимум бонусов и привилегий на три месяца",
+        "price_stars": 400,
+        "price_ton": 8,
+        "price_dstn": 20000,
+        "duration": 90,
+        "discount": 40,
+        "first_purchase_discount": 50,
+        "bonuses": {
+          "max_energy": 200,
+          "gold_multiplier": 1.2,
+          "dstn_multiplier": 1.15,
+          "exp_multiplier": 1.2,
+          "luck": 12,
+          "chests_per_day": 3,
+          "house_rest_multiplier": 2.0,
+          "daily_quests": 5,
+          "inventory_slots": 100,
+          "pet_exp_gain": 1.2,
+          "pet_happiness": 10,
+          "shop_discount": 10,
+          "extra_slot_auction": 1,
+          "premium_chest_daily": true
+        },
+        "gift": {
+          "legendary_chest": 10,
+          "dstn": 2000,
+          "gold": 100000,
+          "items": ["teleport_scroll", 20, "health_potion", 10, "mana_potion", 10, "rainbow_shard", 1]
+        },
+        "nick_color": "purple",
+        "frame": "premium_purple",
+        "chat_access": "vip",
+        "description": "Для тех, кто живёт игрой"
+      },
+      
+      "180days": {
+        "id": "180days",
+        "name": "🟡 ЭЛИТНЫЙ",
+        "description": "Для настоящих ценителей — полгода привилегий",
+        "price_stars": 700,
+        "price_ton": 14,
+        "price_dstn": 35000,
+        "duration": 180,
+        "discount": 50,
+        "first_purchase_discount": 50,
+        "bonuses": {
+          "max_energy": 225,
+          "gold_multiplier": 1.25,
+          "dstn_multiplier": 1.2,
+          "exp_multiplier": 1.25,
+          "luck": 15,
+          "chests_per_day": 4,
+          "house_rest_multiplier": 2.2,
+          "daily_quests": 6,
+          "inventory_slots": 125,
+          "pet_exp_gain": 1.25,
+          "pet_happiness": 15,
+          "shop_discount": 15,
+          "extra_slot_auction": 2,
+          "premium_chest_daily": true,
+          "rainbow_shard_weekly": 1,
+          "teleport_cooldown_reduction": 50,
+          "house_upgrade_discount": 10
+        },
+        "gift": {
+          "legendary_chest": 20,
+          "dstn": 5000,
+          "gold": 250000,
+          "items": ["teleport_scroll", 50, "health_potion", 20, "mana_potion", 20, "rainbow_shard", 3],
+          "pet": "golden_pet"
+        },
+        "nick_color": "gold",
+        "frame": "premium_gold",
+        "chat_access": "elite",
+        "description": "Элитный статус с особыми привилегиями"
+      },
+      
+      "365days": {
+        "id": "365days",
+        "name": "🔴 ЛЕГЕНДАРНЫЙ",
+        "description": "Стань легендой игры на целый год!",
+        "price_stars": 1200,
+        "price_ton": 24,
+        "price_dstn": 60000,
+        "duration": 365,
+        "discount": 65,
+        "first_purchase_discount": 50,
+        "bonuses": {
+          "max_energy": 250,
+          "gold_multiplier": 1.3,
+          "dstn_multiplier": 1.25,
+          "exp_multiplier": 1.3,
+          "luck": 20,
+          "chests_per_day": 5,
+          "house_rest_multiplier": 2.5,
+          "daily_quests": 8,
+          "inventory_slots": 150,
+          "pet_exp_gain": 1.3,
+          "pet_happiness": 20,
+          "shop_discount": 25,
+          "extra_slot_auction": 3,
+          "premium_chest_daily": true,
+          "rainbow_shard_weekly": 1,
+          "rainbow_stone_yearly": 1,
+          "teleport_cooldown_reduction": 75,
+          "house_upgrade_discount": 20,
+          "crafting_discount": 10,
+          "early_access": true,
+          "voting_rights": true
+        },
+        "gift": {
+          "legendary_chest": 50,
+          "dstn": 15000,
+          "gold": 1000000,
+          "items": ["teleport_scroll", 100, "health_potion", 50, "mana_potion", 50, "rainbow_shard", 10, "rainbow_stone", 1],
+          "pet": "dragon_pet",
+          "skin": "legendary_skin",
+          "title": "Легенда"
+        },
+        "nick_color": "red",
+        "frame": "premium_legendary",
+        "aura": "legendary_glow",
+        "chat_access": "developer",
+        "description": "Ты — легенда игры"
+      }
+    },
+    
+    "first_purchase_bonus": {
+      "enabled": true,
+      "discount": 50,
+      "applicable_plans": ["7days", "28days", "90days", "180days", "365days"],
+      "max_duration": 59,
+      "description": "При первой покупке премиума до 59 дней — скидка 50%!"
+    },
+    
+    "premium_shop": {
+      "energy_refill": {
+        "name": "⚡ Восполнение энергии",
+        "description": "Мгновенно восстанавливает 100 энергии",
+        "price_stars": 10,
+        "price_dstn": 500,
+        "limit": "daily"
+      },
+      "legendary_chest": {
+        "name": "🎁 Легендарный сундук",
+        "description": "Сундук с редкими предметами",
+        "price_stars": 50,
+        "price_dstn": 2500,
+        "limit": "weekly"
+      },
+      "rainbow_shard_pack": {
+        "name": "🌈 Набор радужных осколков",
+        "description": "5 радужных осколков",
+        "price_stars": 100,
+        "price_dstn": 5000,
+        "limit": "monthly"
+      },
+      "rainbow_stone": {
+        "name": "💎 Радужный камень",
+        "description": "Целый радужный камень",
+        "price_stars": 500,
+        "price_dstn": 25000,
+        "limit": "monthly"
+      },
+      "teleport_scroll_pack": {
+        "name": "📜 Свитки телепортации",
+        "description": "10 свитков телепортации",
+        "price_stars": 20,
+        "price_dstn": 1000,
+        "limit": "daily"
+      },
+      "pet_food_pack": {
+        "name": "🍖 Корм для питомца",
+        "description": "Корм, дающий +100 опыта питомцу",
+        "price_stars": 5,
+        "price_dstn": 250,
+        "limit": "daily"
+      }
+    },
+    
+    "renewal_bonuses": {
+      "3months": {
+        "name": "Верность 3 месяца",
+        "requirement": "3 месяца подряд",
+        "reward": {
+          "rainbow_shard": 1,
+          "legendary_chest": 5,
+          "title": "Верный"
+        }
+      },
+      "6months": {
+        "name": "Верность 6 месяцев",
+        "requirement": "6 месяцев подряд",
+        "reward": {
+          "rainbow_shard": 3,
+          "legendary_chest": 15,
+          "title": "Преданный",
+          "frame": "loyalty_silver"
+        }
+      },
+      "1year": {
+        "name": "Верность 1 год",
+        "requirement": "1 год подряд",
+        "reward": {
+          "rainbow_stone": 1,
+          "legendary_chest": 30,
+          "title": "Легендарный",
+          "frame": "loyalty_gold",
+          "aura": "loyalty_glow"
+        }
+      },
+      "2years": {
+        "name": "Верность 2 года",
+        "requirement": "2 года подряд",
+        "reward": {
+          "rainbow_stone": 3,
+          "legendary_chest": 60,
+          "title": "Бессмертный",
+          "frame": "loyalty_platinum",
+          "aura": "immortal_glow"
+        }
+      },
+      "3years": {
+        "name": "Верность 3 года",
+        "requirement": "3 года подряд",
+        "reward": {
+          "rainbow_stone": 5,
+          "legendary_chest": 100,
+          "title": "Бог",
+          "frame": "loyalty_rainbow",
+          "aura": "god_glow"
+        }
+      }
+    },
+    
+    "premium_quests": {
+      "weekly": {
+        "kill_500_mobs": {
+          "name": "Охотник",
+          "description": "Убей 500 мобов",
+          "reward": 500,
+          "currency": "dstn"
+        },
+        "gather_1000_resources": {
+          "name": "Собиратель",
+          "description": "Собери 1000 ресурсов",
+          "reward": 500,
+          "currency": "dstn"
+        },
+        "win_10_pvp": {
+          "name": "Чемпион",
+          "description": "Выиграй 10 PvP боёв",
+          "reward": 500,
+          "currency": "dstn"
+        },
+        "complete_20_quests": {
+          "name": "Герой",
+          "description": "Выполни 20 заданий",
+          "reward": 500,
+          "currency": "dstn"
+        }
+      },
+      "monthly": {
+        "kill_2000_mobs": {
+          "name": "Мастер охоты",
+          "description": "Убей 2000 мобов",
+          "reward": 2000,
+          "currency": "dstn"
+        },
+        "complete_all_raids": {
+          "name": "Покоритель",
+          "description": "Пройди все рейды",
+          "reward": 2000,
+          "currency": "dstn"
+        },
+        "top100_pvp": {
+          "name": "Элитный боец",
+          "description": "Войди в топ-100 PvP",
+          "reward": 2000,
+          "currency": "dstn"
+        },
+        "craft_50_items": {
+          "name": "Мастер крафта",
+          "description": "Скрафти 50 предметов",
+          "reward": 2000,
+          "currency": "dstn"
+        }
+      }
+    },
+    
+    "subscription_stats": {
+      "total_premium_users": 0,
+      "active_subscriptions": 0,
+      "popular_plan": "90days",
+      "total_revenue_stars": 0,
+      "total_revenue_ton": 0
+    }
+  }
+}
