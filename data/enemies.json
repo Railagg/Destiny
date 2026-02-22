@@ -1,12 +1,1041 @@
 {
   "enemies": {
-    "wolf": {
-      "id": "wolf",
+    "wolf_male": {
+      "id": "wolf_male",
       "name": "🐺 Волк",
+      "gender": "male",
+      "description": "Обычный лесной хищник. Держится стаями, но в одиночку не так опасен.",
+      "level": 2,
       "health": 50,
       "damage": 8,
       "exp": 50,
-      "gold": 10
+      "gold": 10,
+      "encounter_chance": 60,
+      "drops": [
+        {"item": "wolf_skin", "chance": 80, "min": 1, "max": 1},
+        {"item": "wolf_meat", "chance": 70, "min": 1, "max": 2},
+        {"item": "wolf_fang", "chance": 20, "min": 1, "max": 1}
+      ],
+      "locations": ["deep_forest", "forest_path"]
+    },
+    
+    "wolf_female": {
+      "id": "wolf_female",
+      "name": "🐺 Волчица",
+      "gender": "female",
+      "description": "Защищает потомство. Опаснее самца, особенно если рядом волчата.",
+      "level": 3,
+      "health": 55,
+      "damage": 9,
+      "exp": 60,
+      "gold": 12,
+      "encounter_chance": 30,
+      "drops": [
+        {"item": "wolf_skin", "chance": 85, "min": 1, "max": 1},
+        {"item": "wolf_meat", "chance": 75, "min": 1, "max": 2},
+        {"item": "wolf_fang", "chance": 25, "min": 1, "max": 1},
+        {"item": "wolf_milk", "chance": 5, "min": 1, "max": 1}
+      ],
+      "locations": ["deep_forest"]
+    },
+    
+    "wolf_cub": {
+      "id": "wolf_cub",
+      "name": "🐺 Волчонок",
+      "gender": "child",
+      "description": "Маленький волчонок. Игривый, но рядом обязательно будет мама.",
+      "level": 1,
+      "health": 25,
+      "damage": 3,
+      "exp": 20,
+      "gold": 3,
+      "encounter_chance": 5,
+      "drops": [
+        {"item": "wolf_cub_fur", "chance": 50, "min": 1, "max": 1}
+      ],
+      "locations": ["deep_forest"],
+      "note": "При нападении на волчонка с вероятностью 100% появляется wolf_female"
+    },
+    
+    "wolf_pack": {
+      "id": "wolf_pack",
+      "name": "🐺🐺🐺 Волчья стая",
+      "description": "Стая голодных волков. В одиночку с ними не справиться.",
+      "type": "group",
+      "level": 6,
+      "members": 3,
+      "health_total": 180,
+      "damage_per_member": 7,
+      "exp": 200,
+      "gold": 40,
+      "encounter_chance": 10,
+      "drops": [
+        {"item": "wolf_skin", "chance": 100, "min": 2, "max": 3},
+        {"item": "wolf_meat", "chance": 100, "min": 3, "max": 5},
+        {"item": "wolf_fang", "chance": 60, "min": 1, "max": 3}
+      ],
+      "locations": ["deep_forest"]
+    },
+    
+    "wolf_alpha": {
+      "id": "wolf_alpha",
+      "name": "🐺🐺 Альфа-волк",
+      "description": "Вожак стаи. Крупнее, сильнее и умнее обычных волков. Может призвать подмогу.",
+      "level": 8,
+      "health": 150,
+      "damage": 18,
+      "exp": 200,
+      "gold": 50,
+      "encounter_chance": 5,
+      "abilities": [
+        {
+          "name": "🐺 Призыв стаи",
+          "type": "summon",
+          "enemy": "wolf_male",
+          "count": 2,
+          "cooldown": 3,
+          "description": "Альфа-волк воет, призывая двух обычных волков на подмогу."
+        },
+        {
+          "name": "⚡ Вожак",
+          "type": "buff",
+          "effect": "all_allies_damage+20%",
+          "duration": "permanent",
+          "description": "Альфа-волк увеличивает урон всех союзников."
+        }
+      ],
+      "drops": [
+        {"item": "wolf_skin", "chance": 100, "min": 1, "max": 2},
+        {"item": "wolf_meat", "chance": 100, "min": 2, "max": 4},
+        {"item": "alpha_fang", "chance": 80, "min": 1, "max": 1},
+        {"item": "wolf_paw", "chance": 40, "min": 1, "max": 1},
+        {"item": "alpha_eye", "chance": 20, "min": 1, "max": 1}
+      ],
+      "locations": ["deep_forest"]
+    },
+    
+    "wolf_pack_5": {
+      "id": "wolf_pack_5",
+      "name": "🐺🐺🐺🐺🐺 Большая волчья стая",
+      "description": "Стая из 5 голодных волков. Действуют слаженно, окружая жертву.",
+      "type": "group",
+      "level": 8,
+      "members": 5,
+      "health_total": 300,
+      "damage_per_member": 6,
+      "exp": 300,
+      "gold": 60,
+      "encounter_chance": 8,
+      "abilities": [
+        {
+          "name": "🐺 Окружение",
+          "type": "debuff",
+          "effect": "player_dodge-20%",
+          "duration": 3
+        }
+      ],
+      "drops": [
+        {"item": "wolf_skin", "chance": 100, "min": 3, "max": 5},
+        {"item": "wolf_meat", "chance": 100, "min": 5, "max": 8},
+        {"item": "wolf_fang", "chance": 80, "min": 2, "max": 4},
+        {"item": "alpha_fang", "chance": 10, "min": 1, "max": 1}
+      ],
+      "locations": ["deep_forest", "forest_path"]
+    },
+    
+    "boar_male": {
+      "id": "boar_male",
+      "name": "🐗 Кабан",
+      "gender": "male",
+      "description": "Агрессивный зверь с острыми клыками. Одиночка.",
+      "level": 4,
+      "health": 80,
+      "damage": 12,
+      "exp": 80,
+      "gold": 15,
+      "encounter_chance": 50,
+      "drops": [
+        {"item": "boar_meat", "chance": 100, "min": 1, "max": 2},
+        {"item": "boar_skin", "chance": 70, "min": 1, "max": 1},
+        {"item": "boar_tusk", "chance": 40, "min": 1, "max": 1}
+      ],
+      "locations": ["deep_forest"]
+    },
+    
+    "boar_female": {
+      "id": "boar_female",
+      "name": "🐗 Кабаниха",
+      "gender": "female",
+      "description": "Защищает поросят. Агрессивнее самца.",
+      "level": 5,
+      "health": 90,
+      "damage": 14,
+      "exp": 100,
+      "gold": 18,
+      "encounter_chance": 30,
+      "drops": [
+        {"item": "boar_meat", "chance": 100, "min": 1, "max": 2},
+        {"item": "boar_skin", "chance": 75, "min": 1, "max": 1},
+        {"item": "boar_tusk", "chance": 30, "min": 1, "max": 1},
+        {"item": "boar_milk", "chance": 5, "min": 1, "max": 1}
+      ],
+      "locations": ["deep_forest"]
+    },
+    
+    "boar_piglet": {
+      "id": "boar_piglet",
+      "name": "🐗 Поросёнок",
+      "gender": "child",
+      "description": "Маленький полосатый поросёнок. Очень милый, но мама рядом.",
+      "level": 1,
+      "health": 20,
+      "damage": 2,
+      "exp": 15,
+      "gold": 2,
+      "encounter_chance": 5,
+      "drops": [
+        {"item": "piglet_skin", "chance": 30, "min": 1, "max": 1}
+      ],
+      "locations": ["deep_forest"],
+      "note": "При нападении на поросёнка с вероятностью 100% появляется boar_female"
+    },
+    
+    "boar_pack": {
+      "id": "boar_pack",
+      "name": "🐗🐗🐗 Стадо кабанов",
+      "description": "Семья диких кабанов. Вместе они представляют серьёзную угрозу.",
+      "type": "group",
+      "level": 7,
+      "members": 4,
+      "health_total": 360,
+      "damage_per_member": 10,
+      "exp": 280,
+      "gold": 55,
+      "encounter_chance": 5,
+      "drops": [
+        {"item": "boar_meat", "chance": 100, "min": 4, "max": 7},
+        {"item": "boar_skin", "chance": 90, "min": 2, "max": 4},
+        {"item": "boar_tusk", "chance": 60, "min": 2, "max": 3}
+      ],
+      "locations": ["deep_forest"]
+    },
+    
+    "bear_male": {
+      "id": "bear_male",
+      "name": "🐻 Медведь",
+      "gender": "male",
+      "description": "Хозяин леса. Огромный и сильный, лучше не злить.",
+      "level": 8,
+      "health": 150,
+      "damage": 18,
+      "exp": 120,
+      "gold": 30,
+      "encounter_chance": 40,
+      "drops": [
+        {"item": "bear_meat", "chance": 100, "min": 2, "max": 4},
+        {"item": "bear_skin", "chance": 80, "min": 1, "max": 1},
+        {"item": "bear_claw", "chance": 40, "min": 1, "max": 2},
+        {"item": "bear_fat", "chance": 30, "min": 1, "max": 1}
+      ],
+      "locations": ["mountain_path", "deep_forest"]
+    },
+    
+    "bear_female": {
+      "id": "bear_female",
+      "name": "🐻 Медведица",
+      "gender": "female",
+      "description": "Защищает медвежат. Крайне опасна.",
+      "level": 9,
+      "health": 170,
+      "damage": 20,
+      "exp": 140,
+      "gold": 35,
+      "encounter_chance": 25,
+      "drops": [
+        {"item": "bear_meat", "chance": 100, "min": 2, "max": 4},
+        {"item": "bear_skin", "chance": 85, "min": 1, "max": 1},
+        {"item": "bear_claw", "chance": 45, "min": 1, "max": 2},
+        {"item": "bear_milk", "chance": 10, "min": 1, "max": 1}
+      ],
+      "locations": ["mountain_path", "deep_forest"]
+    },
+    
+    "bear_cub": {
+      "id": "bear_cub",
+      "name": "🐻 Медвежонок",
+      "gender": "child",
+      "description": "Маленький медвежонок. Лучше не трогать — мама рядом.",
+      "level": 2,
+      "health": 40,
+      "damage": 4,
+      "exp": 30,
+      "gold": 5,
+      "encounter_chance": 5,
+      "drops": [
+        {"item": "bear_cub_fur", "chance": 50, "min": 1, "max": 1}
+      ],
+      "locations": ["deep_forest"],
+      "note": "При нападении на медвежонка с вероятностью 100% появляется bear_female"
+    },
+    
+    "moose_male": {
+      "id": "moose_male",
+      "name": "🦌 Лось",
+      "gender": "male",
+      "description": "Величественный лесной великан с огромными рогами.",
+      "level": 6,
+      "health": 120,
+      "damage": 12,
+      "exp": 90,
+      "gold": 20,
+      "encounter_chance": 40,
+      "drops": [
+        {"item": "moose_meat", "chance": 100, "min": 2, "max": 3},
+        {"item": "moose_skin", "chance": 70, "min": 1, "max": 1},
+        {"item": "moose_antler", "chance": 30, "min": 1, "max": 2}
+      ],
+      "locations": ["forest_path", "lake_shore"]
+    },
+    
+    "moose_female": {
+      "id": "moose_female",
+      "name": "🦌 Лосиха",
+      "gender": "female",
+      "description": "Самка лося. Без рогов, но не менее опасна, особенно с лосёнком.",
+      "level": 5,
+      "health": 100,
+      "damage": 10,
+      "exp": 70,
+      "gold": 18,
+      "encounter_chance": 35,
+      "drops": [
+        {"item": "moose_meat", "chance": 100, "min": 2, "max": 3},
+        {"item": "moose_skin", "chance": 70, "min": 1, "max": 1}
+      ],
+      "locations": ["forest_path", "lake_shore"]
+    },
+    
+    "moose_calf": {
+      "id": "moose_calf",
+      "name": "🦌 Лосёнок",
+      "gender": "child",
+      "description": "Маленький лосёнок на длинных ножках. Трогать нельзя — мама рядом.",
+      "level": 2,
+      "health": 35,
+      "damage": 3,
+      "exp": 25,
+      "gold": 4,
+      "encounter_chance": 5,
+      "drops": [
+        {"item": "moose_calf_fur", "chance": 50, "min": 1, "max": 1}
+      ],
+      "locations": ["forest_path"],
+      "note": "При нападении на лосёнка с вероятностью 100% появляется moose_female"
+    },
+    
+    "scorpion_male": {
+      "id": "scorpion_male",
+      "name": "🦂 Скорпион",
+      "gender": "male",
+      "description": "Ядовитый хищник пустыни. Быстрый и опасный.",
+      "level": 12,
+      "health": 120,
+      "damage": 15,
+      "exp": 100,
+      "gold": 25,
+      "encounter_chance": 50,
+      "drops": [
+        {"item": "scorpion_tail", "chance": 80, "min": 1, "max": 1},
+        {"item": "scorpion_venom", "chance": 60, "min": 1, "max": 1},
+        {"item": "scorpion_shell", "chance": 30, "min": 1, "max": 1}
+      ],
+      "locations": ["desert"]
+    },
+    
+    "scorpion_female": {
+      "id": "scorpion_female",
+      "name": "🦂 Скорпиониха",
+      "gender": "female",
+      "description": "Крупнее и ядовитее самца. Охраняет кладку яиц.",
+      "level": 14,
+      "health": 150,
+      "damage": 18,
+      "exp": 130,
+      "gold": 35,
+      "encounter_chance": 30,
+      "abilities": [
+        {
+          "name": "🥚 Призыв скорпиончиков",
+          "type": "summon",
+          "enemy": "scorpion_hatchling",
+          "count": 2,
+          "cooldown": 4
+        }
+      ],
+      "drops": [
+        {"item": "scorpion_tail", "chance": 90, "min": 1, "max": 2},
+        {"item": "scorpion_venom", "chance": 80, "min": 1, "max": 2},
+        {"item": "scorpion_shell", "chance": 50, "min": 1, "max": 1},
+        {"item": "scorpion_eggs", "chance": 10, "min": 1, "max": 3}
+      ],
+      "locations": ["desert"]
+    },
+    
+    "scorpion_hatchling": {
+      "id": "scorpion_hatchling",
+      "name": "🦂 Скорпиончик",
+      "gender": "child",
+      "description": "Маленький скорпиончик. Уже ядовит, но ещё не опасен.",
+      "level": 3,
+      "health": 30,
+      "damage": 5,
+      "exp": 25,
+      "gold": 5,
+      "drops": [
+        {"item": "scorpion_tail", "chance": 20, "min": 1, "max": 1}
+      ]
+    },
+    
+    "ice_wolf_male": {
+      "id": "ice_wolf_male",
+      "name": "❄️ Снежный волк",
+      "gender": "male",
+      "description": "Волк с белоснежной шерстью, адаптировавшийся к холоду.",
+      "level": 22,
+      "health": 220,
+      "damage": 24,
+      "exp": 220,
+      "gold": 55,
+      "encounter_chance": 40,
+      "drops": [
+        {"item": "ice_fur", "chance": 80, "min": 1, "max": 1},
+        {"item": "ice_meat", "chance": 70, "min": 1, "max": 2},
+        {"item": "ice_fang", "chance": 30, "min": 1, "max": 1}
+      ],
+      "locations": ["ice_plains"]
+    },
+    
+    "ice_wolf_female": {
+      "id": "ice_wolf_female",
+      "name": "❄️ Снежная волчица",
+      "gender": "female",
+      "description": "Ещё опаснее из-за защиты потомства.",
+      "level": 24,
+      "health": 250,
+      "damage": 26,
+      "exp": 250,
+      "gold": 65,
+      "encounter_chance": 30,
+      "drops": [
+        {"item": "ice_fur", "chance": 85, "min": 1, "max": 1},
+        {"item": "ice_meat", "chance": 75, "min": 1, "max": 2},
+        {"item": "ice_fang", "chance": 35, "min": 1, "max": 1},
+        {"item": "ice_milk", "chance": 5, "min": 1, "max": 1}
+      ],
+      "locations": ["ice_plains"]
+    },
+    
+    "ice_wolf_cub": {
+      "id": "ice_wolf_cub",
+      "name": "❄️ Снежный волчонок",
+      "gender": "child",
+      "description": "Пушистый белый комочек. Очень милый, но мама рядом.",
+      "level": 5,
+      "health": 50,
+      "damage": 5,
+      "exp": 40,
+      "gold": 8,
+      "encounter_chance": 3,
+      "drops": [
+        {"item": "ice_cub_fur", "chance": 70, "min": 1, "max": 1}
+      ],
+      "locations": ["ice_plains"],
+      "note": "При нападении на волчонка с вероятностью 100% появляется ice_wolf_female"
+    },
+    
+    "ice_wolf_pack": {
+      "id": "ice_wolf_pack",
+      "name": "❄️❄️❄️ Стая снежных волков",
+      "description": "Стая свирепых снежных волков. В морозном ветре слышен их вой.",
+      "type": "group",
+      "level": 28,
+      "members": 4,
+      "health_total": 1000,
+      "damage_per_member": 20,
+      "exp": 600,
+      "gold": 150,
+      "encounter_chance": 5,
+      "drops": [
+        {"item": "ice_fur", "chance": 100, "min": 3, "max": 5},
+        {"item": "ice_meat", "chance": 100, "min": 4, "max": 7},
+        {"item": "ice_fang", "chance": 80, "min": 2, "max": 4}
+      ],
+      "locations": ["ice_plains"]
+    },
+    
+    "white_bear_male": {
+      "id": "white_bear_male",
+      "name": "🐻❄️ Белый медведь",
+      "gender": "male",
+      "description": "Хозяин ледяных равнин. Огромный и свирепый хищник.",
+      "level": 25,
+      "health": 350,
+      "damage": 32,
+      "exp": 300,
+      "gold": 80,
+      "encounter_chance": 30,
+      "drops": [
+        {"item": "bear_meat", "chance": 100, "min": 3, "max": 5},
+        {"item": "ice_fur", "chance": 90, "min": 1, "max": 2},
+        {"item": "bear_claw", "chance": 60, "min": 1, "max": 2},
+        {"item": "ice_heart", "chance": 20, "min": 1, "max": 1}
+      ],
+      "locations": ["ice_plains"]
+    },
+    
+    "white_bear_female": {
+      "id": "white_bear_female",
+      "name": "🐻❄️ Белая медведица",
+      "gender": "female",
+      "description": "Защищает медвежат. Смертельно опасна.",
+      "level": 27,
+      "health": 400,
+      "damage": 35,
+      "exp": 350,
+      "gold": 100,
+      "encounter_chance": 20,
+      "drops": [
+        {"item": "bear_meat", "chance": 100, "min": 3, "max": 5},
+        {"item": "ice_fur", "chance": 95, "min": 1, "max": 2},
+        {"item": "bear_claw", "chance": 65, "min": 1, "max": 2},
+        {"item": "ice_heart", "chance": 25, "min": 1, "max": 1},
+        {"item": "ice_milk", "chance": 10, "min": 1, "max": 1}
+      ],
+      "locations": ["ice_plains"]
+    },
+    
+    "white_bear_cub": {
+      "id": "white_bear_cub",
+      "name": "🐻❄️ Белый медвежонок",
+      "gender": "child",
+      "description": "Пушистый белый медвежонок. Крайне опасен тем, что привлекает внимание мамы.",
+      "level": 5,
+      "health": 60,
+      "damage": 6,
+      "exp": 50,
+      "gold": 10,
+      "encounter_chance": 2,
+      "drops": [
+        {"item": "ice_cub_fur", "chance": 70, "min": 1, "max": 1}
+      ],
+      "locations": ["ice_plains"],
+      "note": "При нападении на медвежонка с вероятностью 100% появляется white_bear_female"
+    },
+    
+    "spider_male": {
+      "id": "spider_male",
+      "name": "🕷️ Пещерный паук",
+      "gender": "male",
+      "description": "Ядовитый паук, плетущий сети в тёмных углах.",
+      "level": 3,
+      "health": 45,
+      "damage": 7,
+      "exp": 35,
+      "gold": 6,
+      "encounter_chance": 50,
+      "drops": [
+        {"item": "spider_silk", "chance": 60, "min": 1, "max": 2},
+        {"item": "spider_venom", "chance": 40, "min": 1, "max": 1}
+      ],
+      "locations": ["mine_level2", "mine_level3", "maze_east"]
+    },
+    
+    "spider_female": {
+      "id": "spider_female",
+      "name": "🕷️ Паучиха",
+      "gender": "female",
+      "description": "Крупнее и опаснее самца. Охраняет кладку.",
+      "level": 4,
+      "health": 60,
+      "damage": 9,
+      "exp": 45,
+      "gold": 9,
+      "encounter_chance": 30,
+      "abilities": [
+        {
+          "name": "🥚 Призыв паучат",
+          "type": "summon",
+          "enemy": "spiderling",
+          "count": 2,
+          "cooldown": 4
+        }
+      ],
+      "drops": [
+        {"item": "spider_silk", "chance": 70, "min": 1, "max": 2},
+        {"item": "spider_venom", "chance": 50, "min": 1, "max": 2},
+        {"item": "spider_eggs", "chance": 20, "min": 1, "max": 2}
+      ],
+      "locations": ["mine_level3", "maze_east"]
+    },
+    
+    "spiderling": {
+      "id": "spiderling",
+      "name": "🕷️ Паучонок",
+      "gender": "child",
+      "description": "Маленький, но уже ядовитый паучок.",
+      "level": 1,
+      "health": 15,
+      "damage": 3,
+      "exp": 10,
+      "gold": 1,
+      "drops": [
+        {"item": "spider_silk", "chance": 20, "min": 1, "max": 1}
+      ]
+    },
+    
+    "ancient_guardian": {
+      "id": "ancient_guardian",
+      "name": "🗿 Древний страж",
+      "description": "Огромная каменная статуя, ожившая древней магией. Стоит на страже тысячелетия.",
+      "level": 18,
+      "health": 350,
+      "damage": 30,
+      "exp": 400,
+      "gold": 200,
+      "boss": true,
+      "phases": [
+        {"health_percent": 100, "image": "guardian_100.jpg"},
+        {"health_percent": 60, "image": "guardian_60.jpg", "ability": "earthquake"},
+        {"health_percent": 30, "image": "guardian_30.jpg", "ability": "berserk"}
+      ],
+      "abilities": [
+        {
+          "name": "💥 Землетрясение",
+          "type": "aoe",
+          "damage": 25,
+          "cooldown": 4,
+          "description": "Страж бьёт по земле, нанося урон всем врагам"
+        },
+        {
+          "name": "🛡️ Каменная кожа",
+          "type": "buff",
+          "effect": "self_defense+50%",
+          "duration": 2,
+          "cooldown": 5
+        },
+        {
+          "name": "⚡ Ярость камня",
+          "type": "berserk",
+          "effect": "damage+100%, defense-50%",
+          "trigger": "health_below_30"
+        }
+      ],
+      "drops": [
+        {"item": "ancient_key", "chance": 100, "min": 1, "max": 1},
+        {"item": "guardian_shard", "chance": 80, "min": 1, "max": 2},
+        {"item": "guardian_heart", "chance": 50, "min": 1, "max": 1},
+        {"item": "ancient_relic", "chance": 30, "min": 1, "max": 1},
+        {"item": "stone_armor", "chance": 40, "min": 1, "max": 1}
+      ],
+      "locations": ["ancient_ruins"]
+    },
+    
+    "dragon": {
+      "id": "dragon",
+      "name": "🐉 Древний дракон",
+      "description": "Легендарное создание, хранящее древние сокровища. Бой с ним — испытание для настоящего героя.",
+      "level": 25,
+      "health": 1000,
+      "damage": 40,
+      "exp": 1000,
+      "gold": 500,
+      "boss": true,
+      "phases": [
+        {"health_percent": 100, "image": "dragon_100.jpg"},
+        {"health_percent": 75, "image": "dragon_75.jpg", "ability": "fire_breath"},
+        {"health_percent": 50, "image": "dragon_50.jpg", "ability": "fly"},
+        {"health_percent": 25, "image": "dragon_25.jpg", "ability": "rage"}
+      ],
+      "abilities": [
+        {
+          "name": "🔥 Дыхание дракона",
+          "type": "aoe",
+          "damage": 50,
+          "cooldown": 3,
+          "description": "Дракон выдыхает пламя, нанося урон всем врагам"
+        },
+        {
+          "name": "🦅 Полёт",
+          "type": "evasion",
+          "effect": "dodge+100%",
+          "duration": 1,
+          "cooldown": 4,
+          "description": "Дракон взлетает, становясь неуязвимым на ход"
+        },
+        {
+          "name": "👑 Королевский гнев",
+          "type": "berserk",
+          "effect": "damage+200%, speed+100%",
+          "trigger": "health_below_25"
+        }
+      ],
+      "drops": [
+        {"item": "dragon_heart", "chance": 100, "min": 1, "max": 1},
+        {"item": "dragon_scale", "chance": 100, "min": 3, "max": 5},
+        {"item": "dragon_blood", "chance": 100, "min": 1, "max": 2},
+        {"item": "dragon_tooth", "chance": 80, "min": 1, "max": 3},
+        {"item": "dragon_eye", "chance": 50, "min": 1, "max": 1},
+        {"item": "dragon_crown", "chance": 10, "min": 1, "max": 1}
+      ],
+      "locations": ["dragon_lair"]
+    },
+    
+    "fire_elemental": {
+      "id": "fire_elemental",
+      "name": "🔥 Огненный элементаль",
+      "description": "Существо из чистого пламени. Чем меньше у него здоровья, тем ярче он горит.",
+      "level": 15,
+      "health": 300,
+      "damage": 25,
+      "exp": 300,
+      "gold": 150,
+      "boss": true,
+      "phases": [
+        {"health_percent": 100, "image": "fire_elemental_100.jpg"},
+        {"health_percent": 50, "image": "fire_elemental_50.jpg", "ability": "explosion"}
+      ],
+      "abilities": [
+        {
+          "name": "💥 Огненный взрыв",
+          "type": "aoe",
+          "damage": 40,
+          "cooldown": 5,
+          "description": "Элементаль взрывается, нанося огромный урон"
+        },
+        {
+          "name": "🔥 Поджог",
+          "type": "dot",
+          "damage": 10,
+          "duration": 3,
+          "cooldown": 2,
+          "description": "Поджигает цель, нанося урон каждый ход"
+        }
+      ],
+      "drops": [
+        {"item": "fire_gem", "chance": 100, "min": 1, "max": 2},
+        {"item": "elemental_core", "chance": 80, "min": 1, "max": 1},
+        {"item": "volcanic_ash", "chance": 100, "min": 2, "max": 5},
+        {"item": "fire_essence", "chance": 40, "min": 1, "max": 1}
+      ],
+      "locations": ["volcano_crater", "volcanic_island"]
+    },
+    
+    "ice_giant": {
+      "id": "ice_giant",
+      "name": "🧊 Ледяной гигант",
+      "description": "Древний великан, заточённый в ледяной пещере. Его дыхание замораживает всё вокруг.",
+      "level": 22,
+      "health": 800,
+      "damage": 45,
+      "exp": 600,
+      "gold": 300,
+      "boss": true,
+      "phases": [
+        {"health_percent": 100, "image": "ice_giant_100.jpg"},
+        {"health_percent": 60, "image": "ice_giant_60.jpg", "ability": "freeze"},
+        {"health_percent": 30, "image": "ice_giant_30.jpg", "ability": "avalanche"}
+      ],
+      "abilities": [
+        {
+          "name": "❄️ Ледяное дыхание",
+          "type": "aoe",
+          "damage": 35,
+          "cooldown": 3,
+          "effect": "freeze",
+          "duration": 1
+        },
+        {
+          "name": "🏔️ Лавина",
+          "type": "aoe",
+          "damage": 60,
+          "cooldown": 6,
+          "description": "Гигант обрушивает лавину на врагов"
+        },
+        {
+          "name": "💪 Холодная ярость",
+          "type": "berserk",
+          "effect": "damage+150%, speed-50%",
+          "trigger": "health_below_30"
+        }
+      ],
+      "drops": [
+        {"item": "ice_giant_heart", "chance": 100, "min": 1, "max": 1},
+        {"item": "ice_crystal", "chance": 100, "min": 3, "max": 5},
+        {"item": "giant_tooth", "chance": 80, "min": 1, "max": 2},
+        {"item": "ice_essence", "chance": 60, "min": 1, "max": 2},
+        {"item": "ice_armor", "chance": 40, "min": 1, "max": 1}
+      ],
+      "locations": ["ice_cave"]
+    },
+    
+    "sand_dragon": {
+      "id": "sand_dragon",
+      "name": "🐉 Песчаный дракон",
+      "description": "Король пустыни. Его чешуя переливается золотом в лучах солнца.",
+      "level": 20,
+      "health": 600,
+      "damage": 35,
+      "exp": 500,
+      "gold": 300,
+      "boss": true,
+      "phases": [
+        {"health_percent": 100, "image": "sand_dragon_100.jpg"},
+        {"health_percent": 60, "image": "sand_dragon_60.jpg", "ability": "sandstorm"},
+        {"health_percent": 30, "image": "sand_dragon_30.jpg", "ability": "burrow"}
+      ],
+      "abilities": [
+        {
+          "name": "🌪️ Песчаная буря",
+          "type": "aoe",
+          "damage": 25,
+          "effect": "blind",
+          "duration": 2,
+          "cooldown": 4
+        },
+        {
+          "name": "🕳️ Закапывание",
+          "type": "evasion",
+          "effect": "invulnerable",
+          "duration": 1,
+          "cooldown": 3,
+          "description": "Дракон закапывается в песок, становясь неуязвимым"
+        },
+        {
+          "name": "🌵 Ярость пустыни",
+          "type": "berserk",
+          "effect": "damage+120%",
+          "trigger": "health_below_30"
+        }
+      ],
+      "drops": [
+        {"item": "sand_heart", "chance": 100, "min": 1, "max": 1},
+        {"item": "gold_scale", "chance": 80, "min": 2, "max": 4},
+        {"item": "desert_rose", "chance": 50, "min": 1, "max": 1},
+        {"item": "sand_essence", "chance": 40, "min": 1, "max": 1}
+      ],
+      "locations": ["desert"]
+    },
+    
+    "swamp_monster": {
+      "id": "swamp_monster",
+      "name": "👹 Болотный монстр",
+      "description": "Древнее зло, пробудившееся в глубинах болота. Состоит из тины и гнили.",
+      "level": 18,
+      "health": 500,
+      "damage": 30,
+      "exp": 400,
+      "gold": 200,
+      "boss": true,
+      "phases": [
+        {"health_percent": 100, "image": "swamp_monster_100.jpg"},
+        {"health_percent": 60, "image": "swamp_monster_60.jpg", "ability": "poison"},
+        {"health_percent": 30, "image": "swamp_monster_30.jpg", "ability": "split"}
+      ],
+      "abilities": [
+        {
+          "name": "🧪 Ядовитое облако",
+          "type": "aoe",
+          "damage": 15,
+          "effect": "poison",
+          "duration": 3,
+          "cooldown": 3
+        },
+        {
+          "name": "🔄 Разделение",
+          "type": "split",
+          "count": 2,
+          "health_percent": 50,
+          "trigger": "health_below_30",
+          "description": "Монстр разделяется на две меньших копии"
+        },
+        {
+          "name": "🕳️ Засасывание",
+          "type": "debuff",
+          "effect": "stun",
+          "duration": 1,
+          "cooldown": 5
+        }
+      ],
+      "drops": [
+        {"item": "swamp_heart", "chance": 100, "min": 1, "max": 1},
+        {"item": "monster_eye", "chance": 80, "min": 1, "max": 1},
+        {"item": "swamp_essence", "chance": 60, "min": 1, "max": 1},
+        {"item": "poison_gland", "chance": 40, "min": 1, "max": 1}
+      ],
+      "locations": ["swamp"]
+    },
+    
+    "crystal_dragon": {
+      "id": "crystal_dragon",
+      "name": "✨ Кристальный дракон",
+      "description": "Дракон, чешуя которого состоит из драгоценных камней. Его сияние ослепляет врагов.",
+      "level": 25,
+      "health": 900,
+      "damage": 45,
+      "exp": 800,
+      "gold": 400,
+      "boss": true,
+      "phases": [
+        {"health_percent": 100, "image": "crystal_dragon_100.jpg"},
+        {"health_percent": 70, "image": "crystal_dragon_70.jpg", "ability": "crystal_shards"},
+        {"health_percent": 40, "image": "crystal_dragon_40.jpg", "ability": "prismatic_light"},
+        {"health_percent": 20, "image": "crystal_dragon_20.jpg", "ability": "crystal_explosion"}
+      ],
+      "abilities": [
+        {
+          "name": "💎 Кристальные осколки",
+          "type": "aoe",
+          "damage": 30,
+          "cooldown": 3,
+          "description": "Дракон выпускает острые кристаллы во все стороны"
+        },
+        {
+          "name": "🌈 Призматический свет",
+          "type": "aoe",
+          "effect": "blind",
+          "duration": 2,
+          "cooldown": 4,
+          "description": "Яркая вспышка ослепляет врагов"
+        },
+        {
+          "name": "💥 Кристальный взрыв",
+          "type": "aoe",
+          "damage": 70,
+          "cooldown": 8,
+          "description": "Дракон взрывается кристаллами, нанося огромный урон"
+        }
+      ],
+      "drops": [
+        {"item": "crystal_dragon_heart", "chance": 100, "min": 1, "max": 1},
+        {"item": "perfect_crystal", "chance": 100, "min": 3, "max": 5},
+        {"item": "diamond", "chance": 80, "min": 1, "max": 2},
+        {"item": "ruby", "chance": 70, "min": 1, "max": 2},
+        {"item": "sapphire", "chance": 70, "min": 1, "max": 2},
+        {"item": "emerald", "chance": 70, "min": 1, "max": 2}
+      ],
+      "locations": ["crystal_island"]
+    },
+    
+    "volcano_king": {
+      "id": "volcano_king",
+      "name": "👑 Король вулкана",
+      "description": "Повелитель огненного острова. Его тело состоит из чистой магмы.",
+      "level": 28,
+      "health": 1200,
+      "damage": 55,
+      "exp": 1000,
+      "gold": 500,
+      "boss": true,
+      "phases": [
+        {"health_percent": 100, "image": "volcano_king_100.jpg"},
+        {"health_percent": 70, "image": "volcano_king_70.jpg", "ability": "lava_wave"},
+        {"health_percent": 40, "image": "volcano_king_40.jpg", "ability": "eruption"},
+        {"health_percent": 20, "image": "volcano_king_20.jpg", "ability": "magma_explosion"}
+      ],
+      "abilities": [
+        {
+          "name": "🌊 Лавовая волна",
+          "type": "aoe",
+          "damage": 40,
+          "cooldown": 3,
+          "description": "Волна лавы накрывает врагов"
+        },
+        {
+          "name": "🌋 Извержение",
+          "type": "aoe",
+          "damage": 30,
+          "duration": 3,
+          "cooldown": 5,
+          "description": "Из земли бьют фонтаны лавы в течение 3 ходов"
+        },
+        {
+          "name": "💥 Магмовый взрыв",
+          "type": "aoe",
+          "damage": 100,
+          "cooldown": 10,
+          "description": "Король вулкана взрывается, уничтожая всё вокруг"
+        }
+      ],
+      "drops": [
+        {"item": "volcano_heart", "chance": 100, "min": 1, "max": 1},
+        {"item": "lava_core", "chance": 100, "min": 2, "max": 3},
+        {"item": "fire_gem", "chance": 80, "min": 2, "max": 4},
+        {"item": "ruby", "chance": 70, "min": 1, "max": 2},
+        {"item": "obsidian", "chance": 100, "min": 3, "max": 6}
+      ],
+      "locations": ["volcanic_island"]
+    },
+    
+    "dragon_king": {
+      "id": "dragon_king",
+      "name": "👑 Король драконов",
+      "description": "Легендарный повелитель всех драконов. Его сила безгранична.",
+      "level": 30,
+      "health": 2000,
+      "damage": 70,
+      "exp": 2000,
+      "gold": 1000,
+      "boss": true,
+      "phases": [
+        {"health_percent": 100, "image": "dragon_king_100.jpg"},
+        {"health_percent": 80, "image": "dragon_king_80.jpg", "ability": "dragon_roar"},
+        {"health_percent": 60, "image": "dragon_king_60.jpg", "ability": "elemental_breath"},
+        {"health_percent": 40, "image": "dragon_king_40.jpg", "ability": "summon_dragons"},
+        {"health_percent": 20, "image": "dragon_king_20.jpg", "ability": "apocalypse"}
+      ],
+      "abilities": [
+        {
+          "name": "🐉 Рёв дракона",
+          "type": "aoe",
+          "effect": "fear",
+          "duration": 2,
+          "cooldown": 4,
+          "description": "Оглушающий рёв заставляет врагов дрожать от страха"
+        },
+        {
+          "name": "🌪️ Дыхание стихий",
+          "type": "aoe",
+          "damage": 50,
+          "cooldown": 3,
+          "description": "Дракон выдыхает смесь огня, льда и молний"
+        },
+        {
+          "name": "🐲 Призыв драконов",
+          "type": "summon",
+          "enemy": "young_dragon",
+          "count": 2,
+          "cooldown": 6,
+          "description": "Король призывает двух молодых драконов на помощь"
+        },
+        {
+          "name": "💀 Апокалипсис",
+          "type": "aoe",
+          "damage": 150,
+          "cooldown": 1,
+          "trigger": "health_below_20",
+          "description": "Последняя атака короля, способная уничтожить всё живое"
+        }
+      ],
+      "drops": [
+        {"item": "dragon_crown", "chance": 100, "min": 1, "max": 1},
+        {"item": "dragon_heart", "chance": 100, "min": 2, "max": 3},
+        {"item": "dragon_scale", "chance": 100, "min": 5, "max": 8},
+        {"item": "dragon_blood", "chance": 100, "min": 3, "max": 5},
+        {"item": "rainbow_stone", "chance": 50, "min": 1, "max": 2},
+        {"item": "dragon_sword", "chance": 20, "min": 1, "max": 1},
+        {"item": "dragon_armor", "chance": 20, "min": 1, "max": 1}
+      ],
+      "locations": ["dragon_island"]
     }
   }
 }
