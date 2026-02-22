@@ -4,13 +4,15 @@
       "7days": {
         "id": "7days",
         "name": "🟢 СТАРТОВЫЙ",
-        "description": "Попробуй премиум и получи вдвое больше бонусов при первой покупке!",
+        "description": "Попробуй премиум без лишних обязательств. При первой покупке: 50% скидка на Stars, 25% на TON!",
         "price_stars": 50,
         "price_ton": 1,
         "price_dstn": 2500,
         "duration": 7,
         "discount": 0,
-        "first_purchase_discount": 50,
+        "first_purchase_discount_stars": 50,
+        "first_purchase_discount_ton": 25,
+        "ton_regular_discount": 10,
         "bonuses": {
           "max_energy": 150,
           "gold_multiplier": 1.1,
@@ -21,7 +23,12 @@
           "house_rest_multiplier": 1.5,
           "daily_quests": 3,
           "inventory_slots": 50,
-          "pet_exp_gain": 1.1
+          "pet_exp_gain": 1.1,
+          "exchange_bonus": {
+            "ton_to_dstn": 2550,
+            "fee_discount": 50,
+            "daily_limit_multiplier": 1.5
+          }
         },
         "gift": {
           "legendary_chest": 1,
@@ -31,20 +38,21 @@
         },
         "nick_color": "green",
         "frame": "premium_green",
-        "chat_access": false,
-        "description": "Для тех, кто хочет попробовать премиум"
+        "chat_access": false
       },
       
       "28days": {
         "id": "28days",
         "name": "🔵 БАЗОВЫЙ",
-        "description": "Оптимальный выбор для регулярной игры — окупается уже через неделю!",
+        "description": "Оптимальный выбор для постоянных игроков. При первой покупке: 50% скидка на Stars, 25% на TON!",
         "price_stars": 150,
         "price_ton": 3,
         "price_dstn": 7500,
         "duration": 28,
         "discount": 25,
-        "first_purchase_discount": 50,
+        "first_purchase_discount_stars": 50,
+        "first_purchase_discount_ton": 25,
+        "ton_regular_discount": 10,
         "bonuses": {
           "max_energy": 175,
           "gold_multiplier": 1.15,
@@ -56,7 +64,12 @@
           "daily_quests": 4,
           "inventory_slots": 75,
           "pet_exp_gain": 1.15,
-          "shop_discount": 5
+          "shop_discount": 5,
+          "exchange_bonus": {
+            "ton_to_dstn": 2600,
+            "fee_discount": 75,
+            "daily_limit_multiplier": 2.0
+          }
         },
         "gift": {
           "legendary_chest": 3,
@@ -66,20 +79,21 @@
         },
         "nick_color": "blue",
         "frame": "premium_blue",
-        "chat_access": false,
-        "description": "Оптимальный выбор для постоянных игроков"
+        "chat_access": false
       },
       
       "90days": {
         "id": "90days",
         "name": "🟣 ПРОДВИНУТЫЙ",
-        "description": "Максимум бонусов и привилегий на три месяца",
+        "description": "Максимум бонусов и привилегий. При первой покупке: 50% скидка на Stars, 25% на TON!",
         "price_stars": 400,
         "price_ton": 8,
         "price_dstn": 20000,
         "duration": 90,
         "discount": 40,
-        "first_purchase_discount": 50,
+        "first_purchase_discount_stars": 50,
+        "first_purchase_discount_ton": 25,
+        "ton_regular_discount": 10,
         "bonuses": {
           "max_energy": 200,
           "gold_multiplier": 1.2,
@@ -94,7 +108,12 @@
           "pet_happiness": 10,
           "shop_discount": 10,
           "extra_slot_auction": 1,
-          "premium_chest_daily": true
+          "premium_chest_daily": true,
+          "exchange_bonus": {
+            "ton_to_dstn": 2650,
+            "fee_discount": 90,
+            "daily_limit_multiplier": 2.5
+          }
         },
         "gift": {
           "legendary_chest": 10,
@@ -104,20 +123,21 @@
         },
         "nick_color": "purple",
         "frame": "premium_purple",
-        "chat_access": "vip",
-        "description": "Для тех, кто живёт игрой"
+        "chat_access": "vip"
       },
       
       "180days": {
         "id": "180days",
         "name": "🟡 ЭЛИТНЫЙ",
-        "description": "Для настоящих ценителей — полгода привилегий",
+        "description": "Для настоящих ценителей — полгода привилегий. При первой покупке: 50% скидка на Stars, 25% на TON!",
         "price_stars": 700,
         "price_ton": 14,
         "price_dstn": 35000,
         "duration": 180,
         "discount": 50,
-        "first_purchase_discount": 50,
+        "first_purchase_discount_stars": 50,
+        "first_purchase_discount_ton": 25,
+        "ton_regular_discount": 10,
         "bonuses": {
           "max_energy": 225,
           "gold_multiplier": 1.25,
@@ -135,7 +155,12 @@
           "premium_chest_daily": true,
           "rainbow_shard_weekly": 1,
           "teleport_cooldown_reduction": 50,
-          "house_upgrade_discount": 10
+          "house_upgrade_discount": 10,
+          "exchange_bonus": {
+            "ton_to_dstn": 2700,
+            "fee_free": true,
+            "daily_limit_multiplier": 3.0
+          }
         },
         "gift": {
           "legendary_chest": 20,
@@ -146,20 +171,21 @@
         },
         "nick_color": "gold",
         "frame": "premium_gold",
-        "chat_access": "elite",
-        "description": "Элитный статус с особыми привилегиями"
+        "chat_access": "elite"
       },
       
       "365days": {
         "id": "365days",
         "name": "🔴 ЛЕГЕНДАРНЫЙ",
-        "description": "Стань легендой игры на целый год!",
+        "description": "Стань легендой игры на целый год! При первой покупке: 50% скидка на Stars, 25% на TON!",
         "price_stars": 1200,
         "price_ton": 24,
         "price_dstn": 60000,
         "duration": 365,
         "discount": 65,
-        "first_purchase_discount": 50,
+        "first_purchase_discount_stars": 50,
+        "first_purchase_discount_ton": 25,
+        "ton_regular_discount": 10,
         "bonuses": {
           "max_energy": 250,
           "gold_multiplier": 1.3,
@@ -181,7 +207,13 @@
           "house_upgrade_discount": 20,
           "crafting_discount": 10,
           "early_access": true,
-          "voting_rights": true
+          "voting_rights": true,
+          "exchange_bonus": {
+            "ton_to_dstn": 2800,
+            "fee_free": true,
+            "priority": true,
+            "daily_limit_multiplier": 5.0
+          }
         },
         "gift": {
           "legendary_chest": 50,
@@ -195,17 +227,26 @@
         "nick_color": "red",
         "frame": "premium_legendary",
         "aura": "legendary_glow",
-        "chat_access": "developer",
-        "description": "Ты — легенда игры"
+        "chat_access": "developer"
       }
     },
     
     "first_purchase_bonus": {
       "enabled": true,
-      "discount": 50,
+      "stars_discount": 50,
+      "ton_discount": 25,
+      "dstn_discount": 0,
       "applicable_plans": ["7days", "28days", "90days", "180days", "365days"],
       "max_duration": 59,
-      "description": "При первой покупке премиума до 59 дней — скидка 50%!"
+      "description": "При первой покупке премиума до 59 дней: 50% скидка на Stars, 25% на TON!"
+    },
+    
+    "ton_discount": {
+      "enabled": true,
+      "discount_percent": 10,
+      "description": "Постоянная скидка 10% при оплате TON (не суммируется с первой покупкой)",
+      "stackable_with_first_purchase": false,
+      "valid_for": ["all_plans", "rainbow_stone", "shop_items"]
     },
     
     "premium_shop": {
@@ -213,6 +254,7 @@
         "name": "⚡ Восполнение энергии",
         "description": "Мгновенно восстанавливает 100 энергии",
         "price_stars": 10,
+        "price_ton": 0.18,
         "price_dstn": 500,
         "limit": "daily"
       },
@@ -220,6 +262,7 @@
         "name": "🎁 Легендарный сундук",
         "description": "Сундук с редкими предметами",
         "price_stars": 50,
+        "price_ton": 0.9,
         "price_dstn": 2500,
         "limit": "weekly"
       },
@@ -227,6 +270,7 @@
         "name": "🌈 Набор радужных осколков",
         "description": "5 радужных осколков",
         "price_stars": 100,
+        "price_ton": 1.8,
         "price_dstn": 5000,
         "limit": "monthly"
       },
@@ -234,6 +278,7 @@
         "name": "💎 Радужный камень",
         "description": "Целый радужный камень",
         "price_stars": 500,
+        "price_ton": 9,
         "price_dstn": 25000,
         "limit": "monthly"
       },
@@ -241,6 +286,7 @@
         "name": "📜 Свитки телепортации",
         "description": "10 свитков телепортации",
         "price_stars": 20,
+        "price_ton": 0.36,
         "price_dstn": 1000,
         "limit": "daily"
       },
@@ -248,6 +294,7 @@
         "name": "🍖 Корм для питомца",
         "description": "Корм, дающий +100 опыта питомцу",
         "price_stars": 5,
+        "price_ton": 0.09,
         "price_dstn": 250,
         "limit": "daily"
       }
