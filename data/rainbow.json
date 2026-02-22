@@ -1,1 +1,320 @@
-
+{
+  "rainbow": {
+    "shards": {
+      "shard_1": {
+        "id": "shard_1",
+        "name": "🌈 Осколок радуги #1",
+        "color": "red_tint",
+        "description": "Первый осколок радужного камня. Имеет красноватый оттенок.",
+        "source": "4-й день входа",
+        "guaranteed": true
+      },
+      "shard_2": {
+        "id": "shard_2",
+        "name": "🌈 Осколок радуги #2",
+        "color": "orange_tint",
+        "description": "Второй осколок радужного камня. Имеет оранжевый оттенок.",
+        "source": "4-й день входа",
+        "guaranteed": true
+      },
+      "shard_3": {
+        "id": "shard_3",
+        "name": "🌈 Осколок радуги #3",
+        "color": "yellow_tint",
+        "description": "Третий осколок радужного камня. Имеет жёлтый оттенок.",
+        "source": "4-й день входа",
+        "guaranteed": true
+      },
+      "shard_4": {
+        "id": "shard_4",
+        "name": "🌈 Осколок радуги #4",
+        "color": "green_tint",
+        "description": "Четвёртый осколок радужного камня. Имеет зелёный оттенок.",
+        "source": "4-й день входа",
+        "guaranteed": true
+      },
+      "shard_5": {
+        "id": "shard_5",
+        "name": "🌈 Осколок радуги #5",
+        "color": "blue_tint",
+        "description": "Пятый осколок радужного камня. Имеет синий оттенок.",
+        "source": "4-й день входа",
+        "guaranteed": true
+      },
+      "shard_6": {
+        "id": "shard_6",
+        "name": "🌈 Осколок радуги #6",
+        "color": "indigo_tint",
+        "description": "Шестой осколок радужного камня. Имеет сине-фиолетовый оттенок.",
+        "source": "4-й день входа",
+        "guaranteed": true
+      },
+      "shard_7": {
+        "id": "shard_7",
+        "name": "🌈 Осколок радуги #7",
+        "color": "violet_tint",
+        "description": "Седьмой осколок радужного камня. Имеет фиолетовый оттенок.",
+        "source": "4-й день входа",
+        "guaranteed": true
+      },
+      "shard_8": {
+        "id": "shard_8",
+        "name": "🌈 Осколок радуги #8",
+        "color": "prismatic_tint",
+        "description": "Восьмой осколок радужного камня. Переливается всеми цветами.",
+        "source": "4-й день входа",
+        "guaranteed": true
+      },
+      "shard_9": {
+        "id": "shard_9",
+        "name": "🌈 Осколок радуги #9",
+        "color": "rainbow_tint",
+        "description": "Девятый, самый важный осколок радужного камня. Пульсирует радужным светом.",
+        "source": "4-й день входа",
+        "guaranteed": true
+      }
+    },
+    
+    "craft": {
+      "rainbow_stone": {
+        "id": "rainbow_stone",
+        "name": "🌈 РАДУЖНЫЙ КАМЕНЬ",
+        "description": "Древний камень, хранящий силу всех стихий. Используется для создания легендарных предметов.",
+        "recipe": {
+          "shard_1": 1,
+          "shard_2": 1,
+          "shard_3": 1,
+          "shard_4": 1,
+          "shard_5": 1,
+          "shard_6": 1,
+          "shard_7": 1,
+          "shard_8": 1,
+          "shard_9": 1,
+          "dstn": 1000,
+          "gold": 10000
+        },
+        "craft_time": 86400,
+        "craft_location": "rainbow_altar",
+        "house_level": 5,
+        "image": "rainbow_stone.jpg"
+      }
+    },
+    
+    "shop": {
+      "rainbow_stone": {
+        "price_stars": 500,
+        "price_dstn": 50000,
+        "price_ton": 10,
+        "limit": "1 per month",
+        "description": "Купить готовый радужный камень (без необходимости собирать осколки)"
+      },
+      "rainbow_shard_pack": {
+        "price_stars": 300,
+        "price_dstn": 30000,
+        "price_ton": 6,
+        "amount": 5,
+        "limit": "2 per month",
+        "description": "Набор из 5 случайных радужных осколков"
+      },
+      "rainbow_shard_choice": {
+        "price_stars": 100,
+        "price_dstn": 10000,
+        "price_ton": 2,
+        "amount": 1,
+        "limit": "weekly",
+        "description": "Выбери любой радужный осколок"
+      }
+    },
+    
+    "uses": {
+      "legendary_weapon": {
+        "name": "⚔️ Легендарное оружие",
+        "cost": 1,
+        "materials": {
+          "mythril_ingot": 5,
+          "perfect_crystal": 3,
+          "gold_ingot": 10
+        },
+        "description": "Создай легендарное оружие своего класса"
+      },
+      "dragon_sword": {
+        "name": "🐉 Меч дракона",
+        "cost": 2,
+        "materials": {
+          "dragon_fang": 5,
+          "dragon_scale": 3,
+          "mythril_ingot": 10
+        },
+        "description": "Легендарный меч, выкованный из частей дракона"
+      },
+      "phoenix_bow": {
+        "name": "🦅 Лук феникса",
+        "cost": 2,
+        "materials": {
+          "phoenix_feather": 3,
+          "dragon_blood": 3,
+          "mythril_ingot": 10
+        },
+        "description": "Лук, стреляющий огненными стрелами"
+      },
+      "dragon_staff": {
+        "name": "🪄 Посох дракона",
+        "cost": 2,
+        "materials": {
+          "dragon_bone": 3,
+          "dragon_heart": 1,
+          "magic_crystal": 20
+        },
+        "description": "Посох, наполненный силой дракона"
+      },
+      "dragon_shield": {
+        "name": "🛡️ Щит дракона",
+        "cost": 2,
+        "materials": {
+          "dragon_scale": 5,
+          "dragon_bone": 3,
+          "mythril_ingot": 10
+        },
+        "description": "Несокрушимый щит из чешуи дракона"
+      },
+      "flying_island": {
+        "name": "🏝️ Летающий остров",
+        "cost": 3,
+        "materials": {
+          "perfect_crystal": 20,
+          "mythril_ingot": 30,
+          "gold_ingot": 50,
+          "dragon_heart": 2
+        },
+        "description": "Собственный летающий остров, который можно украшать и улучшать"
+      },
+      "dragon_egg": {
+        "name": "🥚 Яйцо дракона",
+        "cost": 3,
+        "materials": {
+          "dragon_heart": 3,
+          "dragon_scale": 10,
+          "rainbow_stone": 2
+        },
+        "description": "Яйцо дракона. Из него вылупится питомец — дракончик"
+      },
+      "ancient_crown": {
+        "name": "👑 Корона древних",
+        "cost": 5,
+        "materials": {
+          "ancient_relic": 10,
+          "perfect_crystal": 20,
+          "dragon_heart": 3,
+          "rainbow_stone": 2
+        },
+        "description": "Корона, дарующая власть над стихиями"
+      }
+    },
+    
+    "titles": {
+      "1": {
+        "name": "Избранный",
+        "cost": 1,
+        "bonus": "+3% ко всем характеристикам",
+        "description": "Тот, кому улыбнулась удача"
+      },
+      "3": {
+        "name": "Легенда",
+        "cost": 3,
+        "bonus": "+5% ко всем характеристикам",
+        "description": "Твоё имя знают по всему миру"
+      },
+      "5": {
+        "name": "Бог",
+        "cost": 5,
+        "bonus": "+7% ко всем характеристикам, слабое сияние",
+        "description": "Ты достиг божественного уровня"
+      },
+      "9": {
+        "name": "Создатель",
+        "cost": 9,
+        "bonus": "+10% ко всем характеристикам, радужный ник, радужная аура",
+        "description": "Ты создатель своей судьбы. Ты — легенда легенд."
+      }
+    },
+    
+    "house_upgrades": {
+      "rainbow_altar": {
+        "name": "🌈 Алтарь радуги",
+        "cost": 1,
+        "bonus": "+5% к шансу найти редкие ресурсы",
+        "effect": "1 раз в день даёт случайный осколок",
+        "description": "Алтарь, на котором можно создавать радужные камни"
+      },
+      "rainbow_garden": {
+        "name": "🌸 Радужный сад",
+        "cost": 2,
+        "bonus": "Растения растут в 2 раза быстрее",
+        "effect": "5% шанс на двойной урожай",
+        "description": "В этом саду даже зимой цветут цветы"
+      },
+      "rainbow_temple": {
+        "name": "🏯 Храм радуги",
+        "cost": 3,
+        "bonus": "Молитва 1 раз в день",
+        "effect": "Случайный бафф на 1 час",
+        "description": "Место силы, где можно попросить богов о помощи"
+      },
+      "rainbow_well": {
+        "name": "⛲ Радужный колодец",
+        "cost": 2,
+        "bonus": "1 раз в день можно загадать желание",
+        "effect": "Случайная награда (золото, DSTN, предметы)",
+        "description": "Колодец, исполняющий желания"
+      },
+      "rainbow_statue": {
+        "name": "🗿 Статуя радуги",
+        "cost": 3,
+        "bonus": "+10% ко всем характеристикам в доме",
+        "effect": "Увеличивает эффекты других построек",
+        "description": "Статуя, излучающая радужный свет"
+      }
+    },
+    
+    "events": {
+      "rainbow_day": {
+        "name": "🌈 День радуги",
+        "day": "thursday",
+        "bonus": "x2 шанс на радужные осколки",
+        "description": "Каждый четверг шанс найти радужные осколки удваивается"
+      },
+      "rainbow_week": {
+        "name": "🌈 Неделя радуги",
+        "frequency": "monthly",
+        "bonus": "x1.5 ко всем действиям, связанным с радугой",
+        "description": "Раз в месяц наступает неделя радуги, когда осколки падают чаще"
+      },
+      "rainbow_hunt": {
+        "name": "🔍 Охота за радугой",
+        "frequency": "seasonal",
+        "description": "Особое событие, во время которого можно найти редкие радужные предметы"
+      }
+    },
+    
+    "stats": {
+      "total_shards_minted": 0,
+      "total_stones_crafted": 0,
+      "most_active_collector": "",
+      "rarest_title_holders": 0
+    },
+    
+    "daily_login": {
+      "day4_reward": {
+        "name": "🌈 Радужный осколок",
+        "description": "Гарантированный радужный осколок за вход на 4-й день",
+        "shard_number": "random",
+        "guaranteed": true
+      },
+      "streak_bonus": {
+        "7_days": "x2 шанс на осколок",
+        "30_days": "гарантированный осколок каждый день",
+        "365_days": "гарантированный радужный камень"
+      }
+    }
+  }
+}
