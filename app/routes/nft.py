@@ -1,81 +1,89 @@
-from fastapi import APIRouter, HTTPException
-from typing import List, Optional
+from fastapi import APIRouter
 
 router = APIRouter()
 
-# Данные NFT (из nft.json)
+# Данные из nft.json (5 видов, по 10 шт каждого)
 NFT_SHARDS = {
     "red": {
         "name": "🔴 Красный осколок силы",
-        "total": 10,
+        "total_supply": 10,
         "price_stars": 100,
         "price_dstn": 5000,
         "bonuses": ["+5% урона", "+5% огненного урона", "+2 силы"],
-        "ability": "Ярость (+25% урона на 1 минуту)"
+        "ability": {
+            "name": "Ярость",
+            "effect": "+25% урона на 1 минуту",
+            "cooldown": "1 день"
+        }
     },
     "blue": {
         "name": "🔵 Синий осколок защиты",
-        "total": 10,
+        "total_supply": 10,
         "price_stars": 100,
         "price_dstn": 5000,
         "bonuses": ["+5% защиты", "+5% магической защиты", "+50 HP"],
-        "ability": "Щит (+50% защиты на 1 минуту)"
+        "ability": {
+            "name": "Щит",
+            "effect": "+50% защиты на 1 минуту",
+            "cooldown": "1 день"
+        }
     },
     "green": {
         "name": "🟢 Зелёный осколок ловкости",
-        "total": 10,
+        "total_supply": 10,
         "price_stars": 100,
         "price_dstn": 5000,
         "bonuses": ["+5% уклонения", "+5% скорости"],
-        "ability": "Ветер (+50% скорости на 1 минуту)"
+        "ability": {
+            "name": "Ветер",
+            "effect": "+50% скорости на 1 минуту",
+            "cooldown": "1 день"
+        }
     },
     "yellow": {
         "name": "🟡 Жёлтый осколок магии",
-        "total": 10,
+        "total_supply": 10,
         "price_stars": 100,
         "price_dstn": 5000,
         "bonuses": ["+5% магического урона", "+50 маны"],
-        "ability": "Молния (300% маг. урона)"
+        "ability": {
+            "name": "Молния",
+            "effect": "300% магического урона по 5 целям",
+            "cooldown": "1 день"
+        }
     },
     "purple": {
         "name": "🟣 Фиолетовый осколок удачи",
-        "total": 10,
+        "total_supply": 10,
         "price_stars": 200,
         "price_dstn": 10000,
         "bonuses": ["+7% удачи", "+5% редких находок"],
-        "ability": "Удача (+50% удачи на 30 минут)"
+        "ability": {
+            "name": "Удача",
+            "effect": "+50% удачи на 30 минут",
+            "cooldown": "1 день"
+        }
     }
 }
 
 @router.get("/list")
 def get_nft_list():
-    """Список всех NFT"""
+    """Получить список всех NFT"""
     return NFT_SHARDS
 
 @router.get("/{color}")
 def get_nft_info(color: str):
-    """Информация о конкретном NFT"""
+    """Получить информацию о конкретном NFT"""
     if color not in NFT_SHARDS:
-        raise HTTPException(status_code=404, detail="NFT not found")
+        return {"error": "NFT not found"}
     return NFT_SHARDS[color]
 
-@router.post("/buy/{color}")
-def buy_nft(color: str, player_id: int, payment_method: str):
-    """Купить NFT"""
-    if color not in NFT_SHARDS:
-        raise HTTPException(status_code=404, detail="NFT not found")
-    
-    nft = NFT_SHARDS[color]
-    
-    # Проверка остатков
-    if nft.get("sold", 0) >= nft["total"]:
-        raise HTTPException(status_code=400, detail="Sold out")
-    
-    # Здесь будет интеграция с платежами
-    
+@router.get("/collection/set_bonuses")
+def get_set_bonuses():
+    """Получить бонусы за коллекцию NFT"""
     return {
-        "status": "success",
-        "nft": nft["name"],
-        "price": nft["price_stars"] if payment_method == "stars" else nft["price_dstn"],
-        "remaining": nft["total"] - nft.get("sold", 0) - 1
+        "2_pieces": {"name": "Коллекционер", "bonus": "+2% ко всем характеристикам"},
+        "3_pieces": {"name": "Хранитель стихий", "bonus": "+3% ко всем характеристикам"},
+        "4_pieces": {"name": "Повелитель стихий", "bonus": "+4% ко всем характеристикам"},
+        "5_pieces": {"name": "Бог стихий", "bonus": "+5% ко всем характеристикам, радужный ник"}
     }
