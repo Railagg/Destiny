@@ -1,1 +1,679 @@
-
+{
+  "house": {
+    "levels": {
+      "0": {
+        "name": "🏗️ Стройка",
+        "description": "Ты выбрал уютное место на берегу озера. Ровная зелёная поляна, аккуратно сложены доски и камни. Здесь будет твой собственный дом.",
+        "image": "house_construction.jpg",
+        "level_req": 5,
+        "build_cost": {
+          "wood": 100,
+          "stone": 100,
+          "iron_ingot": 20,
+          "glass": 10
+        },
+        "features": []
+      },
+      
+      "1": {
+        "name": "🏠 Маленький домик",
+        "description": "Твой первый собственный домик на берегу озера. Одна комната, соломенная крыша, маленькое окошко с тёплым светом. Из трубы идёт дымок — здесь уютно.",
+        "image": "house_level1.jpg",
+        "image_night": "house_level1_night.jpg",
+        "level_req": 5,
+        "storage": 20,
+        "rest": {
+          "energy_gain": 20,
+          "cooldown": 3600
+        },
+        "upgrade_cost": {
+          "wood": 200,
+          "stone": 200,
+          "iron_ingot": 30,
+          "glass": 15
+        },
+        "features": ["storage", "rest"],
+        "rooms": 1,
+        "available_furniture": ["bed", "small_chest", "chair", "table"]
+      },
+      
+      "2": {
+        "name": "🏠 Уютный домик",
+        "description": "Твой домик стал больше и уютнее. Две комнаты, черепичная крыша, два окна с тёплым светом. Из трубы идёт дымок, рядом появился небольшой огород.",
+        "image": "house_level2.jpg",
+        "level_req": 10,
+        "storage": 30,
+        "rest": {
+          "energy_gain": 30,
+          "cooldown": 3600
+        },
+        "upgrade_cost": {
+          "wood": 400,
+          "stone": 400,
+          "iron_ingot": 50,
+          "glass": 25
+        },
+        "features": ["storage", "rest", "grill", "garden"],
+        "rooms": 2,
+        "available_furniture": ["bed", "chest", "chair", "table", "bookshelf_small", "lamp"],
+        "buildings": {
+          "grill": {
+            "name": "🔥 Мангал",
+            "description": "Каменный мангал во дворе. Можно жарить мясо и рыбу.",
+            "image": "grill.jpg",
+            "unlocked": true,
+            "recipes": ["fried_meat", "fried_fish", "meat_stew", "fish_soup"]
+          },
+          "garden": {
+            "name": "🌱 Маленький огород",
+            "description": "Несколько грядок для выращивания овощей и трав.",
+            "image": "garden.jpg",
+            "unlocked": true,
+            "plots": 3,
+            "crops": ["potato", "carrot", "cabbage", "herb"]
+          }
+        }
+      },
+      
+      "3": {
+        "name": "🏠 Просторный дом",
+        "description": "Твой дом вырос до двух этажей! Каменная труба, несколько окон с тёплым светом, большое крыльцо. В мастерской теперь стоит настоящая печь для стекла.",
+        "image": "house_level3.jpg",
+        "level_req": 15,
+        "storage": 40,
+        "rest": {
+          "energy_gain": 40,
+          "cooldown": 3600
+        },
+        "upgrade_cost": {
+          "wood": 800,
+          "stone": 800,
+          "iron_ingot": 100,
+          "glass": 50,
+          "magic_crystal": 20
+        },
+        "features": ["storage", "rest", "grill", "garden", "glass_furnace", "library"],
+        "rooms": 4,
+        "available_furniture": ["bed", "chest", "armchair", "table", "bookshelf", "lamp", "carpet", "painting"],
+        "buildings": {
+          "grill": {
+            "name": "🔥 Мангал",
+            "unlocked": true
+          },
+          "garden": {
+            "name": "🌱 Огород",
+            "plots": 5,
+            "unlocked": true
+          },
+          "glass_furnace": {
+            "name": "🪟 Печь для стекла",
+            "description": "Большая печь для обжига стекла. Можно создавать окна и посуду.",
+            "image": "glass_furnace.jpg",
+            "unlocked": true,
+            "recipes": ["glass", "glass_bottle", "glass_pane"]
+          },
+          "library": {
+            "name": "📚 Библиотека",
+            "description": "Небольшая библиотека с книгами по магии и ремёслам.",
+            "image": "library.jpg",
+            "unlocked": true,
+            "bonus": {
+              "magic_damage": 5,
+              "exp_gain": 5
+            }
+          }
+        }
+      },
+      
+      "4": {
+        "name": "🏠 Деревянный особняк",
+        "description": "Твой дом превратился в настоящий особняк! Два этажа с мансардой, большие окна, просторная веранда. В главном зале установлен магический телепорт.",
+        "image": "house_level4.jpg",
+        "level_req": 20,
+        "storage": 50,
+        "rest": {
+          "energy_gain": 50,
+          "cooldown": 3600
+        },
+        "upgrade_cost": {
+          "wood": 1500,
+          "stone": 1500,
+          "iron_ingot": 200,
+          "glass": 100,
+          "magic_crystal": 50,
+          "gold_ingot": 10
+        },
+        "features": ["storage", "rest", "grill", "garden", "glass_furnace", "library", "teleport", "alchemy_lab", "trophy_room"],
+        "rooms": 6,
+        "available_furniture": ["bed", "large_chest", "armchair", "large_table", "bookshelf", "chandelier", "carpet", "painting", "statue", "magic_orb"],
+        "buildings": {
+          "grill": {"unlocked": true},
+          "garden": {"plots": 8},
+          "glass_furnace": {"unlocked": true},
+          "library": {"bonus": {"magic_damage": 10, "exp_gain": 8}},
+          "teleport": {
+            "name": "✨ Магический телепорт",
+            "description": "Светящаяся арка, которая может мгновенно перенести тебя в любую знакомую локацию.",
+            "image": "teleport.jpg",
+            "unlocked": true,
+            "cooldown": 3600,
+            "locations": ["start", "village", "lake_shore", "mountain_path", "mine_entrance", "desert_oasis"]
+          },
+          "alchemy_lab": {
+            "name": "⚗️ Алхимическая лаборатория",
+            "description": "Полный набор колб, реторт и алхимических инструментов.",
+            "image": "alchemy_lab.jpg",
+            "unlocked": true,
+            "bonus": {
+              "potion_effectiveness": 20,
+              "potion_duration": 20
+            },
+            "recipes": ["strong_health_potion", "strong_mana_potion", "fire_resist_potion", "frost_elixir"]
+          },
+          "trophy_room": {
+            "name": "🏆 Трофейная комната",
+            "description": "Место для хранения и демонстрации твоих достижений.",
+            "image": "trophy_room.jpg",
+            "unlocked": true,
+            "capacity": 10,
+            "bonus": {
+              "prestige": 5,
+              "reputation": 10
+            }
+          }
+        }
+      },
+      
+      "5": {
+        "name": "🏠 Великая усадьба",
+        "description": "Твой дом достиг величия! Трёхэтажная усадьба с башенкой, множество окон, просторная терраса. Отдельно стоят баня с купелью и большая стеклянная теплица.",
+        "image": "house_level5.jpg",
+        "level_req": 25,
+        "storage": 60,
+        "rest": {
+          "energy_gain": 60,
+          "health_gain": 20,
+          "cooldown": 3600
+        },
+        "features": ["storage", "rest", "grill", "garden", "glass_furnace", "library", "teleport", "alchemy_lab", "bathhouse", "greenhouse", "servant", "pet_house", "magic_tower", "guest_room"],
+        "rooms": 12,
+        "available_furniture": ["bed", "large_chest", "throne", "large_table", "grand_bookshelf", "chandelier", "royal_carpet", "masterpiece_painting", "statue", "magic_orb", "dragon_trophy", "crystal_ball"],
+        "buildings": {
+          "grill": {"unlocked": true},
+          "garden": {"plots": 12},
+          "glass_furnace": {"unlocked": true},
+          "library": {"bonus": {"magic_damage": 15, "exp_gain": 12, "spell_research": true}},
+          "teleport": {
+            "cooldown": 1800,
+            "locations": ["start", "village", "lake_shore", "mountain_path", "mine_entrance", "desert_oasis", "swamp", "ice_plains", "volcano_crater", "ancient_ruins", "crystal_island", "dragon_island"]
+          },
+          "alchemy_lab": {
+            "bonus": {"potion_effectiveness": 30, "potion_duration": 30},
+            "recipes": ["dragon_blood_elixir", "divine_elixir", "phoenix_potion"]
+          },
+          "bathhouse": {
+            "name": "🏠 Баня",
+            "description": "Настоящая русская баня с парной и купелью. Отлично восстанавливает силы.",
+            "image": "bathhouse.jpg",
+            "unlocked": true,
+            "rest": {
+              "health_gain": 50,
+              "energy_gain": 30,
+              "cooldown": 14400,
+              "buff": "damage+10% 1h"
+            }
+          },
+          "greenhouse": {
+            "name": "🌱 Теплица",
+            "description": "Стеклянная теплица для выращивания растений круглый год.",
+            "image": "greenhouse.jpg",
+            "unlocked": true,
+            "plots": 20,
+            "bonus": {
+              "growth_speed": 50,
+              "yield_bonus": 30
+            },
+            "crops": ["potato", "carrot", "cabbage", "herb", "magic_herb", "fire_flower", "ice_herb", "swamp_herb", "desert_herb", "crystal_flower"]
+          },
+          "servant": {
+            "name": "👨‍🌾 Слуга",
+            "description": "Преданный слуга, который помогает по хозяйству.",
+            "image": "servant.jpg",
+            "unlocked": true,
+            "abilities": {
+              "auto_gather": true,
+              "auto_water": true,
+              "auto_feeding": true,
+              "daily_gift": {"gold": 200, "items": ["bread", 3, "health_potion", 1]}
+            }
+          },
+          "pet_house": {
+            "name": "🐕 Домик для питомца",
+            "description": "Уютное место для твоего верного друга.",
+            "image": "pet_house.jpg",
+            "unlocked": true,
+            "capacity": 2,
+            "bonus": {
+              "pet_happiness": 20,
+              "pet_exp_gain": 10
+            }
+          },
+          "magic_tower": {
+            "name": "🔮 Магическая башня",
+            "description": "Небольшая башня для магических исследований.",
+            "image": "magic_tower_house.jpg",
+            "unlocked": true,
+            "bonus": {
+              "magic_damage": 25,
+              "mana_regen": 5,
+              "spell_research": true
+            }
+          },
+          "guest_room": {
+            "name": "🚪 Гостевая комната",
+            "description": "Комната для друзей и союзников.",
+            "image": "guest_room.jpg",
+            "unlocked": true,
+            "capacity": 3,
+            "bonus": {
+              "friendship": 20,
+              "guild_reputation": 10
+            }
+          }
+        }
+      }
+    },
+    
+    "furniture": {
+      "bed": {
+        "name": "🛏️ Кровать",
+        "description": "Удобная кровать для хорошего отдыха.",
+        "level_req": 1,
+        "cost": {"wood": 20, "leather": 5},
+        "effect": {
+          "rest_bonus": 10
+        }
+      },
+      "small_chest": {
+        "name": "📦 Маленький сундук",
+        "description": "Небольшой сундук для хранения вещей.",
+        "level_req": 1,
+        "cost": {"wood": 15, "iron_ingot": 2},
+        "effect": {
+          "storage_bonus": 5
+        }
+      },
+      "chest": {
+        "name": "📦 Сундук",
+        "description": "Большой сундук для хранения вещей.",
+        "level_req": 1,
+        "cost": {"wood": 30, "iron_ingot": 5},
+        "effect": {
+          "storage_bonus": 10
+        }
+      },
+      "large_chest": {
+        "name": "📦 Большой сундук",
+        "description": "Огромный сундук для самых ценных вещей.",
+        "level_req": 10,
+        "cost": {"wood": 50, "iron_ingot": 10, "gold_ingot": 2},
+        "effect": {
+          "storage_bonus": 20
+        }
+      },
+      "chair": {
+        "name": "🪑 Стул",
+        "description": "Простой деревянный стул.",
+        "level_req": 1,
+        "cost": {"wood": 5},
+        "effect": {}
+      },
+      "armchair": {
+        "name": "🪑 Кресло",
+        "description": "Удобное кресло для чтения.",
+        "level_req": 5,
+        "cost": {"wood": 15, "leather": 5},
+        "effect": {
+          "rest_bonus": 5
+        }
+      },
+      "throne": {
+        "name": "👑 Трон",
+        "description": "Величественный трон для настоящего героя.",
+        "level_req": 25,
+        "cost": {"wood": 100, "gold_ingot": 20, "dragon_scale": 5},
+        "effect": {
+          "prestige": 20,
+          "all_stats": 5
+        }
+      },
+      "table": {
+        "name": "🪑 Стол",
+        "description": "Обычный деревянный стол.",
+        "level_req": 1,
+        "cost": {"wood": 10},
+        "effect": {}
+      },
+      "large_table": {
+        "name": "🪑 Большой стол",
+        "description": "Огромный стол для застолий.",
+        "level_req": 10,
+        "cost": {"wood": 30, "iron_ingot": 5},
+        "effect": {
+          "feast_bonus": 5
+        }
+      },
+      "bookshelf_small": {
+        "name": "📚 Маленький книжный шкаф",
+        "description": "Несколько книг для самообразования.",
+        "level_req": 5,
+        "cost": {"wood": 20, "glass": 2},
+        "effect": {
+          "exp_bonus": 2
+        }
+      },
+      "bookshelf": {
+        "name": "📚 Книжный шкаф",
+        "description": "Шкаф с книгами для самообразования.",
+        "level_req": 10,
+        "cost": {"wood": 40, "glass": 5, "magic_crystal": 2},
+        "effect": {
+          "exp_bonus": 5
+        }
+      },
+      "grand_bookshelf": {
+        "name": "📚 Большой книжный шкаф",
+        "description": "Огромная библиотека в одном шкафу.",
+        "level_req": 20,
+        "cost": {"wood": 100, "glass": 20, "magic_crystal": 10},
+        "effect": {
+          "exp_bonus": 10,
+          "magic_damage": 5
+        }
+      },
+      "lamp": {
+        "name": "💡 Лампа",
+        "description": "Обычная масляная лампа.",
+        "level_req": 1,
+        "cost": {"glass": 2, "oil": 1},
+        "effect": {}
+      },
+      "chandelier": {
+        "name": "💡 Люстра",
+        "description": "Магическая люстра, освещающая весь дом.",
+        "level_req": 15,
+        "cost": {"glass": 10, "gold_ingot": 5, "magic_crystal": 3},
+        "effect": {
+          "luck_bonus": 5
+        }
+      },
+      "carpet": {
+        "name": "🧵 Ковёр",
+        "description": "Мягкий ковёр на полу.",
+        "level_req": 5,
+        "cost": {"wool": 10, "leather": 5},
+        "effect": {
+          "comfort": 5
+        }
+      },
+      "royal_carpet": {
+        "name": "🧵 Королевский ковёр",
+        "description": "Роскошный ковёр ручной работы.",
+        "level_req": 20,
+        "cost": {"wool": 30, "silk": 10, "gold_ingot": 5},
+        "effect": {
+          "prestige": 10,
+          "comfort": 15
+        }
+      },
+      "painting": {
+        "name": "🖼️ Картина",
+        "description": "Красивый пейзаж на стене.",
+        "level_req": 10,
+        "cost": {"wood": 10, "paint": 5},
+        "effect": {
+          "aesthetics": 5
+        }
+      },
+      "masterpiece_painting": {
+        "name": "🖼️ Шедевр",
+        "description": "Картина великого мастера.",
+        "level_req": 25,
+        "cost": {"wood": 20, "paint": 20, "gold_ingot": 5, "rainbow_shard": 1},
+        "effect": {
+          "prestige": 15,
+          "all_stats": 3
+        }
+      },
+      "statue": {
+        "name": "🗿 Статуя",
+        "description": "Каменная статуя в человеческий рост.",
+        "level_req": 15,
+        "cost": {"stone": 100, "marble": 50, "gold_ingot": 10},
+        "effect": {
+          "prestige": 10,
+          "defense_bonus": 5
+        }
+      },
+      "armor_stand": {
+        "name": "🛡️ Стойка для брони",
+        "description": "Место для демонстрации лучших доспехов.",
+        "level_req": 20,
+        "cost": {"iron_ingot": 20, "wood": 20, "leather": 10},
+        "effect": {
+          "defense_bonus": 5
+        }
+      },
+      "weapon_rack": {
+        "name": "⚔️ Стойка для оружия",
+        "description": "Место для хранения любимого оружия.",
+        "level_req": 20,
+        "cost": {"iron_ingot": 20, "wood": 20, "leather": 5},
+        "effect": {
+          "damage_bonus": 5
+        }
+      },
+      "magic_orb": {
+        "name": "🔮 Магическая сфера",
+        "description": "Сфера, наполненная магической энергией.",
+        "level_req": 25,
+        "cost": {"magic_crystal": 10, "gold_ingot": 10, "rainbow_shard": 1},
+        "effect": {
+          "mana_bonus": 50,
+          "mana_regen": 2
+        }
+      },
+      "crystal_ball": {
+        "name": "🔮 Хрустальный шар",
+        "description": "Позволяет заглядывать в будущее.",
+        "level_req": 30,
+        "cost": {"perfect_crystal": 5, "magic_crystal": 10, "rainbow_stone": 1},
+        "effect": {
+          "luck_bonus": 10,
+          "scrying": true
+        }
+      },
+      "dragon_trophy": {
+        "name": "🐉 Голова дракона",
+        "description": "Трофей после победы над драконом.",
+        "level_req": 30,
+        "cost": {"dragon_scale": 10, "dragon_bone": 5, "dragon_heart": 1},
+        "unique": true,
+        "effect": {
+          "all_stats": 10,
+          "fear_aura": true
+        }
+      },
+      "phoenix_feather_ornament": {
+        "name": "🪶 Перо феникса",
+        "description": "Украшение из пера феникса.",
+        "level_req": 35,
+        "cost": {"phoenix_feather": 3, "gold_ingot": 10, "rainbow_stone": 1},
+        "effect": {
+          "fire_damage": 10,
+          "health_regen": 2
+        }
+      }
+    },
+    
+    "garden": {
+      "plots": {
+        "small": {
+          "name": "🌱 Маленькая грядка",
+          "size": 1,
+          "cost": {"wood": 5, "soil": 10},
+          "crops": ["potato", "carrot", "herb"]
+        },
+        "medium": {
+          "name": "🌱 Средняя грядка",
+          "size": 2,
+          "cost": {"wood": 10, "soil": 20, "fertilizer": 2},
+          "crops": ["potato", "carrot", "cabbage", "herb", "magic_herb"]
+        },
+        "large": {
+          "name": "🌱 Большая грядка",
+          "size": 3,
+          "cost": {"wood": 20, "soil": 40, "fertilizer": 5, "magic_crystal": 1},
+          "crops": ["potato", "carrot", "cabbage", "herb", "magic_herb", "fire_flower", "ice_herb"]
+        }
+      },
+      "crops": {
+        "potato": {
+          "name": "🥔 Картофель",
+          "growth_time": 3600,
+          "yield": {"min": 2, "max": 4},
+          "seeds": "potato_seeds"
+        },
+        "carrot": {
+          "name": "🥕 Морковь",
+          "growth_time": 2700,
+          "yield": {"min": 2, "max": 5},
+          "seeds": "carrot_seeds"
+        },
+        "cabbage": {
+          "name": "🥬 Капуста",
+          "growth_time": 5400,
+          "yield": {"min": 1, "max": 3},
+          "seeds": "cabbage_seeds"
+        },
+        "herb": {
+          "name": "🌿 Трава",
+          "growth_time": 1800,
+          "yield": {"min": 1, "max": 3},
+          "seeds": "herb_seeds"
+        },
+        "magic_herb": {
+          "name": "✨ Магическая трава",
+          "growth_time": 7200,
+          "yield": {"min": 1, "max": 2},
+          "seeds": "magic_herb_seeds"
+        },
+        "fire_flower": {
+          "name": "🔥 Огненный цветок",
+          "growth_time": 14400,
+          "yield": {"min": 1, "max": 1},
+          "seeds": "fire_flower_seeds"
+        },
+        "ice_herb": {
+          "name": "❄️ Ледяная трава",
+          "growth_time": 14400,
+          "yield": {"min": 1, "max": 1},
+          "seeds": "ice_herb_seeds"
+        },
+        "swamp_herb": {
+          "name": "🌿 Болотная трава",
+          "growth_time": 10800,
+          "yield": {"min": 1, "max": 2},
+          "seeds": "swamp_herb_seeds"
+        },
+        "desert_herb": {
+          "name": "🏜️ Пустынная трава",
+          "growth_time": 10800,
+          "yield": {"min": 1, "max": 2},
+          "seeds": "desert_herb_seeds"
+        },
+        "crystal_flower": {
+          "name": "💎 Кристальный цветок",
+          "growth_time": 28800,
+          "yield": {"min": 1, "max": 1, "bonus": "crystal_shard"},
+          "seeds": "crystal_flower_seeds"
+        }
+      }
+    },
+    
+    "pets_in_house": {
+      "capacity": {
+        "1": 1,
+        "2": 2,
+        "3": 3,
+        "4": 4,
+        "5": 5
+      },
+      "bonuses": {
+        "cat": {
+          "name": "🐱 Кошка",
+          "description": "Приносит удачу и ловит мышей.",
+          "effect": {"luck_bonus": 3, "pest_control": true}
+        },
+        "dog": {
+          "name": "🐕 Собака",
+          "description": "Охраняет дом и предупреждает об опасности.",
+          "effect": {"alert": true, "friendship_bonus": 5}
+        },
+        "owl": {
+          "name": "🦉 Сова",
+          "description": "Мудрая птица, помогает в исследованиях.",
+          "effect": {"exp_bonus": 5, "wisdom": true}
+        },
+        "fox": {
+          "name": "🦊 Лиса",
+          "description": "Хитрая и ловкая, помогает находить сокровища.",
+          "effect": {"treasure_hunt": 5, "luck_bonus": 5}
+        },
+        "dragonling": {
+          "name": "🐉 Дракончик",
+          "description": "Маленький дракон, вырастет со временем.",
+          "effect": {"all_stats": 10, "fire_breath": true}
+        }
+      }
+    },
+    
+    "guest_room": {
+      "name": "🚪 Гостевая комната",
+      "description": "Комната для друзей и союзников.",
+      "level_req": 3,
+      "capacity": 1,
+      "bonus": {
+        "friendship": 10,
+        "guild_reputation": 5
+      },
+      "upgrades": {
+        "1": {"capacity": 2, "cost": {"wood": 100, "stone": 50, "gold_ingot": 5}},
+        "2": {"capacity": 3, "cost": {"wood": 200, "stone": 100, "magic_crystal": 10}}
+      }
+    },
+    
+    "special_rooms": {
+      "treasury": {
+        "name": "💰 Сокровищница",
+        "description": "Комната для хранения самых ценных сокровищ.",
+        "level_req": 4,
+        "cost": {"stone": 500, "iron_ingot": 100, "gold_ingot": 50},
+        "effect": {
+          "interest": 1,
+          "prestige": 20
+        }
+      },
+      "artifact_room": {
+        "name": "🏺 Комната артефактов",
+        "description": "Место для хранения древних артефактов.",
+        "level_req": 5,
+        "cost": {"stone": 300, "magic_crystal": 50, "rainbow_stone": 1},
+        "effect": {
+          "magic_power": 15,
+          "artifact_bonus": true
+        }
+      }
+    }
+  }
+}
