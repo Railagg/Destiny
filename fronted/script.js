@@ -6,95 +6,172 @@ tg.enableClosingConfirmation();
 // Глобальные переменные
 let currentPage = 'game';
 let playerData = null;
-let locations = [];
+let locations = {};
 let inventory = [];
+let telegramId = null;
 
 // API URL
 const API_URL = 'https://destiny-1-6m57.onrender.com';
 
-// Загрузка данных при старте
+// ============================================
+// ЗАГРУЗКА ПРИ СТАРТЕ
+// ============================================
+
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log('🚀 Destiny WebApp загружается...');
+    
+    // Получаем Telegram ID
+    telegramId = tg.initDataUnsafe?.user?.id || 999999999;
+    console.log('👤 Telegram ID:', telegramId);
+    
     showLoading();
-    await initTelegramData();
-    await loadPlayerData();
-    await loadGameData();
+    
+    // Загружаем данные параллельно
+    await Promise.all([
+        loadPlayerData(),
+        loadGameData()
+    ]);
+    
     hideLoading();
     showMainScreen();
-    loadPage('game');
+    
+    // Загружаем нужную страницу
+    const urlParams = new URLSearchParams(window.location.search);
+    const page = urlParams.get('page') || 'game';
+    loadPage(page);
 });
 
-// Инициализация данных Telegram
-async function initTelegramData() {
-    const initData = tg.initData;
-    console.log('Telegram initData:', initData);
-}
+// ============================================
+// ЗАГРУЗКА ДАННЫХ ИЗ API
+// ============================================
 
-// Загрузка данных игрока
 async function loadPlayerData() {
     try {
-        const userId = tg.initDataUnsafe?.user?.id || 999999999;
-        const response = await fetch(`${API_URL}/api/user/${userId}`);
+        const response = await fetch(`${API_URL}/api/user/${telegramId}`);
         if (response.ok) {
             playerData = await response.json();
+            console.log('✅ Данные игрока загружены:', playerData);
             updateStats();
+            
+            // Загружаем инвентарь
+            await loadInventory();
+        } else {
+            console.error('❌ Ошибка загрузки игрока:', response.status);
+            // Создаём тестовые данные
+            playerData = {
+                level: 1,
+                gold: 20,
+                destiny_tokens: 0,
+                health: 100,
+                energy: 100,
+                class: null,
+                location: 'start'
+            };
         }
     } catch (error) {
-        console.error('Error loading player data:', error);
-        showNotification('Ошибка загрузки данных', 'error');
+        console.error('❌ Ошибка сети:', error);
+        showNotification('Ошибка подключения к серверу', 'error');
     }
 }
 
-// Загрузка игровых данных
 async function loadGameData() {
     try {
         const response = await fetch(`${API_URL}/api/data`);
         if (response.ok) {
             const data = await response.json();
-            locations = data.locations?.locations || {};
-            console.log('Game data loaded:', locations);
+            locations = data.locations || {};
+            console.log('✅ Данные игры загружены, локаций:', Object.keys(locations).length);
+        } else {
+            console.error('❌ Ошибка загрузки данных игры');
         }
     } catch (error) {
-        console.error('Error loading game data:', error);
+        console.error('❌ Ошибка сети:', error);
     }
 }
 
-// Обновление статистики в топ-панели
+async function loadInventory() {
+    try {
+        const response = await fetch(`${API_URL}/api/inventory/${telegramId}`);
+        if (response.ok) {
+            const data = await response.json();
+            inventory = data.items || [];
+            console.log('✅ Инвентарь загружен, предметов:', inventory.length);
+        } else {
+            console.error('❌ Ошибка загрузки инвентаря');
+        }
+    } catch (error) {
+        console.error('❌ Ошибка сети:', error);
+    }
+}
+
+// ============================================
+// ОБНОВЛЕНИЕ ИНТЕРФЕЙСА
+// ============================================
+
 function updateStats() {
     if (!playerData) return;
     
-    document.getElementById('energy').textContent = `${playerData.energy || 100}/100`;
-    document.getElementById('health').textContent = `${playerData.health || 100}/100`;
-    document.getElementById('gold').textContent = playerData.gold || 20;
+    document.getElementById('energy').textContent = `${playerData.energy || 100}/${playerData.max_energy || 100}`;
+    document.getElementById('health').textContent = `${playerData.health || 100}/${playerData.max_health || 100}`;
+    document.getElementById('gold').textContent = playerData.gold || 0;
     document.getElementById('dstn').textContent = playerData.destiny_tokens || 0;
 }
 
-// Загрузка страницы
+// ============================================
+// НАВИГАЦИЯ ПО СТРАНИЦАМ
+// ============================================
+
 function loadPage(page) {
     currentPage = page;
     updateActiveMenu();
     
-    const gameContent = document.getElementById('gameContent');
+    let url;
+    if (page === 'game') {
+        url = 'game.html';
+    } else {
+        url = `pages/${page}.html`;
+    }
     
-    switch(page) {
-        case 'game':
-            gameContent.innerHTML = renderGamePage();
-            break;
-        case 'map':
-            gameContent.innerHTML = renderMapPage();
-            break;
-        case 'inventory':
-            loadInventoryPage();
-            break;
-        case 'profile':
-            gameContent.innerHTML = renderProfilePage();
-            break;
-        case 'shop':
-            gameContent.innerHTML = renderShopPage();
-            break;
+    // Загружаем страницу в iframe или через fetch
+    loadContent(url);
+}
+
+async function loadContent(url) {
+    const gameContent = document.getElementById('gameContent');
+    gameContent.innerHTML = '<div class="loading-text" style="text-align:center; padding:50px;">Загрузка...</div>';
+    
+    try {
+        const response = await fetch(url);
+        const html = await response.text();
+        
+        // Создаём временный DOM
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        
+        // Извлекаем только содержимое body
+        const content = temp.querySelector('.game-content')?.innerHTML || temp.innerHTML;
+        gameContent.innerHTML = content;
+        
+        // Выполняем скрипты из загруженной страницы
+        Array.from(temp.getElementsByTagName('script')).forEach(script => {
+            const newScript = document.createElement('script');
+            if (script.src) {
+                newScript.src = script.src;
+            } else {
+                newScript.textContent = script.textContent;
+            }
+            document.body.appendChild(newScript);
+        });
+        
+        // Обновляем активное меню
+        updateActiveMenu();
+        
+    } catch (error) {
+        console.error('Ошибка загрузки страницы:', error);
+        gameContent.innerHTML = '<div class="location-desc" style="text-align:center; padding:50px;">Ошибка загрузки страницы</div>';
     }
 }
 
-// Обновление активной кнопки меню
 function updateActiveMenu() {
     document.querySelectorAll('.menu-btn').forEach(btn => {
         btn.classList.remove('active');
@@ -104,272 +181,222 @@ function updateActiveMenu() {
     });
 }
 
-// Рендер игровой страницы
-function renderGamePage() {
-    const locationId = playerData?.location || 'start';
-    const location = locations[locationId] || locations['start'] || {
-        name: 'Лесная опушка',
-        description: 'Ты стоишь на опушке леса...',
-        image: '',
-        actions: []
-    };
-    
-    return `
-        <div class="location-card">
-            ${location.image ? `<img src="${location.image}" alt="${location.name}" style="width:100%; border-radius:10px; margin-bottom:10px;">` : ''}
-            <div class="location-title">${location.name}</div>
-            <div class="location-desc">${location.description}</div>
-            <div class="location-actions">
-                ${location.actions?.map(action => `
-                    <button class="action-btn" onclick="doAction('${action.type}', '${action.next || ''}')">
-                        ${action.text}
-                    </button>
-                `).join('') || ''}
-                <button class="action-btn" onclick="doAction('rest')">🛏️ Отдохнуть</button>
-            </div>
-        </div>
-        
-        <div class="stats-grid">
-            <div class="stat-block">
-                <div class="stat-label">Уровень</div>
-                <div class="stat-value-large">${playerData?.level || 1}</div>
-            </div>
-            <div class="stat-block">
-                <div class="stat-label">Класс</div>
-                <div class="stat-value-large">${playerData?.class || '—'}</div>
-            </div>
-            <div class="stat-block">
-                <div class="stat-label">Урон</div>
-                <div class="stat-value-large">${playerData?.damage || 4}</div>
-            </div>
-            <div class="stat-block">
-                <div class="stat-label">Защита</div>
-                <div class="stat-value-large">${playerData?.defense || 0}</div>
-            </div>
-        </div>
-    `;
-}
+// ============================================
+// ДЕЙСТВИЯ В ИГРЕ
+// ============================================
 
-// Рендер карты мира
-function renderMapPage() {
-    return `
-        <div class="map-container">
-            <img src="https://i.ibb.co/..." alt="World Map" class="map-image">
-            <div class="map-marker" style="top:30%; left:50%;" onclick="showLocationInfo('start')"></div>
-            <div class="map-marker" style="top:45%; left:40%;" onclick="showLocationInfo('village')"></div>
-            <div class="map-marker" style="top:60%; left:30%;" onclick="showLocationInfo('deep_forest')"></div>
-        </div>
+async function doAction(type, next) {
+    if (type === 'move' && next) {
+        // Перемещение в другую локацию
+        showNotification(`🚶 Переход...`);
         
-        <div class="locations-list">
-            <h3 style="color:#e94560; margin-bottom:10px;">Доступные локации</h3>
-            <div class="location-item" onclick="goToLocation('start')">
-                <span class="location-icon">🌲</span>
-                <div class="location-info">
-                    <div class="location-name">Лесная опушка</div>
-                    <div class="location-level">Ур. 1</div>
-                </div>
-                <span class="location-status">Доступно</span>
-            </div>
-            <div class="location-item" onclick="goToLocation('village')">
-                <span class="location-icon">🏘️</span>
-                <div class="location-info">
-                    <div class="location-name">Деревенская площадь</div>
-                    <div class="location-level">Ур. 1</div>
-                </div>
-                <span class="location-status">Доступно</span>
-            </div>
-            <div class="location-item" onclick="goToLocation('deep_forest')">
-                <span class="location-icon">🌳</span>
-                <div class="location-info">
-                    <div class="location-name">Глухой лес</div>
-                    <div class="location-level">Ур. 2</div>
-                </div>
-                <span class="location-status">Доступно</span>
-            </div>
-            <div class="location-item" onclick="goToLocation('desert')">
-                <span class="location-icon">🏜️</span>
-                <div class="location-info">
-                    <div class="location-name">Пустыня забвения</div>
-                    <div class="location-level">Ур. 30</div>
-                </div>
-                <span class="location-status locked">Закрыто</span>
-            </div>
-        </div>
-    `;
-}
-
-// Загрузка инвентаря
-async function loadInventoryPage() {
-    const gameContent = document.getElementById('gameContent');
-    gameContent.innerHTML = '<div class="loading-text">Загрузка инвентаря...</div>';
-    
-    try {
-        const userId = tg.initDataUnsafe?.user?.id || 999999999;
-        const response = await fetch(`${API_URL}/api/inventory/${userId}`);
-        
-        if (response.ok) {
-            const data = await response.json();
-            inventory = data.items || [];
-            renderInventoryPage();
-        } else {
-            gameContent.innerHTML = '<div class="location-desc">Ошибка загрузки инвентаря</div>';
+        try {
+            const response = await fetch(`${API_URL}/api/action`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    telegram_id: telegramId,
+                    type: 'move',
+                    location: next
+                })
+            });
+            
+            if (response.ok) {
+                playerData.location = next;
+                showNotification('✅ Перемещение выполнено');
+                loadPage('game');
+            } else {
+                showNotification('❌ Ошибка перемещения', 'error');
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            showNotification('❌ Ошибка сети', 'error');
         }
-    } catch (error) {
-        console.error('Error loading inventory:', error);
-        gameContent.innerHTML = '<div class="location-desc">Ошибка загрузки инвентаря</div>';
-    }
-}
-
-// Рендер инвентаря
-function renderInventoryPage() {
-    const gameContent = document.getElementById('gameContent');
-    
-    let html = '<div class="inventory-grid">';
-    
-    for (let i = 0; i < 15; i++) {
-        const item = inventory[i];
-        if (item) {
-            html += `
-                <div class="inventory-slot" onclick="useItem('${item.id}')">
-                    <span class="item-icon">${item.icon || '📦'}</span>
-                    <span class="item-name">${item.name}</span>
-                    <span class="item-count">${item.count || 1}</span>
-                </div>
-            `;
-        } else {
-            html += `
-                <div class="inventory-slot empty">
-                    <span class="item-icon">❓</span>
-                </div>
-            `;
-        }
-    }
-    
-    html += '</div>';
-    
-    if (inventory.length === 0) {
-        html += '<div class="location-desc" style="text-align:center;">Инвентарь пуст</div>';
-    }
-    
-    gameContent.innerHTML = html;
-}
-
-// Рендер профиля
-function renderProfilePage() {
-    return `
-        <div class="profile-header">
-            <div class="profile-avatar">
-                ${playerData?.first_name?.charAt(0) || '?'}
-            </div>
-            <div class="profile-name">${playerData?.first_name || 'Игрок'}</div>
-            <div class="profile-class">${playerData?.class || 'Без класса'}</div>
-            <div class="profile-level">Уровень ${playerData?.level || 1}</div>
-        </div>
         
-        <div class="stats-grid">
-            <div class="stat-block">
-                <div class="stat-label">Сила</div>
-                <div class="stat-value-large">${playerData?.strength || 1}</div>
-            </div>
-            <div class="stat-block">
-                <div class="stat-label">Ловкость</div>
-                <div class="stat-value-large">${playerData?.dexterity || 1}</div>
-            </div>
-            <div class="stat-block">
-                <div class="stat-label">Интеллект</div>
-                <div class="stat-value-large">${playerData?.intelligence || 1}</div>
-            </div>
-            <div class="stat-block">
-                <div class="stat-label">Живучесть</div>
-                <div class="stat-value-large">${playerData?.vitality || 1}</div>
-            </div>
-        </div>
-        
-        <div class="location-card">
-            <div class="location-title">📊 Достижения</div>
-            <div class="location-desc">Всего: ${playerData?.achievements || 0}</div>
-            <div class="location-desc">Убито мобов: ${playerData?.kills || 0}</div>
-            <div class="location-desc">Скрафчено: ${playerData?.crafted || 0}</div>
-        </div>
-    `;
-}
-
-// Рендер магазина
-function renderShopPage() {
-    return `
-        <div class="shop-grid">
-            <div class="shop-item" onclick="buyItem('health_potion')">
-                <span class="shop-item-icon">🧪</span>
-                <span class="shop-item-name">Зелье здоровья</span>
-                <div class="shop-item-price">💰 <span>50</span></div>
-            </div>
-            <div class="shop-item" onclick="buyItem('mana_potion')">
-                <span class="shop-item-icon">🔮</span>
-                <span class="shop-item-name">Зелье маны</span>
-                <div class="shop-item-price">💰 <span>50</span></div>
-            </div>
-            <div class="shop-item" onclick="buyItem('iron_sword')">
-                <span class="shop-item-icon">⚔️</span>
-                <span class="shop-item-name">Железный меч</span>
-                <div class="shop-item-price">💰 <span>500</span></div>
-            </div>
-            <div class="shop-item" onclick="buyItem('leather_armor')">
-                <span class="shop-item-icon">🛡️</span>
-                <span class="shop-item-name">Кожаная броня</span>
-                <div class="shop-item-price">💰 <span>300</span></div>
-            </div>
-        </div>
-        
-        <div class="shop-grid" style="margin-top:20px;">
-            <div class="shop-item" onclick="buyPremium('chest')">
-                <span class="shop-item-icon">🎁</span>
-                <span class="shop-item-name">Легендарный сундук</span>
-                <div class="shop-item-price">🪙 <span>500</span></div>
-            </div>
-            <div class="shop-item" onclick="buyPremium('rainbow')">
-                <span class="shop-item-icon">🌈</span>
-                <span class="shop-item-name">Радужный осколок</span>
-                <div class="shop-item-price">⭐ <span>100</span></div>
-            </div>
-        </div>
-    `;
-}
-
-// Действия
-function doAction(type, next) {
-    if (type === 'rest') {
-        showNotification('Ты отдохнул! +10 энергии');
+    } else if (type === 'rest') {
+        // Отдых
+        showNotification(`🛏️ Отдых... +10 энергии`);
+        playerData.energy = Math.min(playerData.energy + 10, playerData.max_energy || 100);
         updateStats();
-    } else if (type === 'move') {
-        showNotification('Переход...');
-        // Здесь логика перемещения
+        
     } else {
-        showNotification(`Действие: ${type}`);
+        showNotification(`⏳ Действие в разработке`);
     }
 }
 
 function goToLocation(locationId) {
-    showNotification(`Переход в ${locationId}...`);
-    loadPage('game');
+    window.location.href = `/?page=game&location=${locationId}`;
 }
 
 function showLocationInfo(locationId) {
-    showNotification(`Локация: ${locationId}`);
+    const location = locations[locationId];
+    if (location) {
+        showNotification(`📍 ${location.name || locationId}`);
+    }
 }
 
-function useItem(itemId) {
-    showNotification(`Использован предмет: ${itemId}`);
+// ============================================
+// ИНВЕНТАРЬ
+// ============================================
+
+async function useItem(itemId) {
+    showNotification(`🔄 Использование...`);
+    
+    try {
+        const response = await fetch(`${API_URL}/api/use_item`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                telegram_id: telegramId,
+                item_id: itemId
+            })
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            showNotification(`✅ ${result.message || 'Предмет использован'}`);
+            await loadInventory();
+            loadPage('inventory');
+        } else {
+            showNotification('❌ Нельзя использовать', 'error');
+        }
+    } catch (error) {
+        console.error('Ошибка:', error);
+        showNotification('❌ Ошибка сети', 'error');
+    }
 }
 
-function buyItem(itemId) {
-    showNotification(`Покупка: ${itemId}`);
+async function equipItem(itemId) {
+    showNotification(`⚔️ Экипировка...`);
+    
+    try {
+        const response = await fetch(`${API_URL}/api/equip`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                telegram_id: telegramId,
+                item_id: itemId
+            })
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            showNotification(`✅ ${result.message || 'Предмет надет'}`);
+            await loadInventory();
+            await loadPlayerData();
+            loadPage('inventory');
+        } else {
+            showNotification('❌ Нельзя надеть', 'error');
+        }
+    } catch (error) {
+        console.error('Ошибка:', error);
+        showNotification('❌ Ошибка сети', 'error');
+    }
 }
 
-function buyPremium(type) {
-    showNotification(`Премиум покупка: ${type}`);
+async function sellItem(itemId) {
+    showNotification(`💰 Продажа...`);
+    
+    try {
+        const response = await fetch(`${API_URL}/api/sell`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                telegram_id: telegramId,
+                item_id: itemId
+            })
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            showNotification(`✅ Продано за ${result.gold}💰`);
+            await loadInventory();
+            await loadPlayerData();
+            loadPage('inventory');
+        } else {
+            showNotification('❌ Нельзя продать', 'error');
+        }
+    } catch (error) {
+        console.error('Ошибка:', error);
+        showNotification('❌ Ошибка сети', 'error');
+    }
 }
 
-// Управление загрузкой
+// ============================================
+// МАГАЗИН
+// ============================================
+
+async function buyItem(itemId) {
+    showNotification(`🛒 Покупка...`);
+    
+    try {
+        const response = await fetch(`${API_URL}/api/buy`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                telegram_id: telegramId,
+                item_id: itemId
+            })
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            showNotification(`✅ Куплено за ${result.price}💰`);
+            await loadInventory();
+            await loadPlayerData();
+        } else {
+            const error = await response.json();
+            showNotification(`❌ ${error.detail || 'Ошибка покупки'}`, 'error');
+        }
+    } catch (error) {
+        console.error('Ошибка:', error);
+        showNotification('❌ Ошибка сети', 'error');
+    }
+}
+
+async function buyPremium(itemId) {
+    showNotification(`👑 Премиум покупка...`);
+    
+    try {
+        const response = await fetch(`${API_URL}/api/premium/buy`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                telegram_id: telegramId,
+                item_id: itemId
+            })
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            showNotification(`✅ Куплено!`);
+            await loadPlayerData();
+        } else {
+            const error = await response.json();
+            showNotification(`❌ ${error.detail || 'Ошибка'}`, 'error');
+        }
+    } catch (error) {
+        console.error('Ошибка:', error);
+        showNotification('❌ Ошибка сети', 'error');
+    }
+}
+
+// ============================================
+// УПРАВЛЕНИЕ ЗАГРУЗКОЙ
+// ============================================
+
 function showLoading() {
     document.getElementById('loading').classList.remove('hidden');
     document.getElementById('mainScreen').classList.add('hidden');
@@ -383,10 +410,16 @@ function showMainScreen() {
     document.getElementById('mainScreen').classList.remove('hidden');
 }
 
-// Уведомления
+// ============================================
+// УВЕДОМЛЕНИЯ
+// ============================================
+
 function showNotification(message, type = 'info') {
+    // Удаляем старые уведомления
+    document.querySelectorAll('.notification').forEach(n => n.remove());
+    
     const notif = document.createElement('div');
-    notif.className = 'notification show';
+    notif.className = `notification show ${type}`;
     notif.textContent = message;
     document.body.appendChild(notif);
     
@@ -396,9 +429,13 @@ function showNotification(message, type = 'info') {
     }, 2000);
 }
 
-// Обработчики меню
-document.querySelectorAll('.menu-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+// ============================================
+// ОБРАБОТЧИКИ МЕНЮ
+// ============================================
+
+document.addEventListener('click', (e) => {
+    if (e.target.closest('.menu-btn')) {
+        const btn = e.target.closest('.menu-btn');
         loadPage(btn.dataset.page);
-    });
+    }
 });
