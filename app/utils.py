@@ -1,11 +1,9 @@
 import json
 from pathlib import Path
 
-# Путь к папке data (на уровень выше)
 DATA_DIR = Path(__file__).parent.parent / "data"
 
 def load_json(filename):
-    """Загрузить JSON файл из папки data"""
     filepath = DATA_DIR / filename
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
@@ -16,7 +14,6 @@ def load_json(filename):
         print(f"❌ Ошибка загрузки {filename}: {e}")
         return {}
 
-# Загружаем все JSON файлы
 print("🚀 Загрузка JSON файлов...")
 
 locations_data = load_json("locations.json")
@@ -38,7 +35,6 @@ secrets_data = load_json("secrets.json")
 print("✅ Все JSON загружены")
 
 def get_all_data():
-    """Вернуть все данные"""
     return {
         "locations": locations_data,
         "enemies": enemies_data,
