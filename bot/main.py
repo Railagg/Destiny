@@ -55,11 +55,11 @@ except Exception as e:
     exit(1)
 
 # ============================================
-# ПУТЬ К JSON - ИСПРАВЛЕНО
+# ПУТЬ К JSON - ФИНАЛЬНЫЙ (ИСПРАВЛЕННЫЙ)
 # ============================================
 
-current_dir = Path(__file__).parent          # /opt/render/project/src/bot
-data_dir = current_dir.parent / "data"       # /opt/render/project/src/data
+current_dir = Path(__file__).parent          # /bot
+data_dir = current_dir / "data"               # /bot/data
 
 logging.info(f"📁 Текущая папка бота: {current_dir}")
 logging.info(f"📁 Папка с данными: {data_dir}")
@@ -67,11 +67,14 @@ logging.info(f"📁 Папка с данными: {data_dir}")
 # Проверяем существование папки
 if data_dir.exists():
     logging.info(f"✅ Папка data найдена в {data_dir}")
+    # Показываем список JSON файлов
+    json_files = list(data_dir.glob("*.json"))
+    logging.info(f"📄 Найдено JSON файлов: {len(json_files)}")
+    for f in json_files[:5]:
+        logging.info(f"   - {f.name}")
 else:
     logging.error(f"❌ Папка data НЕ НАЙДЕНА в {data_dir}")
-    logging.info("📁 Содержимое родительской папки:")
-    for item in current_dir.parent.iterdir():
-        logging.info(f"   - {item.name}")
+    logging.info("📁 Создаём папку /bot/data")
     data_dir.mkdir(parents=True, exist_ok=True)
     logging.info(f"✅ Папка data создана в {data_dir}")
 
@@ -178,12 +181,26 @@ def items_command(message):
     else:
         bot.send_message(message.chat.id, "❌ Предметы не загружены")
 
+@bot.message_handler(commands=['pets'])
+def pets_command(message):
+    if pets_data and pets_data.get("pets"):
+        pets = list(pets_data["pets"].items())[:10]
+        text = "🐾 *Питомцы:*\n\n"
+        for pet_id, pet in pets:
+            name = pet.get('name', pet_id)
+            rarity = pet.get('rarity', 'обычный')
+            text += f"• {name} ({rarity})\n"
+        bot.send_message(message.chat.id, text, parse_mode='Markdown')
+    else:
+        bot.send_message(message.chat.id, "❌ Питомцы не загружены")
+
 @bot.message_handler(commands=['help'])
 def help_command(message):
     text = "❓ *Доступные команды:*\n\n"
     text += "/start - информация о боте\n"
     text += "/location - первая локация\n"
     text += "/items - список предметов\n"
+    text += "/pets - список питомцев\n"
     text += "/help - это меню"
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
