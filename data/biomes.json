@@ -1,1 +1,722 @@
-
+{
+  "biomes": {
+    "desert": {
+      "id": "desert",
+      "name": "🏜️ ПУСТЫНЯ ЗАБВЕНИЯ",
+      "description": "Бескрайние пески, где ветер завывает над древними руинами. Солнце нещадно палит днём, а ночью становится ледяной холод. Здесь водятся смертоносные скорпионы и песчаные черви. Вдали виднеется храм, охраняемый песчаным драконом.",
+      "image": "desert.jpg",
+      "image_night": "desert_night.jpg",
+      "level_req": 30,
+      "danger_level": 7,
+      "temperature": "🔥 Очень жарко (днём) / ❄️ Холодно (ночью)",
+      "size": "огромный",
+      "resources": {
+        "common": [
+          {"item": "sand", "amount": "много"},
+          {"item": "cactus", "amount": "средне"},
+          {"item": "desert_herb", "amount": "мало"}
+        ],
+        "rare": [
+          {"item": "scorpion_tail", "amount": "редко"},
+          {"item": "gold_ore", "amount": "редко"}
+        ],
+        "epic": [
+          {"item": "desert_crystal", "amount": "очень редко"},
+          {"item": "ancient_coin", "amount": "редко"}
+        ],
+        "legendary": [
+          {"item": "sand_heart", "amount": "только с босса"},
+          {"item": "gold_scale", "amount": "только с босса"}
+        ]
+      },
+      "mobs": [
+        {
+          "id": "scorpion",
+          "name": "🦂 Пустынный скорпион",
+          "level": 12,
+          "health": 120,
+          "damage": 15,
+          "exp": 100,
+          "gold": 25,
+          "spawn_chance": 40,
+          "time": "любое"
+        },
+        {
+          "id": "scorpion_queen",
+          "name": "🦂👑 Королева скорпионов",
+          "level": 16,
+          "health": 250,
+          "damage": 20,
+          "exp": 200,
+          "gold": 50,
+          "spawn_chance": 5,
+          "time": "ночь",
+          "rare": true
+        },
+        {
+          "id": "sand_worm",
+          "name": "🪱 Песчаный червь",
+          "level": 15,
+          "health": 200,
+          "damage": 18,
+          "exp": 150,
+          "gold": 40,
+          "spawn_chance": 30,
+          "time": "любое"
+        },
+        {
+          "id": "mirage",
+          "name": "🌀 Мираж",
+          "level": 10,
+          "health": 1,
+          "damage": 0,
+          "exp": 50,
+          "gold": 0,
+          "spawn_chance": 10,
+          "time": "день",
+          "special": "иллюзия, исчезает при атаке"
+        },
+        {
+          "id": "desert_nomad",
+          "name": "🏜️ Пустынный кочевник",
+          "level": 14,
+          "health": 150,
+          "damage": 12,
+          "exp": 120,
+          "gold": 60,
+          "spawn_chance": 15,
+          "time": "день",
+          "neutral": true,
+          "trade": true
+        }
+      ],
+      "bosses": [
+        {
+          "id": "sand_dragon",
+          "name": "🐉 Песчаный дракон",
+          "level": 20,
+          "health": 600,
+          "damage": 35,
+          "exp": 500,
+          "gold": 300,
+          "spawn_location": "desert_pyramid",
+          "respawn_time": 86400,
+          "phases": 3,
+          "drops": [
+            {"item": "sand_heart", "chance": 100},
+            {"item": "gold_scale", "chance": 80, "min": 2, "max": 4},
+            {"item": "desert_rose", "chance": 50},
+            {"item": "sand_essence", "chance": 40},
+            {"item": "rainbow_shard", "chance": 20}
+          ]
+        }
+      ],
+      "locations": {
+        "entrance": {
+          "name": "🏜️ Вход в пустыню",
+          "description": "Край пустыни, где песок встречается с каменистой равниной. Здесь ещё можно найти воду и тень.",
+          "safe_zone": true
+        },
+        "dunes": {
+          "name": "⛰️ Барханы",
+          "description": "Огромные песчаные дюны, постоянно меняющие форму. Легко заблудиться.",
+          "random_events": true
+        },
+        "oasis": {
+          "name": "🏝️ Оазис",
+          "description": "Зелёный уголок посреди пустыни с пальмами и пресной водой. Местные торговцы останавливаются здесь.",
+          "safe_zone": true,
+          "rest_spot": true,
+          "shop": true
+        },
+        "canyon": {
+          "name": "🏜️ Песчаный каньон",
+          "description": "Глубокий каньон, вырезанный ветром в скалах. Здесь прячутся скорпионы и змеи.",
+          "hidden_entrance": true
+        },
+        "pyramid": {
+          "name": "🔺 Древняя пирамида",
+          "description": "Огромная пирамида, скрывающая вход в подземный храм. Здесь обитает песчаный дракон.",
+          "boss_location": true,
+          "treasure": true
+        },
+        "ruins": {
+          "name": "🏛️ Затерянный храм",
+          "description": "Развалины древнего храма, занесённые песком. Внутри можно найти ценные артефакты.",
+          "dungeon": true,
+          "level_req": 35
+        }
+      },
+      "weather": {
+        "sunny": {"chance": 60, "effect": "нормально"},
+        "sandstorm": {"chance": 20, "effect": "видимость снижена, -20% точности"},
+        "clear_night": {"chance": 15, "effect": "холодно, +10% к удаче"},
+        "heatwave": {"chance": 5, "effect": "экстремальная жара, тратится вдвое больше воды"}
+      },
+      "survival": {
+        "water_consumption": 2,
+        "heat_resist_needed": true,
+        "cold_resist_needed": false,
+        "special_items": ["water_flask", "desert_cloak"]
+      },
+      "events": {
+        "sandstorm": {
+          "name": "🌪️ Песчаная буря",
+          "description": "Поднялся сильный ветер, песок застилает глаза.",
+          "effects": {"accuracy": -20, "dodge": -10},
+          "duration": "30-60 мин"
+        },
+        "mirage_oasis": {
+          "name": "🏝️ Мираж",
+          "description": "Вдалеке виднеется оазис... или это обман?",
+          "effect": "можно найти или попасть в ловушку"
+        },
+        "nomad_caravan": {
+          "name": "🐫 Караван кочевников",
+          "description": "Торговый караван пересекает пустыню. Можно купить редкие товары.",
+          "effect": "торговля"
+        }
+      },
+      "lore": "Древние легенды гласят, что в центре пустыни покоятся сокровища погибшей цивилизации. Многие искатели приключений отправлялись на их поиски, но немногие вернулись. Говорят, песчаный дракон охраняет вход в сокровищницу уже тысячи лет."
+    },
+    
+    "swamp": {
+      "id": "swamp",
+      "name": "🌿 БОЛОТО ТУМАНОВ",
+      "description": "Зловонное болото, окутанное густым туманом. Гнилые деревья тянутся к небу, а из тёмной воды доносятся странные звуки. Здесь водятся зомби, болотные ведьмы и другие тёмные создания. Туман скрывает множество опасностей.",
+      "image": "swamp.jpg",
+      "image_night": "swamp_night.jpg",
+      "level_req": 35,
+      "danger_level": 8,
+      "temperature": "🌡️ Тёплый, влажный",
+      "size": "большой",
+      "resources": {
+        "common": [
+          {"item": "swamp_herb", "amount": "много"},
+          {"item": "mushroom", "amount": "средне"},
+          {"item": "wood", "amount": "средне"}
+        ],
+        "rare": [
+          {"item": "frog_legs", "amount": "редко"},
+          {"item": "snake_skin", "amount": "редко"}
+        ],
+        "epic": [
+          {"item": "witch_brew", "amount": "редко"},
+          {"item": "glowing_mushroom", "amount": "очень редко"}
+        ],
+        "legendary": [
+          {"item": "swamp_heart", "amount": "только с босса"},
+          {"item": "poison_gland", "amount": "только с босса"}
+        ]
+      },
+      "mobs": [
+        {
+          "id": "zombie",
+          "name": "🧟 Болотный зомби",
+          "level": 8,
+          "health": 80,
+          "damage": 8,
+          "exp": 60,
+          "gold": 10,
+          "spawn_chance": 50,
+          "time": "ночь"
+        },
+        {
+          "id": "giant_frog",
+          "name": "🐸 Гигантская жаба",
+          "level": 10,
+          "health": 100,
+          "damage": 10,
+          "exp": 70,
+          "gold": 15,
+          "spawn_chance": 30,
+          "time": "любое"
+        },
+        {
+          "id": "snake",
+          "name": "🐍 Болотная змея",
+          "level": 9,
+          "health": 60,
+          "damage": 12,
+          "exp": 65,
+          "gold": 12,
+          "spawn_chance": 25,
+          "time": "день"
+        },
+        {
+          "id": "witch",
+          "name": "🧙 Болотная ведьма",
+          "level": 12,
+          "health": 70,
+          "damage": 15,
+          "exp": 100,
+          "gold": 30,
+          "spawn_chance": 15,
+          "time": "ночь",
+          "magic": true
+        },
+        {
+          "id": "will_o_wisp",
+          "name": "✨ Блуждающий огонёк",
+          "level": 5,
+          "health": 30,
+          "damage": 5,
+          "exp": 40,
+          "gold": 5,
+          "spawn_chance": 10,
+          "time": "ночь",
+          "special": "заманивает в трясину"
+        }
+      ],
+      "bosses": [
+        {
+          "id": "swamp_monster",
+          "name": "👹 Болотный монстр",
+          "level": 18,
+          "health": 500,
+          "damage": 30,
+          "exp": 400,
+          "gold": 200,
+          "spawn_location": "swamp_depths",
+          "respawn_time": 86400,
+          "phases": 3,
+          "drops": [
+            {"item": "swamp_heart", "chance": 100},
+            {"item": "monster_eye", "chance": 80},
+            {"item": "swamp_essence", "chance": 60},
+            {"item": "poison_gland", "chance": 40},
+            {"item": "rainbow_shard", "chance": 15}
+          ]
+        }
+      ],
+      "locations": {
+        "entrance": {
+          "name": "🌿 Край болота",
+          "description": "Сухая земля постепенно сменяется топью. Здесь ещё можно идти без опаски.",
+          "safe_zone": true
+        },
+        "marsh": {
+          "name": "💧 Топь",
+          "description": "Зыбкая почва, нужно быть осторожным, чтобы не провалиться.",
+          "dangerous": true
+        },
+        "witch_hut": {
+          "name": "🏚️ Хижина ведьмы",
+          "description": "Стоящая на курьих ножках избушка. Внутри пахнет зельями и травами.",
+          "safe_zone": true,
+          "shop": true,
+          "quest": true
+        },
+        "swamp_depths": {
+          "name": "🌊 Глубины болота",
+          "description": "Самое опасное место, где обитает болотный монстр.",
+          "boss_location": true,
+          "treasure": true
+        },
+        "sunken_temple": {
+          "name": "🏛️ Затонувший храм",
+          "description": "Древний храм, наполовину ушедший под воду. Внутри могут быть сокровища.",
+          "dungeon": true,
+          "level_req": 38
+        }
+      },
+      "weather": {
+        "foggy": {"chance": 50, "effect": "туман, -30% видимости"},
+        "rain": {"chance": 30, "effect": "дождь, +10% к росту растений"},
+        "clear": {"chance": 15, "effect": "ясно, видимость нормальная"},
+        "thunderstorm": {"chance": 5, "effect": "гроза, молнии могут ударить"}
+      },
+      "survival": {
+        "water_consumption": 0,
+        "poison_resist_needed": true,
+        "special_items": ["antidote", "swamp_boots"]
+      },
+      "events": {
+        "will_o_wisp": {
+          "name": "✨ Блуждающие огоньки",
+          "description": "Огоньки заманивают путников в трясину.",
+          "effect": "можно последовать (опасно) или игнорировать"
+        },
+        "witch_cauldron": {
+          "name": "🧙 Котёл ведьмы",
+          "description": "Ведьма варит зелье и может поделиться им... за плату.",
+          "effect": "торговля зельями"
+        }
+      },
+      "lore": "Местные жители обходят это болото стороной. Говорят, здесь обитает древнее зло, которое просыпается в полнолуние. Ведьма, живущая на болоте, знает все его тайны, но не спешит ими делиться."
+    },
+    
+    "ice": {
+      "id": "ice",
+      "name": "❄️ ЛЕДЯНЫЕ РАВНИНЫ",
+      "description": "Бескрайние снежные просторы, где ветер пронизывает до костей. В небе танцует северное сияние, а из-под снега выглядывают древние статуи. Здесь обитают снежные волки, белые медведи и ледяные духи. Говорят, в глубине ледяной пещеры спит великан.",
+      "image": "ice_plains.jpg",
+      "image_night": "ice_plains_night.jpg",
+      "level_req": 40,
+      "danger_level": 9,
+      "temperature": "❄️❄️❄️ Экстремальный холод",
+      "size": "огромный",
+      "resources": {
+        "common": [
+          {"item": "ice", "amount": "много"},
+          {"item": "snow", "amount": "много"},
+          {"item": "ice_fur", "amount": "мало"}
+        ],
+        "rare": [
+          {"item": "ice_crystal", "amount": "редко"},
+          {"item": "ice_herb", "amount": "редко"}
+        ],
+        "epic": [
+          {"item": "ice_heart", "amount": "очень редко"},
+          {"item": "frost_essence", "amount": "редко"}
+        ],
+        "legendary": [
+          {"item": "ice_giant_heart", "amount": "только с босса"},
+          {"item": "eternal_ice", "amount": "только с босса"}
+        ]
+      },
+      "mobs": [
+        {
+          "id": "ice_wolf",
+          "name": "❄️ Снежный волк",
+          "level": 22,
+          "health": 220,
+          "damage": 24,
+          "exp": 220,
+          "gold": 55,
+          "spawn_chance": 40,
+          "time": "любое"
+        },
+        {
+          "id": "ice_wolf_alpha",
+          "name": "❄️👑 Вожак снежных волков",
+          "level": 26,
+          "health": 350,
+          "damage": 30,
+          "exp": 350,
+          "gold": 80,
+          "spawn_chance": 5,
+          "time": "ночь",
+          "rare": true
+        },
+        {
+          "id": "white_bear",
+          "name": "🐻❄️ Белый медведь",
+          "level": 25,
+          "health": 350,
+          "damage": 32,
+          "exp": 300,
+          "gold": 80,
+          "spawn_chance": 30,
+          "time": "день"
+        },
+        {
+          "id": "ice_spirit",
+          "name": "👻 Ледяной дух",
+          "level": 15,
+          "health": 100,
+          "damage": 20,
+          "exp": 150,
+          "gold": 35,
+          "spawn_chance": 25,
+          "time": "ночь",
+          "ethereal": true
+        },
+        {
+          "id": "penguin",
+          "name": "🐧 Пингвин",
+          "level": 5,
+          "health": 40,
+          "damage": 2,
+          "exp": 20,
+          "gold": 5,
+          "spawn_chance": 15,
+          "time": "любое",
+          "neutral": true
+        },
+        {
+          "id": "walrus",
+          "name": "🦭 Морж",
+          "level": 18,
+          "health": 200,
+          "damage": 15,
+          "exp": 150,
+          "gold": 40,
+          "spawn_chance": 10,
+          "time": "день",
+          "neutral": true
+        }
+      ],
+      "bosses": [
+        {
+          "id": "ice_giant",
+          "name": "🧊 Ледяной гигант",
+          "level": 28,
+          "health": 800,
+          "damage": 45,
+          "exp": 600,
+          "gold": 300,
+          "spawn_location": "ice_cave",
+          "respawn_time": 86400,
+          "phases": 3,
+          "drops": [
+            {"item": "ice_giant_heart", "chance": 100},
+            {"item": "ice_crystal", "chance": 100, "min": 3, "max": 5},
+            {"item": "ice_essence", "chance": 80},
+            {"item": "ice_armor", "chance": 40},
+            {"item": "rainbow_shard", "chance": 20}
+          ]
+        }
+      ],
+      "locations": {
+        "entrance": {
+          "name": "❄️ Край равнин",
+          "description": "Здесь снежная пустыня встречается с редкими заснеженными деревьями.",
+          "safe_zone": true
+        },
+        "frozen_lake": {
+          "name": "⛸️ Замёрзшее озеро",
+          "description": "Огромное озеро, покрытое толстым льдом. Под ним видно что-то блестящее.",
+          "treasure": true,
+          "dangerous": true
+        },
+        "ice_cave": {
+          "name": "🧊 Ледяная пещера",
+          "description": "Пещера из вечного льда, светящаяся голубым светом. Здесь спит ледяной гигант.",
+          "boss_location": true,
+          "dungeon": true
+        },
+        "northern_lights_peak": {
+          "name": "✨ Пик северного сияния",
+          "description": "Самое высокое место, где можно наблюдать завораживающее северное сияние.",
+          "scenic": true,
+          "magic": true
+        },
+        "frozen_ruins": {
+          "name": "🏛️ Замёрзшие руины",
+          "description": "Древние руины, вмёрзшие в лёд. Внутри могут быть ценные артефакты.",
+          "dungeon": true,
+          "level_req": 43
+        },
+        "hot_spring": {
+          "name": "♨️ Горячий источник",
+          "description": "Чудо посреди ледяной пустыни — незамерзающий горячий источник.",
+          "safe_zone": true,
+          "rest_spot": true,
+          "buff": "тепло на 1 час"
+        }
+      },
+      "weather": {
+        "clear": {"chance": 30, "effect": "ясно, видно далеко"},
+        "snowfall": {"chance": 40, "effect": "снегопад, -10% видимости"},
+        "blizzard": {"chance": 15, "effect": "метель, -50% видимости, опасно"},
+        "aurora": {"chance": 15, "effect": "северное сияние, +20% к магии"}
+      },
+      "survival": {
+        "cold_resist_needed": true,
+        "cold_resist_min": 50,
+        "special_items": ["winter_cloak", "hot_tea", "ice_pick"]
+      },
+      "events": {
+        "aurora_night": {
+          "name": "✨ Ночь северного сияния",
+          "description": "Небо переливается всеми цветами. Магия сегодня особенно сильна.",
+          "effect": "+30% к магическому урону, +20% к удаче"
+        },
+        "cracked_ice": {
+          "name": "🧊 Треснувший лёд",
+          "description": "Под ногами проваливается лёд, открывая доступ к подлёдной пещере.",
+          "effect": "можно найти скрытую локацию"
+        }
+      },
+      "lore": "Древние легенды гласят, что ледяные равнины образовались после падения ледяного метеорита тысячи лет назад. В центре равнин спит ледяной гигант, и если его разбудить, он уничтожит всё вокруг. Северное сияние — это отголоски древней магии, запертой во льдах."
+    },
+    
+    "volcanic": {
+      "id": "volcanic",
+      "name": "🌋 ВУЛКАНИЧЕСКИЕ ЗЕМЛИ",
+      "description": "Раскалённая земля, где из трещин бьют гейзеры, а воздух наполнен серой и пеплом. Лавовые реки текут по склонам вулкана. Здесь обитают огненные элементали и лавовые големы. В самом сердце вулкана, по слухам, находится врата в другой мир.",
+      "image": "volcanic.jpg",
+      "image_night": "volcanic_night.jpg",
+      "level_req": 45,
+      "danger_level": 10,
+      "temperature": "🔥🔥🔥 Экстремальная жара",
+      "size": "средний",
+      "resources": {
+        "common": [
+          {"item": "obsidian", "amount": "много"},
+          {"item": "sulfur", "amount": "много"},
+          {"item": "volcanic_ash", "amount": "много"}
+        ],
+        "rare": [
+          {"item": "fire_gem", "amount": "редко"},
+          {"item": "lava_core", "amount": "редко"}
+        ],
+        "epic": [
+          {"item": "elemental_core", "amount": "редко"},
+          {"item": "ruby", "amount": "редко"}
+        ],
+        "legendary": [
+          {"item": "volcano_heart", "amount": "только с босса"},
+          {"item": "phoenix_feather", "amount": "только с босса"}
+        ]
+      },
+      "mobs": [
+        {
+          "id": "fire_elemental",
+          "name": "🔥 Огненный элементаль",
+          "level": 15,
+          "health": 300,
+          "damage": 25,
+          "exp": 300,
+          "gold": 150,
+          "spawn_chance": 35,
+          "time": "любое"
+        },
+        {
+          "id": "lava_golem",
+          "name": "🌋 Лавовый голем",
+          "level": 18,
+          "health": 350,
+          "damage": 30,
+          "exp": 300,
+          "gold": 150,
+          "spawn_chance": 25,
+          "time": "любое"
+        },
+        {
+          "id": "fire_salamander",
+          "name": "🦎 Огненная саламандра",
+          "level": 12,
+          "health": 150,
+          "damage": 18,
+          "exp": 200,
+          "gold": 80,
+          "spawn_chance": 30,
+          "time": "день"
+        },
+        {
+          "id": "magma_slug",
+          "name": "🐌 Магмовый слизень",
+          "level": 10,
+          "health": 200,
+          "damage": 10,
+          "exp": 150,
+          "gold": 50,
+          "spawn_chance": 20,
+          "time": "ночь"
+        },
+        {
+          "id": "phoenix_chick",
+          "name": "🐥 Птенец феникса",
+          "level": 5,
+          "health": 50,
+          "damage": 5,
+          "exp": 100,
+          "gold": 30,
+          "spawn_chance": 2,
+          "time": "рассвет",
+          "rare": true
+        }
+      ],
+      "bosses": [
+        {
+          "id": "volcano_king",
+          "name": "👑 Король вулкана",
+          "level": 28,
+          "health": 1200,
+          "damage": 55,
+          "exp": 1000,
+          "gold": 500,
+          "spawn_location": "volcano_crater",
+          "respawn_time": 86400,
+          "phases": 4,
+          "drops": [
+            {"item": "volcano_heart", "chance": 100},
+            {"item": "lava_core", "chance": 100, "min": 2, "max": 3},
+            {"item": "fire_gem", "chance": 80, "min": 2, "max": 4},
+            {"item": "ruby", "chance": 70, "min": 1, "max": 2},
+            {"item": "rainbow_stone", "chance": 15}
+          ]
+        },
+        {
+          "id": "phoenix",
+          "name": "🔥 Феникс",
+          "level": 25,
+          "health": 800,
+          "damage": 50,
+          "exp": 900,
+          "gold": 450,
+          "spawn_location": "volcano_peak",
+          "respawn_time": 172800,
+          "phases": 3,
+          "drops": [
+            {"item": "phoenix_feather", "chance": 100, "min": 1, "max": 3},
+            {"item": "phoenix_tear", "chance": 50},
+            {"item": "fire_essence", "chance": 80},
+            {"item": "rainbow_stone", "chance": 20}
+          ]
+        }
+      ],
+      "locations": {
+        "entrance": {
+          "name": "🌋 Подножие вулкана",
+          "description": "Земля становится горячей, из трещин идёт пар.",
+          "safe_zone": true
+        },
+        "lava_river": {
+          "name": "🌊 Лавовая река",
+          "description": "Река из расплавленной лавы, текущая по склону. Нужно быть очень осторожным.",
+          "dangerous": true
+        },
+        "geyser_field": {
+          "name": "💨 Поле гейзеров",
+          "description": "Из-под земли бьют струи пара и кипятка. Можно обжечься.",
+          "dangerous": true,
+          "resources": true
+        },
+        "volcano_crater": {
+          "name": "🌋 Кратер вулкана",
+          "description": "Жерло вулкана, наполненное бурлящей лавой. Здесь обитает король вулкана.",
+          "boss_location": true
+        },
+        "volcano_peak": {
+          "name": "⛰️ Пик вулкана",
+          "description": "Самая высокая точка. Отсюда открывается вид на весь мир. Иногда здесь отдыхает феникс.",
+          "scenic": true,
+          "rare_spawn": true
+        },
+        "magma_cave": {
+          "name": "🕳️ Магмовая пещера",
+          "description": "Пещера, стены которой покрыты застывшей лавой. Внутри жарко, но можно найти редкие минералы.",
+          "dungeon": true,
+          "level_req": 47
+        }
+      },
+      "weather": {
+        "clear": {"chance": 40, "effect": "ясно, жарко"},
+        "ash_fall": {"chance": 30, "effect": "пепел, -20% видимости"},
+        "eruption": {"chance": 5, "effect": "извержение! очень опасно"},
+        "geyser_activity": {"chance": 25, "effect": "гейзеры активны"}
+      },
+      "survival": {
+        "fire_resist_needed": true,
+        "fire_resist_min": 70,
+        "special_items": ["lava_elixir", "heat_shield", "obsidian_boots"]
+      },
+      "events": {
+        "eruption": {
+          "name": "🌋 Извержение",
+          "description": "Вулкан просыпается! Лава течёт по склонам, нужно спасаться!",
+          "effect": "все покидают локацию, но можно найти редкие ресурсы"
+        },
+        "phoenix_sighting": {
+          "name": "🔥 Появление феникса",
+          "description": "В небе показался феникс. Говорят, он приносит удачу.",
+          "effect": "можно попытаться найти его гнездо"
+        }
+      },
+      "lore": "Древние верили, что вулкан — это сердце мира. Когда оно бьётся, земля дрожит, а когда гневается, извергает огонь. В самом сердце вулкана, по легендам, находится врата в мир огненных элементалей. Феникс, возрождающийся из пепла, считался посланником богов."
+    }
+  }
+}
