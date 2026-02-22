@@ -1,12 +1,7 @@
-import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
-import os
 import json
-from datetime import datetime
 
-bot = telebot.TeleBot(os.getenv("BOT_TOKEN"))
-
-def start_command(message):
+def start_command(message, bot):
     """Обработчик команды /start"""
     from main import get_or_create_player, refresh_energy, refresh_magic, check_daily_login, get_daily_reward, save_character
     
@@ -52,7 +47,7 @@ def start_command(message):
     # Главная кнопка для открытия игры
     webapp_button = InlineKeyboardButton(
         text="🎮 ОТКРЫТЬ ИГРУ",
-        web_app=WebAppInfo(url="https://destiny-1-6m57.onrender.com/fronted/")
+        web_app=WebAppInfo(url="https://destiny-1-6m57.onrender.com")
     )
     markup.add(webapp_button)
     
@@ -84,7 +79,7 @@ def start_command(message):
         parse_mode='Markdown'
     )
 
-def help_command(message):
+def help_command(message, bot):
     """Обработчик команды /help"""
     text = "❓ *Помощь*\n\n"
     text += "📋 *Основные команды:*\n"
@@ -118,7 +113,7 @@ def help_command(message):
     
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
-def handle_webapp_data(call):
+def handle_webapp_data(call, bot):
     """Обработка данных из WebApp"""
     try:
         data = json.loads(call.web_app_data.data)
