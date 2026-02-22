@@ -35,11 +35,22 @@ def start_fight(player1_id: int, player2_id: Optional[int] = None):
         # Поиск случайного противника
         result = random.choice(["win", "lose", "draw"])
     
+    rewards = {
+        "exp": random.randint(10, 50),
+        "gold": random.randint(5, 20)
+    }
+    
+    if result != "draw":
+        rating_change = random.randint(-5, 15)
+        rewards["rating_change"] = rating_change
+        
+        # Обновляем рейтинг
+        if result in ["player1_win", "win"]:
+            pvp_ratings[player1_id] = pvp_ratings.get(player1_id, 1000) + rating_change
+        else:
+            pvp_ratings[player1_id] = pvp_ratings.get(player1_id, 1000) - abs(rating_change)
+    
     return {
         "result": result,
-        "rewards": {
-            "exp": random.randint(10, 50),
-            "gold": random.randint(5, 20),
-            "rating_change": random.randint(-5, 15) if result != "draw" else 0
-        }
+        "rewards": rewards
     }
