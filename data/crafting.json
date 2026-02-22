@@ -1,1 +1,1025 @@
-
+{
+  "crafting": {
+    "weapons": {
+      "swords": {
+        "copper_sword": {
+          "name": "⚪ Медный меч",
+          "type": "weapon",
+          "class": "warrior",
+          "rarity": "common",
+          "tier": 2,
+          "level_req": 3,
+          "materials": {"copper_ingot": 3},
+          "station": "anvil",
+          "time": 30,
+          "found_in": ["village", "mine"]
+        },
+        "tin_sword": {
+          "name": "⚪ Оловянный меч",
+          "type": "weapon",
+          "class": "warrior",
+          "rarity": "common",
+          "tier": 2,
+          "level_req": 4,
+          "materials": {"tin_ingot": 3},
+          "station": "anvil",
+          "time": 30,
+          "found_in": ["village", "mine"]
+        },
+        "bronze_sword": {
+          "name": "🟢 Бронзовый меч",
+          "type": "weapon",
+          "class": "warrior",
+          "rarity": "uncommon",
+          "tier": 3,
+          "level_req": 6,
+          "materials": {"copper_ingot": 2, "tin_ingot": 1},
+          "station": "anvil",
+          "time": 45,
+          "found_in": ["village", "mine"]
+        },
+        "iron_sword": {
+          "name": "🟢 Железный меч",
+          "type": "weapon",
+          "class": "warrior",
+          "rarity": "uncommon",
+          "tier": 3,
+          "level_req": 8,
+          "materials": {"iron_ingot": 3},
+          "station": "anvil",
+          "time": 60,
+          "found_in": ["village", "mine"]
+        },
+        "steel_sword": {
+          "name": "🔵 Стальной меч",
+          "type": "weapon",
+          "class": "warrior",
+          "rarity": "rare",
+          "tier": 4,
+          "level_req": 15,
+          "materials": {"steel_ingot": 3},
+          "station": "anvil",
+          "time": 90,
+          "found_in": ["village", "forge"]
+        },
+        "gold_sword": {
+          "name": "🔵 Золотой меч",
+          "type": "weapon",
+          "class": "warrior",
+          "rarity": "rare",
+          "tier": 4,
+          "level_req": 15,
+          "materials": {"gold_ingot": 3, "ruby": 1},
+          "station": "anvil",
+          "time": 120,
+          "found_in": ["village", "treasure"]
+        },
+        "silver_sword": {
+          "name": "🔵 Серебряный меч",
+          "type": "weapon",
+          "class": "warrior",
+          "rarity": "rare",
+          "tier": 4,
+          "level_req": 14,
+          "materials": {"silver_ingot": 3},
+          "station": "anvil",
+          "time": 100,
+          "found_in": ["village", "mine"]
+        },
+        "mythril_sword": {
+          "name": "🟣 Мифриловый меч",
+          "type": "weapon",
+          "class": "warrior",
+          "rarity": "epic",
+          "tier": 5,
+          "level_req": 25,
+          "materials": {"mythril_ingot": 3},
+          "station": "magic_anvil",
+          "time": 180,
+          "found_in": ["ancient_ruins", "crystal_island"]
+        },
+        "platinum_sword": {
+          "name": "🟣 Платиновый меч",
+          "type": "weapon",
+          "class": "warrior",
+          "rarity": "epic",
+          "tier": 5,
+          "level_req": 27,
+          "materials": {"platinum_ingot": 3},
+          "station": "magic_anvil",
+          "time": 200,
+          "found_in": ["ancient_ruins", "dragon_lair"]
+        },
+        "crystal_sword": {
+          "name": "🟡 Кристальный меч",
+          "type": "weapon",
+          "class": "warrior",
+          "rarity": "legendary",
+          "tier": 6,
+          "level_req": 35,
+          "materials": {"perfect_crystal": 3, "mythril_ingot": 1},
+          "station": "magic_altar",
+          "time": 300,
+          "found_in": ["crystal_island"]
+        },
+        "bloodstone_sword": {
+          "name": "🟡 Кровавый меч",
+          "type": "weapon",
+          "class": "warrior",
+          "rarity": "legendary",
+          "tier": 6,
+          "level_req": 38,
+          "materials": {"bloodstone": 3, "gold_ingot": 2},
+          "station": "magic_altar",
+          "time": 320,
+          "found_in": ["volcanic_island", "dragon_lair"]
+        },
+        "dragon_sword": {
+          "name": "🔴 Драконий меч",
+          "type": "weapon",
+          "class": "warrior",
+          "rarity": "mythic",
+          "tier": 7,
+          "level_req": 45,
+          "materials": {"dragon_fang": 3, "dragon_scale": 2},
+          "station": "dragon_altar",
+          "time": 600,
+          "found_in": ["dragon_island"]
+        }
+      },
+      
+      "bows": {
+        "hunting_bow": {
+          "name": "⚪ Охотничий лук",
+          "type": "weapon",
+          "class": "archer",
+          "rarity": "common",
+          "tier": 2,
+          "level_req": 3,
+          "materials": {"wood": 4, "string": 1},
+          "station": "workbench",
+          "time": 20,
+          "found_in": ["village", "forest"]
+        },
+        "longbow": {
+          "name": "🟢 Длинный лук",
+          "type": "weapon",
+          "class": "archer",
+          "rarity": "uncommon",
+          "tier": 3,
+          "level_req": 8,
+          "materials": {"wood": 5, "iron_ingot": 1},
+          "station": "workbench",
+          "time": 45,
+          "found_in": ["village", "forest"]
+        },
+        "recurve_bow": {
+          "name": "🔵 Изогнутый лук",
+          "type": "weapon",
+          "class": "archer",
+          "rarity": "rare",
+          "tier": 4,
+          "level_req": 15,
+          "materials": {"wood": 4, "steel_ingot": 2},
+          "station": "workbench",
+          "time": 80,
+          "found_in": ["village", "forge"]
+        },
+        "elven_bow": {
+          "name": "🟣 Эльфийский лук",
+          "type": "weapon",
+          "class": "archer",
+          "rarity": "epic",
+          "tier": 5,
+          "level_req": 25,
+          "materials": {"mythril_ingot": 3, "magic_wood": 2},
+          "station": "magic_workbench",
+          "time": 180,
+          "found_in": ["ancient_ruins", "magic_tower"]
+        },
+        "dragonbone_bow": {
+          "name": "🟡 Драконий костяной лук",
+          "type": "weapon",
+          "class": "archer",
+          "rarity": "legendary",
+          "tier": 6,
+          "level_req": 35,
+          "materials": {"dragon_bone": 3, "dragon_scale": 2},
+          "station": "dragon_altar",
+          "time": 300,
+          "found_in": ["dragon_lair", "dragon_island"]
+        },
+        "phoenix_bow": {
+          "name": "🔴 Лук феникса",
+          "type": "weapon",
+          "class": "archer",
+          "rarity": "mythic",
+          "tier": 7,
+          "level_req": 45,
+          "materials": {"phoenix_feather": 3, "dragon_blood": 2},
+          "station": "divine_altar",
+          "time": 600,
+          "found_in": ["volcanic_island", "dragon_island"]
+        }
+      },
+      
+      "staves": {
+        "apprentice_staff": {
+          "name": "⚪ Посох ученика",
+          "type": "weapon",
+          "class": "mage",
+          "rarity": "common",
+          "tier": 2,
+          "level_req": 3,
+          "materials": {"wood": 4},
+          "station": "workbench",
+          "time": 20,
+          "found_in": ["village", "magic_tower"]
+        },
+        "mage_staff": {
+          "name": "🟢 Посох мага",
+          "type": "weapon",
+          "class": "mage",
+          "rarity": "uncommon",
+          "tier": 3,
+          "level_req": 8,
+          "materials": {"wood": 3, "iron_ingot": 2, "crystal": 1},
+          "station": "workbench",
+          "time": 60,
+          "found_in": ["magic_tower", "ancient_ruins"]
+        },
+        "wizard_staff": {
+          "name": "🔵 Посох чародея",
+          "type": "weapon",
+          "class": "mage",
+          "rarity": "rare",
+          "tier": 4,
+          "level_req": 15,
+          "materials": {"wood": 2, "steel_ingot": 2, "magic_crystal": 2},
+          "station": "workbench",
+          "time": 120,
+          "found_in": ["magic_tower", "ancient_ruins"]
+        },
+        "archmage_staff": {
+          "name": "🟣 Посох архимага",
+          "type": "weapon",
+          "class": "mage",
+          "rarity": "epic",
+          "tier": 5,
+          "level_req": 25,
+          "materials": {"mythril_ingot": 3, "magic_crystal": 3},
+          "station": "magic_workbench",
+          "time": 200,
+          "found_in": ["ancient_ruins", "crystal_island"]
+        },
+        "elemental_staff": {
+          "name": "🟡 Посох стихий",
+          "type": "weapon",
+          "class": "mage",
+          "rarity": "legendary",
+          "tier": 6,
+          "level_req": 35,
+          "materials": {"perfect_crystal": 3, "elemental_core": 2},
+          "station": "magic_altar",
+          "time": 350,
+          "found_in": ["volcanic_island", "crystal_island"]
+        },
+        "dragon_staff": {
+          "name": "🔴 Посох дракона",
+          "type": "weapon",
+          "class": "mage",
+          "rarity": "mythic",
+          "tier": 7,
+          "level_req": 45,
+          "materials": {"dragon_bone": 3, "dragon_heart": 1},
+          "station": "dragon_altar",
+          "time": 650,
+          "found_in": ["dragon_island"]
+        }
+      }
+    },
+    
+    "shields": {
+      "wooden_shield": {
+        "name": "⚪ Деревянный щит",
+        "type": "armor",
+        "class": "guardian",
+        "rarity": "common",
+        "tier": 2,
+        "level_req": 3,
+        "materials": {"wood": 4, "leather": 2},
+        "station": "workbench",
+        "time": 25,
+        "found_in": ["village", "forest"]
+      },
+      "iron_shield": {
+        "name": "🟢 Железный щит",
+        "type": "armor",
+        "class": "guardian",
+        "rarity": "uncommon",
+        "tier": 3,
+        "level_req": 8,
+        "materials": {"iron_ingot": 4, "leather": 2},
+        "station": "anvil",
+        "time": 70,
+        "found_in": ["village", "forge"]
+      },
+      "steel_shield": {
+        "name": "🔵 Стальной щит",
+        "type": "armor",
+        "class": "guardian",
+        "rarity": "rare",
+        "tier": 4,
+        "level_req": 15,
+        "materials": {"steel_ingot": 4, "leather": 2},
+        "station": "anvil",
+        "time": 120,
+        "found_in": ["village", "forge"]
+      },
+      "mythril_shield": {
+        "name": "🟣 Мифриловый щит",
+        "type": "armor",
+        "class": "guardian",
+        "rarity": "epic",
+        "tier": 5,
+        "level_req": 25,
+        "materials": {"mythril_ingot": 4, "magic_crystal": 2},
+        "station": "magic_anvil",
+        "time": 220,
+        "found_in": ["ancient_ruins", "crystal_island"]
+      },
+      "dragon_scale_shield": {
+        "name": "🟡 Щит из драконьей чешуи",
+        "type": "armor",
+        "class": "guardian",
+        "rarity": "legendary",
+        "tier": 6,
+        "level_req": 35,
+        "materials": {"dragon_scale": 5, "mythril_ingot": 3},
+        "station": "dragon_altar",
+        "time": 400,
+        "found_in": ["dragon_lair", "dragon_island"]
+      },
+      "divine_shield": {
+        "name": "🔴 Божественный щит",
+        "type": "armor",
+        "class": "guardian",
+        "rarity": "mythic",
+        "tier": 7,
+        "level_req": 45,
+        "materials": {"divine_essence": 3, "rainbow_stone": 2},
+        "station": "divine_altar",
+        "time": 700,
+        "found_in": ["dragon_island", "secret_room"]
+      }
+    },
+    
+    "armor": {
+      "leather_armor": {
+        "name": "⚪ Кожаная броня",
+        "type": "armor",
+        "class": ["archer", "warrior"],
+        "slot": "chest",
+        "rarity": "common",
+        "tier": 2,
+        "level_req": 3,
+        "materials": {"leather": 5},
+        "station": "workbench",
+        "time": 30,
+        "found_in": ["village", "forest"]
+      },
+      "iron_armor": {
+        "name": "🟢 Железная броня",
+        "type": "armor",
+        "class": ["warrior", "guardian"],
+        "slot": "chest",
+        "rarity": "uncommon",
+        "tier": 3,
+        "level_req": 8,
+        "materials": {"iron_ingot": 5, "leather": 2},
+        "station": "anvil",
+        "time": 80,
+        "found_in": ["village", "forge"]
+      },
+      "steel_armor": {
+        "name": "🔵 Стальная броня",
+        "type": "armor",
+        "class": ["warrior", "guardian"],
+        "slot": "chest",
+        "rarity": "rare",
+        "tier": 4,
+        "level_req": 15,
+        "materials": {"steel_ingot": 5, "leather": 2},
+        "station": "anvil",
+        "time": 150,
+        "found_in": ["village", "forge"]
+      },
+      "mythril_armor": {
+        "name": "🟣 Мифриловая броня",
+        "type": "armor",
+        "class": ["warrior", "guardian"],
+        "slot": "chest",
+        "rarity": "epic",
+        "tier": 5,
+        "level_req": 25,
+        "materials": {"mythril_ingot": 5, "magic_crystal": 2},
+        "station": "magic_anvil",
+        "time": 250,
+        "found_in": ["ancient_ruins", "crystal_island"]
+      },
+      "dragon_scale_armor": {
+        "name": "🟡 Броня из драконьей чешуи",
+        "type": "armor",
+        "class": ["warrior", "guardian"],
+        "slot": "chest",
+        "rarity": "legendary",
+        "tier": 6,
+        "level_req": 35,
+        "materials": {"dragon_scale": 6, "mythril_ingot": 3},
+        "station": "dragon_altar",
+        "time": 450,
+        "found_in": ["dragon_lair", "dragon_island"]
+      },
+      "divine_armor": {
+        "name": "🔴 Божественная броня",
+        "type": "armor",
+        "class": ["warrior", "guardian"],
+        "slot": "chest",
+        "rarity": "mythic",
+        "tier": 7,
+        "level_req": 45,
+        "materials": {"divine_essence": 3, "rainbow_stone": 2},
+        "station": "divine_altar",
+        "time": 750,
+        "found_in": ["dragon_island", "secret_room"]
+      }
+    },
+    
+    "tools": {
+      "wooden_pickaxe": {
+        "name": "⚪ Деревянная кирка",
+        "type": "tool",
+        "durability": 30,
+        "level_req": 1,
+        "materials": {"wood": 3, "stone": 2},
+        "station": "workbench",
+        "time": 15,
+        "found_in": ["village", "forest"]
+      },
+      "stone_pickaxe": {
+        "name": "⚪ Каменная кирка",
+        "type": "tool",
+        "durability": 50,
+        "level_req": 3,
+        "materials": {"stone": 5, "wood": 2},
+        "station": "workbench",
+        "time": 20,
+        "found_in": ["village", "mine"]
+      },
+      "copper_pickaxe": {
+        "name": "⚪ Медная кирка",
+        "type": "tool",
+        "durability": 80,
+        "level_req": 5,
+        "materials": {"copper_ingot": 3, "wood": 2},
+        "station": "anvil",
+        "time": 30,
+        "found_in": ["village", "mine"]
+      },
+      "iron_pickaxe": {
+        "name": "🟢 Железная кирка",
+        "type": "tool",
+        "durability": 150,
+        "level_req": 10,
+        "materials": {"iron_ingot": 3, "wood": 2},
+        "station": "anvil",
+        "time": 45,
+        "found_in": ["village", "mine"]
+      },
+      "steel_pickaxe": {
+        "name": "🔵 Стальная кирка",
+        "type": "tool",
+        "durability": 250,
+        "level_req": 18,
+        "materials": {"steel_ingot": 3, "wood": 2},
+        "station": "anvil",
+        "time": 70,
+        "found_in": ["village", "mine"]
+      },
+      "mythril_pickaxe": {
+        "name": "🟣 Мифриловая кирка",
+        "type": "tool",
+        "durability": 400,
+        "level_req": 28,
+        "materials": {"mythril_ingot": 3, "magic_crystal": 1},
+        "station": "magic_anvil",
+        "time": 120,
+        "found_in": ["ancient_ruins", "crystal_island"]
+      },
+      "dragonbone_pickaxe": {
+        "name": "🟡 Драконья кирка",
+        "type": "tool",
+        "durability": 600,
+        "level_req": 38,
+        "materials": {"dragon_bone": 2, "dragon_scale": 2},
+        "station": "dragon_altar",
+        "time": 200,
+        "found_in": ["dragon_lair", "dragon_island"]
+      }
+    },
+    
+    "potions": {
+      "health_potion": {
+        "name": "⚪ Зелье здоровья",
+        "type": "consumable",
+        "heal": 50,
+        "level_req": 1,
+        "materials": {"herb": 2, "water": 1},
+        "station": "cauldron",
+        "time": 10,
+        "found_in": ["village", "forest"]
+      },
+      "mana_potion": {
+        "name": "⚪ Зелье маны",
+        "type": "consumable",
+        "mana": 50,
+        "level_req": 1,
+        "materials": {"magic_herb": 2, "water": 1},
+        "station": "cauldron",
+        "time": 10,
+        "found_in": ["village", "magic_tower"]
+      },
+      "antidote": {
+        "name": "⚪ Противоядие",
+        "type": "consumable",
+        "effect": "cure_poison",
+        "level_req": 5,
+        "materials": {"herb": 2, "water": 1},
+        "station": "cauldron",
+        "time": 10,
+        "found_in": ["village", "swamp"]
+      },
+      
+      "strong_health_potion": {
+        "name": "🟢 Сильное зелье здоровья",
+        "type": "consumable",
+        "heal": 120,
+        "level_req": 10,
+        "materials": {"herb": 4, "water": 1, "honey": 1},
+        "station": "cauldron",
+        "time": 20,
+        "found_in": ["mountains", "desert"]
+      },
+      "strong_mana_potion": {
+        "name": "🟢 Сильное зелье маны",
+        "type": "consumable",
+        "mana": 120,
+        "level_req": 10,
+        "materials": {"magic_herb": 4, "water": 1, "magic_dust": 1},
+        "station": "cauldron",
+        "time": 20,
+        "found_in": ["magic_tower", "crystal_island"]
+      },
+      
+      "desert_elixir": {
+        "name": "🏜️ Эликсир пустыни",
+        "type": "consumable",
+        "effect": "hydration",
+        "heal": 30,
+        "energy": 30,
+        "duration": 1800,
+        "description": "Утоляет жажду и восстанавливает силы в пустыне",
+        "level_req": 15,
+        "materials": {"cactus_fruit": 2, "water": 1, "honey": 1},
+        "station": "cauldron",
+        "time": 15,
+        "found_in": ["desert", "oasis"]
+      },
+      "scorpion_antidote": {
+        "name": "🦂 Противоядие от скорпиона",
+        "type": "consumable",
+        "effect": "cure_poison",
+        "heal": 50,
+        "description": "Нейтрализует яд пустынных скорпионов",
+        "level_req": 18,
+        "materials": {"scorpion_venom": 1, "desert_herb": 2, "water": 1},
+        "station": "cauldron",
+        "time": 20,
+        "found_in": ["desert"]
+      },
+      
+      "swamp_brew": {
+        "name": "🌿 Болотное варево",
+        "type": "consumable",
+        "effect": "poison_resist",
+        "resistance": 30,
+        "duration": 3600,
+        "description": "Защищает от ядов болота",
+        "level_req": 20,
+        "materials": {"swamp_herb": 2, "frog_legs": 1, "water": 1},
+        "station": "cauldron",
+        "time": 25,
+        "found_in": ["swamp", "witch_hut"]
+      },
+      "witch_potion": {
+        "name": "🧙 Зелье ведьмы",
+        "type": "consumable",
+        "effect": "random_buff",
+        "description": "Может дать любой эффект — от благословения до проклятия",
+        "level_req": 22,
+        "materials": {"magic_herb": 3, "frog_legs": 1, "spider_venom": 1, "bat_wing": 1},
+        "station": "witch_cauldron",
+        "time": 40,
+        "found_in": ["witch_hut"]
+      },
+      
+      "frost_elixir": {
+        "name": "❄️ Морозный эликсир",
+        "type": "consumable",
+        "effect": "cold_resist",
+        "resistance": 50,
+        "duration": 7200,
+        "description": "Защищает от холода ледяных равнин",
+        "level_req": 25,
+        "materials": {"ice_crystal": 2, "ice_fur": 1, "water": 1},
+        "station": "cauldron",
+        "time": 30,
+        "found_in": ["ice_plains", "ice_cave"]
+      },
+      "ice_heart_potion": {
+        "name": "🧊 Зелье ледяного сердца",
+        "type": "consumable",
+        "effect": "ice_damage",
+        "damage_bonus": 20,
+        "duration": 3600,
+        "description": "Оружие наносит дополнительный ледяной урон",
+        "level_req": 28,
+        "materials": {"ice_giant_heart": 1, "ice_crystal": 3, "water": 1},
+        "station": "magic_cauldron",
+        "time": 45,
+        "found_in": ["ice_cave"]
+      },
+      
+      "lava_elixir": {
+        "name": "🌋 Лавовый эликсир",
+        "type": "consumable",
+        "effect": "fire_resist",
+        "resistance": 70,
+        "duration": 7200,
+        "description": "Позволяет ходить по лаве",
+        "level_req": 30,
+        "materials": {"volcanic_ash": 3, "fire_gem": 1, "lava_core": 1},
+        "station": "magic_cauldron",
+        "time": 50,
+        "found_in": ["volcano_crater", "volcanic_island"]
+      },
+      "fire_essence_potion": {
+        "name": "🔥 Зелье огненной сущности",
+        "type": "consumable",
+        "effect": "fire_damage",
+        "damage_bonus": 30,
+        "duration": 3600,
+        "description": "Оружие пылает огнём",
+        "level_req": 32,
+        "materials": {"fire_gem": 2, "elemental_core": 1, "lava_core": 1},
+        "station": "magic_cauldron",
+        "time": 55,
+        "found_in": ["volcanic_island"]
+      },
+      
+      "crystal_mana_potion": {
+        "name": "💎 Кристальное зелье маны",
+        "type": "consumable",
+        "mana": 300,
+        "mana_regen": 10,
+        "duration": 300,
+        "description": "Мгновенно восстанавливает много маны и ускоряет регенерацию",
+        "level_req": 35,
+        "materials": {"perfect_crystal": 1, "magic_crystal": 2, "water": 1},
+        "station": "magic_cauldron",
+        "time": 40,
+        "found_in": ["crystal_island"]
+      },
+      "crystal_health_potion": {
+        "name": "💎 Кристальное зелье здоровья",
+        "type": "consumable",
+        "heal": 300,
+        "health_regen": 15,
+        "duration": 300,
+        "description": "Мгновенно восстанавливает много здоровья и ускоряет регенерацию",
+        "level_req": 35,
+        "materials": {"perfect_crystal": 1, "magic_crystal": 2, "honey": 1},
+        "station": "magic_cauldron",
+        "time": 40,
+        "found_in": ["crystal_island"]
+      },
+      
+      "dragon_blood_elixir": {
+        "name": "🐉 Эликсир драконьей крови",
+        "type": "consumable",
+        "effect": "all_stats",
+        "health": 200,
+        "mana": 200,
+        "damage": 30,
+        "defense": 30,
+        "duration": 3600,
+        "description": "Напиток богов — все характеристики увеличены",
+        "level_req": 40,
+        "materials": {"dragon_blood": 2, "dragon_heart": 1, "rainbow_stone": 1},
+        "station": "dragon_altar",
+        "time": 120,
+        "found_in": ["dragon_lair", "dragon_island"]
+      },
+      "dragon_scale_potion": {
+        "name": "🐉 Зелье драконьей чешуи",
+        "type": "consumable",
+        "effect": "invulnerability",
+        "damage_reduction": 50,
+        "duration": 60,
+        "description": "Кожа становится твёрдой как чешуя дракона",
+        "level_req": 42,
+        "materials": {"dragon_scale": 2, "dragon_blood": 1, "mythril_ingot": 1},
+        "station": "dragon_altar",
+        "time": 100,
+        "found_in": ["dragon_island"]
+      },
+      
+      "divine_elixir": {
+        "name": "✨ Божественный эликсир",
+        "type": "consumable",
+        "effect": "god_mode",
+        "invulnerable": true,
+        "damage": 100,
+        "duration": 30,
+        "description": "Стань богом на 30 секунд",
+        "level_req": 50,
+        "materials": {"divine_essence": 2, "rainbow_stone": 2, "dragon_heart": 1},
+        "station": "divine_altar",
+        "time": 300,
+        "found_in": ["dragon_island", "secret_room"],
+        "unique": true
+      }
+    },
+    
+    "food": {
+      "bread": {
+        "name": "⚪ Хлеб",
+        "type": "food",
+        "heal": 20,
+        "energy": 5,
+        "level_req": 1,
+        "materials": {"flour": 2, "water": 1},
+        "station": "oven",
+        "time": 15,
+        "found_in": ["village"]
+      },
+      "fried_fish": {
+        "name": "⚪ Жареная рыба",
+        "type": "food",
+        "heal": 30,
+        "energy": 10,
+        "level_req": 1,
+        "materials": {"fish": 1},
+        "station": "campfire",
+        "time": 10,
+        "found_in": ["lake_shore", "fisher_house"]
+      },
+      "fried_meat": {
+        "name": "⚪ Жареное мясо",
+        "type": "food",
+        "heal": 40,
+        "energy": 15,
+        "level_req": 1,
+        "materials": {"meat": 1},
+        "station": "campfire",
+        "time": 10,
+        "found_in": ["deep_forest", "mountains"]
+      },
+      
+      "meat_stew": {
+        "name": "🟢 Мясное рагу",
+        "type": "food",
+        "heal": 80,
+        "energy": 30,
+        "level_req": 5,
+        "materials": {"meat": 2, "vegetables": 2, "water": 1},
+        "station": "cauldron",
+        "time": 25,
+        "found_in": ["village", "tavern"]
+      },
+      "fish_soup": {
+        "name": "🟢 Уха",
+        "type": "food",
+        "heal": 70,
+        "energy": 25,
+        "level_req": 5,
+        "materials": {"fish": 2, "vegetables": 1, "water": 1},
+        "station": "cauldron",
+        "time": 20,
+        "found_in": ["fisher_house", "lake_shore"]
+      },
+      "roasted_meat": {
+        "name": "🟢 Запечённое мясо",
+        "type": "food",
+        "heal": 90,
+        "energy": 35,
+        "level_req": 8,
+        "materials": {"meat": 2, "herbs": 2},
+        "station": "campfire",
+        "time": 20,
+        "found_in": ["mountain_rest", "hunter_camp"]
+      },
+      
+      "desert_cactus_soup": {
+        "name": "🏜️ Кактусовый суп",
+        "type": "food",
+        "heal": 50,
+        "energy": 40,
+        "effect": "hydration",
+        "duration": 1800,
+        "description": "Утоляет жажду и придаёт сил",
+        "level_req": 15,
+        "materials": {"cactus_fruit": 3, "water": 1},
+        "station": "campfire",
+        "time": 15,
+        "found_in": ["desert_oasis"]
+      },
+      "desert_lizard_skewer": {
+        "name": "🏜️ Шашлык из ящерицы",
+        "type": "food",
+        "heal": 70,
+        "energy": 30,
+        "description": "Местное блюдо пустынных кочевников",
+        "level_req": 16,
+        "materials": {"lizard_meat": 2, "cactus_fruit": 1},
+        "station": "campfire",
+        "time": 15,
+        "found_in": ["desert"]
+      },
+      
+      "swamp_frog_legs": {
+        "name": "🌿 Лягушачьи лапки",
+        "type": "food",
+        "heal": 40,
+        "energy": 20,
+        "effect": "poison_resist",
+        "duration": 1800,
+        "description": "Местный деликатес, защищает от ядов",
+        "level_req": 20,
+        "materials": {"frog_legs": 2, "herbs": 1},
+        "station": "campfire",
+        "time": 10,
+        "found_in": ["swamp", "witch_hut"]
+      },
+      "swamp_stew": {
+        "name": "🌿 Болотное рагу",
+        "type": "food",
+        "heal": 100,
+        "energy": 40,
+        "effect": "random",
+        "description": "Загадочное блюдо — может вылечить или отравить",
+        "level_req": 22,
+        "materials": {"swamp_herb": 3, "frog_legs": 2, "mushroom": 2},
+        "station": "witch_cauldron",
+        "time": 30,
+        "found_in": ["witch_hut"]
+      },
+      
+      "ice_fish_sashimi": {
+        "name": "❄️ Сашими из ледяной рыбы",
+        "type": "food",
+        "heal": 80,
+        "energy": 40,
+        "effect": "cold_resist",
+        "duration": 3600,
+        "description": "Сырая рыба, сохранившая силу холода",
+        "level_req": 25,
+        "materials": {"ice_fish": 2, "ice_crystal": 1},
+        "station": "campfire",
+        "time": 5,
+        "found_in": ["ice_cave"]
+      },
+      "polar_bear_steak": {
+        "name": "❄️ Стейк из белого медведя",
+        "type": "food",
+        "heal": 150,
+        "energy": 60,
+        "effect": "strength",
+        "damage_bonus": 15,
+        "duration": 3600,
+        "level_req": 28,
+        "materials": {"bear_meat": 3, "ice_fur": 1},
+        "station": "campfire",
+        "time": 30,
+        "found_in": ["ice_plains"]
+      },
+      
+      "lava_steak": {
+        "name": "🌋 Лавовый стейк",
+        "type": "food",
+        "heal": 120,
+        "energy": 50,
+        "effect": "fire_resist",
+        "duration": 7200,
+        "description": "Мясо, приготовленное на лаве",
+        "level_req": 30,
+        "materials": {"meat": 3, "lava_core": 1, "volcanic_ash": 2},
+        "station": "volcanic_campfire",
+        "time": 25,
+        "found_in": ["volcanic_island"]
+      },
+      "fire_elemental_soup": {
+        "name": "🔥 Суп из элементаля",
+        "type": "food",
+        "heal": 200,
+        "energy": 80,
+        "effect": "fire_damage",
+        "damage_bonus": 25,
+        "duration": 3600,
+        "level_req": 32,
+        "materials": {"elemental_core": 1, "fire_gem": 1, "lava_core": 1},
+        "station": "magic_campfire",
+        "time": 40,
+        "found_in": ["volcanic_island"]
+      },
+      
+      "crystal_fruit": {
+        "name": "💎 Кристальный фрукт",
+        "type": "food",
+        "heal": 100,
+        "mana": 100,
+        "effect": "magic_boost",
+        "magic_damage": 20,
+        "duration": 3600,
+        "level_req": 35,
+        "materials": {"perfect_crystal": 1, "magic_crystal": 2},
+        "station": "magic_altar",
+        "time": 10,
+        "found_in": ["crystal_island"]
+      },
+      "crystal_ambrosia": {
+        "name": "💎 Кристальная амброзия",
+        "type": "food",
+        "heal": 200,
+        "mana": 200,
+        "effect": "all_stats",
+        "all_stats": 20,
+        "duration": 7200,
+        "level_req": 38,
+        "materials": {"perfect_crystal": 2, "magic_crystal": 3, "honey": 2},
+        "station": "magic_altar",
+        "time": 30,
+        "found_in": ["crystal_island", "treasure_room"]
+      },
+      
+      "dragon_steak": {
+        "name": "🐉 Драконий стейк",
+        "type": "food",
+        "heal": 300,
+        "energy": 100,
+        "effect": "dragon_power",
+        "damage": 50,
+        "defense": 50,
+        "duration": 7200,
+        "level_req": 40,
+        "materials": {"dragon_meat": 2, "dragon_blood": 1, "dragon_scale": 1},
+        "station": "dragon_altar",
+        "time": 60,
+        "found_in": ["dragon_lair", "dragon_island"]
+      },
+      "dragon_heart_delicacy": {
+        "name": "🐉 Сердце дракона",
+        "type": "food",
+        "heal": 500,
+        "max_health": 100,
+        "effect": "immortal",
+        "invulnerable": true,
+        "duration": 10,
+        "description": "Блюдо из сердца дракона — дарует мгновенную неуязвимость",
+        "level_req": 45,
+        "materials": {"dragon_heart": 1, "dragon_blood": 2, "rainbow_stone": 1},
+        "station": "dragon_altar",
+        "time": 120,
+        "found_in": ["dragon_island"],
+        "unique": true
+      },
+      
+      "divine_nectar": {
+        "name": "✨ Божественный нектар",
+        "type": "food",
+        "heal": 1000,
+        "mana": 1000,
+        "effect": "ascension",
+        "all_stats": 100,
+        "duration": 3600,
+        "description": "Напиток богов — возносит смертных",
+        "level_req": 50,
+        "materials": {"divine_essence": 2, "rainbow_stone": 2, "dragon_heart": 1, "perfect_crystal": 3},
+        "station": "divine_altar",
+        "time": 300,
+        "found_in": ["secret_room", "dragon_island"],
+        "unique": true
+      }
+    }
+  }
+}
