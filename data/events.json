@@ -1,1 +1,646 @@
-
+{
+  "events": {
+    "weekly": {
+      "monday": {
+        "name": "⛏️ ШАХТЁРСКИЙ ДЕНЬ",
+        "description": "Сегодня руда сыпется как из рога изобилия!",
+        "bonuses": {
+          "ore_drop": 2.0,
+          "rare_ore_chance": 2.0,
+          "shard_chance": 1.5,
+          "mining_exp": 1.5
+        },
+        "quest": {
+          "name": "Добыть 100 руды",
+          "reward": {
+            "dstn": 100,
+            "chest": "rare",
+            "items": ["iron_ingot", 5]
+          }
+        },
+        "competition": {
+          "name": "Кто больше добудет?",
+          "duration": 24,
+          "rewards": {
+            "1": {
+              "dstn": 500,
+              "rainbow_shard": 2,
+              "title": "Король шахты"
+            },
+            "2-3": {
+              "dstn": 300,
+              "rainbow_shard": 1
+            },
+            "4-10": {
+              "dstn": 200,
+              "legendary_chest": 1
+            },
+            "11-50": {
+              "dstn": 100,
+              "epic_chest": 1
+            },
+            "51-100": {
+              "dstn": 50,
+              "rare_chest": 1
+            }
+          }
+        }
+      },
+      
+      "tuesday": {
+        "name": "🏹 ОХОТНИЧИЙ ДЕНЬ",
+        "description": "Звери сегодня особенно жирные и ценные!",
+        "bonuses": {
+          "skin_drop": 2.0,
+          "meat_drop": 2.0,
+          "rare_drop": 1.5,
+          "hunting_exp": 1.5
+        },
+        "quest": {
+          "name": "Убить 50 мобов",
+          "reward": {
+            "dstn": 100,
+            "chest": "rare",
+            "items": ["leather", 10]
+          }
+        },
+        "competition": {
+          "name": "Лучший охотник",
+          "duration": 24,
+          "rewards": {
+            "1": {
+              "dstn": 500,
+              "rainbow_shard": 2,
+              "title": "Легендарный охотник"
+            },
+            "2-3": {
+              "dstn": 300,
+              "rainbow_shard": 1
+            },
+            "4-10": {
+              "dstn": 200,
+              "legendary_chest": 1
+            },
+            "11-50": {
+              "dstn": 100,
+              "epic_chest": 1
+            },
+            "51-100": {
+              "dstn": 50,
+              "rare_chest": 1
+            }
+          }
+        }
+      },
+      
+      "wednesday": {
+        "name": "🎣 РЫБНЫЙ ДЕНЬ",
+        "description": "Рыба клюёт на всё подряд!",
+        "bonuses": {
+          "fish_drop": 2.0,
+          "rare_fish_chance": 2.0,
+          "bait_efficiency": 1.5,
+          "fishing_exp": 1.5
+        },
+        "quest": {
+          "name": "Поймать 30 рыб",
+          "reward": {
+            "dstn": 100,
+            "chest": "rare",
+            "items": ["golden_fish", 1]
+          }
+        },
+        "competition": {
+          "name": "Самая большая рыба",
+          "duration": 24,
+          "rewards": {
+            "1": {
+              "dstn": 500,
+              "rainbow_shard": 2,
+              "title": "Король рыбалки"
+            },
+            "2-3": {
+              "dstn": 300,
+              "rainbow_shard": 1
+            },
+            "4-10": {
+              "dstn": 200,
+              "legendary_chest": 1
+            },
+            "11-50": {
+              "dstn": 100,
+              "epic_chest": 1
+            },
+            "51-100": {
+              "dstn": 50,
+              "rare_chest": 1
+            }
+          }
+        }
+      },
+      
+      "thursday": {
+        "name": "🌈 ДЕНЬ РАДУГИ",
+        "description": "Радужные осколки падают чаще!",
+        "bonuses": {
+          "rainbow_shard_chance": 2.0,
+          "shard_drop": 1.5,
+          "nft_chance": 1.2,
+          "luck": 1.5
+        },
+        "quest": {
+          "name": "Найти 5 радужных осколков",
+          "reward": {
+            "dstn": 200,
+            "rainbow_shard": 2,
+            "legendary_chest": 1
+          }
+        },
+        "competition": {
+          "name": "Собиратель радуги",
+          "duration": 24,
+          "rewards": {
+            "1": {
+              "dstn": 1000,
+              "rainbow_stone": 1,
+              "title": "Хранитель радуги"
+            },
+            "2-3": {
+              "dstn": 500,
+              "rainbow_shard": 5
+            },
+            "4-10": {
+              "dstn": 300,
+              "rainbow_shard": 3
+            },
+            "11-50": {
+              "dstn": 200,
+              "rainbow_shard": 1
+            },
+            "51-100": {
+              "dstn": 100,
+              "legendary_chest": 1
+            }
+          }
+        }
+      },
+      
+      "friday": {
+        "name": "⚔️ PvP ТУРНИР",
+        "description": "Время доказать, кто тут главный!",
+        "bonuses": {
+          "pvp_rating": 2.0,
+          "pvp_rewards": 1.5,
+          "pvp_exp": 1.5
+        },
+        "tournament": {
+          "name": "Арена чемпионов",
+          "start": "20:00 UTC",
+          "format": "single_elimination",
+          "entry_fee": 50,
+          "max_participants": 128,
+          "prize_pool": {
+            "1": {
+              "dstn": 5000,
+              "rainbow_stone": 1,
+              "legendary_chest": 5,
+              "title": "Чемпион арены"
+            },
+            "2": {
+              "dstn": 2500,
+              "rainbow_shard": 5,
+              "legendary_chest": 3,
+              "title": "Серебряный призёр"
+            },
+            "3-4": {
+              "dstn": 1000,
+              "rainbow_shard": 3,
+              "legendary_chest": 2
+            },
+            "5-8": {
+              "dstn": 500,
+              "rainbow_shard": 1,
+              "legendary_chest": 1
+            },
+            "9-16": {
+              "dstn": 250,
+              "epic_chest": 2
+            },
+            "17-32": {
+              "dstn": 150,
+              "epic_chest": 1
+            },
+            "33-64": {
+              "dstn": 100,
+              "rare_chest": 2
+            },
+            "65-128": {
+              "dstn": 50,
+              "rare_chest": 1
+            }
+          }
+        }
+      },
+      
+      "saturday": {
+        "name": "🏛️ ГИЛЬДЕЙСКИЕ ВОЙНЫ",
+        "description": "Твоя гильдия против других! Вместе мы сила!",
+        "bonuses": {
+          "guild_exp": 2.0,
+          "guild_rewards": 1.5,
+          "guild_rep": 2.0
+        },
+        "war": {
+          "name": "Битва гильдий",
+          "format": "guild_vs_guild",
+          "duration": 24,
+          "matchmaking": "elo",
+          "rewards": {
+            "1_place": {
+              "guild_dstn": 10000,
+              "guild_title": "Легендарная гильдия",
+              "members_buff": 20,
+              "member_reward": {
+                "dstn": 500,
+                "legendary_chest": 3,
+                "rainbow_shard": 2
+              }
+            },
+            "2_place": {
+              "guild_dstn": 5000,
+              "guild_title": "Элитная гильдия",
+              "members_buff": 15,
+              "member_reward": {
+                "dstn": 300,
+                "legendary_chest": 2,
+                "rainbow_shard": 1
+              }
+            },
+            "3_place": {
+              "guild_dstn": 2500,
+              "guild_title": "Боевая гильдия",
+              "members_buff": 10,
+              "member_reward": {
+                "dstn": 200,
+                "legendary_chest": 1,
+                "rainbow_shard": 1
+              }
+            },
+            "4-10": {
+              "guild_dstn": 1000,
+              "members_buff": 5,
+              "member_reward": {
+                "dstn": 100,
+                "epic_chest": 2
+              }
+            },
+            "11-50": {
+              "member_reward": {
+                "dstn": 50,
+                "epic_chest": 1
+              }
+            },
+            "all": {
+              "member_reward": {
+                "dstn": 20,
+                "rare_chest": 1
+              }
+            }
+          }
+        }
+      },
+      
+      "sunday": {
+        "name": "🙏 БЛАГОСЛОВЕНИЕ БОГОВ",
+        "description": "Боги сегодня щедры ко всем!",
+        "bonuses": {
+          "exp": 2.0,
+          "gold": 2.0,
+          "luck": 2.0,
+          "damage": 1.2,
+          "defense": 1.2,
+          "magic": 1.2,
+          "drop_rate": 1.5
+        },
+        "quest": {
+          "name": "Помолиться в храме",
+          "reward": {
+            "buff": "blessing_24h",
+            "description": "Благословение богов на 24 часа"
+          }
+        },
+        "special": {
+          "name": "Выполнить все квесты недели",
+          "reward": {
+            "dstn": 5000,
+            "rainbow_stone": 1,
+            "legendary_chest": 10,
+            "title": "Верный"
+          }
+        },
+        "daily_blessing": {
+          "random_buff": true,
+          "buffs": ["damage+20%", "defense+20%", "luck+30%", "exp+50%", "gold+50%", "all_stats+15%"]
+        }
+      }
+    },
+    
+    "monthly": {
+      "full_moon": {
+        "name": "🌕 Ночь полнолуния",
+        "description": "В полнолуние магия становится сильнее, а монстры — агрессивнее.",
+        "frequency": "monthly",
+        "day": 15,
+        "bonuses": {
+          "magic_damage": 1.5,
+          "moon_essence": true,
+          "rare_spawns": 2.0
+        },
+        "special_mobs": ["werewolf", "moon_spirit", "lunatic"],
+        "rewards": {
+          "moon_shard": "легендарный материал"
+        }
+      },
+      
+      "meteor_shower": {
+        "name": "☄️ Метеоритный дождь",
+        "description": "На землю падают метеориты, из которых можно добыть редкие ресурсы.",
+        "frequency": "monthly",
+        "day": "random",
+        "bonuses": {
+          "meteorite_fall": true,
+          "rare_ores": 3.0
+        },
+        "locations": ["desert", "mountains", "ice_plains"],
+        "rewards": {
+          "meteorite_ore": "редкая руда",
+          "star_shard": "легендарный материал"
+        }
+      },
+      
+      "merchant_caravan": {
+        "name": "🐫 Торговая караван",
+        "description": "В деревню прибывает торговый караван с редкими товарами.",
+        "frequency": "monthly",
+        "duration": 3,
+        "bonuses": {
+          "shop_discount": 20,
+          "rare_items": true
+        },
+        "special_items": ["pet_egg", "legendary_recipe", "rare_mount"]
+      }
+    },
+    
+    "seasonal": {
+      "spring_festival": {
+        "name": "🌸 Праздник весны",
+        "description": "Природа просыпается, всё растёт быстрее.",
+        "season": "spring",
+        "duration": 7,
+        "bonuses": {
+          "growth_speed": 2.0,
+          "yield_bonus": 1.5,
+          "herb_drop": 2.0
+        },
+        "activities": ["flower_picking", "egg_hunt", "maypole_dance"],
+        "rewards": {
+          "spring_flower": "украшение для дома",
+          "easter_egg": "редкий предмет"
+        }
+      },
+      
+      "summer_solstice": {
+        "name": "☀️ Летнее солнцестояние",
+        "description": "Самый длинный день в году. Солнечная энергия наполняет мир.",
+        "season": "summer",
+        "duration": 3,
+        "bonuses": {
+          "exp": 1.5,
+          "fire_damage": 1.3,
+          "day_length": 2.0
+        },
+        "activities": ["sun_worship", "beach_party", "fireworks"],
+        "rewards": {
+          "sun_crystal": "редкий материал",
+          "summer_crown": "украшение"
+        }
+      },
+      
+      "harvest_festival": {
+        "name": "🌽 Праздник урожая",
+        "description": "Время собирать урожай и благодарить землю.",
+        "season": "autumn",
+        "duration": 5,
+        "bonuses": {
+          "crop_yield": 2.5,
+          "cooking_effect": 1.5,
+          "gold_drop": 1.3
+        },
+        "activities": ["pumpkin_carving", "feast", "scarecrow_hunt"],
+        "rewards": {
+          "golden_pumpkin": "редкий предмет",
+          "harvest_crown": "украшение"
+        }
+      },
+      
+      "winter_festival": {
+        "name": "❄️ Зимний фестиваль",
+        "description": "Снег и лёд правят миром. Время подарков и чудес.",
+        "season": "winter",
+        "duration": 7,
+        "bonuses": {
+          "ice_damage": 1.5,
+          "gift_chance": 2.0,
+          "pet_happiness": 1.5
+        },
+        "activities": ["snowball_fight", "gift_exchange", "ice_sculpture"],
+        "rewards": {
+          "winter_star": "редкий предмет",
+          "snowman_pet": "особый питомец"
+        }
+      },
+      
+      "new_year": {
+        "name": "🎆 Новый год",
+        "description": "Провожаем старый год и встречаем новый!",
+        "season": "winter",
+        "day": "december_31",
+        "duration": 3,
+        "bonuses": {
+          "all_stats": 1.5,
+          "drop_rate": 2.0,
+          "fireworks": true
+        },
+        "activities": ["countdown", "fireworks_show", "wish_making"],
+        "rewards": {
+          "new_year_gift": "легендарный сундук",
+          "celebration_hat": "украшение",
+          "year_of_the_dragon": "особый титул"
+        }
+      },
+      
+      "halloween": {
+        "name": "🎃 Хэллоуин",
+        "description": "Ночь, когда монстры особенно активны, а тыквы светятся в темноте.",
+        "season": "autumn",
+        "day": "october_31",
+        "duration": 3,
+        "bonuses": {
+          "spooky_drops": true,
+          "night_bonus": 2.0,
+          "trick_or_treat": true
+        },
+        "special_mobs": ["pumpkin_head", "ghost", "vampire"],
+        "activities": ["trick_or_treat", "costume_contest", "haunted_house"],
+        "rewards": {
+          "jack_o_lantern": "украшение для дома",
+          "spider_pet": "особый питомец",
+          "vampire_title": "титул"
+        }
+      }
+    },
+    
+    "special": {
+      "birthday": {
+        "name": "🎂 День рождения Destiny",
+        "description": "Нашей игре исполнился год! Спасибо, что ты с нами!",
+        "frequency": "yearly",
+        "day": "june_15",
+        "duration": 7,
+        "bonuses": {
+          "all_stats": 2.0,
+          "exp": 3.0,
+          "drop_rate": 2.5
+        },
+        "rewards": {
+          "birthday_cake": "особый предмет",
+          "anniversary_title": "титул",
+          "free_premium": 3
+        }
+      },
+      
+      "developer_event": {
+        "name": "👨‍💻 Ивент разработчиков",
+        "description": "Разработчики заглянули в игру и устроили праздник!",
+        "frequency": "random",
+        "announced": true,
+        "bonuses": {
+          "random_buff": true,
+          "special_quests": true
+        },
+        "activities": ["dev_hunt", "qa_contest", "screenshot_contest"],
+        "rewards": {
+          "dev_title": "титул",
+          "unique_skin": "особый скин",
+          "rainbow_stone": 3
+        }
+      }
+    },
+    
+    "event_achievements": {
+      "mining_master": {
+        "name": "⛏️ Король шахты",
+        "requirement": "Победить в шахтёрском дне 10 раз",
+        "reward": {
+          "title": "Король шахты",
+          "rainbow_shard": 10,
+          "statue": "miner_statue"
+        }
+      },
+      "hunting_legend": {
+        "name": "🏹 Легендарный охотник",
+        "requirement": "Победить в охотничьем дне 10 раз",
+        "reward": {
+          "title": "Легендарный охотник",
+          "rainbow_shard": 10,
+          "statue": "hunter_statue"
+        }
+      },
+      "fishing_god": {
+        "name": "🎣 Бог рыбалки",
+        "requirement": "Победить в рыбном дне 10 раз",
+        "reward": {
+          "title": "Бог рыбалки",
+          "rainbow_shard": 10,
+          "statue": "fisher_statue"
+        }
+      },
+      "rainbow_collector": {
+        "name": "🌈 Хранитель радуги",
+        "requirement": "Победить в радужном дне 5 раз",
+        "reward": {
+          "title": "Хранитель радуги",
+          "rainbow_stone": 3,
+          "rainbow_aura": true
+        }
+      },
+      "pvp_champion": {
+        "name": "⚔️ Чемпион арены",
+        "requirement": "Победить в PvP турнире 3 раза",
+        "reward": {
+          "title": "Чемпион арены",
+          "rainbow_stone": 5,
+          "gladiator_skin": true
+        }
+      },
+      "guild_hero": {
+        "name": "🏛️ Герой гильдии",
+        "requirement": "Победить в гильдейских войнах 5 раз",
+        "reward": {
+          "title": "Герой гильдии",
+          "rainbow_stone": 5,
+          "guild_banner": true
+        }
+      },
+      "blessed_one": {
+        "name": "🙏 Избранный богами",
+        "requirement": "Участвовать в 50 воскресных благословениях",
+        "reward": {
+          "title": "Избранный богами",
+          "rainbow_stone": 10,
+          "divine_aura": true
+        }
+      },
+      "seasoned_traveler": {
+        "name": "🗺️ Бывалый путешественник",
+        "requirement": "Участвовать во всех сезонных ивентах",
+        "reward": {
+          "title": "Бывалый путешественник",
+          "rainbow_stone": 5,
+          "traveler_cloak": true
+        }
+      },
+      "event_hunter": {
+        "name": "🎪 Охотник за ивентами",
+        "requirement": "Выполнить 100 ивентовых заданий",
+        "reward": {
+          "title": "Охотник за ивентами",
+          "rainbow_stone": 3,
+          "event_medal": true
+        }
+      }
+    },
+    
+    "event_calendar": {
+      "january": ["new_year", "winter_festival"],
+      "february": ["winter_festival"],
+      "march": ["spring_festival"],
+      "april": ["spring_festival", "easter"],
+      "may": ["spring_festival"],
+      "june": ["summer_solstice", "birthday"],
+      "july": ["summer_festival"],
+      "august": ["summer_festival"],
+      "september": ["harvest_festival"],
+      "october": ["harvest_festival", "halloween"],
+      "november": ["autumn_festival"],
+      "december": ["winter_festival", "new_year"]
+    },
+    
+    "event_stats": {
+      "total_events": 0,
+      "active_event": null,
+      "next_event": null,
+      "event_history": []
+    }
+  }
+}
