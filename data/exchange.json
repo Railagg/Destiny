@@ -151,6 +151,22 @@
       "/exchange dstn 10000": "Обменять 10000 DSTN на TON",
       "/exchange history": "История обменов",
       "/exchange limits": "Мои лимиты"
+    },
+    
+    "stats": {
+      "total_volume_ton": 0,
+      "total_volume_dstn": 0,
+      "total_transactions": 0,
+      "active_users": 0,
+      "average_exchange": 0
+    },
+    
+    "ton_integration": {
+      "provider": "TON Connect",
+      "required_version": "2.0",
+      "supported_wallets": ["Tonkeeper", "Wallet", "Tonhub"],
+      "confirmation_blocks": 6,
+      "explorer_url": "https://tonviewer.com"
     }
   }
 }
