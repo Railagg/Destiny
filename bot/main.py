@@ -185,75 +185,75 @@ def get_daily_reward(streak):
     return rewards.get(streak, rewards[1])
 
 # ============================================
-# КОМАНДА /start (базовая, если в start.py нет)
+# ⚠️ КОМАНДА /start ЗАКОММЕНТИРОВАНА - используется из handlers/start.py
 # ============================================
 
-@bot.message_handler(commands=['start'])
-def start_command(message):
-    user_id = message.from_user.id
-    username = message.from_user.username
-    first_name = message.from_user.first_name
-
-    user, character = get_or_create_player(user_id, username, first_name)
-
-    refresh_energy(character)
-    refresh_magic(character)
-    
-    # Проверяем ежедневный вход
-    claimed, streak = check_daily_login(character)
-    if claimed:
-        reward = get_daily_reward(streak)
-        character.gold += reward["gold"]
-        character.destiny_tokens += reward["dstn"]
-        for item in reward["items"]:
-            if isinstance(item, list):
-                for _ in range(item[1]):
-                    character.add_item(item[0])
-            else:
-                character.add_item(item)
-        save_character(character)
-        
-        bot.send_message(
-            message.chat.id,
-            f"🎁 *Ежедневная награда!*\nДень {streak}\n"
-            f"💰 +{reward['gold']} золота\n"
-            f"🪙 +{reward['dstn']} DSTN",
-            parse_mode='Markdown'
-        )
-
-    # Создаем клавиатуру с WebApp
-    markup = InlineKeyboardMarkup()
-    webapp_button = InlineKeyboardButton(
-        text="🎮 ОТКРЫТЬ ИГРУ",
-        web_app=WebAppInfo(url="https://destiny-1-6m57.onrender.com")
-    )
-    markup.add(webapp_button)
-    
-    # Добавляем кнопки для команд
-    markup.row(
-        InlineKeyboardButton("📊 Статус", callback_data="game:status"),
-        InlineKeyboardButton("🎒 Инвентарь", callback_data="game:inventory")
-    )
-    markup.row(
-        InlineKeyboardButton("🗺️ Карта", callback_data="game:map"),
-        InlineKeyboardButton("📜 Квесты", callback_data="game:quests")
-    )
-    markup.row(
-        InlineKeyboardButton("🐾 Питомцы", callback_data="pets:menu"),
-        InlineKeyboardButton("💱 Обмен", callback_data="exchange:menu")
-    )
-
-    bot.send_message(
-        message.chat.id,
-        f"👋 *Добро пожаловать, {first_name}!*\n\n"
-        f"⚡ Энергия: {character.energy}/{character.max_energy}\n"
-        f"💰 Золото: {character.gold}\n"
-        f"🪙 DSTN: {character.destiny_tokens}\n"
-        f"❤️ Здоровье: {character.health}/{character.max_health}\n\n"
-        f"📅 Стрик входа: {character.login_streak or 0} дней",
-        reply_markup=markup,
-        parse_mode='Markdown'
-    )
+# @bot.message_handler(commands=['start'])
+# def start_command(message):
+#     user_id = message.from_user.id
+#     username = message.from_user.username
+#     first_name = message.from_user.first_name
+#
+#     user, character = get_or_create_player(user_id, username, first_name)
+#
+#     refresh_energy(character)
+#     refresh_magic(character)
+#    
+#     # Проверяем ежедневный вход
+#     claimed, streak = check_daily_login(character)
+#     if claimed:
+#         reward = get_daily_reward(streak)
+#         character.gold += reward["gold"]
+#         character.destiny_tokens += reward["dstn"]
+#         for item in reward["items"]:
+#             if isinstance(item, list):
+#                 for _ in range(item[1]):
+#                     character.add_item(item[0])
+#             else:
+#                 character.add_item(item)
+#         save_character(character)
+#        
+#         bot.send_message(
+#             message.chat.id,
+#             f"🎁 *Ежедневная награда!*\nДень {streak}\n"
+#             f"💰 +{reward['gold']} золота\n"
+#             f"🪙 +{reward['dstn']} DSTN",
+#             parse_mode='Markdown'
+#         )
+#
+#     # Создаем клавиатуру с WebApp
+#     markup = InlineKeyboardMarkup()
+#     webapp_button = InlineKeyboardButton(
+#         text="🎮 ОТКРЫТЬ ИГРУ",
+#         web_app=WebAppInfo(url="https://destiny-1-6m57.onrender.com")
+#     )
+#     markup.add(webapp_button)
+#    
+#     # Добавляем кнопки для команд
+#     markup.row(
+#         InlineKeyboardButton("📊 Статус", callback_data="game:status"),
+#         InlineKeyboardButton("🎒 Инвентарь", callback_data="game:inventory")
+#     )
+#     markup.row(
+#         InlineKeyboardButton("🗺️ Карта", callback_data="game:map"),
+#         InlineKeyboardButton("📜 Квесты", callback_data="game:quests")
+#     )
+#     markup.row(
+#         InlineKeyboardButton("🐾 Питомцы", callback_data="pets:menu"),
+#         InlineKeyboardButton("💱 Обмен", callback_data="exchange:menu")
+#     )
+#
+#     bot.send_message(
+#         message.chat.id,
+#         f"👋 *Добро пожаловать, {first_name}!*\n\n"
+#         f"⚡ Энергия: {character.energy}/{character.max_energy}\n"
+#         f"💰 Золото: {character.gold}\n"
+#         f"🪙 DSTN: {character.destiny_tokens}\n"
+#         f"❤️ Здоровье: {character.health}/{character.max_health}\n\n"
+#         f"📅 Стрик входа: {character.login_streak or 0} дней",
+#         reply_markup=markup,
+#         parse_mode='Markdown'
+#     )
 
 # ============================================
 # КОМАНДА /profile
@@ -575,7 +575,9 @@ def handle_callback(call):
                 action = parts[1]
                 
                 if action == "back_to_start":
-                    start_command(call.message)
+                    # Вызываем start_command из handlers
+                    from handlers.start import start_command
+                    start_command(call.message, bot, get_or_create_player, locations_data)
                 
                 elif action == "status":
                     status_command(call.message)
@@ -618,7 +620,9 @@ def handle_callback(call):
                     save_character(character)
                     bot.answer_callback_query(call.id, f"✅ Ты стал {class_name}!")
                     bot.delete_message(call.message.chat.id, call.message.message_id)
-                    start_command(call.message)
+                    # Вызываем start_command из handlers
+                    from handlers.start import start_command
+                    start_command(call.message, bot, get_or_create_player, locations_data)
                 
                 else:
                     bot.answer_callback_query(call.id, "⏳ Эта функция в разработке")
@@ -708,7 +712,7 @@ def handle_callback(call):
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import threading
-import os  # <--- ВАЖНО: добавить этот импорт!
+import os
 
 class HealthHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -722,12 +726,8 @@ class HealthHandler(BaseHTTPRequestHandler):
 
 def run_health_server():
     try:
-        # БЕРЁМ ПОРТ ИЗ ПЕРЕМЕННОЙ ОКРУЖЕНИЯ RENDER
         port = int(os.getenv("PORT", 10000))
-        
-        # СОЗДАЁМ СЕРВЕР НА ВСЕХ ИНТЕРФЕЙСАХ
         server = HTTPServer(('0.0.0.0', port), HealthHandler)
-        
         print(f"✅ Health server running on port {port}")
         server.serve_forever()
     except Exception as e:
@@ -736,6 +736,7 @@ def run_health_server():
 # Запускаем health-сервер в отдельном потоке
 health_thread = threading.Thread(target=run_health_server, daemon=True)
 health_thread.start()
+
 # ============================================
 # ЗАПУСК БОТА
 # ============================================
