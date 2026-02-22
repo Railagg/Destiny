@@ -1,5 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 import os
@@ -66,16 +68,42 @@ secrets_data = load_json("secrets.json")
 
 print("✅ Все JSON загружены")
 
-# ========== СТАРЫЕ ЭНДПОИНТЫ ==========
-@app.get("/")
-def root():
-    return {
-        "message": "Destiny API is working!",
-        "status": "ok",
-        "database": "connected",
-        "version": "2.0"
-    }
+# ========== РАЗДАЧА ФРОНТЕНДА ==========
+frontend_path = Path(__file__).parent / "frontend"
 
+if frontend_path.exists():
+    # Монтируем папку frontend для доступа к статическим файлам
+    app.mount("/frontend", StaticFiles(directory=str(frontend_path), html=True), name="frontend")
+    print(f"✅ Фронтенд загружен из {frontend_path}")
+    
+    # Корневой маршрут - отдаём index.html
+    @app.get("/")
+    async def root():
+        index_path = frontend_path / "index.html"
+        if index_path.exists():
+            return FileResponse(index_path)
+        else:
+            return {
+                "message": "Destiny API is working!",
+                "status": "ok",
+                "database": "connected",
+                "version": "2.0",
+                "note": "index.html не найден в папке frontend"
+            }
+else:
+    print(f"❌ Папка frontend НЕ найдена по пути: {frontend_path}")
+    
+    # Запасной вариант - если папки нет, просто показываем API
+    @app.get("/")
+    def root():
+        return {
+            "message": "Destiny API is working!",
+            "status": "ok",
+            "database": "connected",
+            "version": "2.0"
+        }
+
+# ========== API ЭНДПОИНТЫ ==========
 @app.get("/health")
 def health():
     return {"status": "healthy"}
@@ -89,7 +117,6 @@ def auth_telegram(data: dict, db: Session = Depends(get_db)):
     # Здесь код авторизации...
     return {"status": "ok"}
 
-# ========== НОВЫЕ ЭНДПОИНТЫ ==========
 @app.get("/api/data")
 def get_data():
     """Получить все игровые данные"""
@@ -137,3 +164,12 @@ def get_user(telegram_id: int, db: Session = Depends(get_db)):
         "destiny_tokens": character.destiny_tokens if character else 0,
         "location": character.location if character else "start"
     }
+
+# ========== ДОПОЛНИТЕЛЬНЫЙ РЕДИРЕКТ (опционально) ==========
+# Если хочешь, чтобы /frontend тоже открывал index.html
+@app.get("/frontend")
+async def frontend_root():
+    index_path = frontend_path / "index.html"
+    if frontend_path.exists() and index_path.exists():
+        return FileResponse(index_path)
+    return {"error": "Frontend not available"}
