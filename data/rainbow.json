@@ -1,95 +1,21 @@
 {
   "rainbow": {
-    "shards": {
-      "shard_1": {
-        "id": "shard_1",
-        "name": "🌈 Осколок радуги #1",
-        "color": "red_tint",
-        "description": "Первый осколок радужного камня. Имеет красноватый оттенок.",
-        "source": "4-й день входа",
-        "guaranteed": true
-      },
-      "shard_2": {
-        "id": "shard_2",
-        "name": "🌈 Осколок радуги #2",
-        "color": "orange_tint",
-        "description": "Второй осколок радужного камня. Имеет оранжевый оттенок.",
-        "source": "4-й день входа",
-        "guaranteed": true
-      },
-      "shard_3": {
-        "id": "shard_3",
-        "name": "🌈 Осколок радуги #3",
-        "color": "yellow_tint",
-        "description": "Третий осколок радужного камня. Имеет жёлтый оттенок.",
-        "source": "4-й день входа",
-        "guaranteed": true
-      },
-      "shard_4": {
-        "id": "shard_4",
-        "name": "🌈 Осколок радуги #4",
-        "color": "green_tint",
-        "description": "Четвёртый осколок радужного камня. Имеет зелёный оттенок.",
-        "source": "4-й день входа",
-        "guaranteed": true
-      },
-      "shard_5": {
-        "id": "shard_5",
-        "name": "🌈 Осколок радуги #5",
-        "color": "blue_tint",
-        "description": "Пятый осколок радужного камня. Имеет синий оттенок.",
-        "source": "4-й день входа",
-        "guaranteed": true
-      },
-      "shard_6": {
-        "id": "shard_6",
-        "name": "🌈 Осколок радуги #6",
-        "color": "indigo_tint",
-        "description": "Шестой осколок радужного камня. Имеет сине-фиолетовый оттенок.",
-        "source": "4-й день входа",
-        "guaranteed": true
-      },
-      "shard_7": {
-        "id": "shard_7",
-        "name": "🌈 Осколок радуги #7",
-        "color": "violet_tint",
-        "description": "Седьмой осколок радужного камня. Имеет фиолетовый оттенок.",
-        "source": "4-й день входа",
-        "guaranteed": true
-      },
-      "shard_8": {
-        "id": "shard_8",
-        "name": "🌈 Осколок радуги #8",
-        "color": "prismatic_tint",
-        "description": "Восьмой осколок радужного камня. Переливается всеми цветами.",
-        "source": "4-й день входа",
-        "guaranteed": true
-      },
-      "shard_9": {
-        "id": "shard_9",
-        "name": "🌈 Осколок радуги #9",
-        "color": "rainbow_tint",
-        "description": "Девятый, самый важный осколок радужного камня. Пульсирует радужным светом.",
-        "source": "4-й день входа",
-        "guaranteed": true
-      }
+    "shard": {
+      "id": "rainbow_shard",
+      "name": "🌈 Осколок радуги",
+      "description": "Загадочный осколок, хранящий силу света. 9 таких осколков можно объединить в радужный камень.",
+      "color": "rainbow",
+      "source": "4-й день входа, боссы, ивенты",
+      "max_stack": 99
     },
     
     "craft": {
       "rainbow_stone": {
         "id": "rainbow_stone",
-        "name": "🌈 РАДУЖНЫЙ КАМЕНЬ",
+        "name": "💎 РАДУЖНЫЙ КАМЕНЬ",
         "description": "Древний камень, хранящий силу всех стихий. Используется для создания легендарных предметов.",
         "recipe": {
-          "shard_1": 1,
-          "shard_2": 1,
-          "shard_3": 1,
-          "shard_4": 1,
-          "shard_5": 1,
-          "shard_6": 1,
-          "shard_7": 1,
-          "shard_8": 1,
-          "shard_9": 1,
+          "rainbow_shard": 9,
           "dstn": 1000,
           "gold": 10000
         },
@@ -103,82 +29,129 @@
     "shop": {
       "rainbow_stone": {
         "price_stars": 500,
+        "price_ton": 9,
         "price_dstn": 50000,
-        "price_ton": 10,
-        "limit": "1 per month",
-        "description": "Купить готовый радужный камень (без необходимости собирать осколки)"
+        "ton_discount": 10,
+        "description": "Купить готовый радужный камень (постоянная скидка 10% при оплате TON)",
+        "limit": "1 per month"
       },
       "rainbow_shard_pack": {
         "price_stars": 300,
+        "price_ton": 5.4,
         "price_dstn": 30000,
-        "price_ton": 6,
+        "ton_discount": 10,
         "amount": 5,
-        "limit": "2 per month",
-        "description": "Набор из 5 случайных радужных осколков"
+        "description": "Набор из 5 радужных осколков (скидка 10% при оплате TON)",
+        "limit": "2 per month"
       },
-      "rainbow_shard_choice": {
+      "rainbow_shard": {
         "price_stars": 100,
+        "price_ton": 1.8,
         "price_dstn": 10000,
-        "price_ton": 2,
+        "ton_discount": 10,
         "amount": 1,
-        "limit": "weekly",
-        "description": "Выбери любой радужный осколок"
+        "description": "Один радужный осколок (скидка 10% при оплате TON)",
+        "limit": "weekly"
+      }
+    },
+    
+    "sources": {
+      "daily_login": {
+        "day4": {
+          "name": "Ежедневный вход (день 4)",
+          "description": "Гарантированный радужный осколок за вход на 4-й день",
+          "amount": 1,
+          "guaranteed": true
+        },
+        "streak_7": {
+          "name": "Недельный стрик",
+          "description": "Шанс получить дополнительный осколок при входе 7 дней подряд",
+          "chance": 50,
+          "amount": 1
+        }
+      },
+      "bosses": {
+        "stone_golem": { "chance": 10, "amount": "1-2" },
+        "fire_elemental": { "chance": 15, "amount": "1-2" },
+        "ancient_guardian": { "chance": 20, "amount": "1-3" },
+        "dragon": { "chance": 30, "amount": "2-4" },
+        "sand_dragon": { "chance": 25, "amount": "1-3" },
+        "swamp_monster": { "chance": 20, "amount": "1-2" },
+        "ice_giant": { "chance": 25, "amount": "2-3" },
+        "crystal_dragon": { "chance": 40, "amount": "3-5" },
+        "volcano_king": { "chance": 40, "amount": "3-5" },
+        "dragon_king": { "chance": 60, "amount": "5-8" }
+      },
+      "events": {
+        "rainbow_day": { "name": "День радуги (четверг)", "bonus": "x2 шанс" },
+        "weekly_boss": { "name": "Еженедельный босс", "chance": 100, "amount": "1-3" }
+      },
+      "chests": {
+        "legendary_chest": { "chance": 25, "amount": "1-3" },
+        "epic_chest": { "chance": 10, "amount": "1" },
+        "treasure_room": { "guaranteed": true, "amount": "2-5" }
       }
     },
     
     "uses": {
       "legendary_weapon": {
         "name": "⚔️ Легендарное оружие",
+        "description": "Создай легендарное оружие своего класса",
         "cost": 1,
         "materials": {
           "mythril_ingot": 5,
           "perfect_crystal": 3,
           "gold_ingot": 10
         },
-        "description": "Создай легендарное оружие своего класса"
+        "station": "magic_altar"
       },
       "dragon_sword": {
         "name": "🐉 Меч дракона",
+        "description": "Легендарный меч, выкованный из частей дракона",
         "cost": 2,
         "materials": {
           "dragon_fang": 5,
           "dragon_scale": 3,
           "mythril_ingot": 10
         },
-        "description": "Легендарный меч, выкованный из частей дракона"
+        "station": "dragon_altar"
       },
       "phoenix_bow": {
         "name": "🦅 Лук феникса",
+        "description": "Лук, стреляющий огненными стрелами",
         "cost": 2,
         "materials": {
           "phoenix_feather": 3,
           "dragon_blood": 3,
           "mythril_ingot": 10
         },
-        "description": "Лук, стреляющий огненными стрелами"
+        "station": "divine_altar"
       },
       "dragon_staff": {
         "name": "🪄 Посох дракона",
+        "description": "Посох, наполненный силой дракона",
         "cost": 2,
         "materials": {
           "dragon_bone": 3,
           "dragon_heart": 1,
           "magic_crystal": 20
         },
-        "description": "Посох, наполненный силой дракона"
+        "station": "dragon_altar"
       },
       "dragon_shield": {
         "name": "🛡️ Щит дракона",
+        "description": "Несокрушимый щит из чешуи дракона",
         "cost": 2,
         "materials": {
           "dragon_scale": 5,
           "dragon_bone": 3,
           "mythril_ingot": 10
         },
-        "description": "Несокрушимый щит из чешуи дракона"
+        "station": "dragon_altar"
       },
       "flying_island": {
         "name": "🏝️ Летающий остров",
+        "description": "Собственный летающий остров, который можно украшать и улучшать",
         "cost": 3,
         "materials": {
           "perfect_crystal": 20,
@@ -186,20 +159,22 @@
           "gold_ingot": 50,
           "dragon_heart": 2
         },
-        "description": "Собственный летающий остров, который можно украшать и улучшать"
+        "station": "divine_altar"
       },
       "dragon_egg": {
         "name": "🥚 Яйцо дракона",
+        "description": "Яйцо дракона. Из него вылупится питомец — дракончик",
         "cost": 3,
         "materials": {
           "dragon_heart": 3,
           "dragon_scale": 10,
           "rainbow_stone": 2
         },
-        "description": "Яйцо дракона. Из него вылупится питомец — дракончик"
+        "station": "dragon_altar"
       },
       "ancient_crown": {
         "name": "👑 Корона древних",
+        "description": "Корона, дарующая власть над стихиями",
         "cost": 5,
         "materials": {
           "ancient_relic": 10,
@@ -207,7 +182,7 @@
           "dragon_heart": 3,
           "rainbow_stone": 2
         },
-        "description": "Корона, дарующая власть над стихиями"
+        "station": "divine_altar"
       }
     },
     
@@ -244,35 +219,40 @@
         "cost": 1,
         "bonus": "+5% к шансу найти редкие ресурсы",
         "effect": "1 раз в день даёт случайный осколок",
-        "description": "Алтарь, на котором можно создавать радужные камни"
+        "description": "Алтарь, на котором можно создавать радужные камни",
+        "image": "rainbow_altar.jpg"
       },
       "rainbow_garden": {
         "name": "🌸 Радужный сад",
         "cost": 2,
         "bonus": "Растения растут в 2 раза быстрее",
         "effect": "5% шанс на двойной урожай",
-        "description": "В этом саду даже зимой цветут цветы"
+        "description": "В этом саду даже зимой цветут цветы",
+        "image": "rainbow_garden.jpg"
       },
       "rainbow_temple": {
         "name": "🏯 Храм радуги",
         "cost": 3,
         "bonus": "Молитва 1 раз в день",
         "effect": "Случайный бафф на 1 час",
-        "description": "Место силы, где можно попросить богов о помощи"
+        "description": "Место силы, где можно попросить богов о помощи",
+        "image": "rainbow_temple.jpg"
       },
       "rainbow_well": {
         "name": "⛲ Радужный колодец",
         "cost": 2,
         "bonus": "1 раз в день можно загадать желание",
         "effect": "Случайная награда (золото, DSTN, предметы)",
-        "description": "Колодец, исполняющий желания"
+        "description": "Колодец, исполняющий желания",
+        "image": "rainbow_well.jpg"
       },
       "rainbow_statue": {
         "name": "🗿 Статуя радуги",
         "cost": 3,
         "bonus": "+10% ко всем характеристикам в доме",
         "effect": "Увеличивает эффекты других построек",
-        "description": "Статуя, излучающая радужный свет"
+        "description": "Статуя, излучающая радужный свет",
+        "image": "rainbow_statue.jpg"
       }
     },
     
@@ -304,16 +284,39 @@
     },
     
     "daily_login": {
-      "day4_reward": {
-        "name": "🌈 Радужный осколок",
+      "day4": {
+        "name": "День 4: Радужный осколок",
         "description": "Гарантированный радужный осколок за вход на 4-й день",
-        "shard_number": "random",
+        "reward": "rainbow_shard",
+        "amount": 1,
         "guaranteed": true
       },
-      "streak_bonus": {
-        "7_days": "x2 шанс на осколок",
-        "30_days": "гарантированный осколок каждый день",
-        "365_days": "гарантированный радужный камень"
+      "streak_30": {
+        "name": "30 дней подряд",
+        "description": "Месяц без пропусков!",
+        "reward": "rainbow_shard",
+        "amount": 3
+      },
+      "streak_365": {
+        "name": "Год без пропусков!",
+        "description": "Ты поистине легендарен!",
+        "reward": "rainbow_stone",
+        "amount": 1,
+        "title": "Легендарная преданность"
+      }
+    },
+    
+    "discounts": {
+      "ton_regular": {
+        "enabled": true,
+        "discount_percent": 10,
+        "description": "Постоянная скидка 10% при оплате TON"
+      },
+      "first_purchase": {
+        "enabled": true,
+        "stars_discount": 50,
+        "ton_discount": 25,
+        "description": "При первой покупке: 50% на Stars, 25% на TON"
       }
     }
   }
