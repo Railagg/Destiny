@@ -1,9 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from database import engine, Base
 from routes import game, pvp, guild, premium, nft
-import utils  # Импортируем utils для загрузки данных
-print("👋 ЭТОТ ТЕКСТ ДОЛЖЕН БЫТЬ В ЛОГАХ!")
+import json
+from pathlib import Path
+import os
 
 # Создаем таблицы в базе данных
 Base.metadata.create_all(bind=engine)
@@ -23,34 +25,106 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Подключаем маршруты
+# Подключаем маршруты API
 app.include_router(game.router, prefix="/api", tags=["Game"])
 app.include_router(pvp.router, prefix="/api/pvp", tags=["PvP"])
 app.include_router(guild.router, prefix="/api/guild", tags=["Guild"])
 app.include_router(premium.router, prefix="/api/premium", tags=["Premium"])
 app.include_router(nft.router, prefix="/api/nft", tags=["NFT"])
 
-@app.get("/")
-def root():
-    """Корневой эндпоинт"""
-    return {
-        "message": "Destiny API is working!",
-        "status": "ok",
-        "database": "connected",
-        "version": "2.0"
-    }
+# ========== РАЗДАЧА ФРОНТЕНДА ==========
+
+# Путь к папке fronted (на уровень выше от app/)
+fronted_path = Path(__file__).parent.parent / "fronted"
+
+if fronted_path.exists():
+    # Раздаем статические файлы
+    app.mount("/fronted", StaticFiles(directory=str(fronted_path), html=True), name="fronted")
+    print(f"✅ Фронтенд загружен из {fronted_path}")
+    
+    # Добавляем редирект с корня на фронтенд (опционально)
+    @app.get("/")
+    async def root_with_frontend():
+        from fastapi.responses import FileResponse
+        index_path = fronted_path / "index.html"
+        if index_path.exists():
+            return FileResponse(index_path)
+        return {
+            "message": "Destiny API is working!",
+            "status": "ok",
+            "database": "connected",
+            "version": "2.0"
+        }
+else:
+    print(f"❌ Папка fronted не найдена по пути: {fronted_path}")
+    
+    @app.get("/")
+    def root():
+        return {
+            "message": "Destiny API is working!",
+            "status": "ok",
+            "database": "connected",
+            "version": "2.0"
+        }
 
 @app.get("/health")
 def health():
-    """Проверка здоровья"""
     return {"status": "healthy"}
 
 @app.get("/api/data")
 def get_data():
     """Получить все игровые данные"""
-    return utils.get_all_data()
+    return {
+        "locations": locations_data,
+        "enemies": enemies_data,
+        "items": items_data,
+        "crafting": crafting_data,
+        "classes": classes_data,
+        "quests": quests_data,
+        "house": house_data,
+        "premium": premium_data,
+        "nft": nft_data,
+        "rainbow": rainbow_data,
+        "events": events_data,
+        "codex": codex_data,
+        "biomes": biomes_data,
+        "pets": pets_data,
+        "secrets": secrets_data,
+        "exchange": exchange_data
+    }
 
-# Принудительно вызываем функцию из utils при старте (опционально)
-print("🚀 Проверка загрузки utils...")
-test_data = utils.get_all_data()
-print(f"✅ utils.get_all_data() вернул: {type(test_data)}")
+# ========== ЗАГРУЗКА JSON ==========
+
+print("🚀 Загрузка JSON файлов...")
+DATA_DIR = Path(__file__).parent.parent / "data"
+
+def load_json(filename):
+    filepath = DATA_DIR / filename
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            print(f"✅ Загружен {filename}")
+            return data
+    except Exception as e:
+        print(f"❌ Ошибка загрузки {filename}: {e}")
+        return {}
+
+# Загружаем все JSON
+locations_data = load_json("locations.json")
+enemies_data = load_json("enemies.json")
+items_data = load_json("items.json")
+crafting_data = load_json("crafting.json")
+classes_data = load_json("classes.json")
+quests_data = load_json("quests.json")
+house_data = load_json("house.json")
+premium_data = load_json("premium.json")
+nft_data = load_json("nft.json")
+rainbow_data = load_json("rainbow.json")
+events_data = load_json("events.json")
+codex_data = load_json("codex.json")
+biomes_data = load_json("biomes.json")
+pets_data = load_json("pets.json")
+secrets_data = load_json("secrets.json")
+exchange_data = load_json("exchange.json")
+
+print("✅ Все JSON загружены")
