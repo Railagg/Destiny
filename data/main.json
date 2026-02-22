@@ -1,1 +1,212 @@
-
+{
+  "game": {
+    "name": "Destiny",
+    "version": "2.0.0",
+    "description": "MMORPG в Telegram с элементами LitRPG, крафтом, питомцами и NFT",
+    "developer": "Railagg",
+    "website": "https://destiny-1-6m57.onrender.com"
+  },
+  
+  "player": {
+    "max_level": 50,
+    "prestige_levels": 5,
+    "base_stats": {
+      "health": 100,
+      "energy": 100,
+      "mana": 100,
+      "inventory_size": 50
+    },
+    "start_items": ["rusty_sword"],
+    "start_gold": 20,
+    "start_location": "start"
+  },
+  
+  "economy": {
+    "currency": {
+      "gold": "игровая валюта",
+      "dstn": "токен Destiny на TON",
+      "stars": "Telegram Stars"
+    },
+    "exchange_rates": {
+      "dstn_to_gold": 10,
+      "stars_to_dstn": 100,
+      "stars_to_gold": 1000
+    },
+    "daily_login": {
+      "day1": {"gold": 100, "dstn": 5, "items": ["health_potion"]},
+      "day2": {"gold": 200, "dstn": 10, "items": ["mana_potion"]},
+      "day3": {"gold": 300, "dstn": 15, "items": ["teleport_scroll"]},
+      "day4": {"gold": 400, "dstn": 20, "items": ["rainbow_shard"]},
+      "day5": {"gold": 500, "dstn": 25, "items": ["legendary_chest"]},
+      "day6": {"gold": 600, "dstn": 30, "items": ["epic_chest"]},
+      "day7": {"gold": 1000, "dstn": 50, "items": ["mythril_ingot", 3]}
+    }
+  },
+  
+  "energy_system": {
+    "max_energy": 100,
+    "recovery_per_hour": 10,
+    "energy_cost": {
+      "move": 1,
+      "combat": 2,
+      "mine": 2,
+      "fish": 2,
+      "gather": 2,
+      "craft": 1
+    }
+  },
+  
+  "combat": {
+    "base_hit_chance": 95,
+    "crit_multiplier": 2.0,
+    "dodge_cap": 75,
+    "block_cap": 50,
+    "levels": {
+      "damage_reduction_per_level": 2,
+      "exp_formula": "level * 100"
+    }
+  },
+  
+  "crafting_stations": {
+    "workbench": "Базовый верстак",
+    "anvil": "Наковальня",
+    "cauldron": "Котёл",
+    "campfire": "Костёр",
+    "oven": "Печь",
+    "magic_anvil": "Магическая наковальня",
+    "magic_workbench": "Магический верстак",
+    "magic_cauldron": "Магический котёл",
+    "magic_altar": "Магический алтарь",
+    "dragon_altar": "Алтарь дракона",
+    "divine_altar": "Божественный алтарь",
+    "witch_cauldron": "Котёл ведьмы",
+    "volcanic_campfire": "Вулканический костёр"
+  },
+  
+  "rarity_colors": {
+    "junk": "🗑️",
+    "common": "⚪",
+    "uncommon": "🟢",
+    "rare": "🔵",
+    "epic": "🟣",
+    "legendary": "🟡",
+    "mythic": "🔴"
+  },
+  
+  "materials": {
+    "ores": ["copper", "tin", "bronze", "iron", "steel", "gold", "silver", "mythril", "platinum", "crystal", "bloodstone"],
+    "ingots": ["copper_ingot", "tin_ingot", "bronze_ingot", "iron_ingot", "steel_ingot", "gold_ingot", "silver_ingot", "mythril_ingot", "platinum_ingot"],
+    "gems": ["ruby", "sapphire", "emerald", "diamond", "amethyst", "opal"],
+    "crystals": ["crystal", "magic_crystal", "perfect_crystal"],
+    "leather": ["leather", "wolf_fur", "ice_fur", "bear_skin", "moose_skin"],
+    "herbs": ["herb", "magic_herb", "swamp_herb", "desert_herb", "ice_herb", "fire_flower"],
+    "food": ["meat", "fish", "vegetables", "bread", "honey"]
+  },
+  
+  "nft": {
+    "total_supply": 50,
+    "shards": ["red", "blue", "green", "yellow", "purple"],
+    "price_stars": {"red": 100, "blue": 100, "green": 100, "yellow": 100, "purple": 200},
+    "price_dstn": {"red": 5000, "blue": 5000, "green": 5000, "yellow": 5000, "purple": 10000}
+  },
+  
+  "rainbow": {
+    "shards_needed": 9,
+    "craft_time": 86400,
+    "craft_location": "rainbow_altar",
+    "house_level": 5
+  },
+  
+  "premium": {
+    "plans": ["7days", "28days", "90days", "180days", "365days"],
+    "first_purchase_discount": 50,
+    "max_discounted_duration": 59
+  },
+  
+  "pets": {
+    "max_pets": 5,
+    "active_pet": 1,
+    "pet_inventory": 20,
+    "happiness_decay": 5,
+    "food_experience": {
+      "meat": 10,
+      "fish": 15,
+      "berry": 5,
+      "magic_food": 50
+    }
+  },
+  
+  "house": {
+    "max_level": 5,
+    "storage_per_level": 10,
+    "rest_cooldown": 3600,
+    "buildings": ["grill", "garden", "glass_furnace", "library", "teleport", "alchemy_lab", "bathhouse", "greenhouse", "pet_house", "magic_tower", "guest_room", "trophy_room", "treasury", "artifact_room"]
+  },
+  
+  "guild": {
+    "max_level": 5,
+    "members_per_level": [10, 20, 30, 40, 50],
+    "create_cost": {"gold": 5000, "dstn": 500},
+    "buildings": ["guild_hall", "guild_shop", "guild_arena", "guild_altar"]
+  },
+  
+  "pvp": {
+    "arenas": ["training", "ranked", "tournament"],
+    "rating_ranges": {
+      "bronze": [0, 1000],
+      "silver": [1000, 2000],
+      "gold": [2000, 3000],
+      "platinum": [3000, 4000],
+      "diamond": [4000, 5000],
+      "legend": [5000, 10000]
+    },
+    "season_duration": 30
+  },
+  
+  "events": {
+    "weekly": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+    "monthly": ["full_moon", "meteor_shower", "merchant_caravan"],
+    "seasonal": ["spring_festival", "summer_solstice", "harvest_festival", "winter_festival", "new_year", "halloween"],
+    "special": ["birthday", "developer_event"]
+  },
+  
+  "biomes": {
+    "forest": {"level_range": [1, 15], "danger": "low"},
+    "mountains": {"level_range": [10, 25], "danger": "medium"},
+    "desert": {"level_range": [30, 40], "danger": "high"},
+    "swamp": {"level_range": [35, 45], "danger": "high"},
+    "ice": {"level_range": [40, 50], "danger": "very_high"},
+    "volcanic": {"level_range": [45, 55], "danger": "extreme"},
+    "legendary_islands": {"level_range": [50, 70], "danger": "legendary"}
+  },
+  
+  "data_includes": [
+    "locations.json",
+    "enemies.json",
+    "items.json",
+    "classes.json",
+    "quests.json",
+    "crafting.json",
+    "house.json",
+    "premium.json",
+    "nft.json",
+    "rainbow.json",
+    "events.json",
+    "codex.json",
+    "biomes.json",
+    "pets.json",
+    "secrets.json"
+  ],
+  
+  "version_history": {
+    "1.0.0": "Базовый релиз",
+    "2.0.0": "Полное обновление: новые биомы, питомцы, NFT, радужные камни"
+  },
+  
+  "credits": {
+    "developer": "Railagg",
+    "design": "Railagg",
+    "lore": "Railagg",
+    "balance": "Railagg"
+  }
+}
