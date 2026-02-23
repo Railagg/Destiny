@@ -8,6 +8,7 @@ from pathlib import Path
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import threading
 import time
+from datetime import datetime
 
 # ============================================
 # НАСТРОЙКА ЛОГИРОВАНИЯ
@@ -64,7 +65,6 @@ data_dir = current_dir / "data"               # /bot/data
 logging.info(f"📁 Текущая папка бота: {current_dir}")
 logging.info(f"📁 Папка с данными: {data_dir}")
 
-# Проверяем наличие JSON
 if data_dir.exists():
     json_files = list(data_dir.glob("*.json"))
     logging.info(f"📄 Найдено JSON: {len(json_files)}")
@@ -92,7 +92,6 @@ def load_json(filename):
 
 logging.info("🚀 Загрузка JSON файлов...")
 
-# Загружаем все JSON
 locations_data = load_json("locations.json")
 enemies_data = load_json("enemies.json")
 items_data = load_json("items.json")
@@ -116,67 +115,64 @@ islands_data = load_json("islands.json")
 # ============================================
 
 from handlers import (
-    start, game, pets, exchange, rainbow, premium, nft,
-    guild, pvp, codex, events, shop, top, admin
+    start as start_handler,
+    game,
+    pets,
+    exchange,
+    rainbow,
+    premium,
+    nft,
+    guild,
+    pvp,
+    codex,
+    events,
+    shop,
+    top,
+    admin
 )
-
-# Регистрируем команды из хендлеров
-if hasattr(start, 'register_handlers'):
-    start.register_handlers(bot)
-
-if hasattr(game, 'register_handlers'):
-    game.register_handlers(bot, locations_data, enemies_data, items_data)
-
-if hasattr(pets, 'register_handlers'):
-    pets.register_handlers(bot, get_or_create_player, pets_data)
-
-if hasattr(exchange, 'register_handlers'):
-    exchange.register_handlers(bot, get_or_create_player, exchange_data)
-
-if hasattr(rainbow, 'register_handlers'):
-    rainbow.register_handlers(bot, get_or_create_player, rainbow_data)
-
-if hasattr(premium, 'register_handlers'):
-    premium.register_handlers(bot, get_or_create_player, premium_data)
-
-if hasattr(nft, 'register_handlers'):
-    nft.register_handlers(bot, get_or_create_player, nft_data)
-
-if hasattr(guild, 'register_handlers'):
-    guild.register_handlers(bot, get_or_create_player)
-
-if hasattr(pvp, 'register_handlers'):
-    pvp.register_handlers(bot, get_or_create_player)
-
-if hasattr(codex, 'register_handlers'):
-    codex.register_handlers(bot, codex_data)
-
-if hasattr(events, 'register_handlers'):
-    events.register_handlers(bot, events_data)
-
-if hasattr(shop, 'register_handlers'):
-    shop.register_handlers(bot, get_or_create_player, items_data)
-
-if hasattr(top, 'register_handlers'):
-    top.register_handlers(bot, get_or_create_player)
-
-if hasattr(admin, 'register_handlers'):
-    admin.register_handlers(bot, get_or_create_player)
 
 # ============================================
 # ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
 # ============================================
 
 def get_or_create_player(telegram_id, username=None, first_name=None):
-    """Временная заглушка. Позже заменим на работу с БД"""
+    """Временная заглушка для БД"""
     class DummyCharacter:
         def __init__(self):
             self.level = 1
             self.health = 100
+            self.max_health = 100
             self.energy = 100
+            self.max_energy = 100
+            self.magic = 50
+            self.max_magic = 50
             self.gold = 20
             self.destiny_tokens = 0
             self.inventory = []
+            self.location = "start"
+            self.player_class = None
+            self.class_level = 1
+            self.strength = 1
+            self.dexterity = 1
+            self.intelligence = 1
+            self.vitality = 1
+            self.luck = 0
+            self.crit_chance = 0
+            self.crit_multiplier = 2
+            self.dodge_chance = 0
+            self.defense_bonus = 0
+            self.base_damage = 5
+            self.house_level = 0
+            self.login_streak = 0
+            self.last_update = int(time.time())
+            self.last_magic_update = int(time.time())
+            self.last_login = int(time.time())
+        
+        def get_inventory(self):
+            return self.inventory
+        
+        def add_item(self, item):
+            self.inventory.append(item)
     
     class DummyUser:
         def __init__(self):
@@ -192,41 +188,270 @@ def save_character(character):
     pass
 
 # ============================================
-# БАЗОВЫЕ КОМАНДЫ (на случай, если в хендлерах нет)
+# БАЗОВЫЕ КОМАНДЫ (работают всегда)
 # ============================================
 
 @bot.message_handler(commands=['start'])
 def start_command(message):
-    json_info = []
-    if locations_data:
-        json_info.append(f"📍 Локаций: {len(locations_data.get('locations', {}))}")
-    if enemies_data:
-        json_info.append(f"⚔️ Врагов: {len(enemies_data.get('enemies', {}))}")
-    if items_data:
-        json_info.append(f"📦 Предметов: {len(items_data.get('items', {}))}")
-    if pets_data:
-        json_info.append(f"🐾 Питомцев: {len(pets_data.get('pets', {}))}")
-    
-    json_text = "\n".join(json_info)
-    
-    bot.send_message(
-        message.chat.id,
-        f"✅ БОТ РАБОТАЕТ!\n\n"
-        f"📂 JSON: 17/17\n"
-        f"{json_text}\n\n"
-        f"🆔 ID: {message.from_user.id}\n"
-        f"👤 Имя: {message.from_user.first_name}"
-    )
+    try:
+        start_handler.start_command(message, bot, get_or_create_player, locations_data)
+    except Exception as e:
+        logging.error(f"Ошибка в /start: {e}")
+        # Запасной вариант
+        bot.send_message(
+            message.chat.id,
+            f"✅ БОТ РАБОТАЕТ!\n\n"
+            f"📍 Локаций: {len(locations_data.get('locations', {})) if locations_data else 0}\n"
+            f"⚔️ Врагов: {len(enemies_data.get('enemies', {})) if enemies_data else 0}\n"
+            f"📦 Предметов: {len(items_data.get('items', {})) if items_data else 0}\n"
+            f"🐾 Питомцев: {len(pets_data.get('pets', {})) if pets_data else 0}"
+        )
 
 @bot.message_handler(commands=['help'])
 def help_command(message):
-    text = "❓ *Доступные команды:*\n\n"
-    text += "/start - информация о боте\n"
-    text += "/location - первая локация\n"
-    text += "/items - список предметов\n"
-    text += "/pets - список питомцев\n"
-    text += "/help - это меню"
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
+    try:
+        start_handler.help_command(message, bot)
+    except:
+        text = "❓ *Доступные команды:*\n\n"
+        text += "/start - информация о боте\n"
+        text += "/profile - профиль\n"
+        text += "/status - статус\n"
+        text += "/inventory - инвентарь\n"
+        text += "/location - локация\n"
+        text += "/map - карта мира\n"
+        text += "/class - выбор класса\n"
+        text += "/craft - крафт\n"
+        text += "/house - домик\n"
+        text += "/pets - питомцы\n"
+        text += "/exchange - обмен\n"
+        text += "/rainbow - радужные камни\n"
+        text += "/premium - премиум\n"
+        text += "/nft - NFT\n"
+        text += "/guild - гильдия\n"
+        text += "/pvp - арена\n"
+        text += "/codex - энциклопедия\n"
+        text += "/events - ивенты\n"
+        text += "/shop - магазин\n"
+        text += "/top - рейтинги\n"
+        text += "/help - это меню"
+        bot.send_message(message.chat.id, text, parse_mode='Markdown')
+
+# ============================================
+# КОМАНДЫ ИЗ ХЕНДЛЕРОВ - ПРЯМЫЕ ВЫЗОВЫ
+# ============================================
+
+# profile
+@bot.message_handler(commands=['profile'])
+def profile_command(message):
+    try:
+        game.profile_command(message, bot, get_or_create_player, items_data)
+    except Exception as e:
+        logging.error(f"Ошибка в /profile: {e}")
+        bot.send_message(message.chat.id, "❌ Команда /profile временно недоступна")
+
+# status
+@bot.message_handler(commands=['status'])
+def status_command(message):
+    try:
+        game.status_command(message, bot, get_or_create_player, items_data)
+    except Exception as e:
+        logging.error(f"Ошибка в /status: {e}")
+        bot.send_message(message.chat.id, "❌ Команда /status временно недоступна")
+
+# inventory
+@bot.message_handler(commands=['inventory'])
+def inventory_command(message):
+    try:
+        game.inventory_command(message, bot, get_or_create_player, items_data)
+    except Exception as e:
+        logging.error(f"Ошибка в /inventory: {e}")
+        bot.send_message(message.chat.id, "❌ Команда /inventory временно недоступна")
+
+# location
+@bot.message_handler(commands=['location'])
+def location_command(message):
+    try:
+        game.location_command(message, bot, get_or_create_player, locations_data)
+    except Exception as e:
+        logging.error(f"Ошибка в /location: {e}")
+        # Запасной вариант
+        if locations_data and locations_data.get("locations"):
+            first_loc = list(locations_data["locations"].values())[0]
+            text = f"📍 *{first_loc.get('name', 'Локация')}*\n\n"
+            text += first_loc.get('description', 'Описание отсутствует')
+            bot.send_message(message.chat.id, text, parse_mode='Markdown')
+
+# map
+@bot.message_handler(commands=['map'])
+def map_command(message):
+    try:
+        game.map_command(message, bot)
+    except Exception as e:
+        logging.error(f"Ошибка в /map: {e}")
+        text = "🗺️ *Карта мира*\n\n"
+        text += "🌲 Лесная опушка\n"
+        text += "🏘️ Деревня\n"
+        text += "🏞️ Берег озера\n"
+        text += "⛰️ Горы\n"
+        text += "⛏️ Шахта\n"
+        text += "🏛️ Руины\n"
+        bot.send_message(message.chat.id, text, parse_mode='Markdown')
+
+# class
+@bot.message_handler(commands=['class'])
+def class_command(message):
+    try:
+        game.class_command(message, bot, get_or_create_player)
+    except Exception as e:
+        logging.error(f"Ошибка в /class: {e}")
+        bot.send_message(message.chat.id, "❌ Команда /class временно недоступна")
+
+# craft
+@bot.message_handler(commands=['craft'])
+def craft_command(message):
+    try:
+        game.craft_command(message, bot)
+    except Exception as e:
+        logging.error(f"Ошибка в /craft: {e}")
+        bot.send_message(message.chat.id, "❌ Команда /craft временно недоступна")
+
+# house
+@bot.message_handler(commands=['house'])
+def house_command(message):
+    try:
+        game.house_command(message, bot, get_or_create_player, house_data)
+    except Exception as e:
+        logging.error(f"Ошибка в /house: {e}")
+        bot.send_message(message.chat.id, "❌ Команда /house временно недоступна")
+
+# pets
+@bot.message_handler(commands=['pets'])
+def pets_command(message):
+    try:
+        pets.pets_command(message, bot, get_or_create_player, pets_data)
+    except Exception as e:
+        logging.error(f"Ошибка в /pets: {e}")
+        # Запасной вариант
+        if pets_data and pets_data.get("pets"):
+            pets_list = list(pets_data["pets"].items())[:10]
+            text = "🐾 *Питомцы:*\n\n"
+            for pet_id, pet in pets_list:
+                name = pet.get('name', pet_id)
+                rarity = pet.get('rarity', 'обычный')
+                text += f"• {name} ({rarity})\n"
+            bot.send_message(message.chat.id, text, parse_mode='Markdown')
+        else:
+            bot.send_message(message.chat.id, "❌ Питомцы не загружены")
+
+# exchange
+@bot.message_handler(commands=['exchange'])
+def exchange_command(message):
+    try:
+        exchange.exchange_command(message, bot, get_or_create_player, exchange_data)
+    except Exception as e:
+        logging.error(f"Ошибка в /exchange: {e}")
+        bot.send_message(message.chat.id, "❌ Команда /exchange временно недоступна")
+
+# rainbow
+@bot.message_handler(commands=['rainbow'])
+def rainbow_command(message):
+    try:
+        rainbow.rainbow_command(message, bot, get_or_create_player, rainbow_data)
+    except Exception as e:
+        logging.error(f"Ошибка в /rainbow: {e}")
+        bot.send_message(message.chat.id, "❌ Команда /rainbow временно недоступна")
+
+# premium
+@bot.message_handler(commands=['premium'])
+def premium_command(message):
+    try:
+        premium.premium_command(message, bot, get_or_create_player, premium_data)
+    except Exception as e:
+        logging.error(f"Ошибка в /premium: {e}")
+        bot.send_message(message.chat.id, "❌ Команда /premium временно недоступна")
+
+# nft
+@bot.message_handler(commands=['nft'])
+def nft_command(message):
+    try:
+        nft.nft_command(message, bot, get_or_create_player, nft_data)
+    except Exception as e:
+        logging.error(f"Ошибка в /nft: {e}")
+        bot.send_message(message.chat.id, "❌ Команда /nft временно недоступна")
+
+# guild
+@bot.message_handler(commands=['guild'])
+def guild_command(message):
+    try:
+        guild.guild_command(message, bot, get_or_create_player)
+    except Exception as e:
+        logging.error(f"Ошибка в /guild: {e}")
+        bot.send_message(message.chat.id, "❌ Команда /guild временно недоступна")
+
+# pvp
+@bot.message_handler(commands=['pvp'])
+def pvp_command(message):
+    try:
+        pvp.pvp_command(message, bot, get_or_create_player)
+    except Exception as e:
+        logging.error(f"Ошибка в /pvp: {e}")
+        bot.send_message(message.chat.id, "❌ Команда /pvp временно недоступна")
+
+# codex
+@bot.message_handler(commands=['codex'])
+def codex_command(message):
+    try:
+        codex.codex_command(message, bot, codex_data)
+    except Exception as e:
+        logging.error(f"Ошибка в /codex: {e}")
+        bot.send_message(message.chat.id, "❌ Команда /codex временно недоступна")
+
+# events
+@bot.message_handler(commands=['events'])
+def events_command(message):
+    try:
+        events.events_command(message, bot, events_data)
+    except Exception as e:
+        logging.error(f"Ошибка в /events: {e}")
+        bot.send_message(message.chat.id, "❌ Команда /events временно недоступна")
+
+# shop
+@bot.message_handler(commands=['shop'])
+def shop_command(message):
+    try:
+        shop.shop_command(message, bot, get_or_create_player, items_data)
+    except Exception as e:
+        logging.error(f"Ошибка в /shop: {e}")
+        bot.send_message(message.chat.id, "❌ Команда /shop временно недоступна")
+
+# top
+@bot.message_handler(commands=['top'])
+def top_command(message):
+    try:
+        top.top_command(message, bot, get_or_create_player)
+    except Exception as e:
+        logging.error(f"Ошибка в /top: {e}")
+        bot.send_message(message.chat.id, "❌ Команда /top временно недоступна")
+
+# admin
+@bot.message_handler(commands=['admin'])
+def admin_command(message):
+    try:
+        admin.admin_command(message, bot, get_or_create_player)
+    except Exception as e:
+        logging.error(f"Ошибка в /admin: {e}")
+        bot.send_message(message.chat.id, "❌ Команда /admin временно недоступна")
+
+# ============================================
+# ОБРАБОТКА ВСЕХ ОСТАЛЬНЫХ СООБЩЕНИЙ
+# ============================================
+@bot.message_handler(func=lambda m: True)
+def echo(message):
+    bot.send_message(
+        message.chat.id,
+        f"❓ Неизвестная команда. Напиши /help\n\n"
+        f"Твоё сообщение: {message.text}"
+    )
 
 # ============================================
 # HEALTH СЕРВЕР
