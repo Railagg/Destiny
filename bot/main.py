@@ -143,7 +143,9 @@ from handlers import (
     top,
     admin,
     quests,
-    combat  # ← НОВЫЙ ИМПОРТ
+    combat,
+    craft,
+    house
 )
 
 # ============================================
@@ -383,22 +385,6 @@ def class_command(message):
         logging.error(f"Ошибка в /class: {e}")
         bot.send_message(message.chat.id, "❌ Команда /class временно недоступна")
 
-@bot.message_handler(commands=['craft'])
-def craft_command(message):
-    try:
-        game.craft_command(message, bot)
-    except Exception as e:
-        logging.error(f"Ошибка в /craft: {e}")
-        bot.send_message(message.chat.id, "❌ Команда /craft временно недоступна")
-
-@bot.message_handler(commands=['house'])
-def house_command(message):
-    try:
-        game.house_command(message, bot, get_or_create_player, house_data)
-    except Exception as e:
-        logging.error(f"Ошибка в /house: {e}")
-        bot.send_message(message.chat.id, "❌ Команда /house временно недоступна")
-
 @bot.message_handler(commands=['quests'])
 def quests_command(message):
     try:
@@ -437,15 +423,32 @@ def pets_command(message):
             bot.send_message(message.chat.id, "❌ Питомцы не загружены")
 
 # ============================================
-# НОВАЯ КОМАНДА - АТАКА
+# НОВЫЕ КОМАНДЫ
 # ============================================
+
 @bot.message_handler(commands=['attack'])
 def attack_command(message):
     try:
-        combat.attack_command(message, bot, get_or_create_player, enemies_data)
+        combat.attack_command(message, bot, get_or_create_player, enemies_data, locations_data)
     except Exception as e:
         logging.error(f"Ошибка в /attack: {e}")
         bot.send_message(message.chat.id, "❌ Нельзя начать бой")
+
+@bot.message_handler(commands=['craft'])
+def craft_command(message):
+    try:
+        craft.craft_command(message, bot, get_or_create_player, crafting_data, items_data)
+    except Exception as e:
+        logging.error(f"Ошибка в /craft: {e}")
+        bot.send_message(message.chat.id, "❌ Команда /craft временно недоступна")
+
+@bot.message_handler(commands=['house'])
+def house_command(message):
+    try:
+        house.house_command(message, bot, get_or_create_player, house_data)
+    except Exception as e:
+        logging.error(f"Ошибка в /house: {e}")
+        bot.send_message(message.chat.id, "❌ Команда /house временно недоступна")
 
 # ============================================
 # ОСТАЛЬНЫЕ КОМАНДЫ
@@ -562,8 +565,6 @@ def handle_callback(call):
                     map_command(call.message)
                 elif action == "location":
                     location_command(call.message)
-                elif action == "house":
-                    house_command(call.message)
                 elif action.startswith("class:"):
                     class_name = action.split(':')[1]
                     user_id = call.from_user.id
@@ -628,6 +629,10 @@ def handle_callback(call):
         elif handler == "combat" and len(parts) > 1:
             action = parts[1]
             combat.combat_turn(call, bot, get_or_create_player, enemies_data, items_data, action)
+        elif handler == "craft":
+            craft.handle_callback(call, bot, get_or_create_player, crafting_data, items_data)
+        elif handler == "house":
+            house.handle_callback(call, bot, get_or_create_player, house_data, items_data)
         else:
             bot.answer_callback_query(call.id, "⏳ Модуль в разработке")
     
