@@ -44,6 +44,19 @@ except:
     logging.warning("⚠️ Не удалось отключить вебхук")
 
 # ============================================
+# ПОДКЛЮЧЕНИЕ К БАЗЕ ДАННЫХ
+# ============================================
+from database import engine, Base, SessionLocal
+from models import User, Character
+
+# Создаем таблицы
+try:
+    Base.metadata.create_all(bind=engine)
+    logging.info("✅ Таблицы БД созданы/проверены")
+except Exception as e:
+    logging.error(f"❌ Ошибка создания таблиц: {e}")
+
+# ============================================
 # СОЗДАНИЕ БОТА
 # ============================================
 bot = telebot.TeleBot(BOT_TOKEN)
@@ -149,60 +162,128 @@ from handlers import (
 )
 
 # ============================================
-# ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+# ФУНКЦИИ ДЛЯ РАБОТЫ С БД
 # ============================================
 
 def get_or_create_player(telegram_id, username=None, first_name=None):
-    """Временная заглушка для БД"""
-    class DummyCharacter:
-        def __init__(self):
-            self.level = 1
-            self.health = 100
-            self.max_health = 100
-            self.energy = 100
-            self.max_energy = 100
-            self.magic = 50
-            self.max_magic = 50
-            self.gold = 20
-            self.destiny_tokens = 0
-            self.inventory = []
-            self.location = "start"
-            self.player_class = None
-            self.class_level = 1
-            self.strength = 1
-            self.dexterity = 1
-            self.intelligence = 1
-            self.vitality = 1
-            self.luck = 0
-            self.crit_chance = 0
-            self.crit_multiplier = 2
-            self.dodge_chance = 0
-            self.defense_bonus = 0
-            self.base_damage = 5
-            self.house_level = 0
-            self.login_streak = 0
-            self.last_update = int(time.time())
-            self.last_magic_update = int(time.time())
-            self.last_login = int(time.time())
+    """Получить игрока из БД или создать нового"""
+    db = SessionLocal()
+    try:
+        user = db.query(User).filter(User.telegram_id == telegram_id).first()
         
-        def get_inventory(self):
-            return self.inventory
+        if not user:
+            # Создаём пользователя
+            user = User(
+                telegram_id=telegram_id,
+                username=username,
+                first_name=first_name
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+            
+            # Создаём персонажа
+            character = Character(user_id=user.id)
+            db.add(character)
+            db.commit()
+            db.refresh(character)
+            logging.info(f"👤 Создан новый пользователь: {telegram_id}")
+        else:
+            character = db.query(Character).filter(Character.user_id == user.id).first()
+            user.last_active = datetime.utcnow()
+            db.commit()
         
-        def add_item(self, item):
-            self.inventory.append(item)
-    
-    class DummyUser:
-        def __init__(self):
-            self.telegram_id = telegram_id
-            self.username = username
-            self.first_name = first_name
-            self.created_at = datetime.now()
-    
-    return DummyUser(), DummyCharacter()
+        return user, character
+    finally:
+        db.close()
 
 def save_character(character):
-    """Временная заглушка"""
-    pass
+    """Сохранить изменения персонажа"""
+    db = SessionLocal()
+    try:
+        db.merge(character)
+        db.commit()
+    finally:
+        db.close()
+
+def refresh_energy(character):
+    """Обновить энергию (10 в час)"""
+    now = int(time.time())
+    if character.last_update == 0:
+        character.last_update = now
+        return
+    
+    hours_passed = (now - character.last_update) // 3600
+    if hours_passed > 0:
+        character.energy = min(character.energy + hours_passed * 10, character.max_energy)
+        character.last_update += hours_passed * 3600
+        save_character(character)
+
+def refresh_magic(character):
+    """Обновить магию (5 в час)"""
+    now = int(time.time())
+    if character.last_magic_update == 0:
+        character.last_magic_update = now
+        return
+    
+    hours_passed = (now - character.last_magic_update) // 3600
+    if hours_passed > 0:
+        character.magic = min(character.magic + hours_passed * 5, character.max_magic)
+        character.last_magic_update += hours_passed * 3600
+        save_character(character)
+
+def calculate_damage(character):
+    """Посчитать урон"""
+    weapon_damage = 0
+    inventory = character.get_inventory()
+    for item_id in inventory:
+        if item_id in items_data.get("items", {}):
+            item = items_data["items"][item_id]
+            if item.get("type") == "weapon":
+                weapon_damage += item.get("damage", 0)
+    return character.base_damage + weapon_damage + (character.strength - 1)
+
+def calculate_defense(character):
+    """Посчитать защиту"""
+    defense = character.defense_bonus
+    inventory = character.get_inventory()
+    for item_id in inventory:
+        if item_id in items_data.get("items", {}):
+            item = items_data["items"][item_id]
+            if item.get("type") == "armor":
+                defense += item.get("defense", 0)
+    return defense + (character.vitality - 1)
+
+def check_daily_login(character):
+    """Проверить ежедневный вход"""
+    now = int(time.time())
+    last_login = character.last_login if hasattr(character, 'last_login') else 0
+    
+    if now - last_login > 86400:
+        if now - last_login > 172800:
+            character.login_streak = 0
+        
+        character.login_streak += 1
+        if character.login_streak > 7:
+            character.login_streak = 1
+        
+        character.last_login = now
+        save_character(character)
+        return True, character.login_streak
+    return False, 0
+
+def get_daily_reward(streak):
+    """Получить награду за ежедневный вход"""
+    rewards = {
+        1: {"gold": 100, "dstn": 5, "items": ["health_potion"]},
+        2: {"gold": 200, "dstn": 10, "items": ["mana_potion"]},
+        3: {"gold": 300, "dstn": 15, "items": ["teleport_scroll"]},
+        4: {"gold": 400, "dstn": 20, "items": ["rainbow_shard"]},
+        5: {"gold": 500, "dstn": 25, "items": ["legendary_chest"]},
+        6: {"gold": 600, "dstn": 30, "items": ["epic_chest"]},
+        7: {"gold": 1000, "dstn": 50, "items": ["mythril_ingot", 3]}
+    }
+    return rewards.get(streak, rewards[1])
 
 # ============================================
 # БАЗОВЫЕ КОМАНДЫ
