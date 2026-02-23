@@ -1,44 +1,46 @@
 import os
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, scoped_session
+from dotenv import load_dotenv
 
-# Получаем строку подключения из переменных окружения
+# Загружаем переменные окружения
+load_dotenv()
+
+# Получаем URL базы данных из переменных окружения
 DATABASE_URL = os.getenv("DATABASE_URL")
-
 if not DATABASE_URL:
-    print("❌ ОШИБКА: DATABASE_URL не задана!")
-    print("Добавь переменную окружения на Render")
-    exit(1)
+    raise ValueError("❌ DATABASE_URL не задан!")
 
-# Создаем подключение к базе данных
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# Для Render нужно заменить postgres:// на postgresql://
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+# Создаем движок
+engine = create_engine(
+    DATABASE_URL,
+    pool_size=5,
+    max_overflow=10,
+    echo=False
+)
+
+# Создаем фабрику сессий
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
 
 # Базовый класс для моделей
 Base = declarative_base()
 
-# Импортируем модели, чтобы они были известны Base
-# Этот импорт должен быть ПОСЛЕ объявления Base, но ДО создания таблиц
-from models import User, Character
-
-# ПРИНУДИТЕЛЬНОЕ ПЕРЕСОЗДАНИЕ ТАБЛИЦ
-print("=" * 40)
-print("🔄 ПРОВЕРКА БАЗЫ ДАННЫХ")
-print("=" * 40)
-print("🗑️ Удаляем старые таблицы...")
-Base.metadata.drop_all(bind=engine)
-print("✅ Старые таблицы удалены")
-
-print("🆕 Создаём новые таблицы...")
-Base.metadata.create_all(bind=engine)
-print("✅ Новые таблицы созданы успешно")
-print("=" * 40)
-
+# Функция для получения сессии
 def get_db():
-    """Функция для получения сессии базы данных"""
     db = SessionLocal()
     try:
         return db
     finally:
         db.close()
+
+# Для обратной совместимости
+Session = scoped_session(SessionLocal)
