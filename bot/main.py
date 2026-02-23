@@ -111,6 +111,23 @@ exchange_data = load_json("exchange.json")
 islands_data = load_json("islands.json")
 
 # ============================================
+# ДИАГНОСТИКА PETS.JSON
+# ============================================
+logging.info("🔍 Диагностика pets.json:")
+if pets_data:
+    logging.info(f"✅ pets_data загружен, тип: {type(pets_data)}")
+    if isinstance(pets_data, dict):
+        logging.info(f"📊 Ключи в pets_data: {list(pets_data.keys())}")
+        if "pets" in pets_data:
+            logging.info(f"📊 Ключи в pets_data['pets']: {list(pets_data['pets'].keys())}")
+        else:
+            logging.info("❌ В pets_data нет ключа 'pets'")
+    else:
+        logging.info(f"❌ pets_data не словарь, а {type(pets_data)}")
+else:
+    logging.error("❌ pets_data пустой или не загружен")
+
+# ============================================
 # ИМПОРТ ВСЕХ ХЕНДЛЕРОВ
 # ============================================
 
@@ -188,7 +205,7 @@ def save_character(character):
     pass
 
 # ============================================
-# БАЗОВЫЕ КОМАНДЫ (работают всегда)
+# БАЗОВЫЕ КОМАНДЫ
 # ============================================
 
 @bot.message_handler(commands=['start'])
@@ -197,7 +214,6 @@ def start_command(message):
         start_handler.start_command(message, bot, get_or_create_player, locations_data)
     except Exception as e:
         logging.error(f"Ошибка в /start: {e}")
-        # Запасной вариант
         bot.send_message(
             message.chat.id,
             f"✅ БОТ РАБОТАЕТ!\n\n"
@@ -237,10 +253,9 @@ def help_command(message):
         bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
 # ============================================
-# КОМАНДЫ ИЗ ХЕНДЛЕРОВ - ПРЯМЫЕ ВЫЗОВЫ
+# КОМАНДЫ ИЗ ХЕНДЛЕРОВ
 # ============================================
 
-# profile
 @bot.message_handler(commands=['profile'])
 def profile_command(message):
     try:
@@ -249,7 +264,6 @@ def profile_command(message):
         logging.error(f"Ошибка в /profile: {e}")
         bot.send_message(message.chat.id, "❌ Команда /profile временно недоступна")
 
-# status
 @bot.message_handler(commands=['status'])
 def status_command(message):
     try:
@@ -258,7 +272,6 @@ def status_command(message):
         logging.error(f"Ошибка в /status: {e}")
         bot.send_message(message.chat.id, "❌ Команда /status временно недоступна")
 
-# inventory
 @bot.message_handler(commands=['inventory'])
 def inventory_command(message):
     try:
@@ -267,21 +280,18 @@ def inventory_command(message):
         logging.error(f"Ошибка в /inventory: {e}")
         bot.send_message(message.chat.id, "❌ Команда /inventory временно недоступна")
 
-# location
 @bot.message_handler(commands=['location'])
 def location_command(message):
     try:
         game.location_command(message, bot, get_or_create_player, locations_data)
     except Exception as e:
         logging.error(f"Ошибка в /location: {e}")
-        # Запасной вариант
         if locations_data and locations_data.get("locations"):
             first_loc = list(locations_data["locations"].values())[0]
             text = f"📍 *{first_loc.get('name', 'Локация')}*\n\n"
             text += first_loc.get('description', 'Описание отсутствует')
             bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
-# map
 @bot.message_handler(commands=['map'])
 def map_command(message):
     try:
@@ -297,7 +307,6 @@ def map_command(message):
         text += "🏛️ Руины\n"
         bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
-# class
 @bot.message_handler(commands=['class'])
 def class_command(message):
     try:
@@ -306,7 +315,6 @@ def class_command(message):
         logging.error(f"Ошибка в /class: {e}")
         bot.send_message(message.chat.id, "❌ Команда /class временно недоступна")
 
-# craft
 @bot.message_handler(commands=['craft'])
 def craft_command(message):
     try:
@@ -315,7 +323,6 @@ def craft_command(message):
         logging.error(f"Ошибка в /craft: {e}")
         bot.send_message(message.chat.id, "❌ Команда /craft временно недоступна")
 
-# house
 @bot.message_handler(commands=['house'])
 def house_command(message):
     try:
@@ -324,26 +331,106 @@ def house_command(message):
         logging.error(f"Ошибка в /house: {e}")
         bot.send_message(message.chat.id, "❌ Команда /house временно недоступна")
 
-# pets
+# ============================================
+# PETS - С ДИАГНОСТИКОЙ
+# ============================================
 @bot.message_handler(commands=['pets'])
 def pets_command(message):
     try:
+        # Пробуем вызвать функцию из хендлера
         pets.pets_command(message, bot, get_or_create_player, pets_data)
     except Exception as e:
         logging.error(f"Ошибка в /pets: {e}")
-        # Запасной вариант
-        if pets_data and pets_data.get("pets"):
-            pets_list = list(pets_data["pets"].items())[:10]
-            text = "🐾 *Питомцы:*\n\n"
-            for pet_id, pet in pets_list:
-                name = pet.get('name', pet_id)
-                rarity = pet.get('rarity', 'обычный')
-                text += f"• {name} ({rarity})\n"
-            bot.send_message(message.chat.id, text, parse_mode='Markdown')
+        # Диагностика в ответе пользователю
+        if pets_data:
+            bot.send_message(
+                message.chat.id,
+                f"🔍 Диагностика:\n"
+                f"pets_data загружен: да\n"
+                f"Тип: {type(pets_data)}\n"
+                f"Ключи: {list(pets_data.keys()) if isinstance(pets_data, dict) else 'не словарь'}"
+            )
+        else:
+            bot.send_message(message.chat.id, "❌ pets_data не загружен")
+
+        # Запасной вариант с отображением питомцев из JSON
+        if pets_data and isinstance(pets_data, dict):
+            text = "🐾 *Доступные питомцы:*\n\n"
+            count = 0
+            
+            # Проверяем, есть ли ключ "pets" внутри
+            pets_dict = pets_data.get("pets", pets_data)
+            
+            # Общие (common)
+            if "common" in pets_dict:
+                text += "*Обычные:*\n"
+                for pet_id, pet in pets_dict["common"].items():
+                    name = pet.get('name', pet_id) if isinstance(pet, dict) else pet_id
+                    level_req = pet.get('level_req', '?') if isinstance(pet, dict) else '?'
+                    text += f"  • {name} (ур. {level_req})\n"
+                    count += 1
+                text += "\n"
+            
+            # Необычные (uncommon)
+            if "uncommon" in pets_dict:
+                text += "*Необычные:*\n"
+                for pet_id, pet in pets_dict["uncommon"].items():
+                    name = pet.get('name', pet_id) if isinstance(pet, dict) else pet_id
+                    level_req = pet.get('level_req', '?') if isinstance(pet, dict) else '?'
+                    text += f"  • {name} (ур. {level_req})\n"
+                    count += 1
+                text += "\n"
+            
+            # Редкие (rare)
+            if "rare" in pets_dict:
+                text += "*Редкие:*\n"
+                for pet_id, pet in pets_dict["rare"].items():
+                    name = pet.get('name', pet_id) if isinstance(pet, dict) else pet_id
+                    level_req = pet.get('level_req', '?') if isinstance(pet, dict) else '?'
+                    text += f"  • {name} (ур. {level_req})\n"
+                    count += 1
+                text += "\n"
+            
+            # Эпические (epic)
+            if "epic" in pets_dict:
+                text += "*Эпические:*\n"
+                for pet_id, pet in pets_dict["epic"].items():
+                    name = pet.get('name', pet_id) if isinstance(pet, dict) else pet_id
+                    level_req = pet.get('level_req', '?') if isinstance(pet, dict) else '?'
+                    text += f"  • {name} (ур. {level_req})\n"
+                    count += 1
+                text += "\n"
+            
+            # Легендарные (legendary)
+            if "legendary" in pets_dict:
+                text += "*Легендарные:*\n"
+                for pet_id, pet in pets_dict["legendary"].items():
+                    name = pet.get('name', pet_id) if isinstance(pet, dict) else pet_id
+                    level_req = pet.get('level_req', '?') if isinstance(pet, dict) else '?'
+                    text += f"  • {name} (ур. {level_req})\n"
+                    count += 1
+                text += "\n"
+            
+            # Мифические (mythic)
+            if "mythic" in pets_dict:
+                text += "*Мифические:*\n"
+                for pet_id, pet in pets_dict["mythic"].items():
+                    name = pet.get('name', pet_id) if isinstance(pet, dict) else pet_id
+                    level_req = pet.get('level_req', '?') if isinstance(pet, dict) else '?'
+                    text += f"  • {name} (ур. {level_req})\n"
+                    count += 1
+            
+            if count > 0:
+                bot.send_message(message.chat.id, text, parse_mode='Markdown')
+            else:
+                bot.send_message(message.chat.id, "❌ В файле pets.json нет питомцев")
         else:
             bot.send_message(message.chat.id, "❌ Питомцы не загружены")
 
-# exchange
+# ============================================
+# ОСТАЛЬНЫЕ КОМАНДЫ
+# ============================================
+
 @bot.message_handler(commands=['exchange'])
 def exchange_command(message):
     try:
@@ -352,7 +439,6 @@ def exchange_command(message):
         logging.error(f"Ошибка в /exchange: {e}")
         bot.send_message(message.chat.id, "❌ Команда /exchange временно недоступна")
 
-# rainbow
 @bot.message_handler(commands=['rainbow'])
 def rainbow_command(message):
     try:
@@ -361,7 +447,6 @@ def rainbow_command(message):
         logging.error(f"Ошибка в /rainbow: {e}")
         bot.send_message(message.chat.id, "❌ Команда /rainbow временно недоступна")
 
-# premium
 @bot.message_handler(commands=['premium'])
 def premium_command(message):
     try:
@@ -370,7 +455,6 @@ def premium_command(message):
         logging.error(f"Ошибка в /premium: {e}")
         bot.send_message(message.chat.id, "❌ Команда /premium временно недоступна")
 
-# nft
 @bot.message_handler(commands=['nft'])
 def nft_command(message):
     try:
@@ -379,7 +463,6 @@ def nft_command(message):
         logging.error(f"Ошибка в /nft: {e}")
         bot.send_message(message.chat.id, "❌ Команда /nft временно недоступна")
 
-# guild
 @bot.message_handler(commands=['guild'])
 def guild_command(message):
     try:
@@ -388,7 +471,6 @@ def guild_command(message):
         logging.error(f"Ошибка в /guild: {e}")
         bot.send_message(message.chat.id, "❌ Команда /guild временно недоступна")
 
-# pvp
 @bot.message_handler(commands=['pvp'])
 def pvp_command(message):
     try:
@@ -397,7 +479,6 @@ def pvp_command(message):
         logging.error(f"Ошибка в /pvp: {e}")
         bot.send_message(message.chat.id, "❌ Команда /pvp временно недоступна")
 
-# codex
 @bot.message_handler(commands=['codex'])
 def codex_command(message):
     try:
@@ -406,7 +487,6 @@ def codex_command(message):
         logging.error(f"Ошибка в /codex: {e}")
         bot.send_message(message.chat.id, "❌ Команда /codex временно недоступна")
 
-# events
 @bot.message_handler(commands=['events'])
 def events_command(message):
     try:
@@ -415,7 +495,6 @@ def events_command(message):
         logging.error(f"Ошибка в /events: {e}")
         bot.send_message(message.chat.id, "❌ Команда /events временно недоступна")
 
-# shop
 @bot.message_handler(commands=['shop'])
 def shop_command(message):
     try:
@@ -424,7 +503,6 @@ def shop_command(message):
         logging.error(f"Ошибка в /shop: {e}")
         bot.send_message(message.chat.id, "❌ Команда /shop временно недоступна")
 
-# top
 @bot.message_handler(commands=['top'])
 def top_command(message):
     try:
@@ -433,7 +511,6 @@ def top_command(message):
         logging.error(f"Ошибка в /top: {e}")
         bot.send_message(message.chat.id, "❌ Команда /top временно недоступна")
 
-# admin
 @bot.message_handler(commands=['admin'])
 def admin_command(message):
     try:
