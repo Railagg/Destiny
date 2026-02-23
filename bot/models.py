@@ -67,6 +67,14 @@ class Character(Base):
     defense_bonus = Column(Integer, default=0)
     base_damage = Column(Integer, default=5)
     
+    # ========== НОВЫЕ БОЕВЫЕ ПАРАМЕТРЫ ==========
+    current_health = Column(Integer, default=100)   # текущее здоровье в бою
+    current_mana = Column(Integer, default=50)       # текущая мана в бою
+    in_combat = Column(Boolean, default=False)       # в бою или нет
+    combat_enemy = Column(String, nullable=True)     # id врага
+    combat_turn = Column(Integer, default=0)         # 0 - атака, 2 - защита
+    # ==============================================
+    
     # Домик
     house_level = Column(Integer, default=0)
     house_furniture = Column(JSON, default=list)
