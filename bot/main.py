@@ -142,7 +142,8 @@ from handlers import (
     shop,
     top,
     admin,
-    quests
+    quests,
+    combat  # ← НОВЫЙ ИМПОРТ
 )
 
 # ============================================
@@ -166,6 +167,8 @@ def get_or_create_player(telegram_id, username=None, first_name=None):
             db.refresh(user)
             
             character = Character(user_id=user.id)
+            character.current_health = character.max_health
+            character.current_mana = character.max_magic
             db.add(character)
             db.commit()
             db.refresh(character)
@@ -303,6 +306,7 @@ def help_command(message):
         text += "/house - домик\n"
         text += "/pets - питомцы\n"
         text += "/quests - квесты\n"
+        text += "/attack - атаковать врага\n"
         text += "/exchange - обмен\n"
         text += "/rainbow - радужные камни\n"
         text += "/premium - премиум\n"
@@ -403,9 +407,6 @@ def quests_command(message):
         logging.error(f"Ошибка в /quests: {e}")
         bot.send_message(message.chat.id, "❌ Команда /quests временно недоступна")
 
-# ============================================
-# PETS - БЕЗ ДИАГНОСТИКИ
-# ============================================
 @bot.message_handler(commands=['pets'])
 def pets_command(message):
     try:
@@ -413,71 +414,20 @@ def pets_command(message):
     except Exception as e:
         logging.error(f"Ошибка в /pets: {e}")
         
-        # Запасной вариант с отображением питомцев из JSON
         if pets_data and isinstance(pets_data, dict):
             text = "🐾 *Доступные питомцы:*\n\n"
             count = 0
-            
             pets_dict = pets_data.get("pets", pets_data)
             
-            # Общие (common)
-            if "common" in pets_dict:
-                text += "*Обычные:*\n"
-                for pet_id, pet in pets_dict["common"].items():
-                    name = pet.get('name', pet_id) if isinstance(pet, dict) else pet_id
-                    level_req = pet.get('level_req', '?') if isinstance(pet, dict) else '?'
-                    text += f"  • {name} (ур. {level_req})\n"
-                    count += 1
-                text += "\n"
-            
-            # Необычные (uncommon)
-            if "uncommon" in pets_dict:
-                text += "*Необычные:*\n"
-                for pet_id, pet in pets_dict["uncommon"].items():
-                    name = pet.get('name', pet_id) if isinstance(pet, dict) else pet_id
-                    level_req = pet.get('level_req', '?') if isinstance(pet, dict) else '?'
-                    text += f"  • {name} (ур. {level_req})\n"
-                    count += 1
-                text += "\n"
-            
-            # Редкие (rare)
-            if "rare" in pets_dict:
-                text += "*Редкие:*\n"
-                for pet_id, pet in pets_dict["rare"].items():
-                    name = pet.get('name', pet_id) if isinstance(pet, dict) else pet_id
-                    level_req = pet.get('level_req', '?') if isinstance(pet, dict) else '?'
-                    text += f"  • {name} (ур. {level_req})\n"
-                    count += 1
-                text += "\n"
-            
-            # Эпические (epic)
-            if "epic" in pets_dict:
-                text += "*Эпические:*\n"
-                for pet_id, pet in pets_dict["epic"].items():
-                    name = pet.get('name', pet_id) if isinstance(pet, dict) else pet_id
-                    level_req = pet.get('level_req', '?') if isinstance(pet, dict) else '?'
-                    text += f"  • {name} (ур. {level_req})\n"
-                    count += 1
-                text += "\n"
-            
-            # Легендарные (legendary)
-            if "legendary" in pets_dict:
-                text += "*Легендарные:*\n"
-                for pet_id, pet in pets_dict["legendary"].items():
-                    name = pet.get('name', pet_id) if isinstance(pet, dict) else pet_id
-                    level_req = pet.get('level_req', '?') if isinstance(pet, dict) else '?'
-                    text += f"  • {name} (ур. {level_req})\n"
-                    count += 1
-                text += "\n"
-            
-            # Мифические (mythic)
-            if "mythic" in pets_dict:
-                text += "*Мифические:*\n"
-                for pet_id, pet in pets_dict["mythic"].items():
-                    name = pet.get('name', pet_id) if isinstance(pet, dict) else pet_id
-                    level_req = pet.get('level_req', '?') if isinstance(pet, dict) else '?'
-                    text += f"  • {name} (ур. {level_req})\n"
-                    count += 1
+            for category in ["common", "uncommon", "rare", "epic", "legendary", "mythic"]:
+                if category in pets_dict:
+                    text += f"*{category.capitalize()}:*\n"
+                    for pet_id, pet in pets_dict[category].items():
+                        name = pet.get('name', pet_id) if isinstance(pet, dict) else pet_id
+                        level_req = pet.get('level_req', '?') if isinstance(pet, dict) else '?'
+                        text += f"  • {name} (ур. {level_req})\n"
+                        count += 1
+                    text += "\n"
             
             if count > 0:
                 bot.send_message(message.chat.id, text, parse_mode='Markdown')
@@ -485,6 +435,17 @@ def pets_command(message):
                 bot.send_message(message.chat.id, "❌ В файле pets.json нет питомцев")
         else:
             bot.send_message(message.chat.id, "❌ Питомцы не загружены")
+
+# ============================================
+# НОВАЯ КОМАНДА - АТАКА
+# ============================================
+@bot.message_handler(commands=['attack'])
+def attack_command(message):
+    try:
+        combat.attack_command(message, bot, get_or_create_player, enemies_data)
+    except Exception as e:
+        logging.error(f"Ошибка в /attack: {e}")
+        bot.send_message(message.chat.id, "❌ Нельзя начать бой")
 
 # ============================================
 # ОСТАЛЬНЫЕ КОМАНДЫ
@@ -579,15 +540,107 @@ def admin_command(message):
         bot.send_message(message.chat.id, "❌ Команда /admin временно недоступна")
 
 # ============================================
-# ОБРАБОТКА ВСЕХ ОСТАЛЬНЫХ СООБЩЕНИЙ
+# ОБРАБОТКА КОЛБЭКОВ (КНОПОК)
 # ============================================
-@bot.message_handler(func=lambda m: True)
-def echo(message):
-    bot.send_message(
-        message.chat.id,
-        f"❓ Неизвестная команда. Напиши /help\n\n"
-        f"Твоё сообщение: {message.text}"
-    )
+@bot.callback_query_handler(func=lambda call: True)
+def handle_callback(call):
+    try:
+        parts = call.data.split(':')
+        handler = parts[0]
+        
+        if handler == "game":
+            if len(parts) > 1:
+                action = parts[1]
+                
+                if action == "back_to_start":
+                    start_command(call.message)
+                elif action == "status":
+                    status_command(call.message)
+                elif action == "inventory":
+                    inventory_command(call.message)
+                elif action == "map":
+                    map_command(call.message)
+                elif action == "location":
+                    location_command(call.message)
+                elif action == "house":
+                    house_command(call.message)
+                elif action.startswith("class:"):
+                    class_name = action.split(':')[1]
+                    user_id = call.from_user.id
+                    user, character = get_or_create_player(user_id)
+                    
+                    if character.player_class:
+                        bot.answer_callback_query(call.id, "❌ Класс уже выбран")
+                        return
+                    
+                    character.player_class = class_name
+                    if class_name == "warrior":
+                        character.strength = 3
+                        character.base_damage += 2
+                    elif class_name == "archer":
+                        character.dexterity = 3
+                        character.dodge_chance += 5
+                    elif class_name == "mage":
+                        character.intelligence = 3
+                        character.max_magic += 30
+                        character.magic += 30
+                        character.current_mana += 30
+                    elif class_name == "guardian":
+                        character.vitality = 3
+                        character.max_health += 30
+                        character.health += 30
+                        character.current_health += 30
+                        character.defense_bonus += 5
+                    
+                    save_character(character)
+                    bot.answer_callback_query(call.id, f"✅ Ты стал {class_name}!")
+                    bot.delete_message(call.message.chat.id, call.message.message_id)
+                    start_command(call.message)
+                else:
+                    bot.answer_callback_query(call.id, "⏳ В разработке")
+        
+        elif handler == "pets" and hasattr(pets, 'handle_callback'):
+            pets.handle_callback(call, bot, get_or_create_player, pets_data)
+        elif handler == "exchange" and hasattr(exchange, 'handle_callback'):
+            exchange.handle_callback(call, bot, get_or_create_player, exchange_data)
+        elif handler == "rainbow" and hasattr(rainbow, 'handle_callback'):
+            rainbow.handle_callback(call, bot, get_or_create_player, rainbow_data)
+        elif handler == "premium" and hasattr(premium, 'handle_callback'):
+            premium.handle_callback(call, bot, get_or_create_player, premium_data)
+        elif handler == "nft" and hasattr(nft, 'handle_callback'):
+            nft.handle_callback(call, bot, get_or_create_player, nft_data)
+        elif handler == "guild" and hasattr(guild, 'handle_callback'):
+            guild.handle_callback(call, bot, get_or_create_player)
+        elif handler == "pvp" and hasattr(pvp, 'handle_callback'):
+            pvp.handle_callback(call, bot, get_or_create_player)
+        elif handler == "codex" and hasattr(codex, 'handle_callback'):
+            codex.handle_callback(call, bot, codex_data)
+        elif handler == "events" and hasattr(events, 'handle_callback'):
+            events.handle_callback(call, bot, events_data)
+        elif handler == "shop" and hasattr(shop, 'handle_callback'):
+            shop.handle_callback(call, bot, get_or_create_player, items_data)
+        elif handler == "top" and hasattr(top, 'handle_callback'):
+            top.handle_callback(call, bot, get_or_create_player)
+        elif handler == "admin" and hasattr(admin, 'handle_callback'):
+            admin.handle_callback(call, bot, get_or_create_player)
+        elif handler == "quests":
+            quests.handle_callback(call, bot, get_or_create_player, quests_data)
+        elif handler == "combat" and len(parts) > 1:
+            action = parts[1]
+            combat.combat_turn(call, bot, get_or_create_player, enemies_data, items_data, action)
+        else:
+            bot.answer_callback_query(call.id, "⏳ Модуль в разработке")
+    
+    except Exception as e:
+        logging.error(f"❌ Ошибка в handle_callback: {e}")
+        bot.answer_callback_query(call.id, "⚠️ Ошибка")
+
+# ============================================
+# WEBAPP DATA
+# ============================================
+@bot.message_handler(content_types=['web_app_data'])
+def webapp_data_handler(message):
+    start_handler.handle_webapp_data(message, bot)
 
 # ============================================
 # HEALTH СЕРВЕР
