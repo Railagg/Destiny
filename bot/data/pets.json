@@ -1,508 +1,668 @@
-import telebot
-import json
-import os
-import sys
-import logging
-import requests
-from pathlib import Path
-from http.server import HTTPServer, BaseHTTPRequestHandler
-import threading
-import time
-from datetime import datetime
-
-# ============================================
-# НАСТРОЙКА ЛОГИРОВАНИЯ
-# ============================================
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(message)s',
-    stream=sys.stdout,
-    force=True
-)
-
-sys.stdout.reconfigure(line_buffering=True)
-
-logging.info("🚀 Запуск бота Destiny...")
-
-# ============================================
-# ТОКЕН БОТА
-# ============================================
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-if not BOT_TOKEN:
-    logging.error("❌ НЕТ ТОКЕНА")
-    exit(1)
-
-logging.info(f"✅ Токен получен: {BOT_TOKEN[:10]}...")
-
-# ============================================
-# ОТКЛЮЧЕНИЕ ВЕБХУКА
-# ============================================
-try:
-    requests.get(f"https://api.telegram.org/bot{BOT_TOKEN}/deleteWebhook")
-    logging.info("✅ Webhook отключён")
-except:
-    logging.warning("⚠️ Не удалось отключить вебхук")
-
-# ============================================
-# СОЗДАНИЕ БОТА
-# ============================================
-bot = telebot.TeleBot(BOT_TOKEN)
-
-try:
-    me = bot.get_me()
-    logging.info(f"✅ Бот авторизован: @{me.username}")
-except Exception as e:
-    logging.error(f"❌ Ошибка авторизации: {e}")
-    exit(1)
-
-# ============================================
-# ПУТЬ К JSON
-# ============================================
-
-current_dir = Path(__file__).parent          # /bot
-data_dir = current_dir / "data"               # /bot/data
-
-logging.info(f"📁 Текущая папка бота: {current_dir}")
-logging.info(f"📁 Папка с данными: {data_dir}")
-
-if data_dir.exists():
-    json_files = list(data_dir.glob("*.json"))
-    logging.info(f"📄 Найдено JSON: {len(json_files)}")
-else:
-    logging.error(f"❌ Папка {data_dir} не найдена!")
-    data_dir.mkdir(parents=True, exist_ok=True)
-
-# ============================================
-# ЗАГРУЗКА JSON
-# ============================================
-
-def load_json(filename):
-    filepath = data_dir / filename
-    try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            logging.info(f"✅ Загружен {filename}")
-            return data
-    except FileNotFoundError:
-        logging.warning(f"⚠️ Файл не найден: {filename}")
-        return {}
-    except Exception as e:
-        logging.error(f"❌ Ошибка {filename}: {e}")
-        return {}
-
-logging.info("🚀 Загрузка JSON файлов...")
-
-locations_data = load_json("locations.json")
-enemies_data = load_json("enemies.json")
-items_data = load_json("items.json")
-crafting_data = load_json("crafting.json")
-classes_data = load_json("classes.json")
-quests_data = load_json("quests.json")
-house_data = load_json("house.json")
-premium_data = load_json("premium.json")
-nft_data = load_json("nft.json")
-rainbow_data = load_json("rainbow.json")
-events_data = load_json("events.json")
-codex_data = load_json("codex.json")
-biomes_data = load_json("biomes.json")
-pets_data = load_json("pets.json")
-secrets_data = load_json("secrets.json")
-exchange_data = load_json("exchange.json")
-islands_data = load_json("islands.json")
-
-# ============================================
-# ИМПОРТ ВСЕХ ХЕНДЛЕРОВ
-# ============================================
-
-from handlers import (
-    start as start_handler,
-    game,
-    pets,
-    exchange,
-    rainbow,
-    premium,
-    nft,
-    guild,
-    pvp,
-    codex,
-    events,
-    shop,
-    top,
-    admin
-)
-
-# ============================================
-# ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-# ============================================
-
-def get_or_create_player(telegram_id, username=None, first_name=None):
-    """Временная заглушка для БД"""
-    class DummyCharacter:
-        def __init__(self):
-            self.level = 1
-            self.health = 100
-            self.max_health = 100
-            self.energy = 100
-            self.max_energy = 100
-            self.magic = 50
-            self.max_magic = 50
-            self.gold = 20
-            self.destiny_tokens = 0
-            self.inventory = []
-            self.location = "start"
-            self.player_class = None
-            self.class_level = 1
-            self.strength = 1
-            self.dexterity = 1
-            self.intelligence = 1
-            self.vitality = 1
-            self.luck = 0
-            self.crit_chance = 0
-            self.crit_multiplier = 2
-            self.dodge_chance = 0
-            self.defense_bonus = 0
-            self.base_damage = 5
-            self.house_level = 0
-            self.login_streak = 0
-            self.last_update = int(time.time())
-            self.last_magic_update = int(time.time())
-            self.last_login = int(time.time())
-        
-        def get_inventory(self):
-            return self.inventory
-        
-        def add_item(self, item):
-            self.inventory.append(item)
+{
+  "pets": {
+    "common": {
+      "cat": {
+        "id": "cat",
+        "name": "🐱 Кошка",
+        "rarity": "common",
+        "description": "Ласковая кошка, которая любит греться на солнышке. Приносит удачу.",
+        "level_req": 5,
+        "max_level": 10,
+        "base_stats": {
+          "luck": 2,
+          "friendship": 5
+        },
+        "per_level": {
+          "luck": 0.5,
+          "friendship": 1
+        },
+        "abilities": [
+          {
+            "name": "Мурлыканье",
+            "level": 1,
+            "effect": "+5% к восстановлению энергии во время отдыха"
+          },
+          {
+            "name": "Охотник на мышей",
+            "level": 5,
+            "effect": "Защищает запасы от грызунов (+10% сохранность еды)"
+          }
+        ],
+        "evolution": {
+          "level": 10,
+          "into": "magic_cat",
+          "cost": {"magic_crystal": 5}
+        },
+        "found_in": ["village", "tavern"],
+        "food": ["fish", "milk", "meat"]
+      },
+      
+      "dog": {
+        "id": "dog",
+        "name": "🐕 Собака",
+        "rarity": "common",
+        "description": "Верный пёс, готовый защитить хозяина.",
+        "level_req": 5,
+        "max_level": 10,
+        "base_stats": {
+          "defense": 3,
+          "alert": 5
+        },
+        "per_level": {
+          "defense": 0.8,
+          "damage": 0.5
+        },
+        "abilities": [
+          {
+            "name": "Лаять",
+            "level": 1,
+            "effect": "Предупреждает о приближении врагов (раннее обнаружение)"
+          },
+          {
+            "name": "Защитник",
+            "level": 5,
+            "effect": "В бою может принять удар на себя (10% шанс)"
+          }
+        ],
+        "evolution": {
+          "level": 10,
+          "into": "wolf_dog",
+          "cost": {"iron_ingot": 10, "wolf_fang": 5}
+        },
+        "found_in": ["village", "forest"],
+        "food": ["meat", "bone", "bread"]
+      },
+      
+      "rabbit": {
+        "id": "rabbit",
+        "name": "🐇 Кролик",
+        "rarity": "common",
+        "description": "Пушистый кролик, который любит морковку.",
+        "level_req": 3,
+        "max_level": 5,
+        "base_stats": {
+          "speed": 5,
+          "luck": 1
+        },
+        "abilities": [
+          {
+            "name": "Быстрые лапки",
+            "level": 1,
+            "effect": "+5% к скорости передвижения"
+          },
+          {
+            "name": "Садовник",
+            "level": 3,
+            "effect": "Помогает в огороде (+10% к урожаю)"
+          }
+        ],
+        "found_in": ["forest", "garden"],
+        "food": ["carrot", "cabbage", "herb"]
+      }
+    },
     
-    class DummyUser:
-        def __init__(self):
-            self.telegram_id = telegram_id
-            self.username = username
-            self.first_name = first_name
-            self.created_at = datetime.now()
+    "uncommon": {
+      "fox": {
+        "id": "fox",
+        "name": "🦊 Лиса",
+        "rarity": "uncommon",
+        "description": "Хитрая и ловкая лиса, обожающая блестящие вещи.",
+        "level_req": 10,
+        "max_level": 15,
+        "base_stats": {
+          "luck": 3,
+          "stealth": 5
+        },
+        "per_level": {
+          "luck": 0.5,
+          "stealth": 1
+        },
+        "abilities": [
+          {
+            "name": "Находчивость",
+            "level": 1,
+            "effect": "+5% шанс найти редкие предметы"
+          },
+          {
+            "name": "Лисья хитрость",
+            "level": 5,
+            "effect": "Может украсть предмет у врага (5% шанс)"
+          },
+          {
+            "name": "Невидимка",
+            "level": 10,
+            "effect": "Враги реже замечают тебя в лесу"
+          }
+        ],
+        "evolution": {
+          "level": 15,
+          "into": "nine_tailed_fox",
+          "cost": {"magic_crystal": 10, "gold_ingot": 5, "rainbow_shard": 2}
+        },
+        "found_in": ["deep_forest", "mountain_path"],
+        "food": ["meat", "berry", "egg"]
+      },
+      
+      "owl": {
+        "id": "owl",
+        "name": "🦉 Сова",
+        "rarity": "uncommon",
+        "description": "Мудрая птица, которая видит в темноте.",
+        "level_req": 10,
+        "max_level": 15,
+        "base_stats": {
+          "wisdom": 5,
+          "night_vision": true
+        },
+        "per_level": {
+          "exp_bonus": 2,
+          "magic_damage": 0.5
+        },
+        "abilities": [
+          {
+            "name": "Ночное зрение",
+            "level": 1,
+            "effect": "Видит в темноте (открывает скрытые тропы в пещерах)"
+          },
+          {
+            "name": "Мудрость веков",
+            "level": 5,
+            "effect": "+10% к опыту"
+          },
+          {
+            "name": "Тихий полёт",
+            "level": 10,
+            "effect": "Может разведывать локации без риска"
+          }
+        ],
+        "evolution": {
+          "level": 15,
+          "into": "ancient_owl",
+          "cost": {"magic_crystal": 10, "ancient_relic": 2}
+        },
+        "found_in": ["magic_tower", "ancient_ruins"],
+        "food": ["meat", "magic_herb", "crystal"]
+      }
+    },
     
-    return DummyUser(), DummyCharacter()
-
-def save_character(character):
-    """Временная заглушка"""
-    pass
-
-# ============================================
-# БАЗОВЫЕ КОМАНДЫ
-# ============================================
-
-@bot.message_handler(commands=['start'])
-def start_command(message):
-    try:
-        start_handler.start_command(message, bot, get_or_create_player, locations_data)
-    except Exception as e:
-        logging.error(f"Ошибка в /start: {e}")
-        bot.send_message(
-            message.chat.id,
-            f"✅ БОТ РАБОТАЕТ!\n\n"
-            f"📍 Локаций: {len(locations_data.get('locations', {})) if locations_data else 0}\n"
-            f"⚔️ Врагов: {len(enemies_data.get('enemies', {})) if enemies_data else 0}\n"
-            f"📦 Предметов: {len(items_data.get('items', {})) if items_data else 0}\n"
-            f"🐾 Питомцев: {len(pets_data.get('pets', {})) if pets_data else 0}"
-        )
-
-@bot.message_handler(commands=['help'])
-def help_command(message):
-    try:
-        start_handler.help_command(message, bot)
-    except:
-        text = "❓ *Доступные команды:*\n\n"
-        text += "/start - информация о боте\n"
-        text += "/profile - профиль\n"
-        text += "/status - статус\n"
-        text += "/inventory - инвентарь\n"
-        text += "/location - локация\n"
-        text += "/map - карта мира\n"
-        text += "/class - выбор класса\n"
-        text += "/craft - крафт\n"
-        text += "/house - домик\n"
-        text += "/pets - питомцы\n"
-        text += "/exchange - обмен\n"
-        text += "/rainbow - радужные камни\n"
-        text += "/premium - премиум\n"
-        text += "/nft - NFT\n"
-        text += "/guild - гильдия\n"
-        text += "/pvp - арена\n"
-        text += "/codex - энциклопедия\n"
-        text += "/events - ивенты\n"
-        text += "/shop - магазин\n"
-        text += "/top - рейтинги\n"
-        text += "/help - это меню"
-        bot.send_message(message.chat.id, text, parse_mode='Markdown')
-
-# ============================================
-# КОМАНДЫ ИЗ ХЕНДЛЕРОВ
-# ============================================
-
-@bot.message_handler(commands=['profile'])
-def profile_command(message):
-    try:
-        game.profile_command(message, bot, get_or_create_player, items_data)
-    except Exception as e:
-        logging.error(f"Ошибка в /profile: {e}")
-        bot.send_message(message.chat.id, "❌ Команда /profile временно недоступна")
-
-@bot.message_handler(commands=['status'])
-def status_command(message):
-    try:
-        game.status_command(message, bot, get_or_create_player, items_data)
-    except Exception as e:
-        logging.error(f"Ошибка в /status: {e}")
-        bot.send_message(message.chat.id, "❌ Команда /status временно недоступна")
-
-@bot.message_handler(commands=['inventory'])
-def inventory_command(message):
-    try:
-        game.inventory_command(message, bot, get_or_create_player, items_data)
-    except Exception as e:
-        logging.error(f"Ошибка в /inventory: {e}")
-        bot.send_message(message.chat.id, "❌ Команда /inventory временно недоступна")
-
-@bot.message_handler(commands=['location'])
-def location_command(message):
-    try:
-        game.location_command(message, bot, get_or_create_player, locations_data)
-    except Exception as e:
-        logging.error(f"Ошибка в /location: {e}")
-        if locations_data and locations_data.get("locations"):
-            first_loc = list(locations_data["locations"].values())[0]
-            text = f"📍 *{first_loc.get('name', 'Локация')}*\n\n"
-            text += first_loc.get('description', 'Описание отсутствует')
-            bot.send_message(message.chat.id, text, parse_mode='Markdown')
-
-@bot.message_handler(commands=['map'])
-def map_command(message):
-    try:
-        game.map_command(message, bot)
-    except Exception as e:
-        logging.error(f"Ошибка в /map: {e}")
-        text = "🗺️ *Карта мира*\n\n"
-        text += "🌲 Лесная опушка\n"
-        text += "🏘️ Деревня\n"
-        text += "🏞️ Берег озера\n"
-        text += "⛰️ Горы\n"
-        text += "⛏️ Шахта\n"
-        text += "🏛️ Руины\n"
-        bot.send_message(message.chat.id, text, parse_mode='Markdown')
-
-@bot.message_handler(commands=['class'])
-def class_command(message):
-    try:
-        game.class_command(message, bot, get_or_create_player)
-    except Exception as e:
-        logging.error(f"Ошибка в /class: {e}")
-        bot.send_message(message.chat.id, "❌ Команда /class временно недоступна")
-
-@bot.message_handler(commands=['craft'])
-def craft_command(message):
-    try:
-        game.craft_command(message, bot)
-    except Exception as e:
-        logging.error(f"Ошибка в /craft: {e}")
-        bot.send_message(message.chat.id, "❌ Команда /craft временно недоступна")
-
-@bot.message_handler(commands=['house'])
-def house_command(message):
-    try:
-        game.house_command(message, bot, get_or_create_player, house_data)
-    except Exception as e:
-        logging.error(f"Ошибка в /house: {e}")
-        bot.send_message(message.chat.id, "❌ Команда /house временно недоступна")
-
-# ============================================
-# PETS - СПЕЦИАЛЬНАЯ ОБРАБОТКА С JSON
-# ============================================
-@bot.message_handler(commands=['pets'])
-def pets_command(message):
-    try:
-        # Пробуем вызвать функцию из хендлера
-        pets.pets_command(message, bot, get_or_create_player, pets_data)
-    except Exception as e:
-        logging.error(f"Ошибка в /pets: {e}")
-        # Запасной вариант с отображением питомцев из JSON
-        if pets_data and pets_data.get("pets"):
-            text = "🐾 *Доступные питомцы:*\n\n"
-            
-            # Общие (common)
-            if "common" in pets_data["pets"]:
-                text += "*Обычные:*\n"
-                for pet_id, pet in pets_data["pets"]["common"].items():
-                    text += f"  • {pet.get('name', pet_id)} (ур. {pet.get('level_req', '?')})\n"
-                text += "\n"
-            
-            # Необычные (uncommon)
-            if "uncommon" in pets_data["pets"]:
-                text += "*Необычные:*\n"
-                for pet_id, pet in pets_data["pets"]["uncommon"].items():
-                    text += f"  • {pet.get('name', pet_id)} (ур. {pet.get('level_req', '?')})\n"
-                text += "\n"
-            
-            # Редкие (rare)
-            if "rare" in pets_data["pets"]:
-                text += "*Редкие:*\n"
-                for pet_id, pet in pets_data["pets"]["rare"].items():
-                    text += f"  • {pet.get('name', pet_id)} (ур. {pet.get('level_req', '?')})\n"
-                text += "\n"
-            
-            # Эпические (epic)
-            if "epic" in pets_data["pets"]:
-                text += "*Эпические:*\n"
-                for pet_id, pet in pets_data["pets"]["epic"].items():
-                    text += f"  • {pet.get('name', pet_id)} (ур. {pet.get('level_req', '?')})\n"
-                text += "\n"
-            
-            # Легендарные (legendary)
-            if "legendary" in pets_data["pets"]:
-                text += "*Легендарные:*\n"
-                for pet_id, pet in pets_data["pets"]["legendary"].items():
-                    text += f"  • {pet.get('name', pet_id)} (ур. {pet.get('level_req', '?')})\n"
-                text += "\n"
-            
-            # Мифические (mythic)
-            if "mythic" in pets_data["pets"]:
-                text += "*Мифические:*\n"
-                for pet_id, pet in pets_data["pets"]["mythic"].items():
-                    text += f"  • {pet.get('name', pet_id)} (ур. {pet.get('level_req', '?')})\n"
-            
-            bot.send_message(message.chat.id, text, parse_mode='Markdown')
-        else:
-            bot.send_message(message.chat.id, "❌ Питомцы не загружены")
-
-# ============================================
-# ОСТАЛЬНЫЕ КОМАНДЫ
-# ============================================
-
-@bot.message_handler(commands=['exchange'])
-def exchange_command(message):
-    try:
-        exchange.exchange_command(message, bot, get_or_create_player, exchange_data)
-    except Exception as e:
-        logging.error(f"Ошибка в /exchange: {e}")
-        bot.send_message(message.chat.id, "❌ Команда /exchange временно недоступна")
-
-@bot.message_handler(commands=['rainbow'])
-def rainbow_command(message):
-    try:
-        rainbow.rainbow_command(message, bot, get_or_create_player, rainbow_data)
-    except Exception as e:
-        logging.error(f"Ошибка в /rainbow: {e}")
-        bot.send_message(message.chat.id, "❌ Команда /rainbow временно недоступна")
-
-@bot.message_handler(commands=['premium'])
-def premium_command(message):
-    try:
-        premium.premium_command(message, bot, get_or_create_player, premium_data)
-    except Exception as e:
-        logging.error(f"Ошибка в /premium: {e}")
-        bot.send_message(message.chat.id, "❌ Команда /premium временно недоступна")
-
-@bot.message_handler(commands=['nft'])
-def nft_command(message):
-    try:
-        nft.nft_command(message, bot, get_or_create_player, nft_data)
-    except Exception as e:
-        logging.error(f"Ошибка в /nft: {e}")
-        bot.send_message(message.chat.id, "❌ Команда /nft временно недоступна")
-
-@bot.message_handler(commands=['guild'])
-def guild_command(message):
-    try:
-        guild.guild_command(message, bot, get_or_create_player)
-    except Exception as e:
-        logging.error(f"Ошибка в /guild: {e}")
-        bot.send_message(message.chat.id, "❌ Команда /guild временно недоступна")
-
-@bot.message_handler(commands=['pvp'])
-def pvp_command(message):
-    try:
-        pvp.pvp_command(message, bot, get_or_create_player)
-    except Exception as e:
-        logging.error(f"Ошибка в /pvp: {e}")
-        bot.send_message(message.chat.id, "❌ Команда /pvp временно недоступна")
-
-@bot.message_handler(commands=['codex'])
-def codex_command(message):
-    try:
-        codex.codex_command(message, bot, codex_data)
-    except Exception as e:
-        logging.error(f"Ошибка в /codex: {e}")
-        bot.send_message(message.chat.id, "❌ Команда /codex временно недоступна")
-
-@bot.message_handler(commands=['events'])
-def events_command(message):
-    try:
-        events.events_command(message, bot, events_data)
-    except Exception as e:
-        logging.error(f"Ошибка в /events: {e}")
-        bot.send_message(message.chat.id, "❌ Команда /events временно недоступна")
-
-@bot.message_handler(commands=['shop'])
-def shop_command(message):
-    try:
-        shop.shop_command(message, bot, get_or_create_player, items_data)
-    except Exception as e:
-        logging.error(f"Ошибка в /shop: {e}")
-        bot.send_message(message.chat.id, "❌ Команда /shop временно недоступна")
-
-@bot.message_handler(commands=['top'])
-def top_command(message):
-    try:
-        top.top_command(message, bot, get_or_create_player)
-    except Exception as e:
-        logging.error(f"Ошибка в /top: {e}")
-        bot.send_message(message.chat.id, "❌ Команда /top временно недоступна")
-
-@bot.message_handler(commands=['admin'])
-def admin_command(message):
-    try:
-        admin.admin_command(message, bot, get_or_create_player)
-    except Exception as e:
-        logging.error(f"Ошибка в /admin: {e}")
-        bot.send_message(message.chat.id, "❌ Команда /admin временно недоступна")
-
-# ============================================
-# ОБРАБОТКА ВСЕХ ОСТАЛЬНЫХ СООБЩЕНИЙ
-# ============================================
-@bot.message_handler(func=lambda m: True)
-def echo(message):
-    bot.send_message(
-        message.chat.id,
-        f"❓ Неизвестная команда. Напиши /help\n\n"
-        f"Твоё сообщение: {message.text}"
-    )
-
-# ============================================
-# HEALTH СЕРВЕР
-# ============================================
-class HealthHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(b'Bot is running')
-    def log_message(self, *args): pass
-
-def run_health():
-    port = int(os.getenv("PORT", 10000))
-    server = HTTPServer(('0.0.0.0', port), HealthHandler)
-    logging.info(f"✅ Health server on port {port}")
-    server.serve_forever()
-
-threading.Thread(target=run_health, daemon=True).start()
-
-# ============================================
-# ЗАПУСК
-# ============================================
-logging.info("🚀 Бот запущен, ждем команды...")
-
-if __name__ == "__main__":
-    while True:
-        try:
-            bot.polling(none_stop=True, interval=0, timeout=20)
-        except Exception as e:
-            logging.error(f"❌ Polling error: {e}")
-            time.sleep(5)
+    "rare": {
+      "wolf_cub": {
+        "id": "wolf_cub",
+        "name": "🐺 Волчонок",
+        "rarity": "rare",
+        "description": "Маленький волчонок, который однажды станет могучим волком.",
+        "level_req": 15,
+        "max_level": 20,
+        "base_stats": {
+          "damage": 5,
+          "speed": 3
+        },
+        "per_level": {
+          "damage": 1,
+          "health": 10
+        },
+        "abilities": [
+          {
+            "name": "Острый нюх",
+            "level": 1,
+            "effect": "Находит скрытые тайники (+10% к поиску)"
+          },
+          {
+            "name": "Стайный охотник",
+            "level": 5,
+            "effect": "+10% урона при атаке с питомцем"
+          },
+          {
+            "name": "Вой",
+            "level": 10,
+            "effect": "Пугает врагов, снижая их защиту на 10%"
+          }
+        ],
+        "evolution": {
+          "level": 10,
+          "into": "wolf",
+          "cost": {"wolf_skin": 10, "wolf_fang": 10}
+        },
+        "evolution_2": {
+          "level": 20,
+          "into": "alpha_wolf",
+          "cost": {"alpha_fang": 3, "dragon_blood": 2, "rainbow_shard": 3}
+        },
+        "found_in": ["deep_forest"],
+        "drop_from": ["wolf_female"],
+        "chance": 5,
+        "food": ["meat", "wolf_meat", "bone"]
+      },
+      
+      "bear_cub": {
+        "id": "bear_cub",
+        "name": "🐻 Медвежонок",
+        "rarity": "rare",
+        "description": "Пушистый медвежонок, который любит мёд.",
+        "level_req": 15,
+        "max_level": 20,
+        "base_stats": {
+          "health": 50,
+          "defense": 5
+        },
+        "per_level": {
+          "health": 15,
+          "defense": 1
+        },
+        "abilities": [
+          {
+            "name": "Крепыш",
+            "level": 1,
+            "effect": "+10% к максимальному здоровью владельца"
+          },
+          {
+            "name": "Собиратель мёда",
+            "level": 5,
+            "effect": "Находит мёд в лесу"
+          },
+          {
+            "name": "Топот",
+            "level": 10,
+            "effect": "Может оглушить врага (10% шанс)"
+          }
+        ],
+        "evolution": {
+          "level": 20,
+          "into": "bear",
+          "cost": {"bear_skin": 10, "bear_claw": 10, "honey": 20}
+        },
+        "found_in": ["deep_forest", "mountain_path"],
+        "drop_from": ["bear_female"],
+        "chance": 3,
+        "food": ["meat", "bear_meat", "honey", "berry"]
+      },
+      
+      "moose_calf": {
+        "id": "moose_calf",
+        "name": "🦌 Лосёнок",
+        "rarity": "rare",
+        "description": "Маленький лосёнок с большими глазами.",
+        "level_req": 12,
+        "max_level": 18,
+        "base_stats": {
+          "speed": 5,
+          "carry": 10
+        },
+        "abilities": [
+          {
+            "name": "Быстроного",
+            "level": 1,
+            "effect": "+5% к скорости передвижения"
+          },
+          {
+            "name": "Вьючный зверь",
+            "level": 5,
+            "effect": "+10 слотов в инвентаре"
+          },
+          {
+            "name": "Лесной дух",
+            "level": 10,
+            "effect": "Находит редкие травы в лесу"
+          }
+        ],
+        "evolution": {
+          "level": 18,
+          "into": "moose",
+          "cost": {"moose_skin": 10, "moose_antler": 5}
+        },
+        "found_in": ["forest_path", "lake_shore"],
+        "drop_from": ["moose_female"],
+        "chance": 4,
+        "food": ["herb", "vegetables", "apple"]
+      }
+    },
+    
+    "epic": {
+      "wolf": {
+        "id": "wolf",
+        "name": "🐺 Волк",
+        "rarity": "epic",
+        "description": "Верный волк, преданный своему хозяину.",
+        "level_req": 20,
+        "max_level": 30,
+        "base_stats": {
+          "damage": 15,
+          "speed": 8
+        },
+        "abilities": [
+          {
+            "name": "Стальная хватка",
+            "effect": "Кусает врага, нанося дополнительный урон"
+          },
+          {
+            "name": "Волчья ярость",
+            "level": 15,
+            "effect": "+20% урона, когда здоровье ниже 30%"
+          },
+          {
+            "name": "Вожак",
+            "level": 25,
+            "effect": "Другие питомцы получают +10% к урону"
+          }
+        ],
+        "evolution": {
+          "level": 30,
+          "into": "alpha_wolf",
+          "cost": {"alpha_fang": 5, "dragon_blood": 3, "rainbow_stone": 1}
+        },
+        "food": ["meat", "wolf_meat", "bone"]
+      },
+      
+      "bear": {
+        "id": "bear",
+        "name": "🐻 Медведь",
+        "rarity": "epic",
+        "description": "Могучий медведь, гора мышц и силы.",
+        "level_req": 25,
+        "max_level": 30,
+        "base_stats": {
+          "health": 200,
+          "defense": 20
+        },
+        "abilities": [
+          {
+            "name": "Медвежья сила",
+            "effect": "+20% к урону владельца"
+          },
+          {
+            "name": "Неуклюжесть",
+            "effect": "10% шанс оглушить врага ударом лапы"
+          },
+          {
+            "name": "Зимняя спячка",
+            "effect": "Во время отдыха восстанавливает вдвое больше здоровья"
+          }
+        ],
+        "food": ["meat", "bear_meat", "honey", "fish"]
+      },
+      
+      "moose": {
+        "id": "moose",
+        "name": "🦌 Лось",
+        "rarity": "epic",
+        "description": "Величественный лось с огромными рогами.",
+        "level_req": 20,
+        "max_level": 25,
+        "base_stats": {
+          "speed": 15,
+          "carry": 30
+        },
+        "abilities": [
+          {
+            "name": "Рогатая атака",
+            "effect": "Может бодать врага, отбрасывая его"
+          },
+          {
+            "name": "Вьючный гигант",
+            "effect": "+20 слотов в инвентаре"
+          },
+          {
+            "name": "Благородство",
+            "effect": "+10% к репутации с NPC"
+          }
+        ],
+        "food": ["herb", "vegetables", "mushroom"]
+      }
+    },
+    
+    "legendary": {
+      "alpha_wolf": {
+        "id": "alpha_wolf",
+        "name": "🐺👑 Альфа-волк",
+        "rarity": "legendary",
+        "description": "Король волков, величайший из своей стаи.",
+        "level_req": 30,
+        "max_level": 40,
+        "base_stats": {
+          "damage": 30,
+          "speed": 15,
+          "leadership": true
+        },
+        "abilities": [
+          {
+            "name": "Королевский вой",
+            "effect": "Пугает всех врагов в округе, снижая их защиту на 20%"
+          },
+          {
+            "name": "Альфа-статус",
+            "effect": "Все питомцы в группе получают +15% к характеристикам"
+          },
+          {
+            "name": "Серебряный клык",
+            "effect": "Атаки игнорируют 30% защиты врага"
+          }
+        ],
+        "evolution": {
+          "level": 40,
+          "into": "dragon_wolf",
+          "cost": {"dragon_heart": 2, "rainbow_stone": 3, "alpha_fang": 10}
+        },
+        "food": ["meat", "wolf_meat", "dragon_meat"]
+      },
+      
+      "nine_tailed_fox": {
+        "id": "nine_tailed_fox",
+        "name": "🦊✨ Девятихвостая лиса",
+        "rarity": "legendary",
+        "description": "Мифическая лисица с девятью хвостами, приносящая невероятную удачу.",
+        "level_req": 30,
+        "max_level": 40,
+        "base_stats": {
+          "luck": 20,
+          "magic_damage": 20
+        },
+        "abilities": [
+          {
+            "name": "Девять жизней",
+            "effect": "Может избежать смертельного удара 1 раз в день"
+          },
+          {
+            "name": "Лисье пламя",
+            "effect": "Атаки наносят дополнительный магический урон"
+          },
+          {
+            "name": "Иллюзия",
+            "effect": "Создаёт иллюзию, отвлекающую врагов"
+          }
+        ],
+        "food": ["magic_herb", "crystal", "spirit_essence"]
+      },
+      
+      "dragon_wolf": {
+        "id": "dragon_wolf",
+        "name": "🐉🐺 Драконий волк",
+        "rarity": "legendary",
+        "description": "Легендарное существо, сочетающее силу волка и мощь дракона.",
+        "level_req": 40,
+        "max_level": 50,
+        "base_stats": {
+          "damage": 50,
+          "defense": 30,
+          "fire_damage": 20
+        },
+        "abilities": [
+          {
+            "name": "Драконье пламя",
+            "effect": "Выдыхает огонь, нанося урон всем врагам"
+          },
+          {
+            "name": "Волчья стая",
+            "effect": "Призывает двух теневых волков в бой"
+          },
+          {
+            "name": "Легендарная стойкость",
+            "effect": "+50% к защите и сопротивлению магии"
+          }
+        ],
+        "food": ["dragon_meat", "dragon_blood", "mythril_ingot"]
+      },
+      
+      "ancient_owl": {
+        "id": "ancient_owl",
+        "name": "🦉✨ Древняя сова",
+        "rarity": "legendary",
+        "description": "Мудрейшее существо, помнящее времена богов.",
+        "level_req": 35,
+        "max_level": 45,
+        "base_stats": {
+          "wisdom": 30,
+          "magic_damage": 25
+        },
+        "abilities": [
+          {
+            "name": "Всевидящее око",
+            "effect": "Открывает все секреты в локации"
+          },
+          {
+            "name": "Мудрость богов",
+            "effect": "+30% к опыту"
+          },
+          {
+            "name": "Пророчество",
+            "effect": "Может предсказать результат боя"
+          }
+        ],
+        "food": ["ancient_relic", "magic_crystal", "spirit_essence"]
+      }
+    },
+    
+    "mythic": {
+      "phoenix": {
+        "id": "phoenix",
+        "name": "🔥🐦 Феникс",
+        "rarity": "mythic",
+        "description": "Легендарная птица, возрождающаяся из пепла.",
+        "level_req": 50,
+        "max_level": 60,
+        "base_stats": {
+          "damage": 40,
+          "fire_damage": 40,
+          "heal_power": 30
+        },
+        "abilities": [
+          {
+            "name": "Возрождение",
+            "effect": "Если Феникс погибает, он возрождается 1 раз в бою"
+          },
+          {
+            "name": "Песнь жизни",
+            "effect": "Восстанавливает здоровье всей группе каждый ход"
+          },
+          {
+            "name": "Огненная буря",
+            "effect": "Массовая атака огнём по всем врагам"
+          }
+        ],
+        "how_to_get": "Собрать 3 пера феникса в жерле вулкана",
+        "food": ["phoenix_feather", "sun_crystal", "divine_essence"]
+      },
+      
+      "dragonling": {
+        "id": "dragonling",
+        "name": "🐉 Дракончик",
+        "rarity": "mythic",
+        "description": "Маленький дракон, который однажды станет королём.",
+        "level_req": 45,
+        "max_level": 60,
+        "base_stats": {
+          "damage": 30,
+          "defense": 30,
+          "fire_damage": 30
+        },
+        "abilities": [
+          {
+            "name": "Драконье дыхание",
+            "effect": "Огненная атака по площади"
+          },
+          {
+            "name": "Чешуя дракона",
+            "effect": "+30% к защите владельца"
+          },
+          {
+            "name": "Королевская кровь",
+            "effect": "Все характеристики +15%"
+          }
+        ],
+        "evolution": {
+          "level": 60,
+          "into": "dragon_king",
+          "cost": {"dragon_heart": 5, "rainbow_stone": 10, "divine_essence": 3}
+        },
+        "how_to_get": "Найти яйцо дракона на Острове драконов",
+        "food": ["dragon_meat", "dragon_blood", "gold_ingot"]
+      },
+      
+      "dragon_king": {
+        "id": "dragon_king",
+        "name": "👑🐉 Король драконов",
+        "rarity": "mythic",
+        "description": "Величайший из драконов, повелитель неба и огня.",
+        "level_req": 60,
+        "max_level": 70,
+        "base_stats": {
+          "damage": 80,
+          "defense": 50,
+          "fire_damage": 50,
+          "all_stats": 30
+        },
+        "abilities": [
+          {
+            "name": "Апокалипсис",
+            "effect": "Огромный урон всем врагам, 1 раз в бой"
+          },
+          {
+            "name": "Драконий страх",
+            "effect": "Враги имеют шанс сбежать в начале боя"
+          },
+          {
+            "name": "Королевское величие",
+            "effect": "Все союзники получают +25% к характеристикам"
+          }
+        ],
+        "how_to_get": "Эволюция Дракончика",
+        "food": ["divine_essence", "rainbow_stone", "dragon_heart"]
+      }
+    },
+    
+    "pet_system": {
+      "max_pets": 5,
+      "active_pet": 1,
+      "pet_inventory": 20,
+      "pet_food": {
+        "meat": "+10 опыта",
+        "fish": "+15 опыта",
+        "berry": "+5 опыта",
+        "magic_food": "+50 опыта"
+      },
+      "happiness": {
+        "effects": {
+          "0-20": "грустный, нет бонусов",
+          "21-50": "нормальный, 50% бонусов",
+          "51-80": "довольный, 100% бонусов",
+          "81-100": "счастливый, 150% бонусов"
+        },
+        "decay_per_day": 5,
+        "food_happiness": {
+          "meat": 5,
+          "fish": 8,
+          "berry": 3,
+          "treat": 15,
+          "magic_treat": 30
+        }
+      },
+      "commands": {
+        "/pet": "Посмотреть информацию о питомце",
+        "/pet feed [item]": "Покормить питомца",
+        "/pet play": "Поиграть с питомцем (+5 счастья)",
+        "/pet rename [name]": "Переименовать питомца",
+        "/pet summon": "Призвать питомца",
+        "/pet dismiss": "Отпустить питомца"
+      }
+    }
+  }
+}
