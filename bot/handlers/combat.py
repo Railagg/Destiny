@@ -30,7 +30,6 @@ def attack_command(message, bot, get_or_create_player, enemies_data, locations_d
     character.combat_turn = 0
     character.current_health = character.health
     character.current_mana = character.magic
-    from main import save_character
     save_character(character)
     
     text = f"⚔️ *Начало боя!*\n\n"
@@ -66,7 +65,6 @@ def combat_turn(call, bot, get_or_create_player, enemies_data, items_data, actio
     
     if not enemy:
         character.in_combat = False
-        from main import save_character
         save_character(character)
         bot.answer_callback_query(call.id, "❌ Ошибка боя")
         return
@@ -84,11 +82,9 @@ def combat_turn(call, bot, get_or_create_player, enemies_data, items_data, actio
     
     result_text = ""
     player_damage = 0
-    player_dodged = False
     
     # Ход игрока
     if action == "attack":
-        from main import calculate_damage
         base_damage = calculate_damage(character)
         damage_variation = random.uniform(0.8, 1.2)
         player_damage = int(base_damage * damage_variation)
@@ -123,7 +119,6 @@ def combat_turn(call, bot, get_or_create_player, enemies_data, items_data, actio
         flee_chance = 30 + character.dexterity * 2
         if random.randint(1, 100) <= flee_chance:
             character.in_combat = False
-            from main import save_character
             save_character(character)
             bot.edit_message_text(
                 "🏃 Ты успешно сбежал!",
@@ -143,7 +138,7 @@ def combat_turn(call, bot, get_or_create_player, enemies_data, items_data, actio
         character.experience += exp_gain
         character.gold += gold_gain
         
-        # ТРОФЕИ - добавляем выпадение предметов
+        # ТРОФЕИ
         drops = enemy.get('drops', [])
         drop_text = ""
         for drop in drops:
@@ -167,7 +162,6 @@ def combat_turn(call, bot, get_or_create_player, enemies_data, items_data, actio
             level_up_text += f"✨ *УРОВЕНЬ {character.level}!*\n"
         
         character.in_combat = False
-        from main import save_character
         save_character(character)
         
         result_text = f"🎉 *Победа!*\n\n"
@@ -209,7 +203,6 @@ def combat_turn(call, bot, get_or_create_player, enemies_data, items_data, actio
         character.gold -= gold_loss
         character.current_health = 1
         character.in_combat = False
-        from main import save_character
         save_character(character)
         
         bot.edit_message_text(
@@ -222,7 +215,6 @@ def combat_turn(call, bot, get_or_create_player, enemies_data, items_data, actio
         bot.answer_callback_query(call.id)
         return
     
-    from main import save_character
     save_character(character)
     
     text = f"⚔️ *Продолжение боя*\n\n"
