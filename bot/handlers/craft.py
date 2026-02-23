@@ -48,7 +48,6 @@ def show_category(call, bot, get_or_create_player, crafting_data, items_data, ca
     for subcat_id, subcat_data in category_data.items():
         if isinstance(subcat_data, dict):
             for item_id, recipe in subcat_data.items():
-                # Проверяем уровень
                 level_req = recipe.get('level_req', 1)
                 name = recipe.get('name', item_id)
                 
@@ -82,13 +81,11 @@ def show_recipe(call, bot, get_or_create_player, crafting_data, items_data, cate
         bot.answer_callback_query(call.id, "❌ Рецепт не найден")
         return
     
-    # Проверяем уровень
     level_req = recipe.get('level_req', 1)
     if character.level < level_req:
         bot.answer_callback_query(call.id, f"❌ Нужен уровень {level_req}")
         return
     
-    # Проверяем наличие ресурсов
     materials = recipe.get('materials', {})
     missing = []
     for material, amount in materials.items():
@@ -132,27 +129,20 @@ def create_item(call, bot, get_or_create_player, crafting_data, items_data, cate
         bot.answer_callback_query(call.id, "❌ Рецепт не найден")
         return
     
-    # Проверяем уровень
     level_req = recipe.get('level_req', 1)
     if character.level < level_req:
         bot.answer_callback_query(call.id, f"❌ Нужен уровень {level_req}")
         return
     
-    # Забираем ресурсы
     materials = recipe.get('materials', {})
     for material, amount in materials.items():
         for _ in range(amount):
             character.remove_item(material)
     
-    # Добавляем созданный предмет
     character.add_item(item_id)
-    
-    from main import save_character
     save_character(character)
     
     bot.answer_callback_query(call.id, "✅ Предмет создан!")
-    
-    # Показываем обновлённый рецепт
     show_recipe(call, bot, get_or_create_player, crafting_data, items_data, category, subcategory, item_id)
 
 def handle_callback(call, bot, get_or_create_player, crafting_data, items_data):
