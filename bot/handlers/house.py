@@ -56,7 +56,6 @@ def build_house(message, bot, get_or_create_player, house_data, items_data):
     user_id = message.from_user.id
     user, character = get_or_create_player(user_id)
     
-    # Проверяем ресурсы
     required = {
         "wood": 100,
         "stone": 100,
@@ -76,13 +75,11 @@ def build_house(message, bot, get_or_create_player, house_data, items_data):
         bot.send_message(message.chat.id, text, parse_mode='Markdown')
         return
     
-    # Забираем ресурсы
     for material, amount in required.items():
         for _ in range(amount):
             character.remove_item(material)
     
     character.house_level = 1
-    from main import save_character
     save_character(character)
     
     text = "🎉 *Домик построен!*\n\n"
@@ -98,15 +95,12 @@ def show_storage(call, bot, get_or_create_player, items_data):
     user_id = call.from_user.id
     user, character = get_or_create_player(user_id)
     
-    # Временное хранилище (потом добавим отдельное поле в БД)
     storage = character.house_furniture if character.house_furniture else []
     
     if not storage:
         text = "📦 *Сундук пуст*"
     else:
         text = "📦 *Содержимое сундука:*\n\n"
-        
-        # Группируем предметы
         items_count = {}
         for item_id in storage:
             items_count[item_id] = items_count.get(item_id, 0) + 1
@@ -136,7 +130,6 @@ def house_rest(call, bot, get_or_create_player):
     user_id = call.from_user.id
     user, character = get_or_create_player(user_id)
     
-    # Бонусы зависят от уровня дома
     house_level = character.house_level or 0
     energy_gain = 30 + house_level * 10
     health_gain = 20 + house_level * 5
@@ -144,9 +137,7 @@ def house_rest(call, bot, get_or_create_player):
     character.energy = min(character.energy + energy_gain, character.max_energy)
     character.health = min(character.health + health_gain, character.max_health)
     
-    from main import save_character
     save_character(character)
-    
     bot.answer_callback_query(call.id, f"✅ Отдохнул! +{energy_gain}⚡, +{health_gain}❤️")
 
 def handle_callback(call, bot, get_or_create_player, house_data, items_data):
@@ -156,7 +147,6 @@ def handle_callback(call, bot, get_or_create_player, house_data, items_data):
         action = data[1]
         
         if action == "back":
-            from main import house_command
             house_command(call.message, bot, get_or_create_player, house_data)
         
         elif action == "build":
