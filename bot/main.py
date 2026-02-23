@@ -124,23 +124,6 @@ exchange_data = load_json("exchange.json")
 islands_data = load_json("islands.json")
 
 # ============================================
-# ДИАГНОСТИКА PETS.JSON
-# ============================================
-logging.info("🔍 Диагностика pets.json:")
-if pets_data:
-    logging.info(f"✅ pets_data загружен, тип: {type(pets_data)}")
-    if isinstance(pets_data, dict):
-        logging.info(f"📊 Ключи в pets_data: {list(pets_data.keys())}")
-        if "pets" in pets_data:
-            logging.info(f"📊 Ключи в pets_data['pets']: {list(pets_data['pets'].keys())}")
-        else:
-            logging.info("❌ В pets_data нет ключа 'pets'")
-    else:
-        logging.info(f"❌ pets_data не словарь, а {type(pets_data)}")
-else:
-    logging.error("❌ pets_data пустой или не загружен")
-
-# ============================================
 # ИМПОРТ ВСЕХ ХЕНДЛЕРОВ
 # ============================================
 
@@ -158,7 +141,8 @@ from handlers import (
     events,
     shop,
     top,
-    admin
+    admin,
+    quests
 )
 
 # ============================================
@@ -172,7 +156,6 @@ def get_or_create_player(telegram_id, username=None, first_name=None):
         user = db.query(User).filter(User.telegram_id == telegram_id).first()
         
         if not user:
-            # Создаём пользователя
             user = User(
                 telegram_id=telegram_id,
                 username=username,
@@ -182,7 +165,6 @@ def get_or_create_player(telegram_id, username=None, first_name=None):
             db.commit()
             db.refresh(user)
             
-            # Создаём персонажа
             character = Character(user_id=user.id)
             db.add(character)
             db.commit()
@@ -320,6 +302,7 @@ def help_command(message):
         text += "/craft - крафт\n"
         text += "/house - домик\n"
         text += "/pets - питомцы\n"
+        text += "/quests - квесты\n"
         text += "/exchange - обмен\n"
         text += "/rainbow - радужные камни\n"
         text += "/premium - премиум\n"
@@ -412,34 +395,29 @@ def house_command(message):
         logging.error(f"Ошибка в /house: {e}")
         bot.send_message(message.chat.id, "❌ Команда /house временно недоступна")
 
+@bot.message_handler(commands=['quests'])
+def quests_command(message):
+    try:
+        quests.quests_command(message, bot, get_or_create_player, quests_data)
+    except Exception as e:
+        logging.error(f"Ошибка в /quests: {e}")
+        bot.send_message(message.chat.id, "❌ Команда /quests временно недоступна")
+
 # ============================================
-# PETS - С ДИАГНОСТИКОЙ
+# PETS - БЕЗ ДИАГНОСТИКИ
 # ============================================
 @bot.message_handler(commands=['pets'])
 def pets_command(message):
     try:
-        # Пробуем вызвать функцию из хендлера
         pets.pets_command(message, bot, get_or_create_player, pets_data)
     except Exception as e:
         logging.error(f"Ошибка в /pets: {e}")
-        # Диагностика в ответе пользователю
-        if pets_data:
-            bot.send_message(
-                message.chat.id,
-                f"🔍 Диагностика:\n"
-                f"pets_data загружен: да\n"
-                f"Тип: {type(pets_data)}\n"
-                f"Ключи: {list(pets_data.keys()) if isinstance(pets_data, dict) else 'не словарь'}"
-            )
-        else:
-            bot.send_message(message.chat.id, "❌ pets_data не загружен")
-
+        
         # Запасной вариант с отображением питомцев из JSON
         if pets_data and isinstance(pets_data, dict):
             text = "🐾 *Доступные питомцы:*\n\n"
             count = 0
             
-            # Проверяем, есть ли ключ "pets" внутри
             pets_dict = pets_data.get("pets", pets_data)
             
             # Общие (common)
