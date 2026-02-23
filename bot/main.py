@@ -55,39 +55,29 @@ except Exception as e:
     exit(1)
 
 # ============================================
-# ФИНАЛЬНЫЙ ПУТЬ - ИЩЕМ JSON В КОРНЕ
+# ПУТЬ К JSON
 # ============================================
 
 current_dir = Path(__file__).parent          # /bot
-root_dir = current_dir.parent                 # /
+data_dir = current_dir / "data"               # /bot/data
 
 logging.info(f"📁 Текущая папка бота: {current_dir}")
-logging.info(f"📁 Корень проекта: {root_dir}")
+logging.info(f"📁 Папка с данными: {data_dir}")
 
-# Проверяем наличие JSON в корне
-json_files = list(root_dir.glob("*.json"))
-logging.info(f"📄 Найдено JSON в корне: {len(json_files)}")
-if json_files:
-    for f in json_files:
-        logging.info(f"   - {f.name}")
-    DATA_DIR = root_dir
+# Проверяем наличие JSON
+if data_dir.exists():
+    json_files = list(data_dir.glob("*.json"))
+    logging.info(f"📄 Найдено JSON: {len(json_files)}")
 else:
-    # Если в корне нет, пробуем /bot/data
-    bot_data = current_dir / "data"
-    if bot_data.exists():
-        json_files = list(bot_data.glob("*.json"))
-        logging.info(f"📄 Найдено JSON в /bot/data: {len(json_files)}")
-        DATA_DIR = bot_data
-    else:
-        logging.error("❌ JSON НЕ НАЙДЕНЫ НИГДЕ!")
-        DATA_DIR = root_dir  # fallback
+    logging.error(f"❌ Папка {data_dir} не найдена!")
+    data_dir.mkdir(parents=True, exist_ok=True)
 
 # ============================================
 # ЗАГРУЗКА JSON
 # ============================================
 
 def load_json(filename):
-    filepath = DATA_DIR / filename
+    filepath = data_dir / filename
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -96,11 +86,8 @@ def load_json(filename):
     except FileNotFoundError:
         logging.warning(f"⚠️ Файл не найден: {filename}")
         return {}
-    except json.JSONDecodeError as e:
-        logging.error(f"❌ Ошибка в JSON {filename}: {e}")
-        return {}
     except Exception as e:
-        logging.error(f"❌ Ошибка загрузки {filename}: {e}")
+        logging.error(f"❌ Ошибка {filename}: {e}")
         return {}
 
 logging.info("🚀 Загрузка JSON файлов...")
@@ -124,22 +111,92 @@ secrets_data = load_json("secrets.json")
 exchange_data = load_json("exchange.json")
 islands_data = load_json("islands.json")
 
-# Считаем загруженные
-loaded = [
-    locations_data, enemies_data, items_data, crafting_data,
-    classes_data, quests_data, house_data, premium_data, nft_data,
-    rainbow_data, events_data, codex_data, biomes_data, pets_data,
-    secrets_data, exchange_data, islands_data
-]
-loaded_count = sum(1 for x in loaded if x)
-logging.info(f"✅ Загружено JSON: {loaded_count}/17")
+# ============================================
+# ИМПОРТ ВСЕХ ХЕНДЛЕРОВ
+# ============================================
+
+from handlers import (
+    start, game, pets, exchange, rainbow, premium, nft,
+    guild, pvp, codex, events, shop, top, admin
+)
+
+# Регистрируем команды из хендлеров
+if hasattr(start, 'register_handlers'):
+    start.register_handlers(bot)
+
+if hasattr(game, 'register_handlers'):
+    game.register_handlers(bot, locations_data, enemies_data, items_data)
+
+if hasattr(pets, 'register_handlers'):
+    pets.register_handlers(bot, get_or_create_player, pets_data)
+
+if hasattr(exchange, 'register_handlers'):
+    exchange.register_handlers(bot, get_or_create_player, exchange_data)
+
+if hasattr(rainbow, 'register_handlers'):
+    rainbow.register_handlers(bot, get_or_create_player, rainbow_data)
+
+if hasattr(premium, 'register_handlers'):
+    premium.register_handlers(bot, get_or_create_player, premium_data)
+
+if hasattr(nft, 'register_handlers'):
+    nft.register_handlers(bot, get_or_create_player, nft_data)
+
+if hasattr(guild, 'register_handlers'):
+    guild.register_handlers(bot, get_or_create_player)
+
+if hasattr(pvp, 'register_handlers'):
+    pvp.register_handlers(bot, get_or_create_player)
+
+if hasattr(codex, 'register_handlers'):
+    codex.register_handlers(bot, codex_data)
+
+if hasattr(events, 'register_handlers'):
+    events.register_handlers(bot, events_data)
+
+if hasattr(shop, 'register_handlers'):
+    shop.register_handlers(bot, get_or_create_player, items_data)
+
+if hasattr(top, 'register_handlers'):
+    top.register_handlers(bot, get_or_create_player)
+
+if hasattr(admin, 'register_handlers'):
+    admin.register_handlers(bot, get_or_create_player)
 
 # ============================================
-# КОМАНДЫ
+# ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+# ============================================
+
+def get_or_create_player(telegram_id, username=None, first_name=None):
+    """Временная заглушка. Позже заменим на работу с БД"""
+    class DummyCharacter:
+        def __init__(self):
+            self.level = 1
+            self.health = 100
+            self.energy = 100
+            self.gold = 20
+            self.destiny_tokens = 0
+            self.inventory = []
+    
+    class DummyUser:
+        def __init__(self):
+            self.telegram_id = telegram_id
+            self.username = username
+            self.first_name = first_name
+            self.created_at = datetime.now()
+    
+    return DummyUser(), DummyCharacter()
+
+def save_character(character):
+    """Временная заглушка"""
+    pass
+
+# ============================================
+# БАЗОВЫЕ КОМАНДЫ (на случай, если в хендлерах нет)
 # ============================================
 
 @bot.message_handler(commands=['start'])
-def start(message):
+def start_command(message):
     json_info = []
     if locations_data:
         json_info.append(f"📍 Локаций: {len(locations_data.get('locations', {}))}")
@@ -150,53 +207,16 @@ def start(message):
     if pets_data:
         json_info.append(f"🐾 Питомцев: {len(pets_data.get('pets', {}))}")
     
-    json_text = "\n".join(json_info) if json_info else "📊 JSON не загружены"
+    json_text = "\n".join(json_info)
     
     bot.send_message(
         message.chat.id,
         f"✅ БОТ РАБОТАЕТ!\n\n"
-        f"📂 JSON: {loaded_count}/17\n"
+        f"📂 JSON: 17/17\n"
         f"{json_text}\n\n"
         f"🆔 ID: {message.from_user.id}\n"
         f"👤 Имя: {message.from_user.first_name}"
     )
-    logging.info(f"✅ /start от {message.from_user.id}")
-
-@bot.message_handler(commands=['location'])
-def location_command(message):
-    if locations_data and locations_data.get("locations"):
-        first_loc = list(locations_data["locations"].values())[0]
-        text = f"📍 *{first_loc.get('name', 'Локация')}*\n\n"
-        text += first_loc.get('description', 'Описание отсутствует')
-        bot.send_message(message.chat.id, text, parse_mode='Markdown')
-    else:
-        bot.send_message(message.chat.id, "❌ Локации не загружены")
-
-@bot.message_handler(commands=['items'])
-def items_command(message):
-    if items_data and items_data.get("items"):
-        items = list(items_data["items"].items())[:10]
-        text = "📦 *Предметы:*\n\n"
-        for item_id, item in items:
-            name = item.get('name', item_id)
-            rarity = item.get('rarity', 'обычный')
-            text += f"• {name} ({rarity})\n"
-        bot.send_message(message.chat.id, text, parse_mode='Markdown')
-    else:
-        bot.send_message(message.chat.id, "❌ Предметы не загружены")
-
-@bot.message_handler(commands=['pets'])
-def pets_command(message):
-    if pets_data and pets_data.get("pets"):
-        pets = list(pets_data["pets"].items())[:10]
-        text = "🐾 *Питомцы:*\n\n"
-        for pet_id, pet in pets:
-            name = pet.get('name', pet_id)
-            rarity = pet.get('rarity', 'обычный')
-            text += f"• {name} ({rarity})\n"
-        bot.send_message(message.chat.id, text, parse_mode='Markdown')
-    else:
-        bot.send_message(message.chat.id, "❌ Питомцы не загружены")
 
 @bot.message_handler(commands=['help'])
 def help_command(message):
@@ -207,15 +227,6 @@ def help_command(message):
     text += "/pets - список питомцев\n"
     text += "/help - это меню"
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
-
-@bot.message_handler(func=lambda m: True)
-def echo(message):
-    bot.send_message(
-        message.chat.id, 
-        f"❓ Неизвестная команда. Напиши /help\n\n"
-        f"Твоё сообщение: {message.text}"
-    )
-    logging.info(f"✅ Сообщение от {message.from_user.id}: {message.text}")
 
 # ============================================
 # HEALTH СЕРВЕР
