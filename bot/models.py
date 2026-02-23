@@ -1,8 +1,8 @@
-from sqlalchemy import Column, Integer, String, BigInteger, DateTime, ForeignKey, Boolean, Text
+from sqlalchemy import Column, Integer, String, BigInteger, DateTime, ForeignKey, Text, Boolean, JSON
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from database import Base
 import json
+from database import Base
 
 class User(Base):
     __tablename__ = "users"
@@ -10,12 +10,16 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     telegram_id = Column(BigInteger, unique=True, index=True, nullable=False)
     username = Column(String, nullable=True)
-    first_name = Column(String)
-    last_name = Column(String)
+    first_name = Column(String, nullable=True)
+    last_name = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     last_active = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    character = relationship("Character", back_populates="user", uselist=False)
+    # Связь с персонажем
+    character = relationship("Character", back_populates="user", uselist=False, cascade="all, delete-orphan")
+    
+    def __repr__(self):
+        return f"<User {self.telegram_id}>"
 
 class Character(Base):
     __tablename__ = "characters"
@@ -23,98 +27,103 @@ class Character(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), unique=True)
     
-    name = Column(String, default="Искатель")
+    # Основные характеристики
     level = Column(Integer, default=1)
     experience = Column(Integer, default=0)
     
-    energy = Column(Integer, default=100)
-    max_energy = Column(Integer, default=100)
-    magic = Column(Integer, default=100)
-    max_magic = Column(Integer, default=100)
+    # Здоровье и энергия
     health = Column(Integer, default=100)
     max_health = Column(Integer, default=100)
+    energy = Column(Integer, default=100)
+    max_energy = Column(Integer, default=100)
+    magic = Column(Integer, default=50)
+    max_magic = Column(Integer, default=50)
+    
+    # Ресурсы
     gold = Column(Integer, default=20)
     destiny_tokens = Column(Integer, default=0)
     
+    # Инвентарь (храним как JSON строку)
+    _inventory = Column(Text, default="[]")
+    
+    # Локация
+    location = Column(String, default="start")
+    
+    # Класс
+    player_class = Column(String, nullable=True)
+    class_level = Column(Integer, default=1)
+    
+    # Характеристики класса
     strength = Column(Integer, default=1)
     dexterity = Column(Integer, default=1)
     intelligence = Column(Integer, default=1)
     vitality = Column(Integer, default=1)
-    stat_points = Column(Integer, default=0)
     
-    base_damage = Column(Integer, default=1)
-    defense_bonus = Column(Integer, default=0)
+    # Боевые характеристики
+    luck = Column(Integer, default=0)
     crit_chance = Column(Integer, default=0)
     crit_multiplier = Column(Integer, default=2)
     dodge_chance = Column(Integer, default=0)
+    defense_bonus = Column(Integer, default=0)
+    base_damage = Column(Integer, default=5)
     
-    inventory = Column(Text, default="[]")
-    spells = Column(Text, default="[]")
-    location = Column(String, default="start")
-    player_class = Column(String, nullable=True)
-    class_level = Column(Integer, default=1)
-    class_exp = Column(Integer, default=0)
+    # Домик
     house_level = Column(Integer, default=0)
+    house_furniture = Column(JSON, default=list)
     
-    achievements = Column(Text, default="[]")
-    achievement_stats = Column(Text, default="{}")
-    completed_quests = Column(Text, default="[]")
-    accepted_quests = Column(Text, default="[]")
+    # Питомцы
+    pets = Column(JSON, default=list)
+    active_pet = Column(Integer, nullable=True)
     
-    daily_streak = Column(Integer, default=0)
-    last_daily_claim = Column(Integer, default=0)
+    # Системные поля
+    login_streak = Column(Integer, default=0)
+    last_login = Column(Integer, default=0)  # timestamp
+    last_update = Column(Integer, default=0)  # timestamp для энергии
+    last_magic_update = Column(Integer, default=0)  # timestamp для магии
     
-    spell_cooldowns = Column(Text, default="{}")
-    last_rest_time = Column(Integer, default=0)
-    teleport_cooldown = Column(Integer, default=0)
-    
-    pickaxe_durability = Column(Text, default="{}")
-    fishing_rod_durability = Column(Text, default="{}")
-    sickle_durability = Column(Text, default="{}")
-    hoe_durability = Column(Text, default="{}")
-    
-    blind_active = Column(Boolean, default=False)
-    combat_state = Column(Text, nullable=True)
-    
-    last_update = Column(Integer, default=0)
-    last_magic_update = Column(Integer, default=0)
-    last_daily_reset = Column(Integer, default=0)
-    last_weekly_reset = Column(Integer, default=0)
-    
+    # Связь с пользователем
     user = relationship("User", back_populates="character")
     
+    @property
+    def inventory(self):
+        """Получить инвентарь как список"""
+        try:
+            return json.loads(self._inventory) if self._inventory else []
+        except:
+            return []
+    
+    @inventory.setter
+    def inventory(self, value):
+        """Сохранить инвентарь как JSON строку"""
+        self._inventory = json.dumps(value, ensure_ascii=False)
+    
     def get_inventory(self):
-        return json.loads(self.inventory) if self.inventory else []
+        """Вернуть инвентарь (для совместимости)"""
+        return self.inventory
     
-    def set_inventory(self, inv_list):
-        self.inventory = json.dumps(inv_list)
+    def add_item(self, item_id):
+        """Добавить предмет в инвентарь"""
+        inv = self.inventory
+        inv.append(item_id)
+        self.inventory = inv
     
-    def get_spells(self):
-        return json.loads(self.spells) if self.spells else []
+    def remove_item(self, item_id):
+        """Удалить предмет из инвентаря"""
+        inv = self.inventory
+        if item_id in inv:
+            inv.remove(item_id)
+            self.inventory = inv
+            return True
+        return False
     
-    def set_spells(self, spells_list):
-        self.spells = json.dumps(spells_list)
+    def has_item(self, item_id):
+        """Проверить наличие предмета"""
+        return item_id in self.inventory
     
-    def get_achievements(self):
-        return json.loads(self.achievements) if self.achievements else []
-    
-    def set_achievements(self, ach_list):
-        self.achievements = json.dumps(ach_list)
-    
-    def get_achievement_stats(self):
-        return json.loads(self.achievement_stats) if self.achievement_stats else {}
-    
-    def set_achievement_stats(self, stats_dict):
-        self.achievement_stats = json.dumps(stats_dict)
-    
-    def get_completed_quests(self):
-        return json.loads(self.completed_quests) if self.completed_quests else []
-    
-    def set_completed_quests(self, quests_list):
-        self.completed_quests = json.dumps(quests_list)
-    
-    def get_accepted_quests(self):
-        return json.loads(self.accepted_quests) if self.accepted_quests else []
-    
-    def set_accepted_quests(self, quests_list):
-        self.accepted_quests = json.dumps(quests_list)
+    def __repr__(self):
+        return f"<Character {self.id} level {self.level}>"
+
+# Создаем таблицы
+def init_db():
+    Base.metadata.create_all(bind=engine)
+    print("✅ Таблицы созданы")
