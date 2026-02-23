@@ -55,35 +55,39 @@ except Exception as e:
     exit(1)
 
 # ============================================
-# ПУТЬ К JSON - ФИНАЛЬНЫЙ (ИСПРАВЛЕННЫЙ)
+# ФИНАЛЬНЫЙ ПУТЬ - ИЩЕМ JSON В КОРНЕ
 # ============================================
 
 current_dir = Path(__file__).parent          # /bot
-data_dir = current_dir / "data"               # /bot/data
+root_dir = current_dir.parent                 # /
 
 logging.info(f"📁 Текущая папка бота: {current_dir}")
-logging.info(f"📁 Папка с данными: {data_dir}")
+logging.info(f"📁 Корень проекта: {root_dir}")
 
-# Проверяем существование папки
-if data_dir.exists():
-    logging.info(f"✅ Папка data найдена в {data_dir}")
-    # Показываем список JSON файлов
-    json_files = list(data_dir.glob("*.json"))
-    logging.info(f"📄 Найдено JSON файлов: {len(json_files)}")
-    for f in json_files[:5]:
+# Проверяем наличие JSON в корне
+json_files = list(root_dir.glob("*.json"))
+logging.info(f"📄 Найдено JSON в корне: {len(json_files)}")
+if json_files:
+    for f in json_files:
         logging.info(f"   - {f.name}")
+    DATA_DIR = root_dir
 else:
-    logging.error(f"❌ Папка data НЕ НАЙДЕНА в {data_dir}")
-    logging.info("📁 Создаём папку /bot/data")
-    data_dir.mkdir(parents=True, exist_ok=True)
-    logging.info(f"✅ Папка data создана в {data_dir}")
+    # Если в корне нет, пробуем /bot/data
+    bot_data = current_dir / "data"
+    if bot_data.exists():
+        json_files = list(bot_data.glob("*.json"))
+        logging.info(f"📄 Найдено JSON в /bot/data: {len(json_files)}")
+        DATA_DIR = bot_data
+    else:
+        logging.error("❌ JSON НЕ НАЙДЕНЫ НИГДЕ!")
+        DATA_DIR = root_dir  # fallback
 
 # ============================================
 # ЗАГРУЗКА JSON
 # ============================================
 
 def load_json(filename):
-    filepath = data_dir / filename
+    filepath = DATA_DIR / filename
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             data = json.load(f)
