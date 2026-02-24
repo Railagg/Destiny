@@ -44,10 +44,10 @@ def start_command(message, bot):
     # СОЗДАЁМ КНОПКУ С WEBAPP
     markup = InlineKeyboardMarkup()
     
-    # Главная кнопка для открытия игры
+    # Главная кнопка для открытия игры - ИСПРАВЛЕНО!
     webapp_button = InlineKeyboardButton(
         text="🎮 ОТКРЫТЬ ИГРУ",
-        web_app=WebAppInfo(url="https://destiny-1-6m57.onrender.com")
+        web_app=WebAppInfo(url="https://destiny-bot-0xqw.onrender.com/")  # ← URL бота
     )
     markup.add(webapp_button)
     
