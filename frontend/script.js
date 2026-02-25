@@ -118,7 +118,7 @@ function updateStats() {
 }
 
 // ============================================
-// НАВИГАЦИЯ ПО СТРАНИЦАМ
+// НАВИГАЦИЯ ПО СТРАНИЦАМ - ИСПРАВЛЕНО!
 // ============================================
 
 function loadPage(page) {
@@ -127,12 +127,12 @@ function loadPage(page) {
     
     let url;
     if (page === 'game') {
-        url = 'game.html';
+        url = '/frontend/game.html';  // ← ИСПРАВЛЕНО!
     } else {
-        url = `pages/${page}.html`;
+        url = `/frontend/pages/${page}.html`;  // ← ИСПРАВЛЕНО!
     }
     
-    // Загружаем страницу в iframe или через fetch
+    // Загружаем страницу
     loadContent(url);
 }
 
