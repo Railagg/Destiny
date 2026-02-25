@@ -638,3 +638,911 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* ============================================
+   ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ НОВЫХ СИСТЕМ
+   ============================================ */
+
+/* ----- БОЕВАЯ СИСТЕМА (combat) ----- */
+.battle-container {
+    padding: 15px;
+    animation: fadeIn 0.3s;
+}
+
+.battle-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.battle-header h2 {
+    color: #e94560;
+    font-size: 22px;
+    text-shadow: 0 0 10px rgba(233,69,96,0.3);
+    margin-bottom: 5px;
+}
+
+.battle-stats {
+    background: rgba(0,0,0,0.3);
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.enemy-stats, .player-stats {
+    margin-bottom: 20px;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #ccc;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.health-bar, .mana-bar {
+    width: 100%;
+    height: 20px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 5px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.health-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #e94560, #ff6b7f);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.mana-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4a90e2, #7bb3ff);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.stat-value {
+    font-size: 14px;
+    font-weight: bold;
+    color: #e94560;
+    text-align: right;
+}
+
+.enemy-info {
+    display: flex;
+    gap: 15px;
+    font-size: 12px;
+    color: #ccc;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.battle-log {
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    padding: 15px;
+    height: 150px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    font-size: 14px;
+    border: 1px solid rgba(255,255,255,0.1);
+    scrollbar-width: thin;
+    scrollbar-color: #e94560 #0f3460;
+}
+
+.battle-log::-webkit-scrollbar {
+    width: 4px;
+}
+
+.battle-log::-webkit-scrollbar-track {
+    background: #0f3460;
+}
+
+.battle-log::-webkit-scrollbar-thumb {
+    background: #e94560;
+    border-radius: 2px;
+}
+
+.log-entry {
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: #ccc;
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+}
+
+.battle-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.combat-btn {
+    background: rgba(233,69,96,0.1);
+    border: 1px solid #e94560;
+    color: #fff;
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.combat-btn:hover:not(:disabled) {
+    background: #e94560;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(233,69,96,0.3);
+}
+
+.combat-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ----- СИСТЕМА КРАФТА (craft) ----- */
+.crafting-container {
+    padding: 15px;
+}
+
+.crafting-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.crafting-header h2 {
+    color: #e94560;
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.crafting-subtitle {
+    color: #ccc;
+    font-size: 14px;
+}
+
+.crafting-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.category-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.category-btn:hover {
+    background: rgba(233,69,96,0.2);
+    border-color: #e94560;
+}
+
+.category-btn.active {
+    background: #e94560;
+    border-color: #e94560;
+}
+
+.crafting-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.craft-card {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 12px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.craft-card:hover {
+    border-color: #e94560;
+    transform: translateY(-2px);
+}
+
+.craft-card.cannot-craft {
+    opacity: 0.6;
+}
+
+.craft-card.cannot-craft::before {
+    content: '❌';
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 12px;
+    opacity: 0.5;
+}
+
+.craft-icon {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.craft-name {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 4px;
+    color: #e94560;
+}
+
+.craft-result {
+    font-size: 11px;
+    text-align: center;
+    color: #ccc;
+    margin-bottom: 10px;
+}
+
+.craft-materials {
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 10px;
+    font-size: 11px;
+}
+
+.materials-title {
+    color: #ccc;
+    margin-bottom: 5px;
+    font-size: 10px;
+}
+
+.material-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.material-row.missing {
+    color: #ff6b6b;
+}
+
+.material-row:last-child {
+    border-bottom: none;
+}
+
+.craft-btn {
+    width: 100%;
+    background: #e94560;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.craft-btn:hover:not(:disabled) {
+    background: #ff6b7f;
+    transform: translateY(-1px);
+}
+
+.craft-btn:disabled {
+    background: #666;
+    cursor: not-allowed;
+}
+
+/* ----- СИСТЕМА КВЕСТОВ (quests) ----- */
+.quests-container {
+    padding: 15px;
+}
+
+.quests-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.quests-header h2 {
+    color: #e94560;
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.quests-subtitle {
+    color: #ccc;
+    font-size: 14px;
+}
+
+.quests-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    background: rgba(0,0,0,0.2);
+    padding: 5px;
+    border-radius: 12px;
+}
+
+.tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    color: #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+.tab-btn.active {
+    background: #e94560;
+    color: #fff;
+}
+
+.quests-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.quest-card {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 15px;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.quest-card.active {
+    border-left: 4px solid #e94560;
+}
+
+.quest-card.available {
+    border-left: 4px solid #4caf50;
+}
+
+.quest-card.completed {
+    opacity: 0.7;
+    border-left: 4px solid #ffd700;
+}
+
+.quest-header {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.quest-icon {
+    font-size: 32px;
+}
+
+.quest-info {
+    flex: 1;
+}
+
+.quest-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #e94560;
+    margin-bottom: 4px;
+}
+
+.quest-giver {
+    font-size: 12px;
+    color: #ccc;
+}
+
+.quest-description {
+    font-size: 13px;
+    color: #fff;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    line-height: 1.5;
+}
+
+.quest-progress {
+    margin-bottom: 15px;
+}
+
+.progress-text {
+    font-size: 12px;
+    color: #ccc;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #e94560, #ff6b7f);
+    border-radius: 4px;
+    transition: width 0.3s;
+}
+
+.quest-objectives {
+    margin-bottom: 15px;
+}
+
+.objectives-title {
+    font-size: 12px;
+    color: #ccc;
+    margin-bottom: 8px;
+}
+
+.objective {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    padding: 5px 0;
+    color: #ccc;
+}
+
+.objective.done {
+    color: #4caf50;
+}
+
+.objective-check {
+    font-size: 14px;
+}
+
+.quest-rewards {
+    margin-bottom: 15px;
+}
+
+.rewards-title {
+    font-size: 12px;
+    color: #ccc;
+    margin-bottom: 8px;
+}
+
+.rewards-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.reward {
+    background: rgba(233,69,96,0.1);
+    border: 1px solid #e94560;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 11px;
+    color: #fff;
+}
+
+.quest-requirements {
+    margin-bottom: 15px;
+    font-size: 12px;
+    color: #ffd700;
+}
+
+.no-quests {
+    text-align: center;
+    padding: 40px 20px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 12px;
+}
+
+.no-quests-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.no-quests-text {
+    color: #ccc;
+    margin-bottom: 20px;
+}
+
+.completed-badge {
+    text-align: center;
+    color: #ffd700;
+    font-size: 14px;
+    padding: 10px;
+    background: rgba(255,215,0,0.1);
+    border-radius: 8px;
+}
+
+/* ----- СИСТЕМА ДОМИКА (house) ----- */
+.house-container {
+    padding: 15px;
+}
+
+.house-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.house-header h2 {
+    color: #e94560;
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.house-description {
+    color: #ccc;
+    font-size: 14px;
+}
+
+.house-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.house-stat {
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.house-stat .stat-icon {
+    font-size: 20px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.house-stat .stat-label {
+    font-size: 11px;
+    color: #ccc;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.house-stat .stat-value {
+    font-size: 14px;
+    font-weight: bold;
+    color: #e94560;
+}
+
+.house-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.upgrade-cost {
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 5px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.cost-title {
+    font-size: 13px;
+    color: #ccc;
+    margin-bottom: 10px;
+}
+
+.cost-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.cost-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    padding: 5px 10px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 6px;
+}
+
+.cost-item.enough {
+    color: #4caf50;
+}
+
+.cost-item.not-enough {
+    color: #ff6b6b;
+}
+
+.max-level {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #ffd700, #ffa500);
+    border-radius: 12px;
+    color: #000;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.house-features {
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.house-features h3 {
+    color: #e94560;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.features-list {
+    list-style: none;
+    padding: 0;
+}
+
+.features-list li {
+    padding: 5px 0;
+    font-size: 13px;
+    color: #ccc;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.features-list li::before {
+    content: '✅';
+    font-size: 12px;
+}
+
+/* Хранилище */
+.storage-container {
+    padding: 15px;
+}
+
+.storage-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.storage-header h2 {
+    color: #e94560;
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.storage-info {
+    color: #ccc;
+    font-size: 14px;
+}
+
+.storage-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    background: rgba(0,0,0,0.2);
+    padding: 5px;
+    border-radius: 12px;
+}
+
+.storage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.storage-item {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.storage-item:hover {
+    border-color: #e94560;
+    transform: translateY(-2px);
+}
+
+.storage-item .item-icon {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.storage-item .item-name {
+    font-size: 11px;
+    margin-bottom: 5px;
+    word-break: break-word;
+    color: #ccc;
+}
+
+.storage-item .item-count {
+    font-size: 10px;
+    color: #e94560;
+    margin-bottom: 8px;
+}
+
+.item-action {
+    background: #e94560;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 5px;
+    font-size: 10px;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+}
+
+.item-action:hover {
+    background: #ff6b7f;
+}
+
+.empty-storage {
+    text-align: center;
+    padding: 40px 20px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.empty-icon {
+    font-size: 48px;
+    margin-bottom: 10px;
+    opacity: 0.5;
+}
+
+.empty-text {
+    color: #ccc;
+    font-size: 14px;
+}
+
+/* Баня */
+.bathhouse-container, .greenhouse-container {
+    padding: 15px;
+    text-align: center;
+}
+
+.bathhouse-container h2, .greenhouse-container h2 {
+    color: #e94560;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.bathhouse-description {
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    color: #ccc;
+    line-height: 1.6;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.bathhouse-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Теплица */
+.greenhouse-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.greenhouse-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.greenhouse-bed {
+    background: rgba(76,175,80,0.1);
+    border: 2px solid #4caf50;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #fff;
+    font-size: 14px;
+}
+
+.greenhouse-bed:hover {
+    background: rgba(76,175,80,0.3);
+    transform: scale(1.02);
+}
+
+.greenhouse-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s;
+}
+
+.slide-up {
+    animation: slideUp 0.3s;
+}
+
+/* Улучшенная адаптивность */
+@media (max-width: 380px) {
+    .crafting-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .house-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .storage-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .battle-actions {
+        grid-template-columns: 1fr;
+    }
+    
+    .combat-btn {
+        padding: 12px;
+    }
+}
+
+/* Стили для загрузки модулей */
+.module-loading {
+    text-align: center;
+    padding: 40px;
+    color: #ccc;
+}
+
+.module-loading .spinner-small {
+    width: 30px;
+    height: 30px;
+    border: 2px solid rgba(255,255,255,0.1);
+    border-top-color: #e94560;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
