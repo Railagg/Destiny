@@ -1,65 +1,292 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Destiny - Игра</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="app">
-        <div class="main-screen">
-            <div class="top-panel">
-                <div class="stats">
-                    <div class="stat-item">
-                        <span class="stat-icon">⚡</span>
-                        <span class="stat-value" id="energy">100/100</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-icon">❤️</span>
-                        <span class="stat-value" id="health">100/100</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-icon">💰</span>
-                        <span class="stat-value" id="gold">20</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-icon">🪙</span>
-                        <span class="stat-value" id="dstn">0</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="game-content" id="gameContent">
-                <!-- Контент загружается через script.js -->
-                <div class="loading-text" style="text-align:center; padding:50px;">Загрузка...</div>
-            </div>
-
-            <div class="bottom-menu">
-                <button class="menu-btn active" data-page="game">
-                    <span class="menu-icon">🎮</span>
-                    <span class="menu-text">Игра</span>
-                </button>
-                <button class="menu-btn" data-page="map">
-                    <span class="menu-icon">🗺️</span>
-                    <span class="menu-text">Карта</span>
-                </button>
-                <button class="menu-btn" data-page="inventory">
-                    <span class="menu-icon">🎒</span>
-                    <span class="menu-text">Инвентарь</span>
-                </button>
-                <button class="menu-btn" data-page="profile">
-                    <span class="menu-icon">👤</span>
-                    <span class="menu-text">Профиль</span>
-                </button>
-                <button class="menu-btn" data-page="shop">
-                    <span class="menu-icon">🏪</span>
-                    <span class="menu-text">Магазин</span>
-                </button>
-            </div>
+<div class="game-content">
+    <div class="location-container">
+        <!-- Название локации -->
+        <h2 id="locationName" class="location-title">🌲 Лесная опушка</h2>
+        
+        <!-- Изображение локации -->
+        <div id="locationImage" class="location-image">
+            <img src="" alt="Location image" style="width:100%; border-radius:12px; display:none;">
         </div>
+        
+        <!-- Описание локации -->
+        <p id="locationDesc" class="location-desc">Загрузка локации...</p>
+        
+        <!-- Секция с врагами (если есть) -->
+        <div id="enemiesSection" style="display:none;" class="enemies-section">
+            <h3>👾 Враги в локации:</h3>
+            <div id="enemiesList" class="enemies-list"></div>
+        </div>
+        
+        <!-- Тайник (если есть) -->
+        <div id="stashSection" style="display:none;" class="stash-section">
+            <h3>🎁 Тайник</h3>
+            <button id="searchStashBtn" class="action-btn secondary">🔍 Обыскать</button>
+        </div>
+        
+        <!-- Место для отдыха (если есть) -->
+        <div id="restSection" style="display:none;" class="rest-section">
+            <h3>🛏️ Место для отдыха</h3>
+            <button id="restBtn" class="action-btn success">😴 Отдохнуть</button>
+        </div>
+        
+        <!-- Действия в локации -->
+        <div class="actions-title">📋 Доступные действия:</div>
+        <div id="locationActions" class="actions-list"></div>
     </div>
+</div>
 
-    <script src="script.js"></script>
-</body>
-</html>
+<style>
+.location-title {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #e94560;
+    text-shadow: 0 0 10px rgba(233,69,96,0.3);
+}
+
+.location-desc {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: rgba(255,255,255,0.9);
+    background: rgba(0,0,0,0.2);
+    padding: 15px;
+    border-radius: 12px;
+    border-left: 3px solid #e94560;
+}
+
+.location-image {
+    margin-bottom: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.enemies-section, .stash-section, .rest-section {
+    background: rgba(0,0,0,0.2);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.enemies-section h3, .stash-section h3, .rest-section h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #e94560;
+}
+
+.enemies-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.enemy-badge {
+    background: rgba(233,69,96,0.2);
+    border: 1px solid #e94560;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    color: #fff;
+}
+
+.actions-title {
+    font-size: 18px;
+    margin: 20px 0 10px;
+    color: #e94560;
+}
+
+.actions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.action-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.action-btn:hover {
+    background: rgba(233,69,96,0.3);
+    transform: translateX(5px);
+    border-color: #e94560;
+}
+
+.action-btn.secondary {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.2);
+}
+
+.action-btn.success {
+    background: rgba(76,175,80,0.2);
+    border-color: #4caf50;
+}
+
+.action-btn.success:hover {
+    background: rgba(76,175,80,0.3);
+}
+
+.action-btn.danger {
+    background: rgba(244,67,54,0.2);
+    border-color: #f44336;
+}
+
+.action-btn.danger:hover {
+    background: rgba(244,67,54,0.3);
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.loading-location {
+    text-align: center;
+    padding: 40px;
+    color: rgba(255,255,255,0.5);
+    animation: pulse 1.5s infinite;
+}
+</style>
+
+<script>
+// Функция загрузки локации
+function loadLocation() {
+    if (!window.playerData || !window.locations) {
+        // Если данные ещё не загружены, ждём
+        setTimeout(loadLocation, 100);
+        return;
+    }
+    
+    const locId = playerData.location || 'start';
+    const location = locations[locId];
+    
+    if (!location) {
+        document.getElementById('locationName').innerHTML = '❌ Неизвестная локация';
+        document.getElementById('locationDesc').innerHTML = 'Ошибка загрузки локации';
+        return;
+    }
+    
+    // Обновляем название
+    document.getElementById('locationName').innerHTML = location.name || locId;
+    
+    // Обновляем описание
+    document.getElementById('locationDesc').innerHTML = location.description || '...';
+    
+    // Обновляем изображение (если есть)
+    const imgContainer = document.getElementById('locationImage');
+    const img = imgContainer.querySelector('img');
+    if (location.image) {
+        img.src = `/frontend/images/${location.image}`;
+        img.style.display = 'block';
+        img.onerror = () => { img.style.display = 'none'; };
+    } else {
+        img.style.display = 'none';
+    }
+    
+    // Показываем врагов (если есть)
+    const enemiesSection = document.getElementById('enemiesSection');
+    const enemiesList = document.getElementById('enemiesList');
+    
+    if (location.enemies && location.enemies.length > 0) {
+        enemiesSection.style.display = 'block';
+        enemiesList.innerHTML = '';
+        
+        location.enemies.forEach(enemyId => {
+            const enemy = window.enemiesData?.enemies?.[enemyId];
+            const enemyName = enemy?.name || enemyId;
+            const badge = document.createElement('span');
+            badge.className = 'enemy-badge';
+            badge.innerHTML = `⚔️ ${enemyName}`;
+            enemiesList.appendChild(badge);
+        });
+    } else {
+        enemiesSection.style.display = 'none';
+    }
+    
+    // Показываем тайник (если есть)
+    const stashSection = document.getElementById('stashSection');
+    if (location.hidden_stash) {
+        stashSection.style.display = 'block';
+        const stashBtn = document.getElementById('searchStashBtn');
+        stashBtn.onclick = () => {
+            if (typeof doAction === 'function') {
+                doAction('search', 'stash');
+            }
+        };
+    } else {
+        stashSection.style.display = 'none';
+    }
+    
+    // Показываем место отдыха (если есть)
+    const restSection = document.getElementById('restSection');
+    if (location.rest_spot) {
+        restSection.style.display = 'block';
+        const restBtn = document.getElementById('restBtn');
+        restBtn.innerHTML = `😴 ${location.rest_spot.name || 'Отдохнуть'} (+${location.rest_spot.energy_gain || 10}⚡)`;
+        restBtn.onclick = () => {
+            if (typeof doAction === 'function') {
+                doAction('rest', null);
+            }
+        };
+    } else {
+        restSection.style.display = 'none';
+    }
+    
+    // Показываем действия
+    const actionsDiv = document.getElementById('locationActions');
+    actionsDiv.innerHTML = '';
+    
+    if (location.actions && location.actions.length > 0) {
+        location.actions.forEach(action => {
+            const btn = document.createElement('button');
+            btn.className = 'action-btn';
+            
+            // Определяем тип кнопки
+            if (action.type === 'combat') {
+                btn.classList.add('danger');
+            } else if (action.type === 'rest') {
+                btn.classList.add('success');
+            } else if (action.type === 'move') {
+                btn.classList.add('secondary');
+            }
+            
+            btn.innerHTML = action.text || 'Действие';
+            
+            btn.onclick = () => {
+                if (typeof doAction === 'function') {
+                    doAction(action.type, action.next || action.item || action.enemy);
+                }
+            };
+            
+            actionsDiv.appendChild(btn);
+        });
+    } else {
+        const noActions = document.createElement('div');
+        noActions.className = 'loading-text';
+        noActions.innerHTML = '⏳ Здесь пока нет действий';
+        actionsDiv.appendChild(noActions);
+    }
+}
+
+// Загружаем локацию при загрузке страницы
+document.addEventListener('DOMContentLoaded', loadLocation);
+
+// Также пробуем загрузить, если данные подгрузятся позже
+setTimeout(loadLocation, 200);
+setTimeout(loadLocation, 500);
+setTimeout(loadLocation, 1000);
+
+// Слушаем изменения локации (если игрок переместился)
+window.addEventListener('locationChanged', loadLocation);
+</script>
