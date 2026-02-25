@@ -3,39 +3,35 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
-from sqlalchemy import text, inspect
+from sqlalchemy import text
 import os
 import json
-import logging
 from pathlib import Path
 
 from app.database import engine, get_db, Base
 from app import models
 
-# ========== ПРИНУДИТЕЛЬНОЕ ОБНОВЛЕНИЕ БД ==========
-# Проверяем и обновляем структуру базы данных при запуске
+# ============================================
+# ПЕРЕСОЗДАНИЕ ТАБЛИЦ (для пустой базы)
+# ============================================
+print("=" * 40)
+print("🔄 ПРОВЕРКА БАЗЫ ДАННЫХ")
+print("=" * 40)
+
 try:
-    logging.info("🔄 Проверка структуры базы данных...")
-    inspector = inspect(engine)
+    # Удаляем старые таблицы
+    print("🗑️ Удаляем старые таблицы...")
+    Base.metadata.drop_all(bind=engine)
+    print("✅ Старые таблицы удалены")
     
-    # Проверяем существование таблиц
-    if 'users' in inspector.get_table_names():
-        columns = [col['name'] for col in inspector.get_columns('users')]
-        
-        # Если нет нужных колонок - обновляем структуру
-        if 'auth_date' not in columns or 'ton_wallet' not in columns:
-            logging.warning("⚠️ Обнаружена устаревшая структура БД. Обновление...")
-            Base.metadata.create_all(bind=engine)
-            logging.info("✅ База данных обновлена до актуальной версии")
-        else:
-            logging.info("✅ Структура базы данных актуальна")
-    else:
-        # Таблиц нет - создаём с нуля
-        logging.info("🆕 Таблицы не найдены. Создание новой базы данных...")
-        Base.metadata.create_all(bind=engine)
-        logging.info("✅ База данных создана")
+    # Создаём новые таблицы
+    print("🆕 Создаём новые таблицы...")
+    Base.metadata.create_all(bind=engine)
+    print("✅ Новые таблицы созданы успешно")
+    print("=" * 40)
 except Exception as e:
-    logging.error(f"❌ Ошибка при проверке/обновлении БД: {e}")
+    print(f"❌ Ошибка при обновлении БД: {e}")
+    print("=" * 40)
 
 # ========== ИНИЦИАЛИЗАЦИЯ ==========
 # Создаем таблицы в базе данных (на всякий случай, если код выше не сработал)
@@ -67,7 +63,7 @@ print("🚀 Загрузка JSON файлов...")
 BASE_DIR = Path(__file__).parent
 print(f"📁 Корень проекта: {BASE_DIR}")
 
-# JSON лежат в bot/data/ (как на скриншоте)
+# JSON лежат в bot/data/
 DATA_DIR = BASE_DIR / "bot" / "data"
 print(f"📁 Путь к данным: {DATA_DIR}")
 
@@ -111,7 +107,7 @@ frontend_path = BASE_DIR / "frontend"
 print(f"📁 Путь к фронтенду: {frontend_path}")
 
 if frontend_path.exists():
-    # Монтируем папку frontend для доступа к статическим файлам
+    # Монтируем папку frontend
     app.mount("/frontend", StaticFiles(directory=str(frontend_path), html=True), name="frontend")
     print(f"✅ Фронтенд загружен из {frontend_path}")
     
@@ -132,7 +128,6 @@ if frontend_path.exists():
 else:
     print(f"❌ Папка frontend НЕ найдена по пути: {frontend_path}")
     
-    # Запасной вариант - если папки нет, просто показываем API
     @app.get("/")
     def root():
         return {
@@ -153,7 +148,6 @@ def auth_telegram(data: dict, db: Session = Depends(get_db)):
     if not verify_telegram_data(data):
         raise HTTPException(status_code=401, detail="Invalid auth data")
     
-    # Здесь код авторизации...
     return {"status": "ok"}
 
 @app.get("/api/data")
