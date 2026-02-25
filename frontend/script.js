@@ -50,6 +50,7 @@ async function loadPlayerData() {
         const response = await fetch(`${API_URL}/api/user/${telegramId}`);
         if (response.ok) {
             playerData = await response.json();
+            window.playerData = playerData; // ← ДОБАВЛЕНО! Делаем глобальным
             console.log('✅ Данные игрока загружены:', playerData);
             updateStats();
             
@@ -67,6 +68,7 @@ async function loadPlayerData() {
                 class: null,
                 location: 'start'
             };
+            window.playerData = playerData; // ← ДОБАВЛЕНО!
         }
     } catch (error) {
         console.error('❌ Ошибка сети:', error);
@@ -80,6 +82,7 @@ async function loadGameData() {
         if (response.ok) {
             const data = await response.json();
             locations = data.locations || {};
+            window.locations = locations; // ← ДОБАВЛЕНО! Делаем глобальным
             console.log('✅ Данные игры загружены, локаций:', Object.keys(locations).length);
         } else {
             console.error('❌ Ошибка загрузки данных игры');
