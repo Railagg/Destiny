@@ -183,13 +183,64 @@ function loadLocation() {
     // Обновляем описание
     document.getElementById('locationDesc').innerHTML = location.description || '...';
     
-    // Обновляем изображение (если есть)
+    // ===== УНИВЕРСАЛЬНАЯ ЗАГРУЗКА КАРТИНОК (сначала .jpeg, потом .jpg) =====
     const imgContainer = document.getElementById('locationImage');
     const img = imgContainer.querySelector('img');
+    
     if (location.image) {
-        img.src = `/frontend/images/${location.image}`;
-        img.style.display = 'block';
-        img.onerror = () => { img.style.display = 'none'; };
+        // Берём название файла без расширения
+        let baseName = location.image.replace('.jpg', '').replace('.jpeg', '');
+        
+        // Специальные случаи (если файл называется иначе)
+        const specialCases = {
+            'house_level1': 'house1',
+            'house_level2': 'house2',
+            'house_level3': 'house3',
+            'house_level4': 'house4',
+            'house_level5': 'house5',
+            'crafting_bench': 'blacksmith',
+            'lake_shore': 'lake_afternoon',
+            'mountain_peak': 'mountain_peek',
+            'mine_level1': 'mine_entrance',
+            'mine_level2': 'mine_level2_entrance',
+            'mine_level3': 'mine_level3_entrance',
+            'mine_level4': 'mine_level4_entrance',
+            'mine_level5': 'mine_level5_entrance',
+            'volcano_crater': 'volcano_crafter'  // ← твой новый файл
+        };
+        
+        // Если есть специальное название, используем его
+        if (specialCases[baseName]) {
+            baseName = specialCases[baseName];
+        }
+        
+        // Пробуем загрузить сначала .jpeg, потом .jpg
+        const extensions = ['.jpeg', '.jpg'];
+        let loaded = false;
+        
+        function tryLoad(index) {
+            if (index >= extensions.length) {
+                console.log('❌ Картинка не загрузилась:', baseName);
+                img.style.display = 'none';
+                return;
+            }
+            
+            const imagePath = `/frontend/images/${baseName}${extensions[index]}`;
+            console.log('🖼️ Пробуем загрузить:', imagePath);
+            
+            img.src = imagePath;
+            img.onload = () => {
+                console.log('✅ Загрузилась:', imagePath);
+                img.style.display = 'block';
+                loaded = true;
+            };
+            img.onerror = () => {
+                console.log('❌ Не загрузилась:', imagePath);
+                tryLoad(index + 1);
+            };
+        }
+        
+        tryLoad(0);
     } else {
         img.style.display = 'none';
     }
@@ -204,7 +255,12 @@ function loadLocation() {
         
         location.enemies.forEach(enemyId => {
             const enemy = window.enemiesData?.enemies?.[enemyId];
-            const enemyName = enemy?.name || enemyId;
+            let enemyName = enemy?.name || enemyId;
+            
+            // Специальная обработка для волков
+            if (enemyId === 'wolf_attack') enemyName = '🐺 Волк (атакует)';
+            if (enemyId === 'wolf_daleko') enemyName = '🐺 Волк (вдалеке)';
+            
             const badge = document.createElement('span');
             badge.className = 'enemy-badge';
             badge.innerHTML = `⚔️ ${enemyName}`;
@@ -233,7 +289,7 @@ function loadLocation() {
     if (location.rest_spot) {
         restSection.style.display = 'block';
         const restBtn = document.getElementById('restBtn');
-        restBtn.innerHTML = `😴 ${location.rest_spot.name || 'Отдохнуть'} (+${location.rest_spot.energy_gain || 10}⚡)`;
+        restBtn.innerHTML = `😴 ${location.rest_spot.name || 'Отдохнуть'} (+${location.rest_spot.energy_gain || 10}⚡, +${location.rest_spot.health_gain || 0}❤️)`;
         restBtn.onclick = () => {
             if (typeof doAction === 'function') {
                 doAction('rest', null);
