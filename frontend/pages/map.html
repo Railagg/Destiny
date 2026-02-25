@@ -6,145 +6,238 @@
     <title>Destiny - Карта мира</title>
     <link rel="stylesheet" href="../style.css">
     <style>
-        .map-page {
-            padding: 15px;
+        body {
+            background: #1a1a2e;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
         
-        .map-header {
-            text-align: center;
-            margin-bottom: 20px;
+        .app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         
-        .map-title {
-            font-size: 24px;
-            font-weight: bold;
-            color: #e94560;
-            margin-bottom: 5px;
+        .main-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
         
-        .map-subtitle {
-            color: #ccc;
-            font-size: 14px;
+        .top-panel {
+            background: rgba(0,0,0,0.3);
+            padding: 10px 15px;
+            border-bottom: 1px solid rgba(233,69,96,0.3);
         }
         
-        .region-section {
-            margin-bottom: 25px;
-        }
-        
-        .region-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #e94560;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
-            border-bottom: 2px solid rgba(233, 69, 96, 0.3);
-        }
-        
-        .region-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
             gap: 10px;
         }
         
-        .region-card {
-            background: rgba(255,255,255,0.05);
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(0,0,0,0.3);
+            padding: 5px 12px;
+            border-radius: 20px;
             border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .stat-icon {
+            font-size: 18px;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: #e94560;
+        }
+        
+        .game-content {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        
+        /* Контейнер для карты */
+        .map-wrapper {
+            position: relative;
+            max-width: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(233,69,96,0.3);
+            margin-bottom: 20px;
+        }
+        
+        .map-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 20px;
+        }
+        
+        /* Слой для маркера игрока */
+        .player-marker-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        /* Маркер текущей локации */
+        .player-marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #e94560;
+            border: 3px solid white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px rgba(233,69,96,0.8);
+            animation: pulse 1.5s infinite;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        /* Внешнее кольцо маркера */
+        .player-marker::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 30px;
+            height: 30px;
+            border: 2px solid rgba(233,69,96,0.5);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: ring 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        @keyframes ring {
+            0% { width: 30px; height: 30px; opacity: 0.8; }
+            100% { width: 60px; height: 60px; opacity: 0; }
+        }
+        
+        /* Всплывающая подсказка */
+        .map-instruction {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: #e94560;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 14px;
+            border: 1px solid #e94560;
+            white-space: nowrap;
+            z-index: 20;
+            pointer-events: none;
+            animation: pulseText 2s infinite;
+        }
+        
+        @keyframes pulseText {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+        
+        /* Легенда карты */
+        .map-legend {
+            background: rgba(0,0,0,0.3);
             border-radius: 12px;
             padding: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .region-card:hover {
-            border-color: #e94560;
-            transform: translateY(-2px);
-            background: rgba(233, 69, 96, 0.1);
-        }
-        
-        .region-card.locked {
-            opacity: 0.6;
-            filter: grayscale(0.5);
-        }
-        
-        .region-card.locked:hover {
-            border-color: #666;
-            transform: none;
-            background: rgba(255,255,255,0.05);
-        }
-        
-        .region-icon {
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
-        
-        .region-name {
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-        
-        .region-level {
-            font-size: 12px;
-            color: #ccc;
-        }
-        
-        .region-badge {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: #e94560;
-            color: #fff;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 10px;
-        }
-        
-        .region-badge.boss {
-            background: #ffd700;
-            color: #000;
-        }
-        
-        .region-current {
-            border: 2px solid #e94560;
-            box-shadow: 0 0 10px rgba(233, 69, 96, 0.3);
-        }
-        
-        .legend {
+            margin: 15px 0;
             display: flex;
             flex-wrap: wrap;
+            justify-content: center;
             gap: 15px;
-            margin-top: 20px;
-            padding: 15px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 12px;
+            font-size: 13px;
         }
         
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            color: #ccc;
+            gap: 5px;
         }
         
-        .legend-color {
+        .legend-dot {
             width: 12px;
             height: 12px;
-            border-radius: 3px;
+            border-radius: 50%;
         }
         
-        .legend-color.current {
+        .legend-dot.player {
             background: #e94560;
+            border: 2px solid white;
         }
         
-        .legend-color.boss {
-            background: #ffd700;
+        .legend-dot.start { background: #4caf50; }
+        .legend-dot.village { background: #ff9800; }
+        .legend-dot.boss { background: #f44336; }
+        
+        /* Нижнее меню */
+        .bottom-menu {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            background: rgba(0,0,0,0.8);
+            border-top: 1px solid rgba(233,69,96,0.3);
+            padding: 8px 0;
         }
         
-        .legend-color.locked {
-            background: #666;
+        .menu-btn {
+            background: none;
+            border: none;
+            color: #888;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .menu-btn.active {
+            color: #e94560;
+        }
+        
+        .menu-icon {
+            font-size: 20px;
+        }
+        
+        .menu-text {
+            font-size: 11px;
+        }
+        
+        /* Адаптация */
+        @media (max-width: 600px) {
+            .map-instruction {
+                font-size: 12px;
+                padding: 5px 10px;
+                white-space: normal;
+                width: 80%;
+                text-align: center;
+            }
+            
+            .player-marker {
+                width: 16px;
+                height: 16px;
+                border-width: 2px;
+            }
         }
     </style>
 </head>
@@ -173,137 +266,118 @@
             </div>
 
             <div class="game-content">
-                <div class="map-page">
-                    <div class="map-header">
-                        <div class="map-title">🗺️ КАРТА МИРА</div>
-                        <div class="map-subtitle">Исследуй неизведанные земли</div>
+                <!-- КАРТА С МАРКЕРОМ ИГРОКА -->
+                <div class="map-wrapper" id="mapWrapper">
+                    <!-- Картинка карты -->
+                    <img src="../images/map.jpeg" class="map-image" usemap="#destiny-map" alt="Карта мира Destiny" id="mapImage">
+                    
+                    <!-- Слой для маркера игрока -->
+                    <div class="player-marker-layer" id="playerMarkerLayer">
+                        <div class="player-marker" id="playerMarker" style="display: none;"></div>
                     </div>
                     
-                    <div class="region-section">
-                        <div class="region-title">🟢 Начальные земли (ур. 1-10)</div>
-                        <div class="region-grid">
-                            <div class="region-card region-current" onclick="goToLocation('start')">
-                                <div class="region-icon">🌲</div>
-                                <div class="region-name">Лесная опушка</div>
-                                <div class="region-level">ур. 1</div>
-                                <div class="region-badge">текущая</div>
-                            </div>
-                            <div class="region-card" onclick="goToLocation('village')">
-                                <div class="region-icon">🏘️</div>
-                                <div class="region-name">Деревенская площадь</div>
-                                <div class="region-level">ур. 1</div>
-                            </div>
-                            <div class="region-card" onclick="goToLocation('lake_shore')">
-                                <div class="region-icon">🏞️</div>
-                                <div class="region-name">Берег озера</div>
-                                <div class="region-level">ур. 3</div>
-                            </div>
-                            <div class="region-card" onclick="goToLocation('deep_forest')">
-                                <div class="region-icon">🌳</div>
-                                <div class="region-name">Глухой лес</div>
-                                <div class="region-level">ур. 5</div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Подсказка -->
+                    <div class="map-instruction">👆 Нажми на значок локации</div>
                     
-                    <div class="region-section">
-                        <div class="region-title">⛰️ Горные районы (ур. 10-25)</div>
-                        <div class="region-grid">
-                            <div class="region-card" onclick="goToLocation('mountain_path')">
-                                <div class="region-icon">⛰️</div>
-                                <div class="region-name">Горная тропа</div>
-                                <div class="region-level">ур. 10</div>
-                            </div>
-                            <div class="region-card" onclick="goToLocation('mine_entrance')">
-                                <div class="region-icon">⛏️</div>
-                                <div class="region-name">Вход в шахту</div>
-                                <div class="region-level">ур. 15</div>
-                            </div>
-                            <div class="region-card" onclick="goToLocation('mine_level3')">
-                                <div class="region-icon">⛏️</div>
-                                <div class="region-name">Шахта (3 ур)</div>
-                                <div class="region-level">ур. 20</div>
-                            </div>
-                            <div class="region-card" onclick="goToLocation('ancient_ruins')">
-                                <div class="region-icon">🏛️</div>
-                                <div class="region-name">Древние руины</div>
-                                <div class="region-level">ур. 25</div>
-                                <div class="region-badge boss">босс</div>
-                            </div>
-                        </div>
+                    <!-- Кликабельные области (координаты нужно будет подогнать под твою карту) -->
+                    <map name="destiny-map" id="destinyMap">
+                        <!-- 🌲 Лесная опушка -->
+                        <area shape="circle" coords="200,250,30" href="#" 
+                              onclick="goToLocation('start'); return false;" 
+                              title="🌲 Лесная опушка" data-loc="start">
+                        
+                        <!-- 🏘️ Деревня (центральная площадь) -->
+                        <area shape="circle" coords="350,200,35" href="#" 
+                              onclick="goToLocation('village'); return false;" 
+                              title="🏘️ Деревенская площадь" data-loc="village">
+                        
+                        <!-- 🍺 Таверна -->
+                        <area shape="circle" coords="330,180,20" href="#" 
+                              onclick="goToLocation('tavern'); return false;" 
+                              title="🍺 Таверна" data-loc="tavern">
+                        
+                        <!-- ⚒️ Кузница -->
+                        <area shape="circle" coords="370,190,20" href="#" 
+                              onclick="goToLocation('crafting_bench'); return false;" 
+                              title="⚒️ Кузница" data-loc="crafting_bench">
+                        
+                        <!-- 🔮 Башня мага -->
+                        <area shape="circle" coords="350,160,20" href="#" 
+                              onclick="goToLocation('magic_tower'); return false;" 
+                              title="🔮 Башня мага" data-loc="magic_tower">
+                        
+                        <!-- 🏞️ Берег озера -->
+                        <area shape="circle" coords="450,300,30" href="#" 
+                              onclick="goToLocation('lake_shore'); return false;" 
+                              title="🏞️ Берег озера" data-loc="lake_shore">
+                        
+                        <!-- ⛏️ Вход в шахту -->
+                        <area shape="circle" coords="500,150,30" href="#" 
+                              onclick="goToLocation('mine_entrance'); return false;" 
+                              title="⛏️ Вход в шахту" data-loc="mine_entrance">
+                        
+                        <!-- 🌋 Вулкан -->
+                        <area shape="circle" coords="600,100,30" href="#" 
+                              onclick="goToLocation('volcano_crater'); return false;" 
+                              title="🌋 Жерло вулкана" data-loc="volcano_crater">
+                        
+                        <!-- 🏜️ Пустыня -->
+                        <area shape="circle" coords="650,300,35" href="#" 
+                              onclick="goToLocation('desert'); return false;" 
+                              title="🏜️ Пустыня" data-loc="desert">
+                        
+                        <!-- 🌿 Болото -->
+                        <area shape="circle" coords="500,400,30" href="#" 
+                              onclick="goToLocation('swamp'); return false;" 
+                              title="🌿 Болото" data-loc="swamp">
+                        
+                        <!-- ❄️ Ледяные равнины -->
+                        <area shape="circle" coords="300,450,30" href="#" 
+                              onclick="goToLocation('ice_plains'); return false;" 
+                              title="❄️ Ледяные равнины" data-loc="ice_plains">
+                        
+                        <!-- 🏝️ Острова -->
+                        <area shape="circle" coords="150,80,25" href="#" 
+                              onclick="goToLocation('volcanic_island'); return false;" 
+                              title="🌋 Огненный остров" data-loc="volcanic_island">
+                        
+                        <area shape="circle" coords="180,120,25" href="#" 
+                              onclick="goToLocation('crystal_island'); return false;" 
+                              title="💎 Кристальный остров" data-loc="crystal_island">
+                        
+                        <area shape="circle" coords="130,140,25" href="#" 
+                              onclick="goToLocation('dragon_island'); return false;" 
+                              title="🐉 Остров драконов" data-loc="dragon_island">
+                        
+                        <!-- 🏛️ Древние руины -->
+                        <area shape="circle" coords="550,200,25" href="#" 
+                              onclick="goToLocation('ancient_ruins'); return false;" 
+                              title="🏛️ Древние руины" data-loc="ancient_ruins">
+                    </map>
+                </div>
+                
+                <!-- Легенда -->
+                <div class="map-legend">
+                    <div class="legend-item">
+                        <div class="legend-dot player"></div>
+                        <span>Вы здесь</span>
                     </div>
-                    
-                    <div class="region-section">
-                        <div class="region-title">🔥 Опасные земли (ур. 30-45)</div>
-                        <div class="region-grid">
-                            <div class="region-card" onclick="goToLocation('desert')">
-                                <div class="region-icon">🏜️</div>
-                                <div class="region-name">Пустыня забвения</div>
-                                <div class="region-level">ур. 30</div>
-                                <div class="region-badge boss">босс</div>
-                            </div>
-                            <div class="region-card" onclick="goToLocation('swamp')">
-                                <div class="region-icon">🌿</div>
-                                <div class="region-name">Болото туманов</div>
-                                <div class="region-level">ур. 35</div>
-                                <div class="region-badge boss">босс</div>
-                            </div>
-                            <div class="region-card" onclick="goToLocation('ice_plains')">
-                                <div class="region-icon">❄️</div>
-                                <div class="region-name">Ледяные равнины</div>
-                                <div class="region-level">ур. 40</div>
-                                <div class="region-badge boss">босс</div>
-                            </div>
-                            <div class="region-card" onclick="goToLocation('volcano_crater')">
-                                <div class="region-icon">🌋</div>
-                                <div class="region-name">Жерло вулкана</div>
-                                <div class="region-level">ур. 45</div>
-                                <div class="region-badge boss">босс</div>
-                            </div>
-                        </div>
+                    <div class="legend-item">
+                        <div class="legend-dot start"></div>
+                        <span>Лес</span>
                     </div>
-                    
-                    <div class="region-section">
-                        <div class="region-title">✨ Легендарные острова (ур. 50+)</div>
-                        <div class="region-grid">
-                            <div class="region-card locked" onclick="showLocked('volcanic_island')">
-                                <div class="region-icon">🌋</div>
-                                <div class="region-name">Огненный остров</div>
-                                <div class="region-level">ур. 50</div>
-                                <div class="region-badge">3 осколка</div>
-                            </div>
-                            <div class="region-card locked" onclick="showLocked('crystal_island')">
-                                <div class="region-icon">💎</div>
-                                <div class="region-name">Кристальный остров</div>
-                                <div class="region-level">ур. 55</div>
-                                <div class="region-badge">1 камень</div>
-                            </div>
-                            <div class="region-card locked" onclick="showLocked('dragon_island')">
-                                <div class="region-icon">🐉</div>
-                                <div class="region-name">Остров драконов</div>
-                                <div class="region-level">ур. 60</div>
-                                <div class="region-badge">5 камней</div>
-                            </div>
-                        </div>
+                    <div class="legend-item">
+                        <div class="legend-dot village"></div>
+                        <span>Деревня</span>
                     </div>
-                    
-                    <div class="legend">
-                        <div class="legend-item">
-                            <div class="legend-color current"></div>
-                            <span>Текущая локация</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color boss"></div>
-                            <span>Босс</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-color locked"></div>
-                            <span>Закрыто</span>
-                        </div>
+                    <div class="legend-item">
+                        <div class="legend-dot boss"></div>
+                        <span>Босс</span>
                     </div>
                 </div>
             </div>
 
+            <!-- Нижнее меню -->
             <div class="bottom-menu">
                 <button class="menu-btn" data-page="game">
                     <span class="menu-icon">🎮</span>
@@ -330,14 +404,139 @@
     </div>
 
     <script>
-        function goToLocation(locationId) {
-            // Здесь будет переход на страницу локации
-            window.location.href = `../index.html?location=${locationId}`;
+        // Координаты всех локаций (подогнать под твою карту!)
+        const LOCATION_COORDS = {
+            'start': { x: 200, y: 250 },        // Лесная опушка
+            'village': { x: 350, y: 200 },       // Деревня
+            'tavern': { x: 330, y: 180 },        // Таверна
+            'crafting_bench': { x: 370, y: 190 }, // Кузница
+            'magic_tower': { x: 350, y: 160 },    // Башня мага
+            'lake_shore': { x: 450, y: 300 },     // Озеро
+            'mine_entrance': { x: 500, y: 150 },  // Шахта
+            'volcano_crater': { x: 600, y: 100 }, // Вулкан
+            'desert': { x: 650, y: 300 },         // Пустыня
+            'swamp': { x: 500, y: 400 },          // Болото
+            'ice_plains': { x: 300, y: 450 },     // Ледяные равнины
+            'ancient_ruins': { x: 550, y: 200 },  // Древние руины
+            'volcanic_island': { x: 150, y: 80 }, // Огненный остров
+            'crystal_island': { x: 180, y: 120 }, // Кристальный остров
+            'dragon_island': { x: 130, y: 140 }   // Остров драконов
+        };
+        
+        // Получаем данные игрока
+        function getPlayerData() {
+            return window.opener?.playerData || 
+                   window.parent?.playerData || 
+                   window.playerData;
         }
         
-        function showLocked(locationId) {
-            alert('Эта локация пока недоступна. Требуются радужные осколки/камни.');
+        // Переход в локацию
+        function goToLocation(locationId) {
+            console.log('🗺️ Переход в локацию:', locationId);
+            
+            const playerData = getPlayerData();
+            
+            // Проверяем, доступна ли локация (для островов)
+            if (locationId.includes('island') && playerData?.level < 50) {
+                alert('⛔ Острова доступны с 50 уровня!');
+                return;
+            }
+            
+            // Перемещаем игрока
+            if (window.opener) {
+                window.opener.playerData.location = locationId;
+                window.opener.loadPage('game');
+                window.close();
+            } else if (window.parent) {
+                window.parent.playerData.location = locationId;
+                window.parent.loadPage('game');
+            } else {
+                window.location.href = `../index.html?location=${locationId}`;
+            }
         }
+        
+        // Показываем маркер текущей локации
+        function showPlayerMarker() {
+            const playerData = getPlayerData();
+            if (!playerData) return;
+            
+            const currentLoc = playerData.location || 'start';
+            const coords = LOCATION_COORDS[currentLoc];
+            
+            if (!coords) {
+                console.log('❌ Нет координат для локации:', currentLoc);
+                return;
+            }
+            
+            const marker = document.getElementById('playerMarker');
+            const mapImage = document.getElementById('mapImage');
+            
+            if (!marker || !mapImage) return;
+            
+            // Ждём, пока загрузится картинка
+            if (!mapImage.complete) {
+                mapImage.onload = () => positionMarker(marker, coords, mapImage);
+            } else {
+                positionMarker(marker, coords, mapImage);
+            }
+        }
+        
+        // Позиционируем маркер
+        function positionMarker(marker, coords, mapImage) {
+            const rect = mapImage.getBoundingClientRect();
+            const wrapper = document.getElementById('mapWrapper');
+            
+            if (!rect.width) return;
+            
+            // Масштабируем координаты под реальный размер картинки
+            const scaleX = rect.width / mapImage.naturalWidth;
+            const scaleY = rect.height / mapImage.naturalHeight;
+            
+            const x = coords.x * scaleX;
+            const y = coords.y * scaleY;
+            
+            marker.style.display = 'block';
+            marker.style.left = x + 'px';
+            marker.style.top = y + 'px';
+        }
+        
+        // Обновляем статистику в шапке
+        function updateStatsFromParent() {
+            const playerData = getPlayerData();
+            if (!playerData) return;
+            
+            const energyEl = document.getElementById('energy');
+            const healthEl = document.getElementById('health');
+            const goldEl = document.getElementById('gold');
+            const dstnEl = document.getElementById('dstn');
+            
+            if (energyEl) energyEl.textContent = `${playerData.energy || 100}/${playerData.max_energy || 100}`;
+            if (healthEl) healthEl.textContent = `${playerData.health || 100}/${playerData.max_health || 100}`;
+            if (goldEl) goldEl.textContent = playerData.gold || 0;
+            if (dstnEl) dstnEl.textContent = playerData.destiny_tokens || 0;
+        }
+        
+        // Запуск при загрузке
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStatsFromParent();
+            showPlayerMarker();
+            
+            // Обновляем при изменении размера окна
+            window.addEventListener('resize', showPlayerMarker);
+        });
+        
+        // Обработка кликов по меню
+        document.querySelectorAll('.menu-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const page = btn.dataset.page;
+                if (page === 'game' && window.opener) {
+                    window.opener.loadPage('game');
+                    window.close();
+                } else if (page === 'game') {
+                    window.location.href = '../index.html';
+                }
+            });
+        });
     </script>
     <script src="../script.js"></script>
 </body>
