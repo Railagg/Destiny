@@ -50,25 +50,26 @@ async function loadPlayerData() {
         const response = await fetch(`${API_URL}/api/user/${telegramId}`);
         if (response.ok) {
             playerData = await response.json();
-            window.playerData = playerData; // ← ДОБАВЛЕНО! Делаем глобальным
+            window.playerData = playerData;
             console.log('✅ Данные игрока загружены:', playerData);
             updateStats();
             
-            // Загружаем инвентарь
             await loadInventory();
         } else {
             console.error('❌ Ошибка загрузки игрока:', response.status);
-            // Создаём тестовые данные
             playerData = {
                 level: 1,
                 gold: 20,
                 destiny_tokens: 0,
                 health: 100,
+                max_health: 100,
                 energy: 100,
+                max_energy: 100,
                 class: null,
-                location: 'start'
+                location: 'start',
+                inventory: []
             };
-            window.playerData = playerData; // ← ДОБАВЛЕНО!
+            window.playerData = playerData;
         }
     } catch (error) {
         console.error('❌ Ошибка сети:', error);
@@ -81,8 +82,16 @@ async function loadGameData() {
         const response = await fetch(`${API_URL}/api/data`);
         if (response.ok) {
             const data = await response.json();
-            locations = data.locations || {};
-            window.locations = locations; // ← ДОБАВЛЕНО! Делаем глобальным
+            
+            // Исправление структуры данных
+            if (data.locations && data.locations.locations) {
+                locations = data.locations.locations;
+                console.log('🛠️ Исправлена двойная вложенность locations');
+            } else {
+                locations = data.locations || {};
+            }
+            
+            window.locations = locations;
             console.log('✅ Данные игры загружены, локаций:', Object.keys(locations).length);
         } else {
             console.error('❌ Ошибка загрузки данных игры');
@@ -98,9 +107,11 @@ async function loadInventory() {
         if (response.ok) {
             const data = await response.json();
             inventory = data.items || [];
+            playerData.inventory = inventory;
             console.log('✅ Инвентарь загружен, предметов:', inventory.length);
         } else {
             console.error('❌ Ошибка загрузки инвентаря');
+            inventory = playerData.inventory || [];
         }
     } catch (error) {
         console.error('❌ Ошибка сети:', error);
@@ -114,14 +125,19 @@ async function loadInventory() {
 function updateStats() {
     if (!playerData) return;
     
-    document.getElementById('energy').textContent = `${playerData.energy || 100}/${playerData.max_energy || 100}`;
-    document.getElementById('health').textContent = `${playerData.health || 100}/${playerData.max_health || 100}`;
-    document.getElementById('gold').textContent = playerData.gold || 0;
-    document.getElementById('dstn').textContent = playerData.destiny_tokens || 0;
+    const energyEl = document.getElementById('energy');
+    const healthEl = document.getElementById('health');
+    const goldEl = document.getElementById('gold');
+    const dstnEl = document.getElementById('dstn');
+    
+    if (energyEl) energyEl.textContent = `${playerData.energy || 100}/${playerData.max_energy || 100}`;
+    if (healthEl) healthEl.textContent = `${playerData.health || 100}/${playerData.max_health || 100}`;
+    if (goldEl) goldEl.textContent = playerData.gold || 0;
+    if (dstnEl) dstnEl.textContent = playerData.destiny_tokens || 0;
 }
 
 // ============================================
-// НАВИГАЦИЯ ПО СТРАНИЦАМ - ИСПРАВЛЕНО!
+// НАВИГАЦИЯ ПО СТРАНИЦАМ
 // ============================================
 
 function loadPage(page) {
@@ -130,28 +146,27 @@ function loadPage(page) {
     
     let url;
     if (page === 'game') {
-        url = '/frontend/game.html';  // ← ИСПРАВЛЕНО!
+        url = '/frontend/game.html';
     } else {
-        url = `/frontend/pages/${page}.html`;  // ← ИСПРАВЛЕНО!
+        url = `/frontend/pages/${page}.html`;
     }
     
-    // Загружаем страницу
     loadContent(url);
 }
 
 async function loadContent(url) {
     const gameContent = document.getElementById('gameContent');
+    if (!gameContent) return;
+    
     gameContent.innerHTML = '<div class="loading-text" style="text-align:center; padding:50px;">Загрузка...</div>';
     
     try {
         const response = await fetch(url);
         const html = await response.text();
         
-        // Создаём временный DOM
         const temp = document.createElement('div');
         temp.innerHTML = html;
         
-        // Извлекаем только содержимое body
         const content = temp.querySelector('.game-content')?.innerHTML || temp.innerHTML;
         gameContent.innerHTML = content;
         
@@ -166,7 +181,6 @@ async function loadContent(url) {
             document.body.appendChild(newScript);
         });
         
-        // Обновляем активное меню
         updateActiveMenu();
         
     } catch (error) {
@@ -185,52 +199,173 @@ function updateActiveMenu() {
 }
 
 // ============================================
-// ДЕЙСТВИЯ В ИГРЕ
+// ДЕЙСТВИЯ В ИГРЕ - ПОЛНАЯ ВЕРСИЯ
 // ============================================
 
-async function doAction(type, next) {
-    if (type === 'move' && next) {
-        // Перемещение в другую локацию
+async function doAction(type, target) {
+    console.log('🎮 Действие:', type, target);
+    
+    // ===== ПЕРЕМЕЩЕНИЕ =====
+    if (type === 'move' && target) {
         showNotification(`🚶 Переход...`);
         
         try {
             const response = await fetch(`${API_URL}/api/action`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     telegram_id: telegramId,
                     type: 'move',
-                    location: next
+                    location: target
                 })
             });
             
             if (response.ok) {
-                playerData.location = next;
+                playerData.location = target;
                 showNotification('✅ Перемещение выполнено');
                 loadPage('game');
             } else {
-                showNotification('❌ Ошибка перемещения', 'error');
+                playerData.location = target;
+                showNotification('🔄 Перемещение (локально)');
+                loadPage('game');
             }
         } catch (error) {
-            console.error('Ошибка:', error);
-            showNotification('❌ Ошибка сети', 'error');
+            console.warn('Ошибка API, перемещаем локально');
+            playerData.location = target;
+            loadPage('game');
+        }
+    }
+    
+    // ===== ОТДЫХ =====
+    else if (type === 'rest') {
+        let energyGain = 10;
+        let healthGain = 0;
+        
+        const currentLoc = locations[playerData?.location];
+        if (currentLoc?.rest_spot) {
+            energyGain = currentLoc.rest_spot.energy_gain || 10;
+            healthGain = currentLoc.rest_spot.health_gain || 0;
         }
         
-    } else if (type === 'rest') {
-        // Отдых
-        showNotification(`🛏️ Отдых... +10 энергии`);
-        playerData.energy = Math.min(playerData.energy + 10, playerData.max_energy || 100);
+        showNotification(`😴 Отдых... +${energyGain}⚡${healthGain ? ', +' + healthGain + '❤️' : ''}`);
+        
+        playerData.energy = Math.min((playerData.energy || 100) + energyGain, playerData.max_energy || 100);
+        playerData.health = Math.min((playerData.health || 100) + healthGain, playerData.max_health || 100);
         updateStats();
         
-    } else {
-        showNotification(`⏳ Действие в разработке`);
+        setTimeout(() => loadPage('game'), 500);
+    }
+    
+    // ===== ВЗЯТЬ ПРЕДМЕТ =====
+    else if (type === 'take_item' && target) {
+        showNotification(`✅ Получено: ${target}`);
+        
+        try {
+            await fetch(`${API_URL}/api/action`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    telegram_id: telegramId,
+                    type: 'take_item',
+                    item: target
+                })
+            });
+        } catch (e) {
+            // Игнорируем ошибки
+        }
+        
+        if (!playerData.inventory) playerData.inventory = [];
+        playerData.inventory.push(target);
+        
+        showNotification(`✅ ${target} добавлен в инвентарь`);
+        setTimeout(() => loadPage('game'), 500);
+    }
+    
+    // ===== БОЙ =====
+    else if (type === 'combat' && target) {
+        showNotification(`⚔️ Бой с ${target}...`);
+        
+        try {
+            const response = await fetch(`${API_URL}/api/combat/start`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    telegram_id: telegramId,
+                    enemy_id: target
+                })
+            });
+            
+            if (response.ok) {
+                const battle = await response.json();
+                showNotification(`⚔️ Бой начат! HP врага: ${battle.enemy_health}`);
+            } else {
+                showNotification(`⚔️ Бой с ${target} (тестовый режим)`);
+            }
+        } catch (error) {
+            showNotification(`⚔️ Бой с ${target} (в разработке)`);
+        }
+    }
+    
+    // ===== ПОИСК ТАЙНИКА =====
+    else if (type === 'search' || type === 'search_stash') {
+        showNotification('🔍 Поиск...');
+        
+        setTimeout(() => {
+            const found = Math.random() > 0.4;
+            
+            if (found) {
+                const gold = Math.floor(Math.random() * 20) + 5;
+                playerData.gold = (playerData.gold || 0) + gold;
+                showNotification(`💰 Найдено ${gold} золота!`);
+                
+                const item = Math.random() > 0.7 ? 'health_potion' : null;
+                if (item) {
+                    if (!playerData.inventory) playerData.inventory = [];
+                    playerData.inventory.push(item);
+                    showNotification(`🧪 Найдено зелье!`);
+                }
+                
+                updateStats();
+            } else {
+                showNotification('😕 Ничего не найдено');
+            }
+            
+            setTimeout(() => loadPage('game'), 1000);
+        }, 1000);
+    }
+    
+    // ===== ОТКРЫТЬ МАГАЗИН =====
+    else if (type === 'open_shop' || type === 'buy_item') {
+        loadPage('shop');
+    }
+    
+    // ===== КРАФТ =====
+    else if (type.startsWith('craft_') || type === 'craft_armor' || type === 'craft_weapon' || type === 'craft_tools') {
+        showNotification('🛠️ Крафт в разработке');
+    }
+    
+    // ===== КВЕСТЫ =====
+    else if (type === 'accept_quest') {
+        showNotification(`📜 Квест "${target || '?'}" принят!`);
+    }
+    
+    // ===== РАЗГОВОР =====
+    else if (type === 'talk') {
+        showNotification('💬 Разговор...');
+    }
+    
+    // ===== НЕИЗВЕСТНОЕ ДЕЙСТВИЕ =====
+    else {
+        showNotification(`⏳ Действие "${type}" в разработке`, 'info');
+        console.log('Неизвестное действие:', type, target);
     }
 }
 
 function goToLocation(locationId) {
-    window.location.href = `/?page=game&location=${locationId}`;
+    if (playerData) {
+        playerData.location = locationId;
+        loadPage('game');
+    }
 }
 
 function showLocationInfo(locationId) {
@@ -250,9 +385,7 @@ async function useItem(itemId) {
     try {
         const response = await fetch(`${API_URL}/api/use_item`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 telegram_id: telegramId,
                 item_id: itemId
@@ -265,7 +398,14 @@ async function useItem(itemId) {
             await loadInventory();
             loadPage('inventory');
         } else {
-            showNotification('❌ Нельзя использовать', 'error');
+            // Локальное использование
+            if (itemId === 'health_potion') {
+                playerData.health = Math.min((playerData.health || 100) + 30, playerData.max_health || 100);
+                showNotification('✅ Зелье здоровья использовано (+30❤️)');
+                updateStats();
+            } else {
+                showNotification('❌ Нельзя использовать', 'error');
+            }
         }
     } catch (error) {
         console.error('Ошибка:', error);
@@ -279,9 +419,7 @@ async function equipItem(itemId) {
     try {
         const response = await fetch(`${API_URL}/api/equip`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 telegram_id: telegramId,
                 item_id: itemId
@@ -309,9 +447,7 @@ async function sellItem(itemId) {
     try {
         const response = await fetch(`${API_URL}/api/sell`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 telegram_id: telegramId,
                 item_id: itemId
@@ -343,9 +479,7 @@ async function buyItem(itemId) {
     try {
         const response = await fetch(`${API_URL}/api/buy`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 telegram_id: telegramId,
                 item_id: itemId
@@ -373,9 +507,7 @@ async function buyPremium(itemId) {
     try {
         const response = await fetch(`${API_URL}/api/premium/buy`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 telegram_id: telegramId,
                 item_id: itemId
@@ -401,16 +533,20 @@ async function buyPremium(itemId) {
 // ============================================
 
 function showLoading() {
-    document.getElementById('loading').classList.remove('hidden');
-    document.getElementById('mainScreen').classList.add('hidden');
+    const loading = document.getElementById('loading');
+    const mainScreen = document.getElementById('mainScreen');
+    if (loading) loading.classList.remove('hidden');
+    if (mainScreen) mainScreen.classList.add('hidden');
 }
 
 function hideLoading() {
-    document.getElementById('loading').classList.add('hidden');
+    const loading = document.getElementById('loading');
+    if (loading) loading.classList.add('hidden');
 }
 
 function showMainScreen() {
-    document.getElementById('mainScreen').classList.remove('hidden');
+    const mainScreen = document.getElementById('mainScreen');
+    if (mainScreen) mainScreen.classList.remove('hidden');
 }
 
 // ============================================
@@ -418,7 +554,6 @@ function showMainScreen() {
 // ============================================
 
 function showNotification(message, type = 'info') {
-    // Удаляем старые уведомления
     document.querySelectorAll('.notification').forEach(n => n.remove());
     
     const notif = document.createElement('div');
@@ -442,3 +577,12 @@ document.addEventListener('click', (e) => {
         loadPage(btn.dataset.page);
     }
 });
+
+// ============================================
+// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+// ============================================
+
+function getCurrentLocation() {
+    if (!playerData || !locations) return null;
+    return locations[playerData.location];
+}
