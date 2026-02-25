@@ -10,7 +10,7 @@ let locations = {};
 let inventory = [];
 let telegramId = null;
 
-// API URL - ИСПРАВЛЕНО!
+// API URL
 const API_URL = 'https://destiny-web.onrender.com';
 
 // ============================================
@@ -20,13 +20,11 @@ const API_URL = 'https://destiny-web.onrender.com';
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('🚀 Destiny WebApp загружается...');
     
-    // Получаем Telegram ID
     telegramId = tg.initDataUnsafe?.user?.id || 999999999;
     console.log('👤 Telegram ID:', telegramId);
     
     showLoading();
     
-    // Загружаем данные параллельно
     await Promise.all([
         loadPlayerData(),
         loadGameData()
@@ -35,7 +33,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     hideLoading();
     showMainScreen();
     
-    // Загружаем нужную страницу
     const urlParams = new URLSearchParams(window.location.search);
     const page = urlParams.get('page') || 'game';
     loadPage(page);
@@ -67,7 +64,10 @@ async function loadPlayerData() {
                 max_energy: 100,
                 class: null,
                 location: 'start',
-                inventory: []
+                inventory: [],
+                house_level: 0,
+                quests: [],
+                pets: []
             };
             window.playerData = playerData;
         }
@@ -83,7 +83,6 @@ async function loadGameData() {
         if (response.ok) {
             const data = await response.json();
             
-            // Исправление структуры данных
             if (data.locations && data.locations.locations) {
                 locations = data.locations.locations;
                 console.log('🛠️ Исправлена двойная вложенность locations');
@@ -93,6 +92,12 @@ async function loadGameData() {
             
             window.locations = locations;
             console.log('✅ Данные игры загружены, локаций:', Object.keys(locations).length);
+            
+            window.enemiesData = data.enemies || {};
+            window.itemsData = data.items || {};
+            window.craftingData = data.crafting || {};
+            window.questsData = data.quests || {};
+            
         } else {
             console.error('❌ Ошибка загрузки данных игры');
         }
@@ -170,7 +175,6 @@ async function loadContent(url) {
         const content = temp.querySelector('.game-content')?.innerHTML || temp.innerHTML;
         gameContent.innerHTML = content;
         
-        // Выполняем скрипты из загруженной страницы
         Array.from(temp.getElementsByTagName('script')).forEach(script => {
             const newScript = document.createElement('script');
             if (script.src) {
@@ -240,17 +244,25 @@ async function doAction(type, target) {
     else if (type === 'rest') {
         let energyGain = 10;
         let healthGain = 0;
+        let magicGain = 0;
         
         const currentLoc = locations[playerData?.location];
         if (currentLoc?.rest_spot) {
             energyGain = currentLoc.rest_spot.energy_gain || 10;
             healthGain = currentLoc.rest_spot.health_gain || 0;
+            magicGain = currentLoc.rest_spot.magic_gain || 0;
         }
         
-        showNotification(`😴 Отдых... +${energyGain}⚡${healthGain ? ', +' + healthGain + '❤️' : ''}`);
+        let message = `😴 Отдых... +${energyGain}⚡`;
+        if (healthGain) message += `, +${healthGain}❤️`;
+        if (magicGain) message += `, +${magicGain}🔮`;
+        showNotification(message);
         
         playerData.energy = Math.min((playerData.energy || 100) + energyGain, playerData.max_energy || 100);
         playerData.health = Math.min((playerData.health || 100) + healthGain, playerData.max_health || 100);
+        if (magicGain) {
+            playerData.magic = Math.min((playerData.magic || 100) + magicGain, playerData.max_magic || 100);
+        }
         updateStats();
         
         setTimeout(() => loadPage('game'), 500);
@@ -270,9 +282,7 @@ async function doAction(type, target) {
                     item: target
                 })
             });
-        } catch (e) {
-            // Игнорируем ошибки
-        }
+        } catch (e) {}
         
         if (!playerData.inventory) playerData.inventory = [];
         playerData.inventory.push(target);
@@ -299,7 +309,7 @@ async function doAction(type, target) {
                 const battle = await response.json();
                 showNotification(`⚔️ Бой начат! HP врага: ${battle.enemy_health}`);
             } else {
-                showNotification(`⚔️ Бой с ${target} (тестовый режим)`);
+                showNotification(`⚔️ Тестовый бой с ${target}`);
             }
         } catch (error) {
             showNotification(`⚔️ Бой с ${target} (в разработке)`);
@@ -307,22 +317,23 @@ async function doAction(type, target) {
     }
     
     // ===== ПОИСК ТАЙНИКА =====
-    else if (type === 'search' || type === 'search_stash') {
+    else if (type === 'search' || type === 'search_stash' || type === 'search_altar' || type === 'search_room') {
         showNotification('🔍 Поиск...');
         
         setTimeout(() => {
             const found = Math.random() > 0.4;
             
             if (found) {
-                const gold = Math.floor(Math.random() * 20) + 5;
+                const gold = Math.floor(Math.random() * 30) + 10;
                 playerData.gold = (playerData.gold || 0) + gold;
                 showNotification(`💰 Найдено ${gold} золота!`);
                 
-                const item = Math.random() > 0.7 ? 'health_potion' : null;
-                if (item) {
+                if (Math.random() > 0.7) {
+                    const rareItems = ['health_potion', 'ancient_coin', 'crystal', 'ruby'];
+                    const item = rareItems[Math.floor(Math.random() * rareItems.length)];
                     if (!playerData.inventory) playerData.inventory = [];
                     playerData.inventory.push(item);
-                    showNotification(`🧪 Найдено зелье!`);
+                    showNotification(`✨ Найден редкий предмет: ${item}`);
                 }
                 
                 updateStats();
@@ -334,24 +345,204 @@ async function doAction(type, target) {
         }, 1000);
     }
     
-    // ===== ОТКРЫТЬ МАГАЗИН =====
-    else if (type === 'open_shop' || type === 'buy_item') {
-        loadPage('shop');
+    // ===== ОТКРЫТЬ СУНДУК =====
+    else if (type === 'open_chest' || type === 'premium_chest' || type === 'open_legendary_chest') {
+        showNotification('🎁 Открываем сундук...');
+        
+        setTimeout(() => {
+            const gold = Math.floor(Math.random() * 100) + 50;
+            playerData.gold = (playerData.gold || 0) + gold;
+            
+            const items = ['health_potion', 'mana_potion', 'iron_ingot', 'gold_ingot', 'crystal'];
+            const item = items[Math.floor(Math.random() * items.length)];
+            
+            if (!playerData.inventory) playerData.inventory = [];
+            playerData.inventory.push(item);
+            
+            showNotification(`💰 +${gold} золота, 🎁 +${item}`);
+            updateStats();
+            setTimeout(() => loadPage('game'), 1000);
+        }, 1000);
     }
     
-    // ===== КРАФТ =====
-    else if (type.startsWith('craft_') || type === 'craft_armor' || type === 'craft_weapon' || type === 'craft_tools') {
-        showNotification('🛠️ Крафт в разработке');
+    // ===== РЫНОЧНАЯ ПЛОЩАДЬ =====
+    else if (type === 'open_shop' || type === 'buy_item' || type === 'sell_items' || type === 'sell_crops') {
+        if (type === 'open_shop') {
+            loadPage('shop');
+        } else if (type === 'buy_item' && target) {
+            showNotification(`🛒 Покупка ${target}...`);
+            setTimeout(() => loadPage('shop'), 500);
+        } else if (type === 'sell_items') {
+            showNotification('💰 Продажа предметов');
+            loadPage('inventory');
+        } else if (type === 'sell_crops') {
+            showNotification('🌾 Продажа урожая');
+            playerData.gold = (playerData.gold || 0) + 50;
+            updateStats();
+        }
     }
     
-    // ===== КВЕСТЫ =====
-    else if (type === 'accept_quest') {
-        showNotification(`📜 Квест "${target || '?'}" принят!`);
+    // ===== ТАВЕРНА =====
+    else if (type === 'talk' || type === 'accept_quest' || type === 'show_quests' || type === 'complete_quest') {
+        if (type === 'talk') {
+            showNotification('💬 Разговор...');
+        } else if (type === 'accept_quest') {
+            showNotification(`📜 Квест "${target || '?'}" принят!`);
+            if (!playerData.quests) playerData.quests = [];
+            playerData.quests.push(target);
+        } else if (type === 'show_quests') {
+            showNotification('📋 Открываем список квестов');
+            loadPage('quests');
+        } else if (type === 'complete_quest') {
+            showNotification('✅ Квест выполнен! +100 золота');
+            playerData.gold = (playerData.gold || 0) + 100;
+            updateStats();
+        }
     }
     
-    // ===== РАЗГОВОР =====
-    else if (type === 'talk') {
-        showNotification('💬 Разговор...');
+    // ===== ТОРГОВЕЦ-ГОБЛИН =====
+    else if (type === 'goblin_trade' || type === 'goblin_secret') {
+        if (type === 'goblin_trade') {
+            showNotification('👺 Гоблин показывает странные товары...');
+            loadPage('shop');
+        } else if (type === 'goblin_secret') {
+            showNotification('🤫 Гоблин шепчет о тайном ходе...');
+        }
+    }
+    
+    // ===== РЕМЕСЛЕННЫЙ КВАРТАЛ =====
+    else if (type === 'craft_armor' || type === 'craft_weapon' || type === 'craft_tools' || type === 'craft_glass' || type === 'smelt_ore') {
+        showNotification(`🛠️ ${type.replace('_', ' ')}...`);
+        
+        if (type === 'smelt_ore') {
+            setTimeout(() => {
+                if (playerData.inventory?.includes('iron_ore')) {
+                    playerData.inventory = playerData.inventory.filter(i => i !== 'iron_ore');
+                    playerData.inventory.push('iron_ingot');
+                    showNotification('✅ Железная руда переплавлена в слиток');
+                } else {
+                    showNotification('❌ Нет железной руды');
+                }
+            }, 1000);
+        } else if (type === 'craft_glass') {
+            setTimeout(() => {
+                if (playerData.inventory?.includes('sand')) {
+                    playerData.inventory = playerData.inventory.filter(i => i !== 'sand');
+                    playerData.inventory.push('glass');
+                    showNotification('✅ Стекло создано');
+                } else {
+                    showNotification('❌ Нет песка');
+                }
+            }, 1000);
+        } else {
+            setTimeout(() => {
+                showNotification('🛠️ Крафт в разработке');
+            }, 500);
+        }
+    }
+    
+    // ===== МАГИЧЕСКИЙ КВАРТАЛ =====
+    else if (type === 'buy_spell' || type === 'learn_spell' || type === 'alchemy') {
+        if (type === 'buy_spell') {
+            showNotification('🔮 Покупка заклинания...');
+        } else if (type === 'learn_spell') {
+            showNotification('📜 Изучение свитка...');
+        } else if (type === 'alchemy') {
+            showNotification('⚗️ Алхимия...');
+            setTimeout(() => {
+                if (playerData.inventory?.includes('herb')) {
+                    playerData.inventory = playerData.inventory.filter(i => i !== 'herb');
+                    playerData.inventory.push('health_potion');
+                    showNotification('🧪 Зелье здоровья создано');
+                } else {
+                    showNotification('❌ Нет трав');
+                }
+            }, 1000);
+        }
+    }
+    
+    // ===== ДОМИК =====
+    else if (type === 'build_house' || type === 'upgrade_house' || type === 'open_storage' || type === 'teleport_menu') {
+        if (type === 'build_house') {
+            showNotification('🏗️ Строительство домика...');
+            playerData.house_level = 1;
+            setTimeout(() => loadPage('game'), 1000);
+        } else if (type === 'upgrade_house') {
+            const nextLevel = (playerData.house_level || 0) + 1;
+            showNotification(`🏠 Улучшение до уровня ${nextLevel}`);
+            playerData.house_level = nextLevel;
+            setTimeout(() => loadPage('game'), 1000);
+        } else if (type === 'open_storage') {
+            showNotification('📦 Открываем сундук');
+        } else if (type === 'teleport_menu') {
+            showNotification('✨ Открываем меню телепортации');
+        }
+    }
+    
+    // ===== ТЕПЛИЦА =====
+    else if (type === 'greenhouse_plant' || type === 'greenhouse_harvest') {
+        if (type === 'greenhouse_plant') {
+            showNotification('🌱 Посадка семян...');
+        } else if (type === 'greenhouse_harvest') {
+            showNotification('🌾 Сбор урожая... +50 золота');
+            playerData.gold = (playerData.gold || 0) + 50;
+            updateStats();
+        }
+    }
+    
+    // ===== РЫБАЛКА =====
+    else if (type === 'fish' || type === 'dig_worms' || type === 'cook_fish' || type === 'cook_meat') {
+        if (type === 'fish') {
+            showNotification('🎣 Рыбалка...');
+            setTimeout(() => {
+                if (Math.random() > 0.3) {
+                    const fish = ['fish', 'goldfish', 'pufferfish'][Math.floor(Math.random() * 3)];
+                    if (!playerData.inventory) playerData.inventory = [];
+                    playerData.inventory.push(fish);
+                    showNotification(`🐟 Поймана: ${fish}`);
+                } else {
+                    showNotification('😕 Ничего не поймано');
+                }
+            }, 2000);
+        } else if (type === 'dig_worms') {
+            showNotification('🪱 Копаем червей...');
+            if (!playerData.inventory) playerData.inventory = [];
+            playerData.inventory.push('worm');
+            showNotification('✅ Найдены черви');
+        } else if (type === 'cook_fish' || type === 'cook_meat') {
+            showNotification('🔥 Готовка... +20 энергии');
+            playerData.energy = Math.min((playerData.energy || 100) + 20, playerData.max_energy || 100);
+            updateStats();
+        }
+    }
+    
+    // ===== ШАХТА =====
+    else if (type === 'mine_ore') {
+        showNotification('⛏️ Добыча руды...');
+        setTimeout(() => {
+            const ores = ['copper_ore', 'iron_ore', 'gold_ore', 'coal'];
+            const ore = ores[Math.floor(Math.random() * ores.length)];
+            if (!playerData.inventory) playerData.inventory = [];
+            playerData.inventory.push(ore);
+            showNotification(`✅ Добыто: ${ore}`);
+        }, 1500);
+    }
+    
+    // ===== ИССЛЕДОВАНИЕ =====
+    else if (type === 'explore') {
+        showNotification('🧭 Исследование...');
+        setTimeout(() => {
+            const energyCost = target === 'desert' ? 3 : 5;
+            playerData.energy = Math.max((playerData.energy || 100) - energyCost, 0);
+            
+            if (Math.random() > 0.5) {
+                const gold = Math.floor(Math.random() * 30) + 10;
+                playerData.gold = (playerData.gold || 0) + gold;
+                showNotification(`💰 Найдено ${gold} золота`);
+            }
+            updateStats();
+            setTimeout(() => loadPage('game'), 1000);
+        }, 1500);
     }
     
     // ===== НЕИЗВЕСТНОЕ ДЕЙСТВИЕ =====
@@ -360,6 +551,10 @@ async function doAction(type, target) {
         console.log('Неизвестное действие:', type, target);
     }
 }
+
+// ============================================
+// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+// ============================================
 
 function goToLocation(locationId) {
     if (playerData) {
@@ -398,10 +593,13 @@ async function useItem(itemId) {
             await loadInventory();
             loadPage('inventory');
         } else {
-            // Локальное использование
             if (itemId === 'health_potion') {
                 playerData.health = Math.min((playerData.health || 100) + 30, playerData.max_health || 100);
                 showNotification('✅ Зелье здоровья использовано (+30❤️)');
+                updateStats();
+            } else if (itemId === 'mana_potion') {
+                playerData.magic = Math.min((playerData.magic || 100) + 30, playerData.max_magic || 100);
+                showNotification('✅ Зелье маны использовано (+30🔮)');
                 updateStats();
             } else {
                 showNotification('❌ Нельзя использовать', 'error');
@@ -585,4 +783,14 @@ document.addEventListener('click', (e) => {
 function getCurrentLocation() {
     if (!playerData || !locations) return null;
     return locations[playerData.location];
+}
+
+function getItemName(itemId) {
+    if (!window.itemsData || !window.itemsData[itemId]) return itemId;
+    return window.itemsData[itemId].name || itemId;
+}
+
+function getEnemyName(enemyId) {
+    if (!window.enemiesData || !window.enemiesData[enemyId]) return enemyId;
+    return window.enemiesData[enemyId].name || enemyId;
 }
