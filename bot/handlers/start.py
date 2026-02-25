@@ -47,7 +47,7 @@ def start_command(message, bot):
     # Главная кнопка для открытия игры - ИСПРАВЛЕНО!
     webapp_button = InlineKeyboardButton(
         text="🎮 ОТКРЫТЬ ИГРУ",
-        web_app=WebAppInfo(url="https://destiny-bot-0xqw.onrender.com/")  # ← URL бота
+        web_app=WebAppInfo(url="https://destiny-web.onrender.com/")  # ← НОВЫЙ URL!
     )
     markup.add(webapp_button)
     
