@@ -36,7 +36,14 @@ def verify_telegram_data(init_data: dict) -> bool:
 
 # ========== ЗАГРУЗКА JSON ИЗ ПАПКИ DATA ==========
 print("🚀 Загрузка JSON файлов...")
-DATA_DIR = Path(__file__).parent / "data"
+
+# Определяем корень проекта
+BASE_DIR = Path(__file__).parent
+print(f"📁 Корень проекта: {BASE_DIR}")
+
+# JSON лежат в bot/data/ (как на скриншоте)
+DATA_DIR = BASE_DIR / "bot" / "data"
+print(f"📁 Путь к данным: {DATA_DIR}")
 
 def load_json(filename):
     filepath = DATA_DIR / filename
@@ -45,6 +52,9 @@ def load_json(filename):
             data = json.load(f)
             print(f"✅ Загружен {filename}")
             return data
+    except FileNotFoundError:
+        print(f"⚠️ Файл не найден: {filename}")
+        return {}
     except Exception as e:
         print(f"❌ Ошибка загрузки {filename}: {e}")
         return {}
@@ -65,11 +75,14 @@ codex_data = load_json("codex.json")
 biomes_data = load_json("biomes.json")
 islands_data = load_json("islands.json")
 secrets_data = load_json("secrets.json")
+pets_data = load_json("pets.json")
+exchange_data = load_json("exchange.json")
 
 print("✅ Все JSON загружены")
 
 # ========== РАЗДАЧА ФРОНТЕНДА ==========
-frontend_path = Path(__file__).parent / "frontend"
+frontend_path = BASE_DIR / "frontend"
+print(f"📁 Путь к фронтенду: {frontend_path}")
 
 if frontend_path.exists():
     # Монтируем папку frontend для доступа к статическим файлам
@@ -135,7 +148,9 @@ def get_data():
         "codex": codex_data,
         "biomes": biomes_data,
         "islands": islands_data,
-        "secrets": secrets_data
+        "secrets": secrets_data,
+        "pets": pets_data,
+        "exchange": exchange_data
     }
 
 @app.get("/api/location/{location_id}")
@@ -165,8 +180,7 @@ def get_user(telegram_id: int, db: Session = Depends(get_db)):
         "location": character.location if character else "start"
     }
 
-# ========== ДОПОЛНИТЕЛЬНЫЙ РЕДИРЕКТ (опционально) ==========
-# Если хочешь, чтобы /frontend тоже открывал index.html
+# ========== ДОПОЛНИТЕЛЬНЫЙ РЕДИРЕКТ ==========
 @app.get("/frontend")
 async def frontend_root():
     index_path = frontend_path / "index.html"
