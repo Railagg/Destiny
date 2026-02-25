@@ -27,7 +27,6 @@
         {"text": "🌲 Пойти вглубь леса", "type": "move", "energy_cost": 2, "next": "deep_forest"}
       ]
     },
-    
     "village": {
       "id": "village",
       "name": "🏘️ Деревенская площадь",
@@ -58,7 +57,6 @@
         {"text": "🌲 Вернуться в лес", "type": "move", "next": "start"}
       ]
     },
-    
     "tavern": {
       "id": "tavern",
       "name": "🍺 Таверна «Тень вулкана»",
@@ -93,7 +91,6 @@
         {"text": "🚪 Выйти на площадь", "type": "move", "next": "village"}
       ]
     },
-    
     "tavern_quest": {
       "id": "tavern_quest",
       "name": "🍺 Разговор с трактирщиком",
@@ -105,7 +102,6 @@
         {"text": "🍺 Вернуться в зал", "type": "move", "next": "tavern"}
       ]
     },
-    
     "merchant": {
       "id": "merchant",
       "name": "🏪 Лавка торговца",
@@ -132,7 +128,6 @@
         {"text": "🚪 Выйти на площадь", "type": "move", "next": "village"}
       ]
     },
-    
     "seed_shop": {
       "id": "seed_shop",
       "name": "🌱 Магазин семян",
@@ -159,7 +154,6 @@
         {"text": "🚪 Выйти на площадь", "type": "move", "next": "village"}
       ]
     },
-    
     "quest_board": {
       "id": "quest_board",
       "name": "📋 Доска объявлений",
@@ -172,7 +166,6 @@
         {"text": "🚪 Выйти на площадь", "type": "move", "next": "village"}
       ]
     },
-    
     "crafting_bench": {
       "id": "crafting_bench",
       "name": "⚒️ Кузница «Горячий металл»",
@@ -200,7 +193,6 @@
         {"text": "🚪 Выйти на площадь", "type": "move", "next": "village"}
       ]
     },
-    
     "magic_tower": {
       "id": "magic_tower",
       "name": "🔮 Башня Мага",
@@ -235,7 +227,6 @@
         {"text": "🚪 Выйти на площадь", "type": "move", "next": "village"}
       ]
     },
-    
     "deep_forest": {
       "id": "deep_forest",
       "name": "🌳 Глухой лес",
@@ -274,7 +265,6 @@
         {"text": "🌲 Вернуться на опушку", "type": "move", "next": "start"}
       ]
     },
-    
     "lake_shore": {
       "id": "lake_shore",
       "name": "🏞️ Берег озера",
@@ -308,7 +298,6 @@
         {"text": "🏗️ Построить домик", "type": "build_house", "next": "house_construction"}
       ]
     },
-    
     "fisher_house": {
       "id": "fisher_house",
       "name": "🏠 Домик рыбака",
@@ -335,7 +324,6 @@
         {"text": "🚪 Выйти на берег", "type": "move", "next": "lake_shore"}
       ]
     },
-    
     "house_construction": {
       "id": "house_construction",
       "name": "🏗️ Стройка домика",
@@ -347,7 +335,6 @@
         {"text": "↩️ Вернуться на берег", "type": "move", "next": "lake_shore"}
       ]
     },
-    
     "house_level1": {
       "id": "house_level1",
       "name": "🏠 Маленький домик",
@@ -382,7 +369,6 @@
         {"text": "🚪 Выйти на берег", "type": "move", "next": "lake_shore"}
       ]
     },
-    
     "house_level2": {
       "id": "house_level2",
       "name": "🏠 Уютный домик",
@@ -417,7 +403,6 @@
         {"text": "🚪 Выйти на берег", "type": "move", "next": "lake_shore"}
       ]
     },
-    
     "house_level3": {
       "id": "house_level3",
       "name": "🏠 Просторный дом",
@@ -453,7 +438,6 @@
         {"text": "🚪 Выйти на берег", "type": "move", "next": "lake_shore"}
       ]
     },
-    
     "house_level4": {
       "id": "house_level4",
       "name": "🏠 Деревянный особняк",
@@ -488,7 +472,6 @@
         {"text": "🚪 Выйти на берег", "type": "move", "next": "lake_shore"}
       ]
     },
-    
     "house_level5": {
       "id": "house_level5",
       "name": "🏠 Великая усадьба",
@@ -525,7 +508,6 @@
         {"text": "🚪 Выйти на берег", "type": "move", "next": "lake_shore"}
       ]
     },
-    
     "house_bathhouse": {
       "id": "house_bathhouse",
       "name": "🏠 Баня у озера",
@@ -545,7 +527,6 @@
         {"text": "↩️ Вернуться в усадьбу", "type": "move", "next": "house_level5"}
       ]
     },
-    
     "house_greenhouse": {
       "id": "house_greenhouse",
       "name": "🌱 Теплица",
@@ -572,7 +553,6 @@
         {"text": "↩️ Вернуться в усадьбу", "type": "move", "next": "house_level5"}
       ]
     },
-    
     "mountain_path": {
       "id": "mountain_path",
       "name": "⛰️ Горная тропа",
@@ -599,7 +579,6 @@
         {"text": "↩️ Вернуться в лес", "type": "move", "next": "start"}
       ]
     },
-    
     "mountain_peak": {
       "id": "mountain_peak",
       "name": "🏔️ Горная вершина",
@@ -635,7 +614,6 @@
         {"text": "↩️ Вернуться на тропу", "type": "move", "next": "mountain_path"}
       ]
     },
-    
     "mine_entrance": {
       "id": "mine_entrance",
       "name": "⛏️ Вход в шахту",
@@ -661,7 +639,6 @@
         {"text": "↩️ Вернуться на тропу", "type": "move", "next": "mountain_path"}
       ]
     },
-    
     "mine_level1": {
       "id": "mine_level1",
       "name": "⛏️ Шахта (1 уровень)",
@@ -690,7 +667,6 @@
         {"text": "⬆️ Вернуться ко входу", "type": "move", "next": "mine_entrance"}
       ]
     },
-    
     "mine_level2": {
       "id": "mine_level2",
       "name": "⛏️ Шахта (2 уровень)",
@@ -719,7 +695,6 @@
         {"text": "⬆️ Вернуться на 1 уровень", "type": "move", "next": "mine_level1"}
       ]
     },
-    
     "mine_level3": {
       "id": "mine_level3",
       "name": "⛏️ Шахта (3 уровень)",
@@ -754,7 +729,6 @@
         {"text": "⬆️ Вернуться на 2 уровень", "type": "move", "next": "mine_level2"}
       ]
     },
-    
     "mine_level4": {
       "id": "mine_level4",
       "name": "⛏️ Шахта (4 уровень)",
@@ -786,7 +760,6 @@
         {"text": "⬆️ Вернуться на 3 уровень", "type": "move", "next": "mine_level3"}
       ]
     },
-    
     "mine_level5": {
       "id": "mine_level5",
       "name": "⛏️ Шахта (5 уровень)",
@@ -813,7 +786,6 @@
         {"text": "⬆️ Вернуться на 4 уровень", "type": "move", "next": "mine_level4"}
       ]
     },
-    
     "ancient_ruins": {
       "id": "ancient_ruins",
       "name": "🏛️ Древние руины",
@@ -849,7 +821,6 @@
         {"text": "↩️ Вернуться в шахту", "type": "move", "next": "mine_level5"}
       ]
     },
-    
     "cave_entrance": {
       "id": "cave_entrance",
       "name": "🕳️ Вход в пещеру",
@@ -861,7 +832,6 @@
         {"text": "↩️ Вернуться на перевал", "type": "move", "next": "mountain_pass"}
       ]
     },
-    
     "maze_entrance": {
       "id": "maze_entrance",
       "name": "🏛️ Вход в лабиринт",
@@ -896,7 +866,6 @@
         {"text": "🪨 Отдохнуть на скамье (+15⚡)", "type": "rest", "energy_gain": 15, "cooldown": 3600, "next": "maze_entrance"}
       ]
     },
-    
     "maze_north": {
       "id": "maze_north",
       "name": "🏛️ Северный коридор",
@@ -924,7 +893,6 @@
         {"text": "↩️ Вернуться к входу", "type": "move", "next": "maze_entrance"}
       ]
     },
-    
     "maze_east": {
       "id": "maze_east",
       "name": "🏛️ Восточный коридор",
@@ -952,7 +920,6 @@
         {"text": "↩️ Вернуться к входу", "type": "move", "next": "maze_entrance"}
       ]
     },
-    
     "maze_west": {
       "id": "maze_west",
       "name": "🏛️ Западный коридор",
@@ -980,7 +947,6 @@
         {"text": "↩️ Вернуться к входу", "type": "move", "next": "maze_entrance"}
       ]
     },
-    
     "maze_south": {
       "id": "maze_south",
       "name": "🏛️ Южный коридор",
@@ -1008,7 +974,6 @@
         {"text": "↩️ Вернуться к входу", "type": "move", "next": "maze_entrance"}
       ]
     },
-    
     "maze_secret": {
       "id": "maze_secret",
       "name": "🏛️ Секретный проход",
@@ -1037,7 +1002,6 @@
         {"text": "↩️ Вернуться в коридор", "type": "move", "next": "maze_west"}
       ]
     },
-    
     "maze_hidden_treasure": {
       "id": "maze_hidden_treasure",
       "name": "💎 Тайная комната",
@@ -1051,7 +1015,6 @@
         {"text": "↩️ Вернуться", "type": "move", "next": "maze_secret"}
       ]
     },
-    
     "maze_treasure": {
       "id": "maze_treasure",
       "name": "💎 Сокровищница",
@@ -1079,7 +1042,6 @@
         {"text": "↩️ Вернуться", "type": "move", "next": "maze_north"}
       ]
     },
-    
     "maze_monster_empty": {
       "id": "maze_monster_empty",
       "name": "🏛️ Древний зал",
@@ -1105,7 +1067,6 @@
         {"text": "🚶 Пройти к алтарю", "type": "move", "next": "maze_altar"}
       ]
     },
-    
     "maze_altar": {
       "id": "maze_altar",
       "name": "🏛️ Древний алтарь",
@@ -1131,7 +1092,6 @@
         {"text": "⚔️ Пройти к голему", "type": "move", "next": "maze_monster"}
       ]
     },
-    
     "maze_monster": {
       "id": "maze_monster",
       "name": "🏛️ Логово чудовища",
@@ -1145,7 +1105,6 @@
         {"text": "🏃 Сбежать", "type": "move", "next": "maze_east"}
       ]
     },
-    
     "volcano_path": {
       "id": "volcano_path",
       "name": "🌋 Тропа к вулкану",
@@ -1171,7 +1130,6 @@
         {"text": "↩️ Назад", "type": "move", "next": "mountain_pass"}
       ]
     },
-    
     "volcano_crater": {
       "id": "volcano_crater",
       "name": "🌋 Жерло вулкана",
@@ -1202,7 +1160,6 @@
         {"text": "↩️ Вернуться на тропу", "type": "move", "next": "volcano_path"}
       ]
     },
-    
     "bridge_before_dragon": {
       "id": "bridge_before_dragon",
       "name": "🌉 Мост перед драконом",
@@ -1235,7 +1192,6 @@
         {"text": "🚶 Пойти по мосту к дракону", "type": "move", "next": "dragon_lair"}
       ]
     },
-    
     "dragon_lair": {
       "id": "dragon_lair",
       "name": "🐉 Логово дракона",
@@ -1267,7 +1223,6 @@
         {"text": "🔮 Использовать магию", "type": "show_spells", "enemy": "dragon"}
       ]
     },
-    
     "desert": {
       "id": "desert",
       "name": "🏜️ Пустыня забвения",
@@ -1302,7 +1257,6 @@
         {"text": "🏪 Зайти в оазис", "type": "move", "next": "desert_oasis"}
       ]
     },
-    
     "desert_oasis": {
       "id": "desert_oasis",
       "name": "🏝️ Оазис",
@@ -1335,7 +1289,6 @@
         {"text": "🏜️ Вернуться в пустыню", "type": "move", "next": "desert"}
       ]
     },
-    
     "swamp": {
       "id": "swamp",
       "name": "🌿 Болото туманов",
@@ -1370,7 +1323,6 @@
         {"text": "🏚️ Зайти в хижину ведьмы", "type": "move", "next": "witch_hut"}
       ]
     },
-    
     "witch_hut": {
       "id": "witch_hut",
       "name": "🏚️ Хижина ведьмы",
@@ -1405,7 +1357,6 @@
         {"text": "🌿 Вернуться на болото", "type": "move", "next": "swamp"}
       ]
     },
-    
     "ice_plains": {
       "id": "ice_plains",
       "name": "❄️ Ледяные равнины",
@@ -1440,7 +1391,6 @@
         {"text": "🧊 Зайти в ледяную пещеру", "type": "move", "next": "ice_cave"}
       ]
     },
-    
     "ice_cave": {
       "id": "ice_cave",
       "name": "🧊 Ледяная пещера",
@@ -1477,7 +1427,6 @@
         {"text": "↩️ Вернуться на равнины", "type": "move", "next": "ice_plains"}
       ]
     },
-    
     "volcanic_island": {
       "id": "volcanic_island",
       "name": "🌋 Огненный остров",
@@ -1522,7 +1471,6 @@
         {"text": "🌋 Открыть сундук расплавленной магмы", "type": "open_legendary_chest", "chest": "volcano"}
       ]
     },
-    
     "crystal_island": {
       "id": "crystal_island",
       "name": "💎 Кристальный остров",
@@ -1568,7 +1516,6 @@
         {"text": "💎 Открыть сундук сияющих глубин", "type": "open_legendary_chest", "chest": "crystal"}
       ]
     },
-    
     "dragon_island": {
       "id": "dragon_island",
       "name": "🐉 Остров драконов",
