@@ -80,13 +80,30 @@
     gap: 10px;
 }
 
-.enemy-badge {
+/* Стили для кнопок врагов */
+.enemy-btn {
     background: rgba(233,69,96,0.2);
-    border: 1px solid #e94560;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 14px;
-    color: #fff;
+    border: 2px solid #e94560;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 1;
+    min-width: 120px;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+.enemy-btn:hover {
+    background: #e94560;
+    transform: scale(1.02);
+    box-shadow: 0 0 15px rgba(233,69,96,0.5);
+}
+
+.enemy-btn:active {
+    transform: scale(0.98);
 }
 
 .actions-title {
@@ -183,15 +200,13 @@ function loadLocation() {
     // Обновляем описание
     document.getElementById('locationDesc').innerHTML = location.description || '...';
     
-    // ===== УНИВЕРСАЛЬНАЯ ЗАГРУЗКА КАРТИНОК (сначала .jpeg, потом .jpg) =====
+    // ===== УНИВЕРСАЛЬНАЯ ЗАГРУЗКА КАРТИНОК =====
     const imgContainer = document.getElementById('locationImage');
     const img = imgContainer.querySelector('img');
     
     if (location.image) {
-        // Берём название файла без расширения
         let baseName = location.image.replace('.jpg', '').replace('.jpeg', '');
         
-        // Специальные случаи (если файл называется иначе)
         const specialCases = {
             'house_level1': 'house1',
             'house_level2': 'house2',
@@ -206,15 +221,13 @@ function loadLocation() {
             'mine_level3': 'mine_level3_entrance',
             'mine_level4': 'mine_level4_entrance',
             'mine_level5': 'mine_level5_entrance',
-            'volcano_crater': 'volcano_crafter'  // ← твой новый файл
+            'volcano_crater': 'volcano_crafter'
         };
         
-        // Если есть специальное название, используем его
         if (specialCases[baseName]) {
             baseName = specialCases[baseName];
         }
         
-        // Пробуем загрузить сначала .jpeg, потом .jpg
         const extensions = ['.jpeg', '.jpg'];
         let loaded = false;
         
@@ -245,7 +258,7 @@ function loadLocation() {
         img.style.display = 'none';
     }
     
-    // Показываем врагов (если есть)
+    // ===== ВРАГИ (ТЕПЕРЬ КЛИКАБЕЛЬНЫЕ) =====
     const enemiesSection = document.getElementById('enemiesSection');
     const enemiesList = document.getElementById('enemiesList');
     
@@ -254,17 +267,40 @@ function loadLocation() {
         enemiesList.innerHTML = '';
         
         location.enemies.forEach(enemyId => {
-            const enemy = window.enemiesData?.enemies?.[enemyId];
+            // Получаем данные о враге
+            const enemy = window.enemiesData?.[enemyId] || window.enemiesData?.enemies?.[enemyId];
             let enemyName = enemy?.name || enemyId;
             
             // Специальная обработка для волков
             if (enemyId === 'wolf_attack') enemyName = '🐺 Волк (атакует)';
             if (enemyId === 'wolf_daleko') enemyName = '🐺 Волк (вдалеке)';
+            if (enemyId === 'wolf') enemyName = '🐺 Волк';
+            if (enemyId === 'wild_boar') enemyName = '🐗 Дикий кабан';
             
-            const badge = document.createElement('span');
-            badge.className = 'enemy-badge';
-            badge.innerHTML = `⚔️ ${enemyName}`;
-            enemiesList.appendChild(badge);
+            // Создаем КНОПКУ, а не просто текст
+            const enemyBtn = document.createElement('button');
+            enemyBtn.className = 'enemy-btn';
+            enemyBtn.innerHTML = `⚔️ ${enemyName}`;
+            
+            // Добавляем обработчик клика
+            enemyBtn.onclick = () => {
+                console.log('⚔️ Нажата кнопка боя с:', enemyId);
+                if (typeof window.startCombat === 'function') {
+                    window.startCombat(enemyId);
+                } else if (typeof startCombat === 'function') {
+                    startCombat(enemyId);
+                } else {
+                    console.error('❌ Функция startCombat не найдена!');
+                    alert('⚔️ Система боя загружается... Попробуй еще раз');
+                    
+                    // Пробуем использовать doAction как запасной вариант
+                    if (typeof doAction === 'function') {
+                        doAction('combat', enemyId);
+                    }
+                }
+            };
+            
+            enemiesList.appendChild(enemyBtn);
         });
     } else {
         enemiesSection.style.display = 'none';
@@ -335,6 +371,15 @@ function loadLocation() {
     }
 }
 
+// Глобальная функция для отладки
+window.debugCombat = function() {
+    console.log('🔍 Отладка боя:');
+    console.log('startCombat функция:', typeof startCombat);
+    console.log('window.startCombat:', typeof window.startCombat);
+    console.log('doAction функция:', typeof doAction);
+    console.log('enemiesData:', window.enemiesData);
+};
+
 // Загружаем локацию при загрузке страницы
 document.addEventListener('DOMContentLoaded', loadLocation);
 
@@ -342,7 +387,11 @@ document.addEventListener('DOMContentLoaded', loadLocation);
 setTimeout(loadLocation, 200);
 setTimeout(loadLocation, 500);
 setTimeout(loadLocation, 1000);
+setTimeout(loadLocation, 2000);
 
-// Слушаем изменения локации (если игрок переместился)
+// Слушаем изменения локации
 window.addEventListener('locationChanged', loadLocation);
+
+// Если данные игрока меняются, тоже перезагружаем
+document.addEventListener('playerDataUpdated', loadLocation);
 </script>
