@@ -10,8 +10,8 @@ let locations = {};
 let inventory = [];
 let telegramId = null;
 
-// API URL
-const API_URL = 'https://destiny-1-6m57.onrender.com';
+// API URL - ИСПРАВЛЕНО!
+const API_URL = 'https://destiny-web.onrender.com';
 
 // ============================================
 // ЗАГРУЗКА ПРИ СТАРТЕ
