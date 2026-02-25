@@ -3,16 +3,42 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
-from sqlalchemy import text
+from sqlalchemy import text, inspect
 import os
 import json
+import logging
 from pathlib import Path
 
 from app.database import engine, get_db, Base
 from app import models
 
+# ========== ПРИНУДИТЕЛЬНОЕ ОБНОВЛЕНИЕ БД ==========
+# Проверяем и обновляем структуру базы данных при запуске
+try:
+    logging.info("🔄 Проверка структуры базы данных...")
+    inspector = inspect(engine)
+    
+    # Проверяем существование таблиц
+    if 'users' in inspector.get_table_names():
+        columns = [col['name'] for col in inspector.get_columns('users')]
+        
+        # Если нет нужных колонок - обновляем структуру
+        if 'auth_date' not in columns or 'ton_wallet' not in columns:
+            logging.warning("⚠️ Обнаружена устаревшая структура БД. Обновление...")
+            Base.metadata.create_all(bind=engine)
+            logging.info("✅ База данных обновлена до актуальной версии")
+        else:
+            logging.info("✅ Структура базы данных актуальна")
+    else:
+        # Таблиц нет - создаём с нуля
+        logging.info("🆕 Таблицы не найдены. Создание новой базы данных...")
+        Base.metadata.create_all(bind=engine)
+        logging.info("✅ База данных создана")
+except Exception as e:
+    logging.error(f"❌ Ошибка при проверке/обновлении БД: {e}")
+
 # ========== ИНИЦИАЛИЗАЦИЯ ==========
-# Создаем таблицы в базе данных
+# Создаем таблицы в базе данных (на всякий случай, если код выше не сработал)
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
