@@ -1,0 +1,1403 @@
+{
+  "achievements": {
+    "categories": {
+      "exploration": "🗺️ Исследователь",
+      "combat": "⚔️ Воин",
+      "crafting": "⚒️ Мастер",
+      "collection": "📦 Коллекционер",
+      "bosses": "👑 Победитель боссов",
+      "special": "✨ Особые"
+    },
+    
+    "exploration": {
+      "first_steps": {
+        "id": "first_steps",
+        "name": "🔰 Первые шаги",
+        "description": "Начать своё приключение в мире Destiny.",
+        "icon": "🔰",
+        "category": "exploration",
+        "hidden": false,
+        "reward": {
+          "exp": 100,
+          "gold": 500,
+          "title": "Новичок"
+        }
+      },
+      "forest_explorer": {
+        "id": "forest_explorer",
+        "name": "🌲 Лесной следопыт",
+        "description": "Посетить все локации в Древнем лесу.",
+        "icon": "🌲",
+        "category": "exploration",
+        "requirements": {
+          "locations": ["start", "forest_path", "forest_crossroads", "deep_forest", "lake_shore", "fisher_house"]
+        },
+        "reward": {
+          "exp": 200,
+          "gold": 1000,
+          "items": ["forest_compass"]
+        }
+      },
+      "mountain_climber": {
+        "id": "mountain_climber",
+        "name": "⛰️ Покоритель вершин",
+        "description": "Добраться до самой высокой горной вершины.",
+        "icon": "⛰️",
+        "category": "exploration",
+        "requirements": {
+          "reach_location": "mountain_peak"
+        },
+        "reward": {
+          "exp": 300,
+          "gold": 1500,
+          "items": ["eagle_feather"]
+        }
+      },
+      "mine_explorer": {
+        "id": "mine_explorer",
+        "name": "⛏️ Глубинный шахтёр",
+        "description": "Спуститься на все 5 уровней шахты.",
+        "icon": "⛏️",
+        "category": "exploration",
+        "requirements": {
+          "locations": ["mine_level1", "mine_level2", "mine_level3", "mine_level4", "mine_level5"]
+        },
+        "reward": {
+          "exp": 500,
+          "gold": 2000,
+          "items": ["miners_lantern"]
+        }
+      },
+      "maze_solver": {
+        "id": "maze_solver",
+        "name": "🏛️ Разгадавший лабиринт",
+        "description": "Найти все секреты в древнем лабиринте.",
+        "icon": "🏛️",
+        "category": "exploration",
+        "requirements": {
+          "locations": ["maze_entrance", "maze_north", "maze_east", "maze_west", "maze_south", "maze_secret", "maze_hidden_treasure", "maze_treasure", "maze_monster_empty", "maze_altar"]
+        },
+        "reward": {
+          "exp": 600,
+          "gold": 2500,
+          "items": ["ancient_key"]
+        }
+      },
+      "desert_traveler": {
+        "id": "desert_traveler",
+        "name": "🏜️ Странник пустыни",
+        "description": "Найти оазис и войти в пирамиду.",
+        "icon": "🏜️",
+        "category": "exploration",
+        "requirements": {
+          "locations": ["desert", "desert_oasis", "desert_pyramid_entrance", "desert_pyramid_hall", "desert_pyramid_depths"]
+        },
+        "reward": {
+          "exp": 800,
+          "gold": 3000,
+          "items": ["desert_robe"]
+        }
+      },
+      "swamp_wanderer": {
+        "id": "swamp_wanderer",
+        "name": "🌿 Болотный странник",
+        "description": "Найти хижину ведьмы и добраться до болотной топи.",
+        "icon": "🌿",
+        "category": "exploration",
+        "requirements": {
+          "locations": ["swamp", "witch_hut", "swamp_depths"]
+        },
+        "reward": {
+          "exp": 900,
+          "gold": 3500,
+          "items": ["swamp_amulet"]
+        }
+      },
+      "ice_explorer": {
+        "id": "ice_explorer",
+        "name": "❄️ Покоритель севера",
+        "description": "Добраться до ледяной пещеры и найти тёплый источник.",
+        "icon": "❄️",
+        "category": "exploration",
+        "requirements": {
+          "locations": ["ice_plains", "ice_cave"]
+        },
+        "reward": {
+          "exp": 1000,
+          "gold": 4000,
+          "items": ["winter_cloak"]
+        }
+      },
+      "beach_comber": {
+        "id": "beach_comber",
+        "name": "🏖️ Пляжный бродяга",
+        "description": "Исследовать вулканический пляж и лавовую лагуну.",
+        "icon": "🏖️",
+        "category": "exploration",
+        "requirements": {
+          "locations": ["volcanic_beach_path", "volcanic_beach", "lava_lagoon"]
+        },
+        "reward": {
+          "exp": 700,
+          "gold": 2500,
+          "items": ["coconut_necklace"]
+        }
+      },
+      "frozen_ocean_explorer": {
+        "id": "frozen_ocean_explorer",
+        "name": "🧊 Исследователь глубин",
+        "description": "Найти затонувший корабль и войти в замёрзший город.",
+        "icon": "🧊",
+        "category": "exploration",
+        "requirements": {
+          "locations": ["frozen_ocean_path", "frozen_ocean", "frozen_shipwreck", "frozen_city_entrance", "frozen_city"]
+        },
+        "reward": {
+          "exp": 1200,
+          "gold": 5000,
+          "items": ["frozen_key"]
+        }
+      },
+      "volcanic_island_explorer": {
+        "id": "volcanic_island_explorer",
+        "name": "🌋 Покоритель огненного острова",
+        "description": "Достичь трона короля вулкана.",
+        "icon": "🌋",
+        "category": "exploration",
+        "requirements": {
+          "locations": ["volcanic_island", "volcano_king_throne"]
+        },
+        "reward": {
+          "exp": 1500,
+          "gold": 6000,
+          "items": ["lava_core", 2]
+        }
+      },
+      "crystal_island_explorer": {
+        "id": "crystal_island_explorer",
+        "name": "💎 Исследователь кристального острова",
+        "description": "Найти логово кристального дракона.",
+        "icon": "💎",
+        "category": "exploration",
+        "requirements": {
+          "locations": ["crystal_island", "crystal_dragon_lair"]
+        },
+        "reward": {
+          "exp": 1800,
+          "gold": 7000,
+          "items": ["perfect_crystal", 2]
+        }
+      },
+      "dragon_island_explorer": {
+        "id": "dragon_island_explorer",
+        "name": "🐉 Исследователь острова драконов",
+        "description": "Добраться до трона короля драконов.",
+        "icon": "🐉",
+        "category": "exploration",
+        "requirements": {
+          "locations": ["dragon_island", "dragon_king_throne"]
+        },
+        "reward": {
+          "exp": 2000,
+          "gold": 10000,
+          "items": ["dragon_scale", 3]
+        }
+      },
+      "world_traveler": {
+        "id": "world_traveler",
+        "name": "🌍 Путешественник миров",
+        "description": "Посетить все биомы в игре.",
+        "icon": "🌍",
+        "category": "exploration",
+        "requirements": {
+          "biomes": ["forest", "mountains", "desert", "swamp", "ice_plains", "volcanic", "volcanic_beach", "frozen_ocean", "crystal_island", "dragon_island"]
+        },
+        "reward": {
+          "exp": 5000,
+          "gold": 20000,
+          "rainbow_stone": 2,
+          "title": "Странник"
+        }
+      }
+    },
+    
+    "combat": {
+      "first_kill": {
+        "id": "first_kill",
+        "name": "🔰 Первая кровь",
+        "description": "Убить первого врага.",
+        "icon": "🔰",
+        "category": "combat",
+        "hidden": false,
+        "requirements": {
+          "kill_any": 1
+        },
+        "reward": {
+          "exp": 50,
+          "gold": 200
+        }
+      },
+      "wolf_hunter": {
+        "id": "wolf_hunter",
+        "name": "🐺 Охотник на волков",
+        "description": "Убить 50 волков.",
+        "icon": "🐺",
+        "category": "combat",
+        "requirements": {
+          "kill": {"enemy": "wolf", "count": 50}
+        },
+        "reward": {
+          "exp": 300,
+          "gold": 1000,
+          "items": ["wolf_skin", 10]
+        }
+      },
+      "alpha_hunter": {
+        "id": "alpha_hunter",
+        "name": "👑 Убийца альф",
+        "description": "Убить 10 вожаков волков.",
+        "icon": "👑",
+        "category": "combat",
+        "requirements": {
+          "kill": {"enemy": "wolf_alpha", "count": 10}
+        },
+        "reward": {
+          "exp": 500,
+          "gold": 2000,
+          "items": ["alpha_fang", 3]
+        }
+      },
+      "bear_hunter": {
+        "id": "bear_hunter",
+        "name": "🐻 Медвежатник",
+        "description": "Убить 30 медведей.",
+        "icon": "🐻",
+        "category": "combat",
+        "requirements": {
+          "kill": {"enemy": "bear", "count": 30}
+        },
+        "reward": {
+          "exp": 400,
+          "gold": 1500,
+          "items": ["bear_skin", 5]
+        }
+      },
+      "spider_killer": {
+        "id": "spider_killer",
+        "name": "🕷️ Паукоборец",
+        "description": "Убить 100 пауков (любых).",
+        "icon": "🕷️",
+        "category": "combat",
+        "requirements": {
+          "kill": {"enemy_type": "spider", "count": 100}
+        },
+        "reward": {
+          "exp": 600,
+          "gold": 2500,
+          "items": ["spider_silk", 20]
+        }
+      },
+      "skeleton_slayer": {
+        "id": "skeleton_slayer",
+        "name": "💀 Костолом",
+        "description": "Убить 100 скелетов.",
+        "icon": "💀",
+        "category": "combat",
+        "requirements": {
+          "kill": {"enemy_type": "skeleton", "count": 100}
+        },
+        "reward": {
+          "exp": 600,
+          "gold": 2500,
+          "items": ["bone", 50]
+        }
+      },
+      "desert_hunter": {
+        "id": "desert_hunter",
+        "name": "🦂 Охотник пустыни",
+        "description": "Убить 50 скорпионов и 20 песчаных червей.",
+        "icon": "🦂",
+        "category": "combat",
+        "requirements": {
+          "kill": [
+            {"enemy": "scorpion", "count": 50},
+            {"enemy": "sand_worm", "count": 20}
+          ]
+        },
+        "reward": {
+          "exp": 800,
+          "gold": 3000,
+          "items": ["scorpion_venom", 10]
+        }
+      },
+      "swamp_cleanser": {
+        "id": "swamp_cleanser",
+        "name": "🧹 Очиститель болот",
+        "description": "Убить 100 болотных зомби.",
+        "icon": "🧹",
+        "category": "combat",
+        "requirements": {
+          "kill": {"enemy": "swamp_zombie", "count": 100}
+        },
+        "reward": {
+          "exp": 900,
+          "gold": 3500,
+          "items": ["antidote", 10]
+        }
+      },
+      "ice_hunter": {
+        "id": "ice_hunter",
+        "name": "❄️ Ледяной охотник",
+        "description": "Убить 50 ледяных волков и 20 белых медведей.",
+        "icon": "❄️",
+        "category": "combat",
+        "requirements": {
+          "kill": [
+            {"enemy": "ice_wolf", "count": 50},
+            {"enemy": "white_bear", "count": 20}
+          ]
+        },
+        "reward": {
+          "exp": 1000,
+          "gold": 4000,
+          "items": ["ice_fur", 20]
+        }
+      },
+      "volcanic_hunter": {
+        "id": "volcanic_hunter",
+        "name": "🌋 Охотник на лаву",
+        "description": "Убить 30 огненных элементалей и 20 лавовых големов.",
+        "icon": "🌋",
+        "category": "combat",
+        "requirements": {
+          "kill": [
+            {"enemy": "fire_elemental", "count": 30},
+            {"enemy": "lava_golem", "count": 20}
+          ]
+        },
+        "reward": {
+          "exp": 1200,
+          "gold": 5000,
+          "items": ["lava_core", 5]
+        }
+      },
+      "beach_hunter": {
+        "id": "beach_hunter",
+        "name": "🦀 Краболов",
+        "description": "Поймать 100 крабов (любых).",
+        "icon": "🦀",
+        "category": "combat",
+        "requirements": {
+          "kill": {"enemy_type": "crab", "count": 100}
+        },
+        "reward": {
+          "exp": 700,
+          "gold": 2500,
+          "items": ["crab_meat", 50]
+        }
+      },
+      "frozen_ocean_hunter": {
+        "id": "frozen_ocean_hunter",
+        "name": "🦭 Охотник на льдах",
+        "description": "Поймать 50 тюленей и 30 моржей.",
+        "icon": "🦭",
+        "category": "combat",
+        "requirements": {
+          "kill": [
+            {"enemy": "seal", "count": 50},
+            {"enemy": "walrus", "count": 30}
+          ]
+        },
+        "reward": {
+          "exp": 1100,
+          "gold": 4500,
+          "items": ["seal_skin", 20, "walrus_tusk", 10]
+        }
+      },
+      "elemental_master": {
+        "id": "elemental_master",
+        "name": "🌀 Повелитель стихий",
+        "description": "Убить по 50 элементалей каждого типа (огонь, лёд, земля).",
+        "icon": "🌀",
+        "category": "combat",
+        "requirements": {
+          "kill": [
+            {"enemy_type": "fire_elemental", "count": 50},
+            {"enemy_type": "ice_elemental", "count": 50},
+            {"enemy_type": "earth_elemental", "count": 50}
+          ]
+        },
+        "reward": {
+          "exp": 3000,
+          "gold": 10000,
+          "rainbow_shard": 5,
+          "title": "Мастер стихий"
+        }
+      },
+      "true_warrior": {
+        "id": "true_warrior",
+        "name": "⚔️ Истинный воин",
+        "description": "Убить 1000 врагов.",
+        "icon": "⚔️",
+        "category": "combat",
+        "requirements": {
+          "kill_any": 1000
+        },
+        "reward": {
+          "exp": 5000,
+          "gold": 20000,
+          "rainbow_stone": 1,
+          "title": "Ветеран"
+        }
+      },
+      "legendary_warrior": {
+        "id": "legendary_warrior",
+        "name": "⚔️✨ Легендарный воин",
+        "description": "Убить 10000 врагов.",
+        "icon": "⚔️✨",
+        "category": "combat",
+        "requirements": {
+          "kill_any": 10000
+        },
+        "reward": {
+          "exp": 20000,
+          "gold": 100000,
+          "rainbow_stone": 5,
+          "title": "Легенда"
+        }
+      }
+    },
+    
+    "bosses": {
+      "golem_slayer": {
+        "id": "golem_slayer",
+        "name": "🗿 Разрушитель големов",
+        "description": "Победить каменного голема.",
+        "icon": "🗿",
+        "category": "bosses",
+        "requirements": {
+          "kill_boss": "stone_golem"
+        },
+        "reward": {
+          "exp": 500,
+          "gold": 2000,
+          "items": ["golem_heart"]
+        }
+      },
+      "guardian_slayer": {
+        "id": "guardian_slayer",
+        "name": "🏛️ Победитель стража",
+        "description": "Победить древнего стража.",
+        "icon": "🏛️",
+        "category": "bosses",
+        "requirements": {
+          "kill_boss": "ancient_guardian"
+        },
+        "reward": {
+          "exp": 800,
+          "gold": 3000,
+          "items": ["guardian_shard", 2]
+        }
+      },
+      "fire_elemental_slayer": {
+        "id": "fire_elemental_slayer",
+        "name": "🔥 Укротитель огня",
+        "description": "Победить огненного элементаля.",
+        "icon": "🔥",
+        "category": "bosses",
+        "requirements": {
+          "kill_boss": "fire_elemental"
+        },
+        "reward": {
+          "exp": 600,
+          "gold": 2500,
+          "items": ["elemental_core"]
+        }
+      },
+      "sand_dragon_slayer": {
+        "id": "sand_dragon_slayer",
+        "name": "🏜️ Укротитель пустыни",
+        "description": "Победить песчаного дракона.",
+        "icon": "🏜️",
+        "category": "bosses",
+        "requirements": {
+          "kill_boss": "sand_dragon"
+        },
+        "reward": {
+          "exp": 1500,
+          "gold": 5000,
+          "items": ["sand_heart"],
+          "title": "Укротитель пустыни"
+        }
+      },
+      "witch_slayer": {
+        "id": "witch_slayer",
+        "name": "🧙 Победитель ведьмы",
+        "description": "Победить болотную ведьму.",
+        "icon": "🧙",
+        "category": "bosses",
+        "requirements": {
+          "kill_boss": "witch"
+        },
+        "reward": {
+          "exp": 1000,
+          "gold": 3500,
+          "items": ["witch_hat"]
+        }
+      },
+      "swamp_monster_slayer": {
+        "id": "swamp_monster_slayer",
+        "name": "👹 Победитель болотного зла",
+        "description": "Победить болотного монстра.",
+        "icon": "👹",
+        "category": "bosses",
+        "requirements": {
+          "kill_boss": "swamp_monster"
+        },
+        "reward": {
+          "exp": 1800,
+          "gold": 6000,
+          "items": ["swamp_heart"],
+          "title": "Повелитель болот"
+        }
+      },
+      "ice_giant_slayer": {
+        "id": "ice_giant_slayer",
+        "name": "🧊 Победитель ледяного гиганта",
+        "description": "Победить ледяного гиганта.",
+        "icon": "🧊",
+        "category": "bosses",
+        "requirements": {
+          "kill_boss": "ice_giant"
+        },
+        "reward": {
+          "exp": 2000,
+          "gold": 7000,
+          "items": ["ice_giant_heart"],
+          "title": "Покоритель севера"
+        }
+      },
+      "giant_crab_slayer": {
+        "id": "giant_crab_slayer",
+        "name": "🦀 Победитель короля крабов",
+        "description": "Победить гигантского вулканического краба.",
+        "icon": "🦀",
+        "category": "bosses",
+        "requirements": {
+          "kill_boss": "giant_volcanic_crab"
+        },
+        "reward": {
+          "exp": 900,
+          "gold": 3000,
+          "items": ["giant_claw"]
+        }
+      },
+      "leviathan_slayer": {
+        "id": "leviathan_slayer",
+        "name": "🐋 Укротитель глубин",
+        "description": "Победить левиафана.",
+        "icon": "🐋",
+        "category": "bosses",
+        "requirements": {
+          "kill_boss": "leviathan"
+        },
+        "reward": {
+          "exp": 2500,
+          "gold": 10000,
+          "items": ["leviathan_scale", 3],
+          "title": "Укротитель глубин"
+        }
+      },
+      "volcano_king_slayer": {
+        "id": "volcano_king_slayer",
+        "name": "👑 Победитель короля вулкана",
+        "description": "Победить короля вулкана.",
+        "icon": "👑",
+        "category": "bosses",
+        "requirements": {
+          "kill_boss": "volcano_king"
+        },
+        "reward": {
+          "exp": 3000,
+          "gold": 12000,
+          "items": ["volcano_heart", "crown_of_fire"],
+          "title": "Повелитель огня"
+        }
+      },
+      "crystal_dragon_slayer": {
+        "id": "crystal_dragon_slayer",
+        "name": "💎 Победитель кристального дракона",
+        "description": "Победить кристального дракона.",
+        "icon": "💎",
+        "category": "bosses",
+        "requirements": {
+          "kill_boss": "crystal_dragon"
+        },
+        "reward": {
+          "exp": 3500,
+          "gold": 15000,
+          "items": ["crystal_dragon_heart", "crystal_crown"],
+          "title": "Хранитель кристаллов"
+        }
+      },
+      "dragon_slayer": {
+        "id": "dragon_slayer",
+        "name": "🐉 Драконобоец",
+        "description": "Победить древнего дракона.",
+        "icon": "🐉",
+        "category": "bosses",
+        "requirements": {
+          "kill_boss": "dragon"
+        },
+        "reward": {
+          "exp": 4000,
+          "gold": 20000,
+          "items": ["dragon_heart", "dragon_scale", 3],
+          "title": "Драконобоец"
+        }
+      },
+      "dragon_king_slayer": {
+        "id": "dragon_king_slayer",
+        "name": "👑 Победитель короля драконов",
+        "description": "Победить короля драконов — финального босса.",
+        "icon": "👑",
+        "category": "bosses",
+        "requirements": {
+          "kill_boss": "dragon_king"
+        },
+        "reward": {
+          "exp": 10000,
+          "gold": 50000,
+          "items": ["dragon_king_heart", "dragon_crown", "rainbow_stone", 5],
+          "title": "Повелитель драконов",
+          "unique_house_item": "dragon_throne"
+        }
+      },
+      "all_bosses": {
+        "id": "all_bosses",
+        "name": "👑👑👑 Покоритель боссов",
+        "description": "Победить всех боссов в игре.",
+        "icon": "👑👑👑",
+        "category": "bosses",
+        "requirements": {
+          "bosses": ["stone_golem", "ancient_guardian", "fire_elemental", "sand_dragon", "witch", "swamp_monster", "ice_giant", "giant_volcanic_crab", "leviathan", "volcano_king", "crystal_dragon", "dragon", "dragon_king"]
+        },
+        "reward": {
+          "exp": 50000,
+          "gold": 200000,
+          "rainbow_stone": 10,
+          "title": "Легендарный герой",
+          "unique_item": "crown_of_the_hero"
+        }
+      }
+    },
+    
+    "crafting": {
+      "first_craft": {
+        "id": "first_craft",
+        "name": "🔰 Первая поделка",
+        "description": "Создать первый предмет.",
+        "icon": "🔰",
+        "category": "crafting",
+        "hidden": false,
+        "requirements": {
+          "craft_any": 1
+        },
+        "reward": {
+          "exp": 50,
+          "gold": 200
+        }
+      },
+      "apprentice_crafter": {
+        "id": "apprentice_crafter",
+        "name": "🟢 Подмастерье",
+        "description": "Создать 100 предметов.",
+        "icon": "🟢",
+        "category": "crafting",
+        "requirements": {
+          "craft_any": 100
+        },
+        "reward": {
+          "exp": 300,
+          "gold": 1000,
+          "title": "Подмастерье"
+        }
+      },
+      "skilled_crafter": {
+        "id": "skilled_crafter",
+        "name": "🔵 Умелец",
+        "description": "Создать 500 предметов.",
+        "icon": "🔵",
+        "category": "crafting",
+        "requirements": {
+          "craft_any": 500
+        },
+        "reward": {
+          "exp": 800,
+          "gold": 3000,
+          "title": "Умелец"
+        }
+      },
+      "master_crafter": {
+        "id": "master_crafter",
+        "name": "🟣 Мастер",
+        "description": "Создать 1000 предметов.",
+        "icon": "🟣",
+        "category": "crafting",
+        "requirements": {
+          "craft_any": 1000
+        },
+        "reward": {
+          "exp": 2000,
+          "gold": 8000,
+          "rainbow_shard": 2,
+          "title": "Мастер"
+        }
+      },
+      "legendary_crafter": {
+        "id": "legendary_crafter",
+        "name": "🟡 Легендарный мастер",
+        "description": "Создать 5000 предметов.",
+        "icon": "🟡",
+        "category": "crafting",
+        "requirements": {
+          "craft_any": 5000
+        },
+        "reward": {
+          "exp": 10000,
+          "gold": 50000,
+          "rainbow_stone": 2,
+          "title": "Легендарный мастер"
+        }
+      },
+      "weaponsmith": {
+        "id": "weaponsmith",
+        "name": "⚔️ Оружейник",
+        "description": "Создать 100 единиц оружия.",
+        "icon": "⚔️",
+        "category": "crafting",
+        "requirements": {
+          "craft_type": "weapon",
+          "count": 100
+        },
+        "reward": {
+          "exp": 500,
+          "gold": 2000,
+          "items": ["steel_ingot", 10]
+        }
+      },
+      "armorsmith": {
+        "id": "armorsmith",
+        "name": "🛡️ Бронник",
+        "description": "Создать 100 единиц брони.",
+        "icon": "🛡️",
+        "category": "crafting",
+        "requirements": {
+          "craft_type": "armor",
+          "count": 100
+        },
+        "reward": {
+          "exp": 500,
+          "gold": 2000,
+          "items": ["leather", 20]
+        }
+      },
+      "alchemist": {
+        "id": "alchemist",
+        "name": "🧪 Алхимик",
+        "description": "Создать 100 зелий.",
+        "icon": "🧪",
+        "category": "crafting",
+        "requirements": {
+          "craft_type": "potion",
+          "count": 100
+        },
+        "reward": {
+          "exp": 500,
+          "gold": 2000,
+          "items": ["magic_dust", 10]
+        }
+      },
+      "chef": {
+        "id": "chef",
+        "name": "🍳 Шеф-повар",
+        "description": "Приготовить 100 блюд.",
+        "icon": "🍳",
+        "category": "crafting",
+        "requirements": {
+          "craft_type": "food",
+          "count": 100
+        },
+        "reward": {
+          "exp": 500,
+          "gold": 2000,
+          "items": ["honey", 20]
+        }
+      },
+      "master_of_all": {
+        "id": "master_of_all",
+        "name": "✨ Мастер на все руки",
+        "description": "Создать хотя бы по одному предмету каждого типа.",
+        "icon": "✨",
+        "category": "crafting",
+        "requirements": {
+          "craft_all_types": true
+        },
+        "reward": {
+          "exp": 2000,
+          "gold": 10000,
+          "rainbow_shard": 3,
+          "title": "Универсал"
+        }
+      }
+    },
+    
+    "collection": {
+      "first_gather": {
+        "id": "first_gather",
+        "name": "🔰 Первый урожай",
+        "description": "Собрать первый ресурс.",
+        "icon": "🔰",
+        "category": "collection",
+        "hidden": false,
+        "requirements": {
+          "gather_any": 1
+        },
+        "reward": {
+          "exp": 20,
+          "gold": 100
+        }
+      },
+      "woodcutter": {
+        "id": "woodcutter",
+        "name": "🪵 Лесоруб",
+        "description": "Собрать 1000 древесины.",
+        "icon": "🪵",
+        "category": "collection",
+        "requirements": {
+          "gather": {"item": "wood", "count": 1000}
+        },
+        "reward": {
+          "exp": 300,
+          "gold": 1000,
+          "items": ["wood", 100]
+        }
+      },
+      "miner": {
+        "id": "miner",
+        "name": "⛏️ Шахтёр",
+        "description": "Добыть 1000 руды (любой).",
+        "icon": "⛏️",
+        "category": "collection",
+        "requirements": {
+          "gather_type": "ore",
+          "count": 1000
+        },
+        "reward": {
+          "exp": 400,
+          "gold": 1500,
+          "items": ["iron_ore", 100]
+        }
+      },
+      "herbalist": {
+        "id": "herbalist",
+        "name": "🌿 Травник",
+        "description": "Собрать 500 трав.",
+        "icon": "🌿",
+        "category": "collection",
+        "requirements": {
+          "gather_type": "herb",
+          "count": 500
+        },
+        "reward": {
+          "exp": 350,
+          "gold": 1200,
+          "items": ["herb", 50]
+        }
+      },
+      "fisherman": {
+        "id": "fisherman",
+        "name": "🎣 Рыбак",
+        "description": "Поймать 500 рыб.",
+        "icon": "🎣",
+        "category": "collection",
+        "requirements": {
+          "gather_type": "fish",
+          "count": 500
+        },
+        "reward": {
+          "exp": 400,
+          "gold": 1500,
+          "items": ["fish", 50]
+        }
+      },
+      "master_fisherman": {
+        "id": "master_fisherman",
+        "name": "🎣✨ Мастер-рыбак",
+        "description": "Поймать все виды рыб.",
+        "icon": "🎣✨",
+        "category": "collection",
+        "requirements": {
+          "fish_types": ["carp", "perch", "pike", "golden_fish", "tropical_fish", "frozen_fish"]
+        },
+        "reward": {
+          "exp": 800,
+          "gold": 3000,
+          "items": ["mythril_fishing_rod"]
+        }
+      },
+      "gem_collector": {
+        "id": "gem_collector",
+        "name": "💎 Собиратель самоцветов",
+        "description": "Собрать все виды драгоценных камней.",
+        "icon": "💎",
+        "category": "collection",
+        "requirements": {
+          "items": ["ruby", "sapphire", "emerald", "diamond", "fire_gem", "ice_crystal", "perfect_crystal"]
+        },
+        "reward": {
+          "exp": 1500,
+          "gold": 5000,
+          "rainbow_shard": 3,
+          "title": "Ювелир"
+        }
+      },
+      "treasure_hunter": {
+        "id": "treasure_hunter",
+        "name": "🏴‍☠️ Охотник за сокровищами",
+        "description": "Найти 100 древних монет.",
+        "icon": "🏴‍☠️",
+        "category": "collection",
+        "requirements": {
+          "collect": {"item": "ancient_coin", "count": 100}
+        },
+        "reward": {
+          "exp": 800,
+          "gold": 5000,
+          "items": ["ancient_coin", 10]
+        }
+      },
+      "dragon_treasures": {
+        "id": "dragon_treasures",
+        "name": "🐉 Сокровища дракона",
+        "description": "Собрать все виды драконьих трофеев.",
+        "icon": "🐉",
+        "category": "collection",
+        "requirements": {
+          "items": ["dragon_scale", "dragon_blood", "dragon_heart", "dragon_bone", "dragon_fang"]
+        },
+        "reward": {
+          "exp": 3000,
+          "gold": 15000,
+          "rainbow_stone": 2,
+          "title": "Драконьим сердцем"
+        }
+      },
+      "museum_curator": {
+        "id": "museum_curator",
+        "name": "🏛️ Хранитель музея",
+        "description": "Собрать все уникальные предметы в игре.",
+        "icon": "🏛️",
+        "category": "collection",
+        "requirements": {
+          "unique_items": true
+        },
+        "reward": {
+          "exp": 10000,
+          "gold": 50000,
+          "rainbow_stone": 5,
+          "title": "Коллекционер",
+          "unique_house_item": "display_case"
+        }
+      }
+    },
+    
+    "special": {
+      "first_house": {
+        "id": "first_house",
+        "name": "🏠 Дом, милый дом",
+        "description": "Построить свой первый дом.",
+        "icon": "🏠",
+        "category": "special",
+        "requirements": {
+          "build_house": 1
+        },
+        "reward": {
+          "exp": 200,
+          "gold": 1000,
+          "items": ["bed"]
+        }
+      },
+      "house_upgrade_3": {
+        "id": "house_upgrade_3",
+        "name": "🏠 Уютный дом",
+        "description": "Улучшить дом до 3 уровня.",
+        "icon": "🏠",
+        "category": "special",
+        "requirements": {
+          "house_level": 3
+        },
+        "reward": {
+          "exp": 500,
+          "gold": 2000,
+          "items": ["glass_furnace"]
+        }
+      },
+      "house_upgrade_5": {
+        "id": "house_upgrade_5",
+        "name": "🏰 Великая усадьба",
+        "description": "Улучшить дом до 5 уровня.",
+        "icon": "🏰",
+        "category": "special",
+        "requirements": {
+          "house_level": 5
+        },
+        "reward": {
+          "exp": 1500,
+          "gold": 5000,
+          "rainbow_shard": 2,
+          "title": "Домовладелец"
+        }
+      },
+      "dragon_camper": {
+        "id": "dragon_camper",
+        "name": "🔥 Костёр у дракона",
+        "description": "Разжечь особый костёр из шкуры и дров у моста перед драконом.",
+        "icon": "🔥",
+        "category": "special",
+        "hidden": false,
+        "requirements": {
+          "special_action": "dragon_campfire"
+        },
+        "reward": {
+          "exp": 500,
+          "gold": 1000,
+          "title": "Драконий друг"
+        }
+      },
+      "rainbow_collector": {
+        "id": "rainbow_collector",
+        "name": "🌈 Радужный коллекционер",
+        "description": "Собрать 100 радужных осколков.",
+        "icon": "🌈",
+        "category": "special",
+        "requirements": {
+          "collect": {"item": "rainbow_shard", "count": 100}
+        },
+        "reward": {
+          "exp": 2000,
+          "gold": 10000,
+          "rainbow_stone": 3
+        }
+      },
+      "rainbow_master": {
+        "id": "rainbow_master",
+        "name": "🌟 Повелитель радуги",
+        "description": "Собрать 10 радужных камней.",
+        "icon": "🌟",
+        "category": "special",
+        "requirements": {
+          "collect": {"item": "rainbow_stone", "count": 10}
+        },
+        "reward": {
+          "exp": 5000,
+          "gold": 50000,
+          "rainbow_stone": 5,
+          "title": "Радужный властелин"
+        }
+      },
+      "level_10": {
+        "id": "level_10",
+        "name": "🔟 Уровень 10",
+        "description": "Достичь 10 уровня.",
+        "icon": "🔟",
+        "category": "special",
+        "requirements": {
+          "level": 10
+        },
+        "reward": {
+          "exp": 500,
+          "gold": 2000,
+          "items": ["health_potion", 5]
+        }
+      },
+      "level_20": {
+        "id": "level_20",
+        "name": "2️⃣0️⃣ Уровень 20",
+        "description": "Достичь 20 уровня.",
+        "icon": "2️⃣0️⃣",
+        "category": "special",
+        "requirements": {
+          "level": 20
+        },
+        "reward": {
+          "exp": 1000,
+          "gold": 5000,
+          "items": ["steel_sword"]
+        }
+      },
+      "level_30": {
+        "id": "level_30",
+        "name": "3️⃣0️⃣ Уровень 30",
+        "description": "Достичь 30 уровня.",
+        "icon": "3️⃣0️⃣",
+        "category": "special",
+        "requirements": {
+          "level": 30
+        },
+        "reward": {
+          "exp": 2000,
+          "gold": 10000,
+          "rainbow_shard": 2,
+          "title": "Ветеран"
+        }
+      },
+      "level_40": {
+        "id": "level_40",
+        "name": "4️⃣0️⃣ Уровень 40",
+        "description": "Достичь 40 уровня.",
+        "icon": "4️⃣0️⃣",
+        "category": "special",
+        "requirements": {
+          "level": 40
+        },
+        "reward": {
+          "exp": 4000,
+          "gold": 20000,
+          "rainbow_shard": 5,
+          "title": "Мастер"
+        }
+      },
+      "level_50": {
+        "id": "level_50",
+        "name": "5️⃣0️⃣ Уровень 50",
+        "description": "Достичь 50 уровня.",
+        "icon": "5️⃣0️⃣",
+        "category": "special",
+        "requirements": {
+          "level": 50
+        },
+        "reward": {
+          "exp": 10000,
+          "gold": 50000,
+          "rainbow_stone": 3,
+          "title": "Легенда"
+        }
+      },
+      "level_60": {
+        "id": "level_60",
+        "name": "6️⃣0️⃣ Уровень 60",
+        "description": "Достичь максимального 60 уровня.",
+        "icon": "6️⃣0️⃣",
+        "category": "special",
+        "requirements": {
+          "level": 60
+        },
+        "reward": {
+          "exp": 20000,
+          "gold": 100000,
+          "rainbow_stone": 5,
+          "title": "Полубог",
+          "unique_item": "divine_spark"
+        }
+      },
+      "class_master_warrior": {
+        "id": "class_master_warrior",
+        "name": "⚔️ Мастер меча",
+        "description": "Достичь 30 уровня с классом Мечник.",
+        "icon": "⚔️",
+        "category": "special",
+        "requirements": {
+          "class": "warrior",
+          "level": 30
+        },
+        "reward": {
+          "exp": 2000,
+          "gold": 5000,
+          "items": ["warrior_artifact"]
+        }
+      },
+      "class_master_archer": {
+        "id": "class_master_archer",
+        "name": "🏹 Мастер лука",
+        "description": "Достичь 30 уровня с классом Лучник.",
+        "icon": "🏹",
+        "category": "special",
+        "requirements": {
+          "class": "archer",
+          "level": 30
+        },
+        "reward": {
+          "exp": 2000,
+          "gold": 5000,
+          "items": ["archer_artifact"]
+        }
+      },
+      "class_master_mage": {
+        "id": "class_master_mage",
+        "name": "🔮 Мастер магии",
+        "description": "Достичь 30 уровня с классом Маг.",
+        "icon": "🔮",
+        "category": "special",
+        "requirements": {
+          "class": "mage",
+          "level": 30
+        },
+        "reward": {
+          "exp": 2000,
+          "gold": 5000,
+          "items": ["mage_artifact"]
+        }
+      },
+      "class_master_guardian": {
+        "id": "class_master_guardian",
+        "name": "🛡️ Несокрушимый",
+        "description": "Достичь 30 уровня с классом Страж.",
+        "icon": "🛡️",
+        "category": "special",
+        "requirements": {
+          "class": "guardian",
+          "level": 30
+        },
+        "reward": {
+          "exp": 2000,
+          "gold": 5000,
+          "items": ["guardian_artifact"]
+        }
+      },
+      "class_master_paladin": {
+        "id": "class_master_paladin",
+        "name": "⚔️✨ Святой воин",
+        "description": "Достичь 30 уровня с классом Паладин.",
+        "icon": "⚔️✨",
+        "category": "special",
+        "requirements": {
+          "class": "paladin",
+          "level": 30
+        },
+        "reward": {
+          "exp": 2000,
+          "gold": 5000,
+          "items": ["paladin_artifact"]
+        }
+      },
+      "class_master_rogue": {
+        "id": "class_master_rogue",
+        "name": "🗡️ Тень",
+        "description": "Достичь 30 уровня с классом Разбойник.",
+        "icon": "🗡️",
+        "category": "special",
+        "requirements": {
+          "class": "rogue",
+          "level": 30
+        },
+        "reward": {
+          "exp": 2000,
+          "gold": 5000,
+          "items": ["rogue_artifact"]
+        }
+      },
+      "class_master_druid": {
+        "id": "class_master_druid",
+        "name": "🌿 Хранитель природы",
+        "description": "Достичь 30 уровня с классом Друид.",
+        "icon": "🌿",
+        "category": "special",
+        "requirements": {
+          "class": "druid",
+          "level": 30
+        },
+        "reward": {
+          "exp": 2000,
+          "gold": 5000,
+          "items": ["druid_artifact"]
+        }
+      },
+      "class_master_warlock": {
+        "id": "class_master_warlock",
+        "name": "💀 Тёмный лорд",
+        "description": "Достичь 30 уровня с классом Чернокнижник.",
+        "icon": "💀",
+        "category": "special",
+        "requirements": {
+          "class": "warlock",
+          "level": 30
+        },
+        "reward": {
+          "exp": 2000,
+          "gold": 5000,
+          "items": ["warlock_artifact"]
+        }
+      },
+      "class_master_shaman": {
+        "id": "class_master_shaman",
+        "name": "🥁 Говорящий с духами",
+        "description": "Достичь 30 уровня с классом Шаман.",
+        "icon": "🥁",
+        "category": "special",
+        "requirements": {
+          "class": "shaman",
+          "level": 30
+        },
+        "reward": {
+          "exp": 2000,
+          "gold": 5000,
+          "items": ["shaman_artifact"]
+        }
+      },
+      "all_classes": {
+        "id": "all_classes",
+        "name": "🎭 Мастер всех классов",
+        "description": "Достичь 30 уровня со всеми 9 классами.",
+        "icon": "🎭",
+        "category": "special",
+        "requirements": {
+          "all_classes_30": true
+        },
+        "reward": {
+          "exp": 50000,
+          "gold": 200000,
+          "rainbow_stone": 10,
+          "title": "Мастер на все руки",
+          "unique_item": "master_medallion"
+        }
+      }
+    }
+  },
+  
+  "achievement_points": {
+    "bronze": 5,
+    "silver": 10,
+    "gold": 25,
+    "platinum": 50,
+    "legendary": 100
+  },
+  
+  "achievement_titles": {
+    "Новичок": "first_steps",
+    "Странник": "world_traveler",
+    "Ветеран": "true_warrior",
+    "Легенда": "legendary_warrior",
+    "Мастер стихий": "elemental_master",
+    "Укротитель пустыни": "sand_dragon_slayer",
+    "Повелитель болот": "swamp_monster_slayer",
+    "Покоритель севера": "ice_giant_slayer",
+    "Укротитель глубин": "leviathan_slayer",
+    "Повелитель огня": "volcano_king_slayer",
+    "Хранитель кристаллов": "crystal_dragon_slayer",
+    "Драконобоец": "dragon_slayer",
+    "Повелитель драконов": "dragon_king_slayer",
+    "Легендарный герой": "all_bosses",
+    "Подмастерье": "apprentice_crafter",
+    "Умелец": "skilled_crafter",
+    "Мастер": "master_crafter",
+    "Легендарный мастер": "legendary_crafter",
+    "Универсал": "master_of_all",
+    "Ювелир": "gem_collector",
+    "Коллекционер": "museum_curator",
+    "Домовладелец": "house_upgrade_5",
+    "Радужный властелин": "rainbow_master",
+    "Полубог": "level_60",
+    "Мастер на все руки": "all_classes"
+  }
+}
