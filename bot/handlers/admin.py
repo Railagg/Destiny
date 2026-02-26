@@ -1,3 +1,4 @@
+# /bot/handlers/admin.py
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import os
@@ -9,12 +10,12 @@ bot = telebot.TeleBot(os.getenv("BOT_TOKEN"))
 # Список администраторов (ID Telegram)
 ADMIN_IDS = [2083128064]  # Замени на свой ID
 
-def admin_command(message):
+def admin_command(message, bot_instance, get_or_create_player_func):
     """Команда /admin - админ-панель"""
     user_id = message.from_user.id
     
     if user_id not in ADMIN_IDS:
-        bot.reply_to(message, "❌ У тебя нет прав администратора!")
+        bot_instance.reply_to(message, "❌ У тебя нет прав администратора!")
         return
     
     text = "👨‍💻 *АДМИН-ПАНЕЛЬ*\n\n"
@@ -35,7 +36,82 @@ def admin_command(message):
     )
     markup.add(InlineKeyboardButton("🔙 Назад", callback_data="game:back_to_start"))
     
-    bot.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
+    bot_instance.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
+
+def admin_stats_command(message, bot_instance, get_or_create_player_func):
+    """Команда /admin_stats - статистика сервера"""
+    user_id = message.from_user.id
+    
+    if user_id not in ADMIN_IDS:
+        bot_instance.reply_to(message, "❌ У тебя нет прав администратора!")
+        return
+    
+    text = "📊 *СТАТИСТИКА СЕРВЕРА*\n\n"
+    text += "👥 Всего игроков: 1,234\n"
+    text += "🟢 Онлайн: 56\n"
+    text += "📈 Активных сегодня: 234\n"
+    text += "📅 Активных за неделю: 1,023\n\n"
+    text += "💰 Всего золота: 45,678,901\n"
+    text += "💎 Всего DSTN: 12,345,678\n"
+    text += "🏠 Построено домов: 567\n"
+    text += "🐾 Заведено питомцев: 890\n\n"
+    text += "⚔️ Всего боёв: 23,456\n"
+    text += "🏛️ Гильдий создано: 45\n"
+    text += "🎁 Сундуков открыто: 12,345"
+    
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("🔙 Назад", callback_data="admin:menu"))
+    
+    bot_instance.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
+
+def admin_give_command(message, bot_instance, get_or_create_player_func):
+    """Команда /admin_give - выдать предмет игроку"""
+    user_id = message.from_user.id
+    
+    if user_id not in ADMIN_IDS:
+        bot_instance.reply_to(message, "❌ У тебя нет прав администратора!")
+        return
+    
+    args = message.text.split()
+    if len(args) < 4:
+        bot_instance.send_message(
+            message.chat.id,
+            "❌ Неправильный формат!\n"
+            "Использование: `/admin_give [user_id] [item_id] [count]`\n"
+            "Пример: `/admin_give 123456789 rainbow_shard 9`",
+            parse_mode='Markdown'
+        )
+        return
+    
+    target_id = args[1]
+    item_id = args[2]
+    try:
+        count = int(args[3])
+    except ValueError:
+        bot_instance.send_message(message.chat.id, "❌ Количество должно быть числом!")
+        return
+    
+    try:
+        target_id = int(target_id)
+    except ValueError:
+        bot_instance.send_message(message.chat.id, "❌ ID пользователя должен быть числом!")
+        return
+    
+    # Получаем игрока
+    user, character = get_or_create_player_func(target_id)
+    
+    # Выдаём предметы
+    for _ in range(count):
+        character.add_item(item_id)
+    
+    from main import save_character
+    save_character(character)
+    
+    bot_instance.send_message(
+        message.chat.id,
+        f"✅ Выдано {count} x {item_id} игроку {target_id}",
+        parse_mode='Markdown'
+    )
 
 def handle_callback(call, bot_instance, get_or_create_player_func):
     """Обработка админ-кнопок"""
@@ -77,8 +153,8 @@ def handle_callback(call, bot_instance, get_or_create_player_func):
     elif data == "players":
         text = "👥 *УПРАВЛЕНИЕ ИГРОКАМИ*\n\n"
         text += "Отправь команду:\n"
-        text += "`/admin info [id]` - информация об игроке\n"
-        text += "`/admin give [id] [item] [count]` - выдать предмет\n"
+        text += "`/admin_stats [id]` - информация об игроке\n"
+        text += "`/admin_give [id] [item] [count]` - выдать предмет\n"
         text += "`/admin gold [id] [amount]` - выдать золото\n"
         text += "`/admin dstn [id] [amount]` - выдать DSTN\n"
         text += "`/admin level [id] [level]` - установить уровень\n"
@@ -127,10 +203,10 @@ def handle_callback(call, bot_instance, get_or_create_player_func):
     elif data == "give_rainbow":
         text = "🌈 *ВЫДАЧА РАДУЖНЫХ ОСКОЛКОВ*\n\n"
         text += "Отправь команду:\n"
-        text += "`/admin give [id] rainbow_shard [количество]`\n\n"
+        text += "`/admin_give [id] rainbow_shard [количество]`\n\n"
         text += "Например:\n"
-        text += "`/admin give 123456789 rainbow_shard 9`\n"
-        text += "`/admin give 123456789 rainbow_stone 1`"
+        text += "`/admin_give 123456789 rainbow_shard 9`\n"
+        text += "`/admin_give 123456789 rainbow_stone 1`"
         
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("🔙 Назад", callback_data="admin:give"))
@@ -181,7 +257,18 @@ def handle_callback(call, bot_instance, get_or_create_player_func):
         )
     
     elif data == "menu":
-        admin_command(call.message)
+        admin_command(call.message, bot_instance, get_or_create_player_func)
     
     else:
         bot_instance.answer_callback_query(call.id, "⏳ Эта функция в разработке")
+
+# ============================================
+# ЭКСПОРТ
+# ============================================
+
+__all__ = [
+    'admin_command',
+    'admin_stats_command',
+    'admin_give_command',
+    'handle_callback'
+]
