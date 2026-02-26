@@ -1,3 +1,4 @@
+# /bot/handlers/quests.py
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import os
@@ -683,3 +684,21 @@ def on_build_house(character):
 def on_choose_class(character):
     """Вызывается при выборе класса"""
     update_quest_progress(character, "choose_class")
+
+# ============================================
+# ЭКСПОРТ
+# ============================================
+
+__all__ = [
+    'quests_command',
+    'handle_callback',
+    'on_kill',
+    'on_gather',
+    'on_fish',
+    'on_mine',
+    'on_craft',
+    'on_reach_location',
+    'on_talk',
+    'on_build_house',
+    'on_choose_class'
+]
