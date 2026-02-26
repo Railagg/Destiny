@@ -1,1148 +1,670 @@
 {
-  "items": {
-    "junk_rusty_sword": {
-      "id": "junk_rusty_sword",
-      "name": "🗑️ Ржавый меч",
-      "type": "weapon",
-      "class": "warrior",
-      "subtype": "sword",
-      "rarity": "junk",
-      "tier": 1,
-      "level_req": 1,
-      "damage": 2,
-      "value": 5,
-      "description": "Старый ржавый меч. Чуть лучше, чем ничего.",
-      "material": "iron"
-    },
-    
-    "junk_broken_sword": {
-      "id": "junk_broken_sword",
-      "name": "🗑️ Сломанный меч",
-      "type": "weapon",
-      "class": "warrior",
-      "subtype": "sword",
-      "rarity": "junk",
-      "tier": 1,
-      "level_req": 1,
-      "damage": 1,
+  "resources": {
+    "wood": {
+      "id": "wood",
+      "name": "🪵 Древесина",
+      "type": "material",
+      "rarity": "common",
       "value": 2,
-      "description": "Обломок меча. Можно переплавить.",
-      "material": "iron"
+      "description": "Обычная древесина. Нужна для строительства и крафта.",
+      "icon": "🪵",
+      "max_stack": 999,
+      "used_in": ["crafting", "building"]
     },
-    
-    "junk_broken_bow": {
-      "id": "junk_broken_bow",
-      "name": "🗑️ Сломанный лук",
-      "type": "weapon",
-      "class": "archer",
-      "subtype": "bow",
-      "rarity": "junk",
-      "tier": 1,
-      "level_req": 1,
-      "damage": 2,
+    "stone": {
+      "id": "stone",
+      "name": "🪨 Камень",
+      "type": "material",
+      "rarity": "common",
       "value": 3,
-      "description": "Старый сломанный лук. Едва натягивается.",
-      "material": "wood"
+      "description": "Обычный камень. Используется в строительстве.",
+      "icon": "🪨",
+      "max_stack": 999,
+      "used_in": ["crafting", "building"]
     },
-    
-    "junk_broken_staff": {
-      "id": "junk_broken_staff",
-      "name": "🗑️ Сломанный посох",
-      "type": "weapon",
-      "class": "mage",
-      "subtype": "staff",
-      "rarity": "junk",
-      "tier": 1,
-      "level_req": 1,
-      "magic_damage": 2,
-      "mana": 5,
-      "value": 4,
-      "description": "Старый треснувший посох. Магия едва течёт через него.",
-      "material": "wood"
-    },
-    
-    "junk_broken_shield": {
-      "id": "junk_broken_shield",
-      "name": "🗑️ Сломанный щит",
-      "type": "armor",
-      "class": "guardian",
-      "slot": "shield",
-      "rarity": "junk",
-      "tier": 1,
-      "level_req": 1,
-      "defense": 2,
-      "health": 5,
-      "block_chance": 1,
-      "value": 5,
-      "description": "Старый треснувший щит. Едва держится.",
-      "material": "wood"
-    },
-    
-    "junk_armor": {
-      "id": "junk_armor",
-      "name": "🗑️ Рваная броня",
-      "type": "armor",
-      "slot": "chest",
-      "rarity": "junk",
-      "tier": 1,
-      "level_req": 1,
-      "defense": 2,
-      "health": 5,
-      "value": 5,
-      "description": "Старая рваная броня. Едва держится.",
-      "material": "cloth"
-    },
-    
-    "copper_sword": {
-      "id": "copper_sword",
-      "name": "⚪ Медный меч",
-      "type": "weapon",
-      "class": "warrior",
-      "subtype": "sword",
-      "rarity": "common",
-      "tier": 2,
-      "level_req": 3,
-      "damage": 5,
-      "value": 20,
-      "description": "Обычный медный меч. Лёгкий и удобный.",
-      "material": "copper"
-    },
-    
-    "tin_sword": {
-      "id": "tin_sword",
-      "name": "⚪ Оловянный меч",
-      "type": "weapon",
-      "class": "warrior",
-      "subtype": "sword",
-      "rarity": "common",
-      "tier": 2,
-      "level_req": 4,
-      "damage": 4,
-      "value": 15,
-      "description": "Мягкий оловянный меч. Быстро тупится.",
-      "material": "tin"
-    },
-    
-    "bronze_sword": {
-      "id": "bronze_sword",
-      "name": "🟢 Бронзовый меч",
-      "type": "weapon",
-      "class": "warrior",
-      "subtype": "sword",
-      "rarity": "uncommon",
-      "tier": 3,
-      "level_req": 6,
-      "damage": 8,
-      "value": 40,
-      "description": "Прочный бронзовый меч. Хороший баланс.",
-      "material": "bronze"
-    },
-    
-    "iron_sword": {
-      "id": "iron_sword",
-      "name": "🟢 Железный меч",
-      "type": "weapon",
-      "class": "warrior",
-      "subtype": "sword",
-      "rarity": "uncommon",
-      "tier": 3,
-      "level_req": 8,
-      "damage": 10,
-      "value": 60,
-      "description": "Качественный железный меч. Острый и надёжный.",
-      "material": "iron"
-    },
-    
-    "steel_sword": {
-      "id": "steel_sword",
-      "name": "🔵 Стальной меч",
-      "type": "weapon",
-      "class": "warrior",
-      "subtype": "sword",
-      "rarity": "rare",
-      "tier": 4,
-      "level_req": 15,
-      "damage": 16,
-      "value": 150,
-      "description": "Прочный стальной меч. Отличный баланс.",
-      "material": "steel"
-    },
-    
-    "gold_sword": {
-      "id": "gold_sword",
-      "name": "🔵 Золотой меч",
-      "type": "weapon",
-      "class": "warrior",
-      "subtype": "sword",
-      "rarity": "rare",
-      "tier": 4,
-      "level_req": 15,
-      "damage": 14,
-      "value": 150,
-      "description": "Золотой меч с рубином. Красивый и смертоносный.",
-      "material": "gold"
-    },
-    
-    "silver_sword": {
-      "id": "silver_sword",
-      "name": "🔵 Серебряный меч",
-      "type": "weapon",
-      "class": "warrior",
-      "subtype": "sword",
-      "rarity": "rare",
-      "tier": 4,
-      "level_req": 14,
-      "damage": 13,
-      "value": 130,
-      "description": "Серебряный меч против нежити.",
-      "material": "silver"
-    },
-    
-    "mythril_sword": {
-      "id": "mythril_sword",
-      "name": "🟣 Мифриловый меч",
-      "type": "weapon",
-      "class": "warrior",
-      "subtype": "sword",
-      "rarity": "epic",
-      "tier": 5,
-      "level_req": 25,
-      "damage": 24,
-      "value": 400,
-      "description": "Лёгкий и острый мифриловый меч.",
-      "material": "mythril"
-    },
-    
-    "platinum_sword": {
-      "id": "platinum_sword",
-      "name": "🟣 Платиновый меч",
-      "type": "weapon",
-      "class": "warrior",
-      "subtype": "sword",
-      "rarity": "epic",
-      "tier": 5,
-      "level_req": 27,
-      "damage": 26,
-      "value": 500,
-      "description": "Тяжёлый платиновый меч. Огромная прочность.",
-      "material": "platinum"
-    },
-    
-    "crystal_sword": {
-      "id": "crystal_sword",
-      "name": "🟡 Кристальный меч",
-      "type": "weapon",
-      "class": "warrior",
-      "subtype": "sword",
-      "rarity": "legendary",
-      "tier": 6,
-      "level_req": 35,
-      "damage": 32,
-      "magic_damage": 10,
-      "value": 800,
-      "description": "Меч из чистого кристалла. Проводит магию.",
-      "material": "crystal"
-    },
-    
-    "bloodstone_sword": {
-      "id": "bloodstone_sword",
-      "name": "🟡 Кровавый меч",
-      "type": "weapon",
-      "class": "warrior",
-      "subtype": "sword",
-      "rarity": "legendary",
-      "tier": 6,
-      "level_req": 38,
-      "damage": 35,
-      "life_steal": 5,
-      "value": 1000,
-      "description": "Меч из кровавого камня. Вампиризм 5%.",
-      "material": "bloodstone"
-    },
-    
-    "dragon_sword": {
-      "id": "dragon_sword",
-      "name": "🔴 Драконий меч",
-      "type": "weapon",
-      "class": "warrior",
-      "subtype": "sword",
-      "rarity": "mythic",
-      "tier": 7,
-      "level_req": 45,
-      "damage": 48,
-      "fire_damage": 20,
-      "value": 2500,
-      "description": "Выкован из зуба дракона. Пылает огнём.",
-      "material": "dragon"
-    },
-    
-    "hunting_bow": {
-      "id": "hunting_bow",
-      "name": "⚪ Охотничий лук",
-      "type": "weapon",
-      "class": "archer",
-      "subtype": "bow",
-      "rarity": "common",
-      "tier": 2,
-      "level_req": 3,
-      "damage": 5,
-      "value": 20,
-      "description": "Простой деревянный лук для охоты.",
-      "material": "wood"
-    },
-    
-    "longbow": {
-      "id": "longbow",
-      "name": "🟢 Длинный лук",
-      "type": "weapon",
-      "class": "archer",
-      "subtype": "bow",
-      "rarity": "uncommon",
-      "tier": 3,
-      "level_req": 8,
-      "damage": 10,
-      "value": 60,
-      "description": "Длинный деревянный лук. Отличная дальность.",
-      "material": "wood"
-    },
-    
-    "recurve_bow": {
-      "id": "recurve_bow",
-      "name": "🔵 Изогнутый лук",
-      "type": "weapon",
-      "class": "archer",
-      "subtype": "bow",
-      "rarity": "rare",
-      "tier": 4,
-      "level_req": 15,
-      "damage": 15,
-      "crit_chance": 3,
-      "value": 150,
-      "description": "Изогнутый лук. Быстрее и точнее.",
-      "material": "wood"
-    },
-    
-    "elven_bow": {
-      "id": "elven_bow",
-      "name": "🟣 Эльфийский лук",
-      "type": "weapon",
-      "class": "archer",
-      "subtype": "bow",
-      "rarity": "epic",
-      "tier": 5,
-      "level_req": 25,
-      "damage": 24,
-      "crit_chance": 8,
-      "accuracy": 10,
-      "value": 450,
-      "description": "Лёгкий эльфийский лук. Невероятно точный.",
-      "material": "mythril"
-    },
-    
-    "dragonbone_bow": {
-      "id": "dragonbone_bow",
-      "name": "🟡 Драконий костяной лук",
-      "type": "weapon",
-      "class": "archer",
-      "subtype": "bow",
-      "rarity": "legendary",
-      "tier": 6,
-      "level_req": 35,
-      "damage": 36,
-      "fire_damage": 12,
-      "crit_chance": 12,
-      "value": 1200,
-      "description": "Лук из костей дракона. Стрелы воспламеняются.",
-      "material": "dragon"
-    },
-    
-    "phoenix_bow": {
-      "id": "phoenix_bow",
-      "name": "🔴 Лук феникса",
-      "type": "weapon",
-      "class": "archer",
-      "subtype": "bow",
-      "rarity": "mythic",
-      "tier": 7,
-      "level_req": 45,
-      "damage": 48,
-      "fire_damage": 25,
-      "crit_chance": 15,
-      "value": 3000,
-      "description": "Легендарный лук из пера феникса.",
-      "material": "phoenix"
-    },
-    
-    "apprentice_staff": {
-      "id": "apprentice_staff",
-      "name": "⚪ Посох ученика",
-      "type": "weapon",
-      "class": "mage",
-      "subtype": "staff",
-      "rarity": "common",
-      "tier": 2,
-      "level_req": 3,
-      "magic_damage": 4,
-      "mana": 15,
-      "value": 20,
-      "description": "Простой деревянный посох для начинающих магов.",
-      "material": "wood"
-    },
-    
-    "mage_staff": {
-      "id": "mage_staff",
-      "name": "🟢 Посох мага",
-      "type": "weapon",
-      "class": "mage",
-      "subtype": "staff",
-      "rarity": "uncommon",
-      "tier": 3,
-      "level_req": 8,
-      "magic_damage": 8,
-      "mana": 30,
-      "value": 60,
-      "description": "Посох опытного мага с кристаллом.",
-      "material": "iron"
-    },
-    
-    "wizard_staff": {
-      "id": "wizard_staff",
-      "name": "🔵 Посох чародея",
-      "type": "weapon",
-      "class": "mage",
-      "subtype": "staff",
-      "rarity": "rare",
-      "tier": 4,
-      "level_req": 15,
-      "magic_damage": 14,
-      "mana": 50,
-      "spell_power": 5,
-      "value": 160,
-      "description": "Посох чародея с рунами.",
-      "material": "steel"
-    },
-    
-    "archmage_staff": {
-      "id": "archmage_staff",
-      "name": "🟣 Посох архимага",
-      "type": "weapon",
-      "class": "mage",
-      "subtype": "staff",
-      "rarity": "epic",
-      "tier": 5,
-      "level_req": 25,
-      "magic_damage": 24,
-      "mana": 90,
-      "spell_power": 12,
-      "value": 500,
-      "description": "Древний посох архимага.",
-      "material": "mythril"
-    },
-    
-    "elemental_staff": {
-      "id": "elemental_staff",
-      "name": "🟡 Посох стихий",
-      "type": "weapon",
-      "class": "mage",
-      "subtype": "staff",
-      "rarity": "legendary",
-      "tier": 6,
-      "level_req": 35,
-      "magic_damage": 35,
-      "fire_damage": 20,
-      "mana": 130,
-      "value": 1400,
-      "description": "Посох, наполненный силой огня.",
-      "material": "crystal"
-    },
-    
-    "dragon_staff": {
-      "id": "dragon_staff",
-      "name": "🔴 Посох дракона",
-      "type": "weapon",
-      "class": "mage",
-      "subtype": "staff",
-      "rarity": "mythic",
-      "tier": 7,
-      "level_req": 45,
-      "magic_damage": 48,
-      "fire_damage": 30,
-      "mana": 180,
-      "value": 3500,
-      "description": "Посох из кости дракона.",
-      "material": "dragon"
-    },
-    
-    "wooden_shield": {
-      "id": "wooden_shield",
-      "name": "⚪ Деревянный щит",
-      "type": "armor",
-      "class": "guardian",
-      "slot": "shield",
-      "rarity": "common",
-      "tier": 2,
-      "level_req": 3,
-      "defense": 5,
-      "health": 15,
-      "block_chance": 3,
-      "value": 25,
-      "description": "Простой деревянный щит.",
-      "material": "wood"
-    },
-    
-    "iron_shield": {
-      "id": "iron_shield",
-      "name": "🟢 Железный щит",
-      "type": "armor",
-      "class": "guardian",
-      "slot": "shield",
-      "rarity": "uncommon",
-      "tier": 3,
-      "level_req": 8,
-      "defense": 10,
-      "health": 25,
-      "block_chance": 5,
-      "value": 70,
-      "description": "Надёжный железный щит.",
-      "material": "iron"
-    },
-    
-    "steel_shield": {
-      "id": "steel_shield",
-      "name": "🔵 Стальной щит",
-      "type": "armor",
-      "class": "guardian",
-      "slot": "shield",
-      "rarity": "rare",
-      "tier": 4,
-      "level_req": 15,
-      "defense": 18,
-      "health": 40,
-      "block_chance": 8,
-      "value": 180,
-      "description": "Прочный стальной щит.",
-      "material": "steel"
-    },
-    
-    "mythril_shield": {
-      "id": "mythril_shield",
-      "name": "🟣 Мифриловый щит",
-      "type": "armor",
-      "class": "guardian",
-      "slot": "shield",
-      "rarity": "epic",
-      "tier": 5,
-      "level_req": 25,
-      "defense": 28,
-      "health": 60,
-      "block_chance": 12,
-      "magic_resist": 10,
-      "value": 450,
-      "description": "Лёгкий мифриловый щит.",
-      "material": "mythril"
-    },
-    
-    "dragon_scale_shield": {
-      "id": "dragon_scale_shield",
-      "name": "🟡 Щит из драконьей чешуи",
-      "type": "armor",
-      "class": "guardian",
-      "slot": "shield",
-      "rarity": "legendary",
-      "tier": 6,
-      "level_req": 35,
-      "defense": 42,
-      "health": 100,
-      "block_chance": 18,
-      "fire_resist": 30,
-      "value": 1200,
-      "description": "Щит из чешуи дракона.",
-      "material": "dragon"
-    },
-    
-    "leather_armor": {
-      "id": "leather_armor",
-      "name": "⚪ Кожаная броня",
-      "type": "armor",
-      "class": ["archer", "warrior"],
-      "slot": "chest",
-      "rarity": "common",
-      "tier": 2,
-      "level_req": 3,
-      "defense": 5,
-      "health": 15,
-      "value": 25,
-      "description": "Лёгкая кожаная броня.",
-      "material": "leather"
-    },
-    
-    "leather_helmet": {
-      "id": "leather_helmet",
-      "name": "⚪ Кожаный шлем",
-      "type": "armor",
-      "class": ["archer", "warrior"],
-      "slot": "head",
-      "rarity": "common",
-      "tier": 2,
-      "level_req": 3,
-      "defense": 3,
-      "health": 8,
-      "value": 15,
-      "description": "Лёгкий кожаный шлем.",
-      "material": "leather"
-    },
-    
-    "leather_boots": {
-      "id": "leather_boots",
-      "name": "⚪ Кожаные ботинки",
-      "type": "armor",
-      "class": ["archer", "warrior"],
-      "slot": "feet",
-      "rarity": "common",
-      "tier": 2,
-      "level_req": 3,
-      "defense": 2,
-      "health": 5,
-      "value": 10,
-      "description": "Удобные кожаные ботинки.",
-      "material": "leather"
-    },
-    
-    "leather_gloves": {
-      "id": "leather_gloves",
-      "name": "⚪ Кожаные перчатки",
-      "type": "armor",
-      "class": ["archer", "warrior"],
-      "slot": "hands",
-      "rarity": "common",
-      "tier": 2,
-      "level_req": 3,
-      "defense": 1,
-      "health": 3,
-      "value": 8,
-      "description": "Кожаные перчатки.",
-      "material": "leather"
-    },
-    
-    "leather_pants": {
-      "id": "leather_pants",
-      "name": "⚪ Кожаные штаны",
-      "type": "armor",
-      "class": ["archer", "warrior"],
-      "slot": "legs",
-      "rarity": "common",
-      "tier": 2,
-      "level_req": 3,
-      "defense": 4,
-      "health": 10,
-      "value": 20,
-      "description": "Удобные кожаные штаны.",
-      "material": "leather"
-    },
-    
-    "iron_armor": {
-      "id": "iron_armor",
-      "name": "🟢 Железная броня",
-      "type": "armor",
-      "class": ["warrior", "guardian"],
-      "slot": "chest",
-      "rarity": "uncommon",
-      "tier": 3,
-      "level_req": 8,
-      "defense": 12,
-      "health": 25,
-      "value": 80,
-      "description": "Надёжная железная броня.",
-      "material": "iron"
-    },
-    
-    "iron_helmet": {
-      "id": "iron_helmet",
-      "name": "🟢 Железный шлем",
-      "type": "armor",
-      "class": ["warrior", "guardian"],
-      "slot": "head",
-      "rarity": "uncommon",
-      "tier": 3,
-      "level_req": 8,
-      "defense": 7,
-      "health": 15,
-      "value": 45,
-      "description": "Тяжёлый железный шлем.",
-      "material": "iron"
-    },
-    
-    "iron_boots": {
-      "id": "iron_boots",
-      "name": "🟢 Железные ботинки",
-      "type": "armor",
-      "class": ["warrior", "guardian"],
-      "slot": "feet",
-      "rarity": "uncommon",
-      "tier": 3,
-      "level_req": 8,
-      "defense": 5,
-      "health": 10,
-      "value": 30,
-      "description": "Тяжёлые железные ботинки.",
-      "material": "iron"
-    },
-    
-    "iron_gloves": {
-      "id": "iron_gloves",
-      "name": "🟢 Железные перчатки",
-      "type": "armor",
-      "class": ["warrior", "guardian"],
-      "slot": "hands",
-      "rarity": "uncommon",
-      "tier": 3,
-      "level_req": 8,
-      "defense": 4,
-      "health": 8,
-      "value": 25,
-      "description": "Железные перчатки.",
-      "material": "iron"
-    },
-    
-    "iron_pants": {
-      "id": "iron_pants",
-      "name": "🟢 Железные поножи",
-      "type": "armor",
-      "class": ["warrior", "guardian"],
-      "slot": "legs",
-      "rarity": "uncommon",
-      "tier": 3,
-      "level_req": 8,
-      "defense": 9,
-      "health": 20,
-      "value": 60,
-      "description": "Тяжёлые железные поножи.",
-      "material": "iron"
-    },
-    
-    "steel_armor": {
-      "id": "steel_armor",
-      "name": "🔵 Стальная броня",
-      "type": "armor",
-      "class": ["warrior", "guardian"],
-      "slot": "chest",
-      "rarity": "rare",
-      "tier": 4,
-      "level_req": 15,
-      "defense": 20,
-      "health": 40,
-      "value": 200,
-      "description": "Прочная стальная броня.",
-      "material": "steel"
-    },
-    
-    "steel_helmet": {
-      "id": "steel_helmet",
-      "name": "🔵 Стальной шлем",
-      "type": "armor",
-      "class": ["warrior", "guardian"],
-      "slot": "head",
-      "rarity": "rare",
-      "tier": 4,
-      "level_req": 15,
-      "defense": 12,
-      "health": 25,
-      "value": 120,
-      "description": "Тяжёлый стальной шлем.",
-      "material": "steel"
-    },
-    
-    "steel_boots": {
-      "id": "steel_boots",
-      "name": "🔵 Стальные ботинки",
-      "type": "armor",
-      "class": ["warrior", "guardian"],
-      "slot": "feet",
-      "rarity": "rare",
-      "tier": 4,
-      "level_req": 15,
-      "defense": 8,
-      "health": 18,
-      "value": 80,
-      "description": "Стальные ботинки.",
-      "material": "steel"
-    },
-    
-    "steel_gloves": {
-      "id": "steel_gloves",
-      "name": "🔵 Стальные перчатки",
-      "type": "armor",
-      "class": ["warrior", "guardian"],
-      "slot": "hands",
-      "rarity": "rare",
-      "tier": 4,
-      "level_req": 15,
-      "defense": 6,
-      "health": 15,
-      "value": 60,
-      "description": "Стальные перчатки.",
-      "material": "steel"
-    },
-    
-    "steel_pants": {
-      "id": "steel_pants",
-      "name": "🔵 Стальные поножи",
-      "type": "armor",
-      "class": ["warrior", "guardian"],
-      "slot": "legs",
-      "rarity": "rare",
-      "tier": 4,
-      "level_req": 15,
-      "defense": 15,
-      "health": 30,
-      "value": 160,
-      "description": "Стальные поножи.",
-      "material": "steel"
-    },
-    
-    "mythril_armor": {
-      "id": "mythril_armor",
-      "name": "🟣 Мифриловая броня",
-      "type": "armor",
-      "class": ["warrior", "guardian"],
-      "slot": "chest",
-      "rarity": "epic",
-      "tier": 5,
-      "level_req": 25,
-      "defense": 30,
-      "health": 60,
-      "magic_resist": 10,
-      "value": 500,
-      "description": "Лёгкая мифриловая броня.",
-      "material": "mythril"
-    },
-    
-    "dragon_scale_armor": {
-      "id": "dragon_scale_armor",
-      "name": "🟡 Броня из драконьей чешуи",
-      "type": "armor",
-      "class": ["warrior", "guardian"],
-      "slot": "chest",
-      "rarity": "legendary",
-      "tier": 6,
-      "level_req": 35,
-      "defense": 45,
-      "health": 100,
-      "fire_resist": 30,
-      "value": 1500,
-      "description": "Броня из чешуи дракона.",
-      "material": "dragon"
-    },
-    
-    "robe_of_mage": {
-      "id": "robe_of_mage",
-      "name": "⚪ Мантия мага",
-      "type": "armor",
-      "class": ["mage"],
-      "slot": "chest",
-      "rarity": "common",
-      "tier": 2,
-      "level_req": 3,
-      "defense": 2,
-      "health": 10,
-      "mana": 20,
-      "value": 30,
-      "description": "Простая мантия мага.",
-      "material": "cloth"
-    },
-    
-    "archmage_robe": {
-      "id": "archmage_robe",
-      "name": "🟣 Мантия архимага",
-      "type": "armor",
-      "class": ["mage"],
-      "slot": "chest",
-      "rarity": "epic",
-      "tier": 5,
-      "level_req": 28,
-      "defense": 8,
-      "health": 30,
-      "mana": 80,
-      "mana_regen": 3,
-      "value": 550,
-      "description": "Мантия великого архимага.",
-      "material": "cloth"
-    },
-    
-    "fur_armor": {
-      "id": "fur_armor",
-      "name": "🟢 Меховая броня",
-      "type": "armor",
-      "class": ["archer"],
-      "slot": "chest",
-      "rarity": "uncommon",
-      "tier": 3,
-      "level_req": 10,
-      "defense": 8,
-      "health": 30,
-      "cold_resist": 15,
-      "value": 70,
-      "description": "Тёплая меховая броня.",
-      "material": "fur"
-    },
-    
-    "wolf_fur_armor": {
-      "id": "wolf_fur_armor",
-      "name": "🔵 Броня из волчьего меха",
-      "type": "armor",
-      "class": ["archer"],
-      "slot": "chest",
-      "rarity": "rare",
-      "tier": 4,
-      "level_req": 18,
-      "defense": 12,
-      "health": 45,
-      "cold_resist": 25,
-      "value": 180,
-      "description": "Тёплая броня из волчьего меха.",
-      "material": "wolf_fur"
-    },
-    
-    "ice_fur_armor": {
-      "id": "ice_fur_armor",
-      "name": "🟣 Броня из ледяного меха",
-      "type": "armor",
-      "class": ["archer"],
-      "slot": "chest",
-      "rarity": "epic",
-      "tier": 5,
-      "level_req": 28,
-      "defense": 18,
-      "health": 65,
-      "ice_resist": 40,
-      "value": 400,
-      "description": "Броня из меха снежного зверя.",
-      "material": "ice_fur"
-    },
-    
-    "copper_ore": {
-      "id": "copper_ore",
-      "name": "⚪ Медная руда",
-      "type": "material",
-      "rarity": "common",
-      "value": 5,
-      "description": "Обычная медная руда."
-    },
-    
-    "tin_ore": {
-      "id": "tin_ore",
-      "name": "⚪ Оловянная руда",
-      "type": "material",
-      "rarity": "common",
-      "value": 4,
-      "description": "Обычная оловянная руда."
-    },
-    
     "iron_ore": {
       "id": "iron_ore",
-      "name": "🟢 Железная руда",
-      "type": "material",
-      "rarity": "uncommon",
-      "value": 8,
-      "description": "Железная руда."
+      "name": "⛏️ Железная руда",
+      "type": "ore",
+      "rarity": "common",
+      "value": 5,
+      "description": "Руда, из которой выплавляют железо.",
+      "icon": "⛏️",
+      "max_stack": 999,
+      "used_in": ["smelting"]
     },
-    
     "gold_ore": {
       "id": "gold_ore",
-      "name": "🔵 Золотая руда",
-      "type": "material",
+      "name": "⛏️ Золотая руда",
+      "type": "ore",
       "rarity": "rare",
-      "value": 20,
-      "description": "Золотая руда."
-    },
-    
-    "silver_ore": {
-      "id": "silver_ore",
-      "name": "🔵 Серебряная руда",
-      "type": "material",
-      "rarity": "rare",
-      "value": 18,
-      "description": "Серебряная руда."
-    },
-    
-    "mythril_ore": {
-      "id": "mythril_ore",
-      "name": "🟣 Мифриловая руда",
-      "type": "material",
-      "rarity": "epic",
-      "value": 50,
-      "description": "Мифриловая руда."
-    },
-    
-    "platinum_ore": {
-      "id": "platinum_ore",
-      "name": "🟣 Платиновая руда",
-      "type": "material",
-      "rarity": "epic",
-      "value": 55,
-      "description": "Платиновая руда."
-    },
-    
-    "copper_ingot": {
-      "id": "copper_ingot",
-      "name": "⚪ Медный слиток",
-      "type": "material",
-      "rarity": "common",
       "value": 15,
-      "description": "Слиток меди."
+      "description": "Редкая руда, содержащая золото.",
+      "icon": "⛏️",
+      "max_stack": 999,
+      "used_in": ["smelting"]
     },
-    
-    "tin_ingot": {
-      "id": "tin_ingot",
-      "name": "⚪ Оловянный слиток",
+    "copper_ore": {
+      "id": "copper_ore",
+      "name": "⛏️ Медная руда",
+      "type": "ore",
+      "rarity": "common",
+      "value": 4,
+      "description": "Руда для выплавки меди.",
+      "icon": "⛏️",
+      "max_stack": 999,
+      "used_in": ["smelting"]
+    },
+    "coal": {
+      "id": "coal",
+      "name": "🪨 Уголь",
       "type": "material",
       "rarity": "common",
-      "value": 12,
-      "description": "Слиток олова."
+      "value": 3,
+      "description": "Используется как топливо и в крафте.",
+      "icon": "🪨",
+      "max_stack": 999,
+      "used_in": ["smelting", "crafting"]
     },
-    
-    "bronze_ingot": {
-      "id": "bronze_ingot",
-      "name": "⚪ Бронзовый слиток",
-      "type": "material",
-      "rarity": "common",
-      "value": 20,
-      "description": "Слиток бронзы."
-    },
-    
     "iron_ingot": {
       "id": "iron_ingot",
-      "name": "🟢 Железный слиток",
+      "name": "🔩 Железный слиток",
       "type": "material",
-      "rarity": "uncommon",
-      "value": 25,
-      "description": "Слиток железа."
+      "rarity": "common",
+      "value": 10,
+      "description": "Выплавленный из руды железный слиток.",
+      "icon": "🔩",
+      "max_stack": 999,
+      "used_in": ["crafting", "building"]
     },
-    
-    "steel_ingot": {
-      "id": "steel_ingot",
-      "name": "🔵 Стальной слиток",
-      "type": "material",
-      "rarity": "rare",
-      "value": 50,
-      "description": "Слиток стали."
-    },
-    
     "gold_ingot": {
       "id": "gold_ingot",
-      "name": "🔵 Золотой слиток",
+      "name": "🔩 Золотой слиток",
       "type": "material",
       "rarity": "rare",
-      "value": 60,
-      "description": "Слиток золота."
+      "value": 30,
+      "description": "Благородный металл для ценных изделий.",
+      "icon": "🔩",
+      "max_stack": 999,
+      "used_in": ["crafting", "building"]
     },
-    
-    "silver_ingot": {
-      "id": "silver_ingot",
-      "name": "🔵 Серебряный слиток",
+    "copper_ingot": {
+      "id": "copper_ingot",
+      "name": "🔩 Медный слиток",
       "type": "material",
-      "rarity": "rare",
-      "value": 55,
-      "description": "Слиток серебра."
+      "rarity": "common",
+      "value": 8,
+      "description": "Мягкий металл для простых изделий.",
+      "icon": "🔩",
+      "max_stack": 999,
+      "used_in": ["crafting"]
     },
-    
-    "mythril_ingot": {
-      "id": "mythril_ingot",
-      "name": "🟣 Мифриловый слиток",
-      "type": "material",
-      "rarity": "epic",
-      "value": 150,
-      "description": "Слиток мифрила."
-    },
-    
-    "platinum_ingot": {
-      "id": "platinum_ingot",
-      "name": "🟣 Платиновый слиток",
-      "type": "material",
-      "rarity": "epic",
-      "value": 160,
-      "description": "Слиток платины."
-    },
-    
     "leather": {
       "id": "leather",
       "name": "🪢 Кожа",
       "type": "material",
       "rarity": "common",
       "value": 5,
-      "description": "Выделанная кожа."
+      "description": "Выделанная кожа животных.",
+      "icon": "🪢",
+      "max_stack": 999,
+      "used_in": ["crafting", "armor"]
+    },
+    "cloth": {
+      "id": "cloth",
+      "name": "🧵 Ткань",
+      "type": "material",
+      "rarity": "common",
+      "value": 4,
+      "description": "Обычная ткань для одежды.",
+      "icon": "🧵",
+      "max_stack": 999,
+      "used_in": ["crafting", "armor"]
+    },
+    "sand": {
+      "id": "sand",
+      "name": "🏖️ Песок",
+      "type": "material",
+      "rarity": "common",
+      "value": 1,
+      "description": "Обычный песок. Нужен для стекла.",
+      "icon": "🏖️",
+      "max_stack": 999,
+      "used_in": ["glass", "building"]
+    },
+    "glass": {
+      "id": "glass",
+      "name": "🪟 Стекло",
+      "type": "material",
+      "rarity": "common",
+      "value": 5,
+      "description": "Прозрачный материал для окон и теплиц.",
+      "icon": "🪟",
+      "max_stack": 999,
+      "used_in": ["building", "crafting"]
     },
     
-    "wolf_fur": {
-      "id": "wolf_fur",
-      "name": "🐺 Волчий мех",
+    "volcanic_sand": {
+      "id": "volcanic_sand",
+      "name": "🌋 Вулканический песок",
       "type": "material",
       "rarity": "uncommon",
-      "value": 15,
-      "description": "Мягкий волчий мех."
+      "value": 8,
+      "description": "Чёрный песок с вулканического пляжа. Содержит микроскопические частицы обсидиана.",
+      "icon": "🌋",
+      "max_stack": 999,
+      "location": "volcanic_beach",
+      "used_in": ["special_glass", "alchemy"]
     },
     
-    "ice_fur": {
-      "id": "ice_fur",
-      "name": "❄️ Ледяной мех",
+    "eternal_ice": {
+      "id": "eternal_ice",
+      "name": "🧊 Вечная мерзлота",
+      "type": "material",
+      "rarity": "epic",
+      "value": 50,
+      "description": "Лёд, который не тает даже в огне. Древняя магия заключена в нём.",
+      "icon": "🧊",
+      "max_stack": 99,
+      "location": "frozen_ocean",
+      "used_in": ["legendary_crafts", "magic_items"]
+    },
+    
+    "obsidian": {
+      "id": "obsidian",
+      "name": "🪨 Обсидиан",
+      "type": "material",
+      "rarity": "rare",
+      "value": 25,
+      "description": "Вулканическое стекло. Острое и прочное.",
+      "icon": "🪨",
+      "max_stack": 999,
+      "location": "volcanic",
+      "used_in": ["weapons", "armor"]
+    }
+  },
+  
+  "herbs": {
+    "herb": {
+      "id": "herb",
+      "name": "🌿 Обычная трава",
+      "type": "herb",
+      "rarity": "common",
+      "value": 2,
+      "description": "Лечебная трава, растущая повсюду.",
+      "icon": "🌿",
+      "max_stack": 999,
+      "used_in": ["potions", "cooking"]
+    },
+    "magic_herb": {
+      "id": "magic_herb",
+      "name": "✨ Магическая трава",
+      "type": "herb",
+      "rarity": "rare",
+      "value": 15,
+      "description": "Трава, светящаяся в темноте. Обладает магическими свойствами.",
+      "icon": "✨",
+      "max_stack": 999,
+      "location": "ancient_grove",
+      "used_in": ["magic_potions", "spells"]
+    },
+    "desert_herb": {
+      "id": "desert_herb",
+      "name": "🏜️ Пустынная трава",
+      "type": "herb",
+      "rarity": "uncommon",
+      "value": 8,
+      "description": "Колючее растение, запасающее воду. Лечит жажду.",
+      "icon": "🏜️",
+      "max_stack": 999,
+      "location": "desert",
+      "used_in": ["antidotes", "survival_items"]
+    },
+    "swamp_herb": {
+      "id": "swamp_herb",
+      "name": "🌿 Болотная трава",
+      "type": "herb",
+      "rarity": "uncommon",
+      "value": 7,
+      "description": "Влажная трава с болот. Используется в ядах и противоядиях.",
+      "icon": "🌿",
+      "max_stack": 999,
+      "location": "swamp",
+      "used_in": ["poisons", "antidotes"]
+    },
+    "ice_herb": {
+      "id": "ice_herb",
+      "name": "❄️ Ледяная трава",
+      "type": "herb",
+      "rarity": "rare",
+      "value": 12,
+      "description": "Трава, покрытая инеем. Холодная на ощупь.",
+      "icon": "❄️",
+      "max_stack": 999,
+      "location": "ice_plains",
+      "used_in": ["cold_resist_potions", "frost_weapons"]
+    },
+    "volcanic_herb": {
+      "id": "volcanic_herb",
+      "name": "🌋 Вулканическая трава",
+      "type": "herb",
+      "rarity": "rare",
+      "value": 14,
+      "description": "Редкое растение, растущее прямо на лаве. Горячее.",
+      "icon": "🌋",
+      "max_stack": 999,
+      "location": "volcanic",
+      "used_in": ["fire_resist_potions", "heat_protection"]
+    },
+    "cactus": {
+      "id": "cactus",
+      "name": "🌵 Кактус",
+      "type": "herb",
+      "rarity": "common",
+      "value": 3,
+      "description": "Колючее растение пустыни. Внутри много воды.",
+      "icon": "🌵",
+      "max_stack": 999,
+      "location": "desert",
+      "used_in": ["water_flask", "food"]
+    },
+    "mushroom": {
+      "id": "mushroom",
+      "name": "🍄 Гриб",
+      "type": "herb",
+      "rarity": "common",
+      "value": 4,
+      "description": "Обычный лесной гриб. Съедобный.",
+      "icon": "🍄",
+      "max_stack": 999,
+      "used_in": ["food", "potions"]
+    },
+    "glowing_mushroom": {
+      "id": "glowing_mushroom",
+      "name": "✨ Светящийся гриб",
+      "type": "herb",
+      "rarity": "epic",
+      "value": 30,
+      "description": "Гриб, излучающий мягкий свет. Растёт только в болотных пещерах.",
+      "icon": "✨",
+      "max_stack": 99,
+      "location": "swamp_depths",
+      "used_in": ["light_potions", "magic_items"]
+    },
+    "berry": {
+      "id": "berry",
+      "name": "🫐 Лесная ягода",
+      "type": "food",
+      "rarity": "common",
+      "value": 2,
+      "description": "Сладкая лесная ягода. Восстанавливает 5 здоровья.",
+      "icon": "🫐",
+      "max_stack": 999,
+      "heal": 5,
+      "used_in": ["cooking", "potions"]
+    }
+  },
+  
+  "food": {
+    "bread": {
+      "id": "bread",
+      "name": "🍞 Хлеб",
+      "type": "food",
+      "rarity": "common",
+      "value": 5,
+      "description": "Свежий хлеб от булочника. Восстанавливает 10 энергии.",
+      "icon": "🍞",
+      "max_stack": 99,
+      "energy_restore": 10
+    },
+    "cinnamon_bun": {
+      "id": "cinnamon_bun",
+      "name": "🥐 Булочка с корицей",
+      "type": "food",
+      "rarity": "common",
+      "value": 8,
+      "description": "Ароматная сладкая булочка. Восстанавливает 15 энергии.",
+      "icon": "🥐",
+      "max_stack": 99,
+      "energy_restore": 15
+    },
+    "meat_pie": {
+      "id": "meat_pie",
+      "name": "🥧 Пирожок с мясом",
+      "type": "food",
+      "rarity": "uncommon",
+      "value": 12,
+      "description": "Сытный пирожок с мясом. +20 энергии, +5 здоровья.",
+      "icon": "🥧",
+      "max_stack": 99,
+      "energy_restore": 20,
+      "heal": 5
+    },
+    "pretzel": {
+      "id": "pretzel",
+      "name": "🥨 Крендель",
+      "type": "food",
+      "rarity": "uncommon",
+      "value": 10,
+      "description": "Солёный крендель. +5% к удаче на 1 час.",
+      "icon": "🥨",
+      "max_stack": 99,
+      "buff": "luck",
+      "buff_value": 5,
+      "buff_duration": 3600
+    },
+    "honey_cake": {
+      "id": "honey_cake",
+      "name": "🍯 Медовая коврижка",
+      "type": "food",
+      "rarity": "rare",
+      "value": 15,
+      "description": "Пряник с мёдом. +10% к опыту на 1 час.",
+      "icon": "🍯",
+      "max_stack": 99,
+      "buff": "exp",
+      "buff_value": 10,
+      "buff_duration": 3600
+    },
+    "star_cupcake": {
+      "id": "star_cupcake",
+      "name": "✨ Звёздный кекс",
+      "type": "food",
+      "rarity": "epic",
+      "value": 50,
+      "description": "Кекс со звёздной пыльцой. +50 энергии, +20 здоровья.",
+      "icon": "✨",
+      "max_stack": 99,
+      "energy_restore": 50,
+      "heal": 20,
+      "premium": true
+    },
+    
+    "coconut": {
+      "id": "coconut",
+      "name": "🥥 Кокос",
+      "type": "food",
+      "rarity": "uncommon",
+      "value": 8,
+      "description": "Свежий кокос с тропического пляжа. Внутри сладкое молоко.",
+      "icon": "🥥",
+      "max_stack": 99,
+      "energy_restore": 15,
+      "water_restore": 20,
+      "location": "volcanic_beach"
+    },
+    
+    "crab_meat": {
+      "id": "crab_meat",
+      "name": "🦀 Крабовое мясо",
+      "type": "food",
+      "rarity": "uncommon",
+      "value": 10,
+      "description": "Нежное мясо краба. Очень вкусное.",
+      "icon": "🦀",
+      "max_stack": 99,
+      "heal": 20,
+      "energy_restore": 10
+    },
+    
+    "frozen_fish": {
+      "id": "frozen_fish",
+      "name": "🐟 Замороженная рыба",
+      "type": "food",
+      "rarity": "common",
+      "value": 6,
+      "description": "Рыба, сохранившаяся во льдах. Свежая!",
+      "icon": "🐟",
+      "max_stack": 99,
+      "heal": 12,
+      "energy_restore": 8,
+      "location": "frozen_ocean"
+    },
+    
+    "seal_meat": {
+      "id": "seal_meat",
+      "name": "🦭 Мясо тюленя",
+      "type": "food",
+      "rarity": "uncommon",
+      "value": 12,
+      "description": "Жирное мясо, согревающее в холода.",
+      "icon": "🦭",
+      "max_stack": 99,
+      "heal": 25,
+      "buff": "cold_resist",
+      "buff_value": 20,
+      "buff_duration": 1800,
+      "location": "frozen_ocean"
+    }
+  },
+  
+  "drinks": {
+    "water_flask": {
+      "id": "water_flask",
+      "name": "💧 Фляга с водой",
+      "type": "drink",
+      "rarity": "common",
+      "value": 5,
+      "description": "Чистая питьевая вода. Спасает в пустыне.",
+      "icon": "💧",
+      "max_stack": 99,
+      "energy_restore": 5,
+      "survival_item": true
+    },
+    
+    "coconut_milk": {
+      "id": "coconut_milk",
+      "name": "🥛 Кокосовое молоко",
+      "type": "drink",
+      "rarity": "uncommon",
+      "value": 10,
+      "description": "Сладкое молоко из кокоса. Утоляет жажду и голод.",
+      "icon": "🥛",
+      "max_stack": 99,
+      "energy_restore": 15,
+      "heal": 5
+    },
+    
+    "hot_tea": {
+      "id": "hot_tea",
+      "name": "☕ Горячий чай",
+      "type": "drink",
+      "rarity": "common",
+      "value": 8,
+      "description": "Согревающий чай с травами. Защищает от холода.",
+      "icon": "☕",
+      "max_stack": 99,
+      "energy_restore": 10,
+      "buff": "cold_resist",
+      "buff_value": 15,
+      "buff_duration": 1800
+    },
+    
+    "lava_elixir": {
+      "id": "lava_elixir",
+      "name": "🌋 Лавовый эликсир",
+      "type": "drink",
+      "rarity": "epic",
+      "value": 50,
+      "description": "Обжигающий напиток из вулканических трав. Даёт невосприимчивость к огню.",
+      "icon": "🌋",
+      "max_stack": 99,
+      "buff": "fire_immunity",
+      "buff_duration": 3600,
+      "location": "volcanic"
+    }
+  },
+  
+  "monster_drops": {
+    "wolf_meat": {
+      "id": "wolf_meat",
+      "name": "🥩 Волчатина",
+      "type": "food",
+      "rarity": "common",
+      "value": 5,
+      "description": "Мясо дикого волка. Жёсткое, но съедобное.",
+      "icon": "🥩",
+      "max_stack": 99,
+      "heal": 10
+    },
+    "wolf_skin": {
+      "id": "wolf_skin",
+      "name": "🐺 Волчья шкура",
+      "type": "material",
+      "rarity": "common",
+      "value": 8,
+      "description": "Тёплая шкура волка. Подойдёт для одежды.",
+      "icon": "🐺",
+      "max_stack": 999,
+      "used_in": ["leather", "armor"]
+    },
+    "wolf_fang": {
+      "id": "wolf_fang",
+      "name": "🐺 Волчий клык",
+      "type": "material",
+      "rarity": "uncommon",
+      "value": 12,
+      "description": "Острый клык. Можно использовать в крафте оружия.",
+      "icon": "🐺",
+      "max_stack": 999,
+      "used_in": ["weapons", "amulets"]
+    },
+    "alpha_fang": {
+      "id": "alpha_fang",
+      "name": "👑 Клык альфы",
       "type": "material",
       "rarity": "rare",
       "value": 30,
-      "description": "Мех снежного зверя."
+      "description": "Клык вожака волков. Пропитан магией лидерства.",
+      "icon": "👑",
+      "max_stack": 99,
+      "used_in": ["legendary_weapons"]
     },
     
+    "bear_meat": {
+      "id": "bear_meat",
+      "name": "🥩 Медвежатина",
+      "type": "food",
+      "rarity": "uncommon",
+      "value": 12,
+      "description": "Сытное мясо медведя. Много сил даёт.",
+      "icon": "🥩",
+      "max_stack": 99,
+      "heal": 25
+    },
     "bear_skin": {
       "id": "bear_skin",
       "name": "🐻 Медвежья шкура",
       "type": "material",
       "rarity": "uncommon",
       "value": 20,
-      "description": "Тёплая медвежья шкура."
+      "description": "Огромная тёплая шкура. Ценный материал.",
+      "icon": "🐻",
+      "max_stack": 99,
+      "used_in": ["armor", "decorations"]
     },
-    
-    "wolf_skin": {
-      "id": "wolf_skin",
-      "name": "🐺 Волчья шкура",
-      "type": "material",
-      "rarity": "common",
-      "value": 10,
-      "description": "Шкура убитого волка."
-    },
-    
-    "wolf_fang": {
-      "id": "wolf_fang",
-      "name": "🐺 Волчий клык",
-      "type": "material",
-      "rarity": "common",
-      "value": 15,
-      "description": "Острый клык волка."
-    },
-    
-    "alpha_fang": {
-      "id": "alpha_fang",
-      "name": "👑 Клык альфы",
-      "type": "material",
-      "rarity": "rare",
-      "value": 50,
-      "description": "Клык вожака стаи."
-    },
-    
     "bear_claw": {
       "id": "bear_claw",
       "name": "🐻 Медвежий коготь",
       "type": "material",
-      "rarity": "uncommon",
-      "value": 18,
-      "description": "Острый медвежий коготь."
+      "rarity": "rare",
+      "value": 25,
+      "description": "Огромный острый коготь. Опасное оружие.",
+      "icon": "🐻",
+      "max_stack": 99,
+      "used_in": ["weapons"]
     },
     
+    "boar_meat": {
+      "id": "boar_meat",
+      "name": "🥩 Кабанятина",
+      "type": "food",
+      "rarity": "common",
+      "value": 6,
+      "description": "Мясо дикого кабана. Жирное и вкусное.",
+      "icon": "🥩",
+      "max_stack": 99,
+      "heal": 12
+    },
+    "boar_skin": {
+      "id": "boar_skin",
+      "name": "🐗 Шкура кабана",
+      "type": "material",
+      "rarity": "common",
+      "value": 7,
+      "description": "Грубая, но прочная шкура.",
+      "icon": "🐗",
+      "max_stack": 999,
+      "used_in": ["leather", "armor"]
+    },
+    "boar_tusk": {
+      "id": "boar_tusk",
+      "name": "🐗 Кабаний клык",
+      "type": "material",
+      "rarity": "uncommon",
+      "value": 10,
+      "description": "Острый кривой клык. Хорош для оружия.",
+      "icon": "🐗",
+      "max_stack": 999,
+      "used_in": ["weapons"]
+    },
+    
+    "moose_meat": {
+      "id": "moose_meat",
+      "name": "🥩 Лосятина",
+      "type": "food",
+      "rarity": "uncommon",
+      "value": 10,
+      "description": "Нежное мясо лося. Деликатес.",
+      "icon": "🥩",
+      "max_stack": 99,
+      "heal": 18
+    },
+    "moose_skin": {
+      "id": "moose_skin",
+      "name": "🦌 Лосиная шкура",
+      "type": "material",
+      "rarity": "uncommon",
+      "value": 15,
+      "description": "Мягкая и прочная шкура.",
+      "icon": "🦌",
+      "max_stack": 99,
+      "used_in": ["armor"]
+    },
     "moose_antler": {
       "id": "moose_antler",
       "name": "🦌 Лосиный рог",
       "type": "material",
-      "rarity": "uncommon",
+      "rarity": "rare",
       "value": 22,
-      "description": "Ветвистый лосиный рог."
+      "description": "Ветвистый рог. Используется в алхимии и крафте.",
+      "icon": "🦌",
+      "max_stack": 99,
+      "used_in": ["potions", "decorations"]
+    },
+    
+    "giant_rat_tail": {
+      "id": "giant_rat_tail",
+      "name": "🐀 Крысиный хвост",
+      "type": "material",
+      "rarity": "common",
+      "value": 2,
+      "description": "Длинный голый хвост. Нужен для некоторых зелий.",
+      "icon": "🐀",
+      "max_stack": 999,
+      "used_in": ["potions"]
+    },
+    
+    "bat_wing": {
+      "id": "bat_wing",
+      "name": "🦇 Крыло летучей мыши",
+      "type": "material",
+      "rarity": "common",
+      "value": 3,
+      "description": "Перепончатое крыло. Алхимический ингредиент.",
+      "icon": "🦇",
+      "max_stack": 999,
+      "used_in": ["potions"]
     },
     
     "spider_silk": {
@@ -1150,17 +672,68 @@
       "name": "🕷️ Паучий шёлк",
       "type": "material",
       "rarity": "uncommon",
-      "value": 12,
-      "description": "Прочная паутина."
+      "value": 8,
+      "description": "Прочная и лёгкая паутина. Можно ткать.",
+      "icon": "🕷️",
+      "max_stack": 999,
+      "used_in": ["cloth", "armor"]
     },
-    
     "spider_venom": {
       "id": "spider_venom",
       "name": "🧪 Паучий яд",
       "type": "material",
       "rarity": "uncommon",
-      "value": 20,
-      "description": "Яд пещерного паука."
+      "value": 10,
+      "description": "Жидкий яд из желёз паука. Опасно.",
+      "icon": "🧪",
+      "max_stack": 99,
+      "used_in": ["poisons", "antidotes"]
+    },
+    "spider_eye": {
+      "id": "spider_eye",
+      "name": "👁️ Паучий глаз",
+      "type": "material",
+      "rarity": "rare",
+      "value": 15,
+      "description": "Глаз паука, светящийся в темноте. Магический компонент.",
+      "icon": "👁️",
+      "max_stack": 99,
+      "used_in": ["magic_items", "potions"]
+    },
+    
+    "skeleton_bone": {
+      "id": "skeleton_bone",
+      "name": "🦴 Кость",
+      "type": "material",
+      "rarity": "common",
+      "value": 4,
+      "description": "Кость скелета. Можно перетереть в костную муку.",
+      "icon": "🦴",
+      "max_stack": 999,
+      "used_in": ["crafting", "alchemy"]
+    },
+    "old_sword": {
+      "id": "old_sword",
+      "name": "⚔️ Ржавый меч",
+      "type": "weapon",
+      "rarity": "common",
+      "value": 15,
+      "description": "Старый меч, побывавший в боях. Можно переплавить.",
+      "icon": "⚔️",
+      "max_stack": 99,
+      "damage": 5,
+      "used_in": ["smelting"]
+    },
+    "old_shield": {
+      "id": "old_shield",
+      "name": "🛡️ Ржавый щит",
+      "type": "armor",
+      "rarity": "common",
+      "value": 12,
+      "description": "Старый щит с гербом. Ещё может защитить.",
+      "icon": "🛡️",
+      "max_stack": 99,
+      "defense": 3
     },
     
     "golem_heart": {
@@ -1168,8 +741,56 @@
       "name": "💎 Сердце голема",
       "type": "material",
       "rarity": "epic",
-      "value": 200,
-      "description": "Пульсирующий камень."
+      "value": 100,
+      "description": "Пульсирующий камень — сердце каменного голема. Источник магии земли.",
+      "icon": "💎",
+      "max_stack": 10,
+      "used_in": ["legendary_items", "magic_constructs"]
+    },
+    "stone_armor_fragment": {
+      "id": "stone_armor_fragment",
+      "name": "🪨 Осколок каменной брони",
+      "type": "material",
+      "rarity": "rare",
+      "value": 30,
+      "description": "Часть брони голема. Очень прочная.",
+      "icon": "🪨",
+      "max_stack": 99,
+      "used_in": ["armor"]
+    },
+    "golem_fist": {
+      "id": "golem_fist",
+      "name": "👊 Кулак голема",
+      "type": "weapon",
+      "rarity": "rare",
+      "value": 50,
+      "description": "Огромный каменный кулак. Можно использовать как оружие.",
+      "icon": "👊",
+      "max_stack": 10,
+      "damage": 20
+    },
+    
+    "guardian_shard": {
+      "id": "guardian_shard",
+      "name": "🔮 Осколок стража",
+      "type": "material",
+      "rarity": "epic",
+      "value": 80,
+      "description": "Часть древнего стража, пропитанная магией.",
+      "icon": "🔮",
+      "max_stack": 99,
+      "used_in": ["magic_items"]
+    },
+    "ancient_key": {
+      "id": "ancient_key",
+      "name": "🗝️ Древний ключ",
+      "type": "quest",
+      "rarity": "epic",
+      "value": 0,
+      "description": "Ключ от древних сокровищ. Не продаётся.",
+      "icon": "🗝️",
+      "max_stack": 1,
+      "quest_item": true
     },
     
     "fire_gem": {
@@ -1177,538 +798,1074 @@
       "name": "🔥 Огненный самоцвет",
       "type": "gem",
       "rarity": "rare",
-      "value": 100,
-      "description": "Камень, горящий изнутри."
+      "value": 40,
+      "description": "Камень, горячий на ощупь. Содержит силу огня.",
+      "icon": "🔥",
+      "max_stack": 99,
+      "used_in": ["magic_items", "weapons"]
     },
-    
-    "ice_crystal": {
-      "id": "ice_crystal",
-      "name": "❄️ Ледяной кристалл",
-      "type": "gem",
-      "rarity": "rare",
-      "value": 90,
-      "description": "Кристалл вечной мерзлоты."
-    },
-    
-    "magic_crystal": {
-      "id": "magic_crystal",
-      "name": "🔮 Магический кристалл",
-      "type": "gem",
+    "elemental_core": {
+      "id": "elemental_core",
+      "name": "🌀 Ядро элементаля",
+      "type": "material",
       "rarity": "epic",
-      "value": 150,
-      "description": "Кристалл, наполненный магией."
+      "value": 70,
+      "description": "Пульсирующая сфера чистой стихийной энергии.",
+      "icon": "🌀",
+      "max_stack": 99,
+      "used_in": ["legendary_items"]
     },
-    
-    "perfect_crystal": {
-      "id": "perfect_crystal",
-      "name": "💎 Идеальный кристалл",
-      "type": "gem",
-      "rarity": "legendary",
-      "value": 300,
-      "description": "Кристалл чистейшей формы."
-    },
-    
-    "ruby": {
-      "id": "ruby",
-      "name": "🔴 Рубин",
-      "type": "gem",
-      "rarity": "rare",
-      "value": 200,
-      "description": "Красный драгоценный камень."
-    },
-    
-    "sapphire": {
-      "id": "sapphire",
-      "name": "🔵 Сапфир",
-      "type": "gem",
-      "rarity": "rare",
-      "value": 200,
-      "description": "Синий драгоценный камень."
-    },
-    
-    "emerald": {
-      "id": "emerald",
-      "name": "🟢 Изумруд",
-      "type": "gem",
-      "rarity": "rare",
-      "value": 200,
-      "description": "Зелёный драгоценный камень."
-    },
-    
-    "diamond": {
-      "id": "diamond",
-      "name": "💎 Алмаз",
-      "type": "gem",
-      "rarity": "epic",
-      "value": 300,
-      "description": "Бриллиант чистой воды."
-    },
-    
-    "ancient_coin": {
-      "id": "ancient_coin",
-      "name": "🪙 Древняя монета",
-      "type": "treasure",
-      "rarity": "epic",
-      "value": 500,
-      "description": "Монета древней цивилизации."
-    },
-    
-    "ancient_relic": {
-      "id": "ancient_relic",
-      "name": "🏺 Древний артефакт",
-      "type": "treasure",
-      "rarity": "legendary",
-      "value": 1000,
-      "description": "Загадочный артефакт из руин."
+    "volcanic_ash": {
+      "id": "volcanic_ash",
+      "name": "🌋 Вулканический пепел",
+      "type": "material",
+      "rarity": "uncommon",
+      "value": 5,
+      "description": "Мелкий пепел с вулкана. Используется в алхимии.",
+      "icon": "🌋",
+      "max_stack": 999,
+      "used_in": ["potions", "glass"]
     },
     
     "dragon_scale": {
       "id": "dragon_scale",
       "name": "🐉 Чешуя дракона",
-      "type": "legendary",
-      "rarity": "mythic",
-      "value": 500,
-      "description": "Чешуя древнего дракона."
+      "type": "material",
+      "rarity": "legendary",
+      "value": 200,
+      "description": "Прочная как сталь, лёгкая как перо. Лучший материал для брони.",
+      "icon": "🐉",
+      "max_stack": 99,
+      "used_in": ["legendary_armor"]
     },
-    
-    "dragon_fang": {
-      "id": "dragon_fang",
-      "name": "🐉 Клык дракона",
-      "type": "legendary",
-      "rarity": "mythic",
-      "value": 400,
-      "description": "Острый клык дракона."
-    },
-    
-    "dragon_heart": {
-      "id": "dragon_heart",
-      "name": "❤️ Сердце дракона",
-      "type": "legendary",
-      "rarity": "mythic",
-      "value": 1000,
-      "description": "Пульсирующее сердце дракона."
-    },
-    
     "dragon_blood": {
       "id": "dragon_blood",
       "name": "🩸 Кровь дракона",
-      "type": "legendary",
-      "rarity": "mythic",
+      "type": "material",
+      "rarity": "legendary",
       "value": 300,
-      "description": "Густая светящаяся кровь."
+      "description": "Густая светящаяся жидкость. Мощнейший алхимический компонент.",
+      "icon": "🩸",
+      "max_stack": 10,
+      "used_in": ["legendary_potions"]
+    },
+    "dragon_heart": {
+      "id": "dragon_heart",
+      "name": "❤️ Сердце дракона",
+      "type": "material",
+      "rarity": "legendary",
+      "value": 500,
+      "description": "Ещё бьющееся сердце дракона. Источник невероятной силы.",
+      "icon": "❤️",
+      "max_stack": 5,
+      "used_in": ["artifact_creation"]
     },
     
+    "scorpion_tail": {
+      "id": "scorpion_tail",
+      "name": "🦂 Хвост скорпиона",
+      "type": "material",
+      "rarity": "uncommon",
+      "value": 12,
+      "description": "Хвост с жалом. Полон яда.",
+      "icon": "🦂",
+      "max_stack": 99,
+      "location": "desert",
+      "used_in": ["poisons", "weapons"]
+    },
+    "scorpion_venom": {
+      "id": "scorpion_venom",
+      "name": "🧪 Яд скорпиона",
+      "type": "material",
+      "rarity": "rare",
+      "value": 18,
+      "description": "Концентрированный яд. Смертельно опасен.",
+      "icon": "🧪",
+      "max_stack": 99,
+      "location": "desert",
+      "used_in": ["poison_weapons"]
+    },
+    "scorpion_shell": {
+      "id": "scorpion_shell",
+      "name": "🦂 Панцирь скорпиона",
+      "type": "material",
+      "rarity": "rare",
+      "value": 20,
+      "description": "Твёрдый хитиновый панцирь. Лёгкий и прочный.",
+      "icon": "🦂",
+      "max_stack": 99,
+      "location": "desert",
+      "used_in": ["light_armor"]
+    },
+    
+    "worm_tooth": {
+      "id": "worm_tooth",
+      "name": "🦷 Зуб песчаного червя",
+      "type": "material",
+      "rarity": "uncommon",
+      "value": 10,
+      "description": "Острый как бритва зуб. В несколько рядов.",
+      "icon": "🦷",
+      "max_stack": 99,
+      "location": "desert",
+      "used_in": ["weapons", "tools"]
+    },
+    "sand_essence": {
+      "id": "sand_essence",
+      "name": "🏜️ Эссенция песка",
+      "type": "material",
+      "rarity": "rare",
+      "value": 25,
+      "description": "Сгусток чистой пустынной магии.",
+      "icon": "🏜️",
+      "max_stack": 99,
+      "location": "desert",
+      "used_in": ["magic_items"]
+    },
+    
+    "sand_heart": {
+      "id": "sand_heart",
+      "name": "💛 Сердце пустыни",
+      "type": "material",
+      "rarity": "legendary",
+      "value": 200,
+      "description": "Сердце песчаного дракона. Переливается золотом.",
+      "icon": "💛",
+      "max_stack": 5,
+      "location": "desert_pyramid",
+      "used_in": ["legendary_items"]
+    },
+    "gold_scale": {
+      "id": "gold_scale",
+      "name": "✨ Золотая чешуя",
+      "type": "material",
+      "rarity": "epic",
+      "value": 60,
+      "description": "Чешуя песчаного дракона, покрытая золотом.",
+      "icon": "✨",
+      "max_stack": 99,
+      "location": "desert_pyramid",
+      "used_in": ["premium_armor"]
+    },
+    "desert_rose": {
+      "id": "desert_rose",
+      "name": "🌹 Роза пустыни",
+      "type": "treasure",
+      "rarity": "epic",
+      "value": 80,
+      "description": "Кристаллическое образование, похожее на розу. Очень красивое.",
+      "icon": "🌹",
+      "max_stack": 10,
+      "location": "desert"
+    },
+    
+    "rotten_flesh": {
+      "id": "rotten_flesh",
+      "name": "💀 Гнилая плоть",
+      "type": "material",
+      "rarity": "common",
+      "value": 1,
+      "description": "Зловонная плоть зомби. Противный, но нужный ингредиент.",
+      "icon": "💀",
+      "max_stack": 999,
+      "location": "swamp",
+      "used_in": ["necromancy", "potions"]
+    },
+    "swamp_essence": {
+      "id": "swamp_essence",
+      "name": "🌿 Эссенция болота",
+      "type": "material",
+      "rarity": "rare",
+      "value": 20,
+      "description": "Зелёная жижа с сильным магическим зарядом.",
+      "icon": "🌿",
+      "max_stack": 99,
+      "location": "swamp",
+      "used_in": ["magic_items"]
+    },
+    
+    "frog_legs": {
+      "id": "frog_legs",
+      "name": "🐸 Лягушачьи лапки",
+      "type": "food",
+      "rarity": "uncommon",
+      "value": 8,
+      "description": "Деликатес. Ведьмы их очень любят.",
+      "icon": "🐸",
+      "max_stack": 99,
+      "location": "swamp",
+      "heal": 10,
+      "energy_restore": 15
+    },
+    "snake_skin": {
+      "id": "snake_skin",
+      "name": "🐍 Змеиная кожа",
+      "type": "material",
+      "rarity": "uncommon",
+      "value": 12,
+      "description": "Гибкая и прочная кожа змеи.",
+      "icon": "🐍",
+      "max_stack": 99,
+      "location": "swamp",
+      "used_in": ["light_armor", "boots"]
+    },
+    
+    "swamp_heart": {
+      "id": "swamp_heart",
+      "name": "💚 Сердце болота",
+      "type": "material",
+      "rarity": "legendary",
+      "value": 180,
+      "description": "Пульсирующий зелёный шар — сердце болотного монстра.",
+      "icon": "💚",
+      "max_stack": 5,
+      "location": "swamp_depths",
+      "used_in": ["legendary_items"]
+    },
+    "poison_gland": {
+      "id": "poison_gland",
+      "name": "🧪 Ядовитая железа",
+      "type": "material",
+      "rarity": "epic",
+      "value": 45,
+      "description": "Железа, производящая мощнейший яд.",
+      "icon": "🧪",
+      "max_stack": 99,
+      "location": "swamp_depths",
+      "used_in": ["deadly_poisons"]
+    },
+    "monster_eye": {
+      "id": "monster_eye",
+      "name": "👁️ Глаз монстра",
+      "type": "material",
+      "rarity": "epic",
+      "value": 55,
+      "description": "Огромный глаз, всё ещё видящий. Магический артефакт.",
+      "icon": "👁️",
+      "max_stack": 10,
+      "location": "swamp_depths",
+      "used_in": ["scrying_items"]
+    },
+    "witch_hat": {
+      "id": "witch_hat",
+      "name": "🧙 Шляпа ведьмы",
+      "type": "armor",
+      "rarity": "rare",
+      "value": 40,
+      "description": "Остроконечная шляпа. Даёт +5 к магии.",
+      "icon": "🧙",
+      "max_stack": 1,
+      "magic_bonus": 5,
+      "location": "witch_hut"
+    },
+    "witch_brew": {
+      "id": "witch_brew",
+      "name": "🧪 Зелье ведьмы",
+      "type": "potion",
+      "rarity": "rare",
+      "value": 25,
+      "description": "Таинственное варево. Эффект непредсказуем.",
+      "icon": "🧪",
+      "max_stack": 10,
+      "effect": "random"
+    },
+    
+    "ice_fur": {
+      "id": "ice_fur",
+      "name": "❄️ Ледяной мех",
+      "type": "material",
+      "rarity": "uncommon",
+      "value": 15,
+      "description": "Мех ледяного волка. Холодный на ощупь, но очень тёплый.",
+      "icon": "❄️",
+      "max_stack": 99,
+      "location": "ice_plains",
+      "used_in": ["winter_armor"]
+    },
+    "ice_crystal": {
+      "id": "ice_crystal",
+      "name": "💎 Ледяной кристалл",
+      "type": "gem",
+      "rarity": "rare",
+      "value": 30,
+      "description": "Кристалл чистейшего льда, никогда не тающий.",
+      "icon": "💎",
+      "max_stack": 99,
+      "location": "ice_plains",
+      "used_in": ["magic_items", "weapons"]
+    },
+    "ice_essence": {
+      "id": "ice_essence",
+      "name": "❄️ Эссенция льда",
+      "type": "material",
+      "rarity": "epic",
+      "value": 50,
+      "description": "Сгусток холода, обжигающий даже в перчатках.",
+      "icon": "❄️",
+      "max_stack": 99,
+      "location": "ice_plains",
+      "used_in": ["frost_weapons"]
+    },
+    
+    "ice_giant_heart": {
+      "id": "ice_giant_heart",
+      "name": "💙 Сердце ледяного гиганта",
+      "type": "material",
+      "rarity": "legendary",
+      "value": 250,
+      "description": "Огромное сердце, всё ещё бьющееся и излучающее холод.",
+      "icon": "💙",
+      "max_stack": 5,
+      "location": "ice_cave",
+      "used_in": ["legendary_items"]
+    },
+    "frozen_armor": {
+      "id": "frozen_armor",
+      "name": "🧊 Замёрзшая броня",
+      "type": "armor",
+      "rarity": "epic",
+      "value": 150,
+      "description": "Броня из вечного льда. Холодная, но очень прочная.",
+      "icon": "🧊",
+      "max_stack": 1,
+      "defense": 25,
+      "cold_resist": 50,
+      "location": "ice_cave"
+    },
+    "spirit_essence": {
+      "id": "spirit_essence",
+      "name": "👻 Эссенция духа",
+      "type": "material",
+      "rarity": "epic",
+      "value": 40,
+      "description": "Холодная субстанция от ледяного духа. Почти невесома.",
+      "icon": "👻",
+      "max_stack": 99,
+      "location": "ice_plains",
+      "used_in": ["spirit_items"]
+    },
+    
+    "lava_core": {
+      "id": "lava_core",
+      "name": "🌋 Лавовое ядро",
+      "type": "material",
+      "rarity": "epic",
+      "value": 60,
+      "description": "Раскалённое ядро лавового голема. Очень горячее.",
+      "icon": "🌋",
+      "max_stack": 99,
+      "location": "volcanic",
+      "used_in": ["fire_weapons"]
+    },
+    
+    "volcano_heart": {
+      "id": "volcano_heart",
+      "name": "❤️‍🔥 Сердце вулкана",
+      "type": "material",
+      "rarity": "legendary",
+      "value": 300,
+      "description": "Пульсирующий шар расплавленной магмы — сердце короля вулкана.",
+      "icon": "❤️‍🔥",
+      "max_stack": 5,
+      "location": "volcano_crater",
+      "used_in": ["legendary_items"]
+    },
     "phoenix_feather": {
       "id": "phoenix_feather",
-      "name": "🔥 Перо феникса",
-      "type": "legendary",
-      "rarity": "mythic",
-      "value": 600,
-      "description": "Перо легендарной птицы."
+      "name": "🪶 Перо феникса",
+      "type": "material",
+      "rarity": "legendary",
+      "value": 350,
+      "description": "Перо, горящее вечным огнём. Возрождает владельца.",
+      "icon": "🪶",
+      "max_stack": 5,
+      "location": "volcano_peak",
+      "used_in": ["resurrection_items"]
+    },
+    "phoenix_tear": {
+      "id": "phoenix_tear",
+      "name": "💧 Слеза феникса",
+      "type": "potion",
+      "rarity": "legendary",
+      "value": 400,
+      "description": "Капля, способная исцелить любые раны и даже воскресить.",
+      "icon": "💧",
+      "max_stack": 3,
+      "effect": "full_heal_revive"
     },
     
+    "giant_claw": {
+      "id": "giant_claw",
+      "name": "🦀 Гигантская клешня",
+      "type": "material",
+      "rarity": "epic",
+      "value": 45,
+      "description": "Огромная клешня короля крабов. Можно сделать оружие.",
+      "icon": "🦀",
+      "max_stack": 10,
+      "location": "volcanic_beach",
+      "used_in": ["weapons"]
+    },
+    "volcanic_core": {
+      "id": "volcanic_core",
+      "name": "🌋 Вулканическое ядро",
+      "type": "material",
+      "rarity": "rare",
+      "value": 25,
+      "description": "Ядро вулканического краба. Тёплое.",
+      "icon": "🌋",
+      "max_stack": 99,
+      "location": "volcanic_beach",
+      "used_in": ["heat_items"]
+    },
+    "tropical_fish": {
+      "id": "tropical_fish",
+      "name": "🐠 Тропическая рыбка",
+      "type": "food",
+      "rarity": "common",
+      "value": 5,
+      "description": "Яркая красивая рыбка. Можно съесть или поселить в аквариум.",
+      "icon": "🐠",
+      "max_stack": 99,
+      "location": "volcanic_beach",
+      "heal": 8,
+      "energy_restore": 5
+    },
+    "pearl": {
+      "id": "pearl",
+      "name": "🦪 Жемчуг",
+      "type": "treasure",
+      "rarity": "rare",
+      "value": 35,
+      "description": "Красивая жемчужина из морской раковины.",
+      "icon": "🦪",
+      "max_stack": 99,
+      "location": "volcanic_beach",
+      "used_in": ["jewelry", "premium_items"]
+    },
+    
+    "walrus_tusk": {
+      "id": "walrus_tusk",
+      "name": "🦷 Клык моржа",
+      "type": "material",
+      "rarity": "rare",
+      "value": 20,
+      "description": "Длинный белый клык. Ценится резчиками по кости.",
+      "icon": "🦷",
+      "max_stack": 99,
+      "location": "frozen_ocean",
+      "used_in": ["decorations", "weapons"]
+    },
+    "seal_skin": {
+      "id": "seal_skin",
+      "name": "🦭 Шкура тюленя",
+      "type": "material",
+      "rarity": "uncommon",
+      "value": 12,
+      "description": "Гладкая водонепроницаемая шкура.",
+      "icon": "🦭",
+      "max_stack": 99,
+      "location": "frozen_ocean",
+      "used_in": ["waterproof_items"]
+    },
+    
+    "leviathan_scale": {
+      "id": "leviathan_scale",
+      "name": "🐋 Чешуя левиафана",
+      "type": "material",
+      "rarity": "legendary",
+      "value": 220,
+      "description": "Огромная чешуя древнего морского чудовища. Переливается всеми цветами.",
+      "icon": "🐋",
+      "max_stack": 10,
+      "location": "frozen_ocean",
+      "used_in": ["legendary_armor"]
+    },
+    "ocean_core": {
+      "id": "ocean_core",
+      "name": "🌊 Сердце океана",
+      "type": "material",
+      "rarity": "legendary",
+      "value": 280,
+      "description": "Пульсирующая сфера, в которой слышен шум прибоя.",
+      "icon": "🌊",
+      "max_stack": 5,
+      "location": "frozen_ocean",
+      "used_in": ["legendary_items"]
+    }
+  },
+  
+  "weapons": {
+    "rusty_sword": {
+      "id": "rusty_sword",
+      "name": "🗡️ Ржавый меч",
+      "type": "weapon",
+      "rarity": "common",
+      "value": 5,
+      "description": "Стартовое оружие. Лучше, чем ничего.",
+      "icon": "🗡️",
+      "damage": 5,
+      "class": ["warrior", "paladin", "rogue"],
+      "level_req": 1
+    },
+    "iron_sword": {
+      "id": "iron_sword",
+      "name": "⚔️ Железный меч",
+      "type": "weapon",
+      "rarity": "uncommon",
+      "value": 50,
+      "description": "Надёжный железный меч.",
+      "icon": "⚔️",
+      "damage": 12,
+      "class": ["warrior", "paladin"],
+      "level_req": 10
+    },
+    "steel_sword": {
+      "id": "steel_sword",
+      "name": "⚔️ Стальной меч",
+      "type": "weapon",
+      "rarity": "rare",
+      "value": 120,
+      "description": "Качественный стальной клинок.",
+      "icon": "⚔️",
+      "damage": 20,
+      "crit_chance": 5,
+      "class": ["warrior", "paladin"],
+      "level_req": 20
+    },
+    
+    "dagger": {
+      "id": "dagger",
+      "name": "🗡️ Кинжал",
+      "type": "weapon",
+      "rarity": "common",
+      "value": 8,
+      "description": "Маленький острый нож.",
+      "icon": "🗡️",
+      "damage": 6,
+      "crit_chance": 10,
+      "class": ["rogue"],
+      "level_req": 1
+    },
+    "assassin_dagger": {
+      "id": "assassin_dagger",
+      "name": "🗡️ Кинжал убийцы",
+      "type": "weapon",
+      "rarity": "rare",
+      "value": 80,
+      "description": "Тонкий отравленный клинок.",
+      "icon": "🗡️",
+      "damage": 14,
+      "crit_chance": 15,
+      "crit_multiplier": 2.5,
+      "class": ["rogue"],
+      "level_req": 15
+    },
+    
+    "bow": {
+      "id": "bow",
+      "name": "🏹 Лук",
+      "type": "weapon",
+      "rarity": "common",
+      "value": 10,
+      "description": "Простой деревянный лук.",
+      "icon": "🏹",
+      "damage": 7,
+      "class": ["archer"],
+      "level_req": 1
+    },
+    "longbow": {
+      "id": "longbow",
+      "name": "🏹 Длинный лук",
+      "type": "weapon",
+      "rarity": "uncommon",
+      "value": 45,
+      "description": "Лук с большой дальностью.",
+      "icon": "🏹",
+      "damage": 13,
+      "accuracy": 10,
+      "class": ["archer"],
+      "level_req": 10
+    },
+    
+    "staff": {
+      "id": "staff",
+      "name": "🪄 Посох",
+      "type": "weapon",
+      "rarity": "common",
+      "value": 8,
+      "description": "Деревянный посох начинающего мага.",
+      "icon": "🪄",
+      "magic_damage": 8,
+      "mana_bonus": 20,
+      "class": ["mage", "druid", "warlock"],
+      "level_req": 1
+    },
+    "crystal_staff": {
+      "id": "crystal_staff",
+      "name": "🔮 Кристальный посох",
+      "type": "weapon",
+      "rarity": "rare",
+      "value": 90,
+      "description": "Посох с магическим кристаллом.",
+      "icon": "🔮",
+      "magic_damage": 18,
+      "mana_bonus": 50,
+      "mana_regen": 5,
+      "class": ["mage", "druid", "warlock"],
+      "level_req": 15
+    },
+    
+    "totem": {
+      "id": "totem",
+      "name": "🥁 Ритуальный бубен",
+      "type": "weapon",
+      "rarity": "uncommon",
+      "value": 25,
+      "description": "Бубен шамана для призыва духов.",
+      "icon": "🥁",
+      "magic_damage": 5,
+      "totem_power": 15,
+      "spirit_power": 10,
+      "class": ["shaman"],
+      "level_req": 5
+    },
+    
+    "stone_fist": {
+      "id": "stone_fist",
+      "name": "👊 Каменный кулак",
+      "type": "weapon",
+      "rarity": "rare",
+      "value": 45,
+      "description": "Кулак голема, приспособленный как оружие.",
+      "icon": "👊",
+      "damage": 25,
+      "stun_chance": 10,
+      "class": ["guardian"],
+      "level_req": 20
+    },
+    
+    "dragon_sword": {
+      "id": "dragon_sword",
+      "name": "🐉 Меч дракона",
+      "type": "weapon",
+      "rarity": "legendary",
+      "value": 500,
+      "description": "Легендарный меч, выкованный из клыка дракона.",
+      "icon": "🐉",
+      "damage": 50,
+      "fire_damage": 20,
+      "crit_chance": 15,
+      "class": ["warrior", "paladin"],
+      "level_req": 40,
+      "unique": true
+    },
+    
+    "frost_blade": {
+      "id": "frost_blade",
+      "name": "❄️ Ледяной клинок",
+      "type": "weapon",
+      "rarity": "epic",
+      "value": 200,
+      "description": "Меч из вечного льда. Замораживает врагов.",
+      "icon": "❄️",
+      "damage": 35,
+      "cold_damage": 15,
+      "freeze_chance": 10,
+      "class": ["warrior", "rogue"],
+      "level_req": 35
+    },
+    
+    "lava_hammer": {
+      "id": "lava_hammer",
+      "name": "🌋 Лавовый молот",
+      "type": "weapon",
+      "rarity": "epic",
+      "value": 220,
+      "description": "Тяжёлый молот с лавовой сердцевиной.",
+      "icon": "🌋",
+      "damage": 45,
+      "fire_damage": 20,
+      "stun_chance": 15,
+      "class": ["guardian", "paladin"],
+      "level_req": 38
+    }
+  },
+  
+  "armor": {
+    "leather_armor": {
+      "id": "leather_armor",
+      "name": "🧥 Кожаная броня",
+      "type": "armor",
+      "rarity": "common",
+      "value": 15,
+      "description": "Простая броня из кожи.",
+      "icon": "🧥",
+      "defense": 8,
+      "class": ["warrior", "archer", "rogue"],
+      "level_req": 1
+    },
+    "chainmail": {
+      "id": "chainmail",
+      "name": "🔗 Кольчуга",
+      "type": "armor",
+      "rarity": "uncommon",
+      "value": 40,
+      "description": "Кольчужная рубаха из металлических колец.",
+      "icon": "🔗",
+      "defense": 15,
+      "class": ["warrior", "paladin"],
+      "level_req": 10
+    },
+    "plate_armor": {
+      "id": "plate_armor",
+      "name": "🛡️ Латы",
+      "type": "armor",
+      "rarity": "rare",
+      "value": 100,
+      "description": "Тяжёлые металлические доспехи.",
+      "icon": "🛡️",
+      "defense": 30,
+      "class": ["guardian", "paladin"],
+      "level_req": 20
+    },
+    "robe": {
+      "id": "robe",
+      "name": "👘 Магическая мантия",
+      "type": "armor",
+      "rarity": "uncommon",
+      "value": 20,
+      "description": "Лёгкая тканевая мантия.",
+      "icon": "👘",
+      "defense": 4,
+      "magic_bonus": 8,
+      "mana_bonus": 30,
+      "class": ["mage", "druid", "warlock", "shaman"],
+      "level_req": 1
+    },
+    
+    "winter_cloak": {
+      "id": "winter_cloak",
+      "name": "❄️ Зимний плащ",
+      "type": "armor",
+      "rarity": "uncommon",
+      "value": 35,
+      "description": "Тёплый плащ из меха. Защищает от холода.",
+      "icon": "❄️",
+      "defense": 10,
+      "cold_resist": 30,
+      "class": ["all"],
+      "level_req": 20,
+      "location": "ice_plains"
+    },
+    
+    "desert_cloak": {
+      "id": "desert_cloak",
+      "name": "🏜️ Пустынный плащ",
+      "type": "armor",
+      "rarity": "uncommon",
+      "value": 30,
+      "description": "Лёгкий плащ, защищающий от солнца.",
+      "icon": "🏜️",
+      "defense": 6,
+      "heat_resist": 30,
+      "class": ["all"],
+      "level_req": 25,
+      "location": "desert"
+    },
+    
+    "dragon_scale_armor": {
+      "id": "dragon_scale_armor",
+      "name": "🐉 Броня из чешуи дракона",
+      "type": "armor",
+      "rarity": "legendary",
+      "value": 600,
+      "description": "Легендарная броня, не пробиваемая ничем.",
+      "icon": "🐉",
+      "defense": 70,
+      "fire_resist": 50,
+      "magic_resist": 30,
+      "class": ["warrior", "guardian", "paladin"],
+      "level_req": 45,
+      "unique": true
+    }
+  },
+  
+  "potions": {
     "health_potion": {
       "id": "health_potion",
-      "name": "🧪 Зелье здоровья",
-      "type": "consumable",
+      "name": "❤️ Зелье здоровья",
+      "type": "potion",
       "rarity": "common",
+      "value": 15,
+      "description": "Восстанавливает 50 здоровья.",
+      "icon": "❤️",
       "heal": 50,
-      "value": 10,
-      "description": "Восстанавливает 50 здоровья."
+      "max_stack": 20
     },
-    
     "mana_potion": {
       "id": "mana_potion",
-      "name": "🔮 Зелье маны",
-      "type": "consumable",
+      "name": "💙 Зелье маны",
+      "type": "potion",
       "rarity": "common",
-      "mana": 50,
-      "value": 10,
-      "description": "Восстанавливает 50 маны."
+      "value": 12,
+      "description": "Восстанавливает 30 маны.",
+      "icon": "💙",
+      "mana_restore": 30,
+      "max_stack": 20
     },
-    
-    "strong_health_potion": {
-      "id": "strong_health_potion",
-      "name": "🟢 Сильное зелье здоровья",
-      "type": "consumable",
-      "rarity": "uncommon",
-      "heal": 120,
-      "value": 30,
-      "description": "Восстанавливает 120 здоровья."
-    },
-    
-    "strong_mana_potion": {
-      "id": "strong_mana_potion",
-      "name": "🟢 Сильное зелье маны",
-      "type": "consumable",
-      "rarity": "uncommon",
-      "mana": 120,
-      "value": 30,
-      "description": "Восстанавливает 120 маны."
-    },
-    
     "antidote": {
       "id": "antidote",
-      "name": "⚪ Противоядие",
-      "type": "consumable",
-      "rarity": "common",
+      "name": "🧪 Противоядие",
+      "type": "potion",
+      "rarity": "uncommon",
+      "value": 20,
+      "description": "Снимает отравление.",
+      "icon": "🧪",
       "effect": "cure_poison",
+      "max_stack": 10,
+      "location": "swamp"
+    },
+    "cold_resist_potion": {
+      "id": "cold_resist_potion",
+      "name": "❄️ Зелье защиты от холода",
+      "type": "potion",
+      "rarity": "uncommon",
+      "value": 18,
+      "description": "Даёт +50% к защите от холода на 1 час.",
+      "icon": "❄️",
+      "buff": "cold_resist",
+      "buff_value": 50,
+      "buff_duration": 3600,
+      "max_stack": 10,
+      "location": "ice_plains"
+    },
+    "heat_resist_potion": {
+      "id": "heat_resist_potion",
+      "name": "🌋 Зелье защиты от жара",
+      "type": "potion",
+      "rarity": "uncommon",
+      "value": 18,
+      "description": "Даёт +50% к защите от жара на 1 час.",
+      "icon": "🌋",
+      "buff": "heat_resist",
+      "buff_value": 50,
+      "buff_duration": 3600,
+      "max_stack": 10,
+      "location": "desert"
+    }
+  },
+  
+  "treasures": {
+    "ancient_coin": {
+      "id": "ancient_coin",
+      "name": "🪙 Древняя монета",
+      "type": "treasure",
+      "rarity": "rare",
+      "value": 50,
+      "description": "Золотая монета с изображением неизвестного правителя.",
+      "icon": "🪙",
+      "max_stack": 999,
+      "sell_value": 50
+    },
+    "rainbow_shard": {
+      "id": "rainbow_shard",
+      "name": "🌈 Осколок радуги",
+      "type": "premium",
+      "rarity": "epic",
+      "value": 100,
+      "description": "Мерцающий осколок, переливающийся всеми цветами.",
+      "icon": "🌈",
+      "max_stack": 999,
+      "premium_currency": true
+    },
+    "rainbow_stone": {
+      "id": "rainbow_stone",
+      "name": "🌟 Радужный камень",
+      "type": "premium",
+      "rarity": "legendary",
+      "value": 500,
+      "description": "Целый радужный камень. Источник чистой магии.",
+      "icon": "🌟",
+      "max_stack": 99,
+      "premium_currency": true
+    },
+    "ancient_relic": {
+      "id": "ancient_relic",
+      "name": "🏺 Древний артефакт",
+      "type": "treasure",
+      "rarity": "epic",
+      "value": 200,
+      "description": "Таинственный предмет ушедшей цивилизации.",
+      "icon": "🏺",
+      "max_stack": 10,
+      "sell_value": 200,
+      "quest_item": true
+    },
+    
+    "crystal_skull": {
+      "id": "crystal_skull",
+      "name": "💀 Хрустальный череп",
+      "type": "treasure",
+      "rarity": "legendary",
+      "value": 1000,
+      "description": "Череп из чистого горного хрусталя. Светится изнутри.",
+      "icon": "💀",
+      "max_stack": 1,
+      "sell_value": 1000,
+      "location": "crystal_island"
+    },
+    
+    "golden_idol": {
+      "id": "golden_idol",
+      "name": "🗿 Золотой идол",
+      "type": "treasure",
+      "rarity": "epic",
+      "value": 300,
+      "description": "Статуэтка древнего божества из чистого золота.",
+      "icon": "🗿",
+      "max_stack": 5,
+      "sell_value": 300,
+      "location": "desert_pyramid"
+    }
+  },
+  
+  "quest_items": {
+    "ancient_key": {
+      "id": "ancient_key",
+      "name": "🗝️ Древний ключ",
+      "type": "quest",
+      "rarity": "epic",
+      "value": 0,
+      "description": "Ключ от древних сокровищ. Не продаётся.",
+      "icon": "🗝️",
+      "max_stack": 1,
+      "quest_item": true
+    },
+    "map_fragment": {
+      "id": "map_fragment",
+      "name": "🧩 Фрагмент карты",
+      "type": "quest",
+      "rarity": "rare",
+      "value": 0,
+      "description": "Кусок древней карты. Нужно собрать все части.",
+      "icon": "🧩",
+      "max_stack": 5,
+      "quest_item": true
+    },
+    "phoenix_tear": {
+      "id": "phoenix_tear",
+      "name": "💧 Слеза феникса",
+      "type": "quest",
+      "rarity": "legendary",
+      "value": 0,
+      "description": "Слеза легендарной птицы. Воскрешает владельца.",
+      "icon": "💧",
+      "max_stack": 1,
+      "quest_item": true,
+      "effect": "auto_revive"
+    }
+  },
+  
+  "seeds": {
+    "carrot_seeds": {
+      "id": "carrot_seeds",
+      "name": "🥕 Семена моркови",
+      "type": "seed",
+      "rarity": "common",
+      "value": 2,
+      "description": "Посади в огороде, через 30 мин получишь морковь.",
+      "icon": "🥕",
+      "max_stack": 999,
+      "grow_time": 1800,
+      "crop": "carrot"
+    },
+    "potato_seeds": {
+      "id": "potato_seeds",
+      "name": "🥔 Семена картофеля",
+      "type": "seed",
+      "rarity": "common",
+      "value": 3,
+      "description": "Картошка через 1 час.",
+      "icon": "🥔",
+      "max_stack": 999,
+      "grow_time": 3600,
+      "crop": "potato"
+    },
+    "cabbage_seeds": {
+      "id": "cabbage_seeds",
+      "name": "🥬 Семена капусты",
+      "type": "seed",
+      "rarity": "common",
+      "value": 4,
+      "description": "Капуста через 2 часа.",
+      "icon": "🥬",
+      "max_stack": 999,
+      "grow_time": 7200,
+      "crop": "cabbage"
+    },
+    "desert_seeds": {
+      "id": "desert_seeds",
+      "name": "🏜️ Семена пустыни",
+      "type": "seed",
+      "rarity": "uncommon",
+      "value": 10,
+      "description": "Редкие семена пустынных растений.",
+      "icon": "🏜️",
+      "max_stack": 99,
+      "grow_time": 14400,
+      "crop": "desert_herb",
+      "location": "desert"
+    },
+    "ice_seeds": {
+      "id": "ice_seeds",
+      "name": "❄️ Семена льда",
+      "type": "seed",
+      "rarity": "rare",
       "value": 15,
-      "description": "Нейтрализует яд."
-    },
-    
-    "bread": {
-      "id": "bread",
-      "name": "🍞 Хлеб",
-      "type": "food",
-      "rarity": "common",
-      "heal": 20,
-      "energy": 5,
-      "value": 5,
-      "description": "Простой хлеб."
-    },
-    
-    "fried_fish": {
-      "id": "fried_fish",
-      "name": "🐟 Жареная рыба",
-      "type": "food",
-      "rarity": "common",
-      "heal": 30,
-      "energy": 10,
-      "value": 8,
-      "description": "Вкусная жареная рыба."
-    },
-    
-    "fried_meat": {
-      "id": "fried_meat",
-      "name": "🥩 Жареное мясо",
-      "type": "food",
-      "rarity": "common",
-      "heal": 40,
-      "energy": 15,
-      "value": 12,
-      "description": "Сочный кусок мяса."
-    },
-    
-    "meat_stew": {
-      "id": "meat_stew",
-      "name": "🍲 Мясное рагу",
-      "type": "food",
-      "rarity": "uncommon",
-      "heal": 80,
-      "energy": 30,
-      "value": 25,
-      "description": "Сытное рагу с мясом."
-    },
-    
-    "fish_soup": {
-      "id": "fish_soup",
-      "name": "🥣 Уха",
-      "type": "food",
-      "rarity": "uncommon",
-      "heal": 70,
-      "energy": 25,
-      "value": 22,
-      "description": "Наваристая уха."
-    },
-    
+      "description": "Семена, из которых вырастают ледяные цветы.",
+      "icon": "❄️",
+      "max_stack": 99,
+      "grow_time": 21600,
+      "crop": "ice_herb",
+      "location": "ice_plains"
+    }
+  },
+  
+  "baits": {
     "worm": {
       "id": "worm",
       "name": "🪱 Червяк",
       "type": "bait",
       "rarity": "common",
       "value": 1,
-      "fishing_power": 5,
-      "description": "Обычный земляной червяк."
+      "description": "Обычный червяк для рыбалки.",
+      "icon": "🪱",
+      "max_stack": 999,
+      "fishing_bonus": 10
     },
-    
-    "bread_bait": {
-      "id": "bread_bait",
-      "name": "🍞 Хлебный мякиш",
-      "type": "bait",
-      "rarity": "common",
-      "value": 2,
-      "fishing_power": 8,
-      "description": "Мякиш свежего хлеба."
-    },
-    
-    "dough_bait": {
-      "id": "dough_bait",
+    "dough": {
+      "id": "dough",
       "name": "🥖 Тесто",
       "type": "bait",
       "rarity": "common",
-      "value": 3,
-      "fishing_power": 10,
-      "description": "Замешанное тесто."
+      "value": 2,
+      "description": "Пахучее тесто для рыбы.",
+      "icon": "🥖",
+      "max_stack": 999,
+      "fishing_bonus": 15
     },
-    
-    "maggot": {
-      "id": "maggot",
-      "name": "🐛 Опарыш",
+    "shrimp": {
+      "id": "shrimp",
+      "name": "🦐 Креветка",
       "type": "bait",
       "rarity": "uncommon",
       "value": 5,
-      "fishing_power": 15,
-      "rare_fish_chance": 5,
-      "description": "Личинки мух."
-    },
-    
-    "bloodworm": {
-      "id": "bloodworm",
-      "name": "🪳 Мотыль",
-      "type": "bait",
-      "rarity": "uncommon",
-      "value": 6,
-      "fishing_power": 18,
-      "rare_fish_chance": 8,
-      "description": "Красные личинки комаров."
-    },
-    
-    "cricket": {
-      "id": "cricket",
-      "name": "🦗 Сверчок",
-      "type": "bait",
-      "rarity": "rare",
-      "value": 10,
-      "fishing_power": 25,
-      "rare_fish_chance": 12,
-      "description": "Прыткий сверчок."
-    },
-    
-    "grasshopper": {
-      "id": "grasshopper",
-      "name": "🦗 Кузнечик",
-      "type": "bait",
-      "rarity": "rare",
-      "value": 12,
-      "fishing_power": 28,
-      "rare_fish_chance": 15,
-      "description": "Зелёный кузнечик."
-    },
-    
-    "hellgrammite": {
-      "id": "hellgrammite",
-      "name": "🐛 Вислокрылка",
-      "type": "bait",
-      "rarity": "epic",
-      "value": 30,
-      "fishing_power": 45,
-      "rare_fish_chance": 25,
-      "legendary_fish_chance": 5,
-      "description": "Крупная личинка."
-    },
-    
-    "golden_grub": {
-      "id": "golden_grub",
-      "name": "✨ Золотой опарыш",
-      "type": "bait",
-      "rarity": "legendary",
-      "value": 100,
-      "fishing_power": 100,
-      "rare_fish_chance": 50,
-      "legendary_fish_chance": 15,
-      "description": "Редчайший золотистый опарыш."
-    },
-    
-    "crystal_bait": {
-      "id": "crystal_bait",
-      "name": "💎 Кристальная наживка",
-      "type": "bait",
-      "rarity": "legendary",
-      "value": 200,
-      "fishing_power": 120,
-      "rare_fish_chance": 60,
-      "legendary_fish_chance": 20,
-      "magic_fish_chance": 10,
-      "description": "Наживка из кристальной крошки."
-    },
-    
-    "phoenix_bait": {
-      "id": "phoenix_bait",
-      "name": "🔥 Наживка феникса",
-      "type": "bait",
-      "rarity": "mythic",
-      "value": 500,
-      "fishing_power": 200,
-      "rare_fish_chance": 80,
-      "legendary_fish_chance": 30,
-      "mythic_fish_chance": 10,
-      "description": "Искрящаяся наживка."
-    },
-    
-    "dragon_bait": {
-      "id": "dragon_bait",
-      "name": "🐉 Драконья наживка",
-      "type": "bait",
-      "rarity": "mythic",
-      "value": 1000,
-      "fishing_power": 300,
-      "legendary_fish_chance": 50,
-      "mythic_fish_chance": 20,
-      "trophy_fish_chance": 10,
-      "description": "Наживка с драконьей кровью."
-    },
-    
-    "magic_bait": {
-      "id": "magic_bait",
-      "name": "✨ Волшебная наживка",
-      "type": "bait",
-      "rarity": "legendary",
-      "value": 200,
-      "fishing_power": 150,
-      "rare_fish_chance": 75,
-      "legendary_fish_chance": 25,
-      "mythic_fish_chance": 10,
-      "description": "Светится магическим светом."
-    },
-    
-    "carp": {
-      "id": "carp",
-      "name": "🐟 Карась",
-      "type": "fish",
-      "rarity": "common",
-      "value": 5,
-      "heal": 10,
-      "energy": 5,
-      "size": "15-25 см",
-      "description": "Обычный карась."
-    },
-    
-    "perch": {
-      "id": "perch",
-      "name": "🐟 Окунь",
-      "type": "fish",
-      "rarity": "common",
-      "value": 8,
-      "heal": 15,
-      "energy": 8,
-      "size": "20-30 см",
-      "description": "Полосатый окунь."
-    },
-    
-    "pike": {
-      "id": "pike",
-      "name": "🐟 Щука",
-      "type": "fish",
-      "rarity": "uncommon",
-      "value": 15,
-      "heal": 25,
-      "energy": 12,
-      "size": "40-60 см",
-      "description": "Хищная щука."
-    },
-    
-    "golden_fish": {
-      "id": "golden_fish",
-      "name": "🐟 Золотая рыбка",
-      "type": "fish",
-      "rarity": "rare",
-      "value": 50,
-      "heal": 50,
-      "energy": 30,
-      "size": "10-15 см",
-      "description": "Золотая рыбка, исполняющая желания."
-    },
-    
-    "ice_fish": {
-      "id": "ice_fish",
-      "name": "🐟 Ледяная рыба",
-      "type": "fish",
-      "rarity": "rare",
-      "value": 40,
-      "heal": 35,
-      "energy": 20,
-      "cold_resist": 10,
-      "size": "25-35 см",
-      "description": "Рыба из ледяных вод."
-    },
-    
-    "lava_fish": {
-      "id": "lava_fish",
-      "name": "🐟 Лавовая рыба",
-      "type": "fish",
-      "rarity": "epic",
-      "value": 80,
-      "heal": 45,
-      "energy": 25,
-      "fire_resist": 10,
-      "size": "30-40 см",
-      "description": "Рыба, плавающая в лаве."
-    },
-    
-    "golden_carp": {
-      "id": "golden_carp",
-      "name": "🐟 Золотой карп",
-      "type": "trophy_fish",
-      "rarity": "legendary",
-      "value": 1000,
-      "size": "50-70 см",
-      "description": "Карп с золотистой чешуёй.",
-      "trophy_points": 100
-    },
-    
-    "diamond_trout": {
-      "id": "diamond_trout",
-      "name": "🐟 Алмазная форель",
-      "type": "trophy_fish",
-      "rarity": "legendary",
-      "value": 1500,
-      "size": "40-60 см",
-      "description": "Форель с алмазной чешуёй.",
-      "trophy_points": 150
-    },
-    
-    "crystal_sturgeon": {
-      "id": "crystal_sturgeon",
-      "name": "🐟 Кристальный осётр",
-      "type": "trophy_fish",
-      "rarity": "mythic",
-      "value": 3000,
-      "size": "100-150 см",
-      "description": "Осётр с кристальной чешуёй.",
-      "trophy_points": 300
-    },
-    
-    "phoenix_salmon": {
-      "id": "phoenix_salmon",
-      "name": "🐟 Лосось феникса",
-      "type": "trophy_fish",
-      "rarity": "mythic",
-      "value": 5000,
-      "size": "70-90 см",
-      "description": "Лосось с огненной чешуёй.",
-      "trophy_points": 500
-    },
-    
-    "dragon_tuna": {
-      "id": "dragon_tuna",
-      "name": "🐟 Драконий тунец",
-      "type": "trophy_fish",
-      "rarity": "mythic",
-      "value": 10000,
-      "size": "200-300 см",
-      "description": "Тунец, достойный дракона.",
-      "trophy_points": 1000
-    },
-    
-    "rainbow_shard": {
-      "id": "rainbow_shard",
-      "name": "🌈 Осколок радуги",
-      "type": "legendary_material",
-      "rarity": "legendary",
-      "value": 1000,
-      "max_stack": 99,
-      "description": "Загадочный осколок, хранящий силу света. 9 таких осколков можно объединить в радужный камень."
-    },
-    
-    "rainbow_stone": {
-      "id": "rainbow_stone",
-      "name": "💎 Радужный камень",
-      "type": "legendary_material",
-      "rarity": "mythic",
-      "value": 50000,
-      "max_stack": 10,
-      "description": "Древний камень, хранящий силу всех стихий."
+      "description": "Лучшая наживка для крупной рыбы.",
+      "icon": "🦐",
+      "max_stack": 999,
+      "fishing_bonus": 25,
+      "location": "volcanic_beach"
     }
   }
 }
