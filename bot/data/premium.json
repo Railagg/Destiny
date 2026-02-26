@@ -1,5 +1,125 @@
 {
   "premium": {
+    "currency": {
+      "stars": {
+        "id": "stars",
+        "name": "⭐ Звёзды",
+        "description": "Премиум-валюта Telegram. Можно купить за реальные деньги.",
+        "icon": "⭐",
+        "packages": [
+          {
+            "id": "stars_50",
+            "name": "50 ⭐",
+            "price_usd": 0.99,
+            "amount": 50,
+            "bonus": 0,
+            "popular": false
+          },
+          {
+            "id": "stars_150",
+            "name": "150 ⭐",
+            "price_usd": 2.99,
+            "amount": 150,
+            "bonus": 10,
+            "popular": true
+          },
+          {
+            "id": "stars_300",
+            "name": "300 ⭐",
+            "price_usd": 5.99,
+            "amount": 300,
+            "bonus": 25,
+            "popular": false
+          },
+          {
+            "id": "stars_500",
+            "name": "500 ⭐",
+            "price_usd": 9.99,
+            "amount": 500,
+            "bonus": 50,
+            "popular": false
+          },
+          {
+            "id": "stars_1000",
+            "name": "1000 ⭐",
+            "price_usd": 19.99,
+            "amount": 1000,
+            "bonus": 150,
+            "popular": false
+          },
+          {
+            "id": "stars_2000",
+            "name": "2000 ⭐",
+            "price_usd": 39.99,
+            "amount": 2000,
+            "bonus": 400,
+            "popular": false
+          }
+        ]
+      },
+      
+      "ton": {
+        "id": "ton",
+        "name": "💎 TON",
+        "description": "Криптовалюта TON. Можно купить или заработать.",
+        "icon": "💎",
+        "packages": [
+          {
+            "id": "ton_1",
+            "name": "1 TON",
+            "price_usd": 2.0,
+            "amount": 1,
+            "bonus": 0,
+            "popular": false
+          },
+          {
+            "id": "ton_5",
+            "name": "5 TON",
+            "price_usd": 10.0,
+            "amount": 5,
+            "bonus": 0.5,
+            "popular": true
+          },
+          {
+            "id": "ton_10",
+            "name": "10 TON",
+            "price_usd": 20.0,
+            "amount": 10,
+            "bonus": 1.5,
+            "popular": false
+          },
+          {
+            "id": "ton_25",
+            "name": "25 TON",
+            "price_usd": 50.0,
+            "amount": 25,
+            "bonus": 5,
+            "popular": false
+          },
+          {
+            "id": "ton_50",
+            "name": "50 TON",
+            "price_usd": 100.0,
+            "amount": 50,
+            "bonus": 12,
+            "popular": false
+          }
+        ]
+      },
+      
+      "dstn": {
+        "id": "dstn",
+        "name": "💫 DSTN",
+        "description": "Игровая премиум-валюта. Можно заработать в игре или обменять.",
+        "icon": "💫",
+        "exchange_rate": {
+          "stars": 50,
+          "ton": 0.5,
+          "gold": 1000
+        }
+      }
+    },
+    
     "plans": {
       "7days": {
         "id": "7days",
@@ -38,7 +158,8 @@
         },
         "nick_color": "green",
         "frame": "premium_green",
-        "chat_access": false
+        "chat_access": false,
+        "badge": "🟢"
       },
       
       "28days": {
@@ -79,7 +200,8 @@
         },
         "nick_color": "blue",
         "frame": "premium_blue",
-        "chat_access": false
+        "chat_access": false,
+        "badge": "🔵"
       },
       
       "90days": {
@@ -123,7 +245,8 @@
         },
         "nick_color": "purple",
         "frame": "premium_purple",
-        "chat_access": "vip"
+        "chat_access": "vip",
+        "badge": "🟣"
       },
       
       "180days": {
@@ -171,7 +294,8 @@
         },
         "nick_color": "gold",
         "frame": "premium_gold",
-        "chat_access": "elite"
+        "chat_access": "elite",
+        "badge": "🟡"
       },
       
       "365days": {
@@ -227,7 +351,8 @@
         "nick_color": "red",
         "frame": "premium_legendary",
         "aura": "legendary_glow",
-        "chat_access": "developer"
+        "chat_access": "developer",
+        "badge": "🔴"
       }
     },
     
@@ -250,58 +375,305 @@
     },
     
     "premium_shop": {
-      "energy_refill": {
-        "name": "⚡ Восполнение энергии",
-        "description": "Мгновенно восстанавливает 100 энергии",
-        "price_stars": 10,
-        "price_ton": 0.18,
-        "price_dstn": 500,
-        "limit": "daily"
+      "categories": {
+        "consumables": "🧪 Расходники",
+        "chests": "🎁 Сундуки",
+        "currency": "💎 Валюта",
+        "cosmetics": "✨ Косметика",
+        "services": "🔧 Услуги"
       },
-      "legendary_chest": {
-        "name": "🎁 Легендарный сундук",
-        "description": "Сундук с редкими предметами",
-        "price_stars": 50,
-        "price_ton": 0.9,
-        "price_dstn": 2500,
-        "limit": "weekly"
+      
+      "items": {
+        "energy_refill": {
+          "id": "energy_refill",
+          "name": "⚡ Восполнение энергии",
+          "description": "Мгновенно восстанавливает 100 энергии",
+          "category": "consumables",
+          "price_stars": 10,
+          "price_ton": 0.18,
+          "price_dstn": 500,
+          "limit": "daily",
+          "icon": "⚡",
+          "max_per_day": 3
+        },
+        "legendary_chest": {
+          "id": "legendary_chest",
+          "name": "🎁 Легендарный сундук",
+          "description": "Сундук с редкими предметами",
+          "category": "chests",
+          "price_stars": 50,
+          "price_ton": 0.9,
+          "price_dstn": 2500,
+          "limit": "weekly",
+          "icon": "🎁",
+          "max_per_week": 2
+        },
+        "mythic_chest": {
+          "id": "mythic_chest",
+          "name": "💜 Мифический сундук",
+          "description": "Сундук с легендарными предметами",
+          "category": "chests",
+          "price_stars": 200,
+          "price_ton": 3.6,
+          "price_dstn": 10000,
+          "limit": "monthly",
+          "icon": "💜",
+          "max_per_month": 1
+        },
+        "rainbow_shard_pack": {
+          "id": "rainbow_shard_pack",
+          "name": "🌈 Набор радужных осколков",
+          "description": "5 радужных осколков",
+          "category": "currency",
+          "price_stars": 100,
+          "price_ton": 1.8,
+          "price_dstn": 5000,
+          "limit": "monthly",
+          "icon": "🌈",
+          "amount": 5
+        },
+        "rainbow_stone": {
+          "id": "rainbow_stone",
+          "name": "💎 Радужный камень",
+          "description": "Целый радужный камень",
+          "category": "currency",
+          "price_stars": 500,
+          "price_ton": 9,
+          "price_dstn": 25000,
+          "limit": "monthly",
+          "icon": "💎",
+          "amount": 1
+        },
+        "teleport_scroll_pack": {
+          "id": "teleport_scroll_pack",
+          "name": "📜 Свитки телепортации",
+          "description": "10 свитков телепортации",
+          "category": "consumables",
+          "price_stars": 20,
+          "price_ton": 0.36,
+          "price_dstn": 1000,
+          "limit": "daily",
+          "icon": "📜",
+          "amount": 10
+        },
+        "pet_food_pack": {
+          "id": "pet_food_pack",
+          "name": "🍖 Корм для питомца",
+          "description": "Корм, дающий +100 опыта питомцу",
+          "category": "consumables",
+          "price_stars": 5,
+          "price_ton": 0.09,
+          "price_dstn": 250,
+          "limit": "daily",
+          "icon": "🍖",
+          "amount": 1
+        },
+        "premium_pet_egg": {
+          "id": "premium_pet_egg",
+          "name": "🥚 Яйцо премиум-питомца",
+          "description": "Гарантированно даёт редкого питомца",
+          "category": "chests",
+          "price_stars": 300,
+          "price_ton": 5.4,
+          "price_dstn": 15000,
+          "limit": "monthly",
+          "icon": "🥚",
+          "max_per_month": 2
+        },
+        "name_change": {
+          "id": "name_change",
+          "name": "📝 Смена имени",
+          "description": "Возможность сменить никнейм",
+          "category": "services",
+          "price_stars": 100,
+          "price_ton": 1.8,
+          "price_dstn": 5000,
+          "limit": "once",
+          "icon": "📝",
+          "cooldown_days": 30
+        },
+        "nick_color_change": {
+          "id": "nick_color_change",
+          "name": "🎨 Цвет ника",
+          "description": "Измени цвет своего ника на 30 дней",
+          "category": "cosmetics",
+          "price_stars": 30,
+          "price_ton": 0.54,
+          "price_dstn": 1500,
+          "limit": "monthly",
+          "icon": "🎨",
+          "colors": ["red", "blue", "green", "purple", "gold"]
+        },
+        "special_title": {
+          "id": "special_title",
+          "name": "🏷️ Особый титул",
+          "description": "Получи уникальный титул на 30 дней",
+          "category": "cosmetics",
+          "price_stars": 80,
+          "price_ton": 1.44,
+          "price_dstn": 4000,
+          "limit": "monthly",
+          "icon": "🏷️",
+          "titles": ["Герой", "Легенда", "Завоеватель", "Бессмертный"]
+        },
+        "xp_booster_7d": {
+          "id": "xp_booster_7d",
+          "name": "📚 Усилитель опыта (7 дней)",
+          "description": "+50% к опыту на 7 дней",
+          "category": "consumables",
+          "price_stars": 200,
+          "price_ton": 3.6,
+          "price_dstn": 10000,
+          "limit": "monthly",
+          "icon": "📚",
+          "duration": 7,
+          "effect": 1.5
+        },
+        "gold_booster_7d": {
+          "id": "gold_booster_7d",
+          "name": "💰 Усилитель золота (7 дней)",
+          "description": "+50% к золоту на 7 дней",
+          "category": "consumables",
+          "price_stars": 200,
+          "price_ton": 3.6,
+          "price_dstn": 10000,
+          "limit": "monthly",
+          "icon": "💰",
+          "duration": 7,
+          "effect": 1.5
+        },
+        "house_skin_crystal": {
+          "id": "house_skin_crystal",
+          "name": "🏠 Кристальный дом",
+          "description": "Скин для дома в кристальном стиле",
+          "category": "cosmetics",
+          "price_stars": 500,
+          "price_ton": 9,
+          "price_dstn": 25000,
+          "limit": "once",
+          "icon": "🏠",
+          "permanent": true
+        },
+        "house_skin_dragon": {
+          "id": "house_skin_dragon",
+          "name": "🏠 Драконий дом",
+          "description": "Скин для дома в драконьем стиле",
+          "category": "cosmetics",
+          "price_stars": 800,
+          "price_ton": 14.4,
+          "price_dstn": 40000,
+          "limit": "once",
+          "icon": "🏠",
+          "permanent": true
+        },
+        "teleport_scroll_unlimited": {
+          "id": "teleport_scroll_unlimited",
+          "name": "📜 Бесконечные свитки",
+          "description": "Безлимитные телепорты на 30 дней",
+          "category": "services",
+          "price_stars": 300,
+          "price_ton": 5.4,
+          "price_dstn": 15000,
+          "limit": "monthly",
+          "icon": "📜",
+          "duration": 30,
+          "unlimited": true
+        }
       },
-      "rainbow_shard_pack": {
-        "name": "🌈 Набор радужных осколков",
-        "description": "5 радужных осколков",
-        "price_stars": 100,
-        "price_ton": 1.8,
-        "price_dstn": 5000,
-        "limit": "monthly"
-      },
-      "rainbow_stone": {
-        "name": "💎 Радужный камень",
-        "description": "Целый радужный камень",
-        "price_stars": 500,
-        "price_ton": 9,
-        "price_dstn": 25000,
-        "limit": "monthly"
-      },
-      "teleport_scroll_pack": {
-        "name": "📜 Свитки телепортации",
-        "description": "10 свитков телепортации",
-        "price_stars": 20,
-        "price_ton": 0.36,
-        "price_dstn": 1000,
-        "limit": "daily"
-      },
-      "pet_food_pack": {
-        "name": "🍖 Корм для питомца",
-        "description": "Корм, дающий +100 опыта питомцу",
-        "price_stars": 5,
-        "price_ton": 0.09,
-        "price_dstn": 250,
-        "limit": "daily"
+      
+      "daily_deals": {
+        "enabled": true,
+        "refresh": "00:00 UTC",
+        "deals": [
+          {
+            "id": "daily_deal_1",
+            "name": "🔥 Горячее предложение",
+            "discount": 30,
+            "item": "legendary_chest",
+            "price_stars": 35,
+            "price_ton": 0.63
+          },
+          {
+            "id": "daily_deal_2",
+            "name": "⚡ Энергия дня",
+            "discount": 50,
+            "item": "energy_refill",
+            "price_stars": 5,
+            "price_ton": 0.09,
+            "max_purchase": 2
+          },
+          {
+            "id": "daily_deal_3",
+            "name": "🌟 Удача дня",
+            "discount": 20,
+            "item": "rainbow_shard_pack",
+            "price_stars": 80,
+            "price_ton": 1.44
+          }
+        ]
+      }
+    },
+    
+    "subscription_benefits": {
+      "compare_table": {
+        "7days": {
+          "max_energy": 150,
+          "gold_multiplier": "1.1x",
+          "exp_multiplier": "1.1x",
+          "luck": "+5",
+          "chests_per_day": "+1",
+          "inventory_slots": "+50",
+          "chat_access": "❌"
+        },
+        "28days": {
+          "max_energy": 175,
+          "gold_multiplier": "1.15x",
+          "exp_multiplier": "1.15x",
+          "luck": "+8",
+          "chests_per_day": "+2",
+          "inventory_slots": "+75",
+          "shop_discount": "5%",
+          "chat_access": "❌"
+        },
+        "90days": {
+          "max_energy": 200,
+          "gold_multiplier": "1.2x",
+          "exp_multiplier": "1.2x",
+          "luck": "+12",
+          "chests_per_day": "+3",
+          "inventory_slots": "+100",
+          "shop_discount": "10%",
+          "chat_access": "VIP"
+        },
+        "180days": {
+          "max_energy": 225,
+          "gold_multiplier": "1.25x",
+          "exp_multiplier": "1.25x",
+          "luck": "+15",
+          "chests_per_day": "+4",
+          "inventory_slots": "+125",
+          "shop_discount": "15%",
+          "rainbow_shard_weekly": "+1",
+          "chat_access": "Элит"
+        },
+        "365days": {
+          "max_energy": 250,
+          "gold_multiplier": "1.3x",
+          "exp_multiplier": "1.3x",
+          "luck": "+20",
+          "chests_per_day": "+5",
+          "inventory_slots": "+150",
+          "shop_discount": "25%",
+          "rainbow_shard_weekly": "+1",
+          "rainbow_stone_yearly": "+1",
+          "chat_access": "Dev"
+        }
       }
     },
     
     "renewal_bonuses": {
       "3months": {
+        "id": "3months",
         "name": "Верность 3 месяца",
         "requirement": "3 месяца подряд",
         "reward": {
@@ -311,6 +683,7 @@
         }
       },
       "6months": {
+        "id": "6months",
         "name": "Верность 6 месяцев",
         "requirement": "6 месяцев подряд",
         "reward": {
@@ -321,6 +694,7 @@
         }
       },
       "1year": {
+        "id": "1year",
         "name": "Верность 1 год",
         "requirement": "1 год подряд",
         "reward": {
@@ -332,6 +706,7 @@
         }
       },
       "2years": {
+        "id": "2years",
         "name": "Верность 2 года",
         "requirement": "2 года подряд",
         "reward": {
@@ -343,6 +718,7 @@
         }
       },
       "3years": {
+        "id": "3years",
         "name": "Верность 3 года",
         "requirement": "3 года подряд",
         "reward": {
@@ -357,55 +733,136 @@
     
     "premium_quests": {
       "weekly": {
-        "kill_500_mobs": {
-          "name": "Охотник",
-          "description": "Убей 500 мобов",
-          "reward": 500,
-          "currency": "dstn"
-        },
-        "gather_1000_resources": {
-          "name": "Собиратель",
-          "description": "Собери 1000 ресурсов",
-          "reward": 500,
-          "currency": "dstn"
-        },
-        "win_10_pvp": {
-          "name": "Чемпион",
-          "description": "Выиграй 10 PvP боёв",
-          "reward": 500,
-          "currency": "dstn"
-        },
-        "complete_20_quests": {
-          "name": "Герой",
-          "description": "Выполни 20 заданий",
-          "reward": 500,
-          "currency": "dstn"
+        "enabled": true,
+        "max_completions": 4,
+        "reset": "weekly",
+        "quests": {
+          "kill_500_mobs": {
+            "id": "kill_500_mobs",
+            "name": "Охотник",
+            "description": "Убей 500 мобов",
+            "reward": 500,
+            "currency": "dstn",
+            "progress_needed": 500
+          },
+          "gather_1000_resources": {
+            "id": "gather_1000_resources",
+            "name": "Собиратель",
+            "description": "Собери 1000 ресурсов",
+            "reward": 500,
+            "currency": "dstn",
+            "progress_needed": 1000
+          },
+          "win_10_pvp": {
+            "id": "win_10_pvp",
+            "name": "Чемпион",
+            "description": "Выиграй 10 PvP боёв",
+            "reward": 500,
+            "currency": "dstn",
+            "progress_needed": 10
+          },
+          "complete_20_quests": {
+            "id": "complete_20_quests",
+            "name": "Герой",
+            "description": "Выполни 20 заданий",
+            "reward": 500,
+            "currency": "dstn",
+            "progress_needed": 20
+          },
+          "open_10_chests": {
+            "id": "open_10_chests",
+            "name": "Кладоискатель",
+            "description": "Открой 10 сундуков",
+            "reward": 500,
+            "currency": "dstn",
+            "progress_needed": 10
+          },
+          "craft_20_items": {
+            "id": "craft_20_items",
+            "name": "Мастер",
+            "description": "Скрафти 20 предметов",
+            "reward": 500,
+            "currency": "dstn",
+            "progress_needed": 20
+          }
         }
       },
       "monthly": {
-        "kill_2000_mobs": {
-          "name": "Мастер охоты",
-          "description": "Убей 2000 мобов",
-          "reward": 2000,
-          "currency": "dstn"
+        "enabled": true,
+        "max_completions": 2,
+        "reset": "monthly",
+        "quests": {
+          "kill_2000_mobs": {
+            "id": "kill_2000_mobs",
+            "name": "Мастер охоты",
+            "description": "Убей 2000 мобов",
+            "reward": 2000,
+            "currency": "dstn",
+            "progress_needed": 2000
+          },
+          "complete_all_raids": {
+            "id": "complete_all_raids",
+            "name": "Покоритель",
+            "description": "Пройди все рейды",
+            "reward": 2000,
+            "currency": "dstn",
+            "progress_needed": 5
+          },
+          "top100_pvp": {
+            "id": "top100_pvp",
+            "name": "Элитный боец",
+            "description": "Войди в топ-100 PvP",
+            "reward": 2000,
+            "currency": "dstn",
+            "progress_needed": 100
+          },
+          "craft_50_items": {
+            "id": "craft_50_items",
+            "name": "Мастер крафта",
+            "description": "Скрафти 50 предметов",
+            "reward": 2000,
+            "currency": "dstn",
+            "progress_needed": 50
+          },
+          "gather_5000_resources": {
+            "id": "gather_5000_resources",
+            "name": "Коллекционер",
+            "description": "Собери 5000 ресурсов",
+            "reward": 2000,
+            "currency": "dstn",
+            "progress_needed": 5000
+          }
+        }
+      },
+      "special": {
+        "id": "special",
+        "name": "Особое задание",
+        "description": "Появляется во время ивентов",
+        "enabled": true
+      }
+    },
+    
+    "gift_system": {
+      "enabled": true,
+      "can_gift_premium": true,
+      "can_gift_items": true,
+      "gift_cooldown": 86400,
+      "gift_types": {
+        "premium": {
+          "name": "Подарить премиум",
+          "description": "Подари подписку другу",
+          "allowed_plans": ["7days", "28days", "90days"]
         },
-        "complete_all_raids": {
-          "name": "Покоритель",
-          "description": "Пройди все рейды",
-          "reward": 2000,
-          "currency": "dstn"
+        "item": {
+          "name": "Подарить предмет",
+          "description": "Подари предмет из магазина",
+          "allowed_items": ["legendary_chest", "rainbow_shard_pack", "pet_food_pack"]
         },
-        "top100_pvp": {
-          "name": "Элитный боец",
-          "description": "Войди в топ-100 PvP",
-          "reward": 2000,
-          "currency": "dstn"
-        },
-        "craft_50_items": {
-          "name": "Мастер крафта",
-          "description": "Скрафти 50 предметов",
-          "reward": 2000,
-          "currency": "dstn"
+        "currency": {
+          "name": "Подарить валюту",
+          "description": "Подари DSTN другу",
+          "min_amount": 100,
+          "max_amount": 10000
         }
       }
     },
@@ -415,7 +872,36 @@
       "active_subscriptions": 0,
       "popular_plan": "90days",
       "total_revenue_stars": 0,
-      "total_revenue_ton": 0
-    }
-  }
-}
+      "total_revenue_ton": 0,
+      "renewal_rate": 0,
+      "avg_subscription_duration": 0
+    },
+    
+    "promo_codes": {
+      "enabled": true,
+      "max_uses_per_code": 1000,
+      "max_uses_per_user": 1,
+      "codes": [
+        {
+          "id": "WELCOME2024",
+          "name": "Добро пожаловать",
+          "description": "Приветственный бонус для новых игроков",
+          "reward": {
+            "dstn": 100,
+            "gold": 5000,
+            "items": ["health_potion", 5, "teleport_scroll", 3]
+          },
+          "expires": "2024-12-31",
+          "max_uses": 10000
+        },
+        {
+          "id": "DRAGONHUNTER",
+          "name": "Охотник на драконов",
+          "description": "Бонус для смелых",
+          "reward": {
+            "dragon_scale": 2,
+            "legendary_chest": 1
+          },
+          "expires": "2024-12-31",
+          "max_uses": 5000
+        }
