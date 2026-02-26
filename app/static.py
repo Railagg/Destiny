@@ -7,6 +7,13 @@ import os
 
 # Создаем папку для статических файлов
 os.makedirs("static", exist_ok=True)
+os.makedirs("frontend", exist_ok=True)  # ✅ создаём папку frontend
 
 # Раздаем статические файлы
-app.mount("/fronted", StaticFiles(directory="fronted", html=True), name="fronted")
+app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/frontend", StaticFiles(directory="frontend", html=True), name="frontend")
+
+# Для корневого пути - отдаём index.html
+@app.get("/")
+async def root():
+    return FileResponse("frontend/index.html")
