@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, BigInteger, DateTime, ForeignKey, JSON, Boolean, Float
+from sqlalchemy import Column, Integer, String, BigInteger, DateTime, ForeignKey, JSON, Boolean, Float, Text
 from sqlalchemy.orm import relationship
 from datetime import datetime
+import json
 from .database import Base
 
 class User(Base):
@@ -13,6 +14,15 @@ class User(Base):
     last_name = Column(String)
     auth_date = Column(DateTime, default=datetime.utcnow)
     ton_wallet = Column(String, nullable=True)
+    
+    # ===== СИСТЕМА СТРИКА =====
+    login_streak = Column(Integer, default=0)
+    last_login = Column(Integer, default=0)
+    max_streak = Column(Integer, default=0)
+    premium_from_streak = Column(DateTime, nullable=True)
+    streak_premium_days = Column(Integer, default=0)
+    streak_history = Column(JSON, default=list)
+    # ===========================
     
     # Премиум статус
     premium_until = Column(DateTime, nullable=True)
@@ -47,6 +57,9 @@ class User(Base):
     guild_wars = Column(Integer, default=0)
     
     character = relationship("Character", back_populates="user", uselist=False)
+    
+    def __repr__(self):
+        return f"<User {self.telegram_id}>"
 
 class Character(Base):
     __tablename__ = "characters"
@@ -65,13 +78,13 @@ class Character(Base):
     health_regen = Column(Integer, default=0)
     energy = Column(Integer, default=100)
     max_energy = Column(Integer, default=100)
-    last_update = Column(Integer, default=0)  # для восстановления энергии
+    last_update = Column(Integer, default=0)
     
     # Мана
     mana = Column(Integer, default=50)
     max_mana = Column(Integer, default=50)
     mana_regen = Column(Integer, default=0)
-    last_mana_update = Column(Integer, default=0)  # для восстановления маны
+    last_mana_update = Column(Integer, default=0)
     
     # Атрибуты
     strength = Column(Integer, default=10)
@@ -81,8 +94,10 @@ class Character(Base):
     luck = Column(Integer, default=0)
     
     # Ресурсы
-    gold = Column(Integer, default=0)
-    destiny_tokens = Column(Integer, default=0)  # переименовать в dstn
+    gold = Column(Integer, default=20)
+    destiny_tokens = Column(Integer, default=0)
+    stars = Column(Integer, default=0)
+    ton = Column(Float, default=0)
     
     # Радужные ресурсы
     rainbow_shards = Column(Integer, default=0)
@@ -93,7 +108,7 @@ class Character(Base):
     rainbow_history = Column(JSON, default=list)
     
     # Инвентарь
-    inventory = Column(JSON, default=list)
+    _inventory = Column(Text, default="[]")
     
     # Экипировка
     equipped_weapon = Column(String, nullable=True)
@@ -223,6 +238,41 @@ class Character(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     user = relationship("User", back_populates="character")
+    
+    @property
+    def inventory(self):
+        """Получить инвентарь как список"""
+        try:
+            return json.loads(self._inventory) if self._inventory else []
+        except:
+            return []
+    
+    @inventory.setter
+    def inventory(self, value):
+        """Сохранить инвентарь как JSON строку"""
+        self._inventory = json.dumps(value, ensure_ascii=False)
+    
+    def get_inventory(self):
+        return self.inventory
+    
+    def add_item(self, item_id):
+        inv = self.inventory
+        inv.append(item_id)
+        self.inventory = inv
+    
+    def remove_item(self, item_id):
+        inv = self.inventory
+        if item_id in inv:
+            inv.remove(item_id)
+            self.inventory = inv
+            return True
+        return False
+    
+    def has_item(self, item_id):
+        return item_id in self.inventory
+    
+    def count_item(self, item_id):
+        return self.inventory.count(item_id)
     
     def __repr__(self):
         return f"<Character {self.id} level {self.level}>"
