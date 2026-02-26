@@ -4,10 +4,58 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 logger = logging.getLogger(__name__)
 
+# ========== ФУНКЦИЯ ПРОВЕРКИ ЛОКАЦИЙ ==========
+
+def can_use_inventory(location_id, locations_data):
+    """Проверить, можно ли использовать инвентарь в локации (дублирует функцию из main.py)"""
+    if not locations_data or "locations" not in locations_data:
+        return False
+    
+    location = locations_data["locations"].get(location_id, {})
+    location_name = location.get("name", "").lower()
+    
+    # Инвентарь показываем только на привалах и у торговцев
+    rest_keywords = ["привал", "стоянка", "лагерь", "отдых", "костёр", "приют"]
+    shop_keywords = ["торговец", "лавка", "магазин", "кузница", "таверна"]
+    fishing_keywords = ["рыбалка", "берег", "озеро", "пруд", "река", "море"]
+    
+    show_inventory = (
+        any(keyword in location_name for keyword in rest_keywords) or
+        any(keyword in location_name for keyword in shop_keywords) or
+        any(keyword in location_name for keyword in fishing_keywords) or
+        location_id.startswith("house_") or  # В доме всегда можно
+        "rest_spot" in location or  # Если есть место для отдыха
+        location.get("type") in ["safe_zone", "shop", "tavern", "rest_spot"]
+    )
+    
+    return show_inventory
+
+# ========== ОСНОВНАЯ КОМАНДА ИНВЕНТАРЯ ==========
+
 def inventory_command(message, bot, get_or_create_player_func, items_data):
     """Команда /inventory - показать инвентарь"""
     user_id = message.from_user.id
     user, character = get_or_create_player_func(user_id)
+    
+    # Получаем данные о локациях из глобальной переменной
+    from main import locations_data
+    
+    # Проверяем, можно ли открыть инвентарь в текущей локации
+    location_id = character.location or "start"
+    if not can_use_inventory(location_id, locations_data):
+        bot.send_message(
+            message.chat.id,
+            "🎒 *Инвентарь недоступен*\n\n"
+            "📦 Открыть инвентарь можно только:\n"
+            "• 🏕️ На привалах и стоянках\n"
+            "• 🏪 У торговцев\n"
+            "• 🍺 В таверне\n"
+            "• 🏠 В своём домике\n"
+            "• 🎣 На рыбалке\n\n"
+            "🔍 Найди безопасное место!",
+            parse_mode='Markdown'
+        )
+        return
     
     inventory = character.inventory or []
     
@@ -89,6 +137,8 @@ def inventory_command(message, bot, get_or_create_player_func, items_data):
     
     bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
 
+# ========== ИСПОЛЬЗОВАНИЕ ПРЕДМЕТОВ ==========
+
 def use_item_command(message, bot, get_or_create_player_func, items_data):
     """Команда /use_item - использовать предмет"""
     args = message.text.split()
@@ -105,6 +155,18 @@ def use_item_command(message, bot, get_or_create_player_func, items_data):
     item_id = args[1]
     user_id = message.from_user.id
     user, character = get_or_create_player_func(user_id)
+    
+    # Проверяем, можно ли использовать предметы в текущей локации
+    from main import locations_data
+    location_id = character.location or "start"
+    if not can_use_inventory(location_id, locations_data):
+        bot.send_message(
+            message.chat.id,
+            "❌ Нельзя использовать предметы здесь!\n"
+            "Найди безопасное место (привал, таверна, домик).",
+            parse_mode='Markdown'
+        )
+        return
     
     inventory = character.inventory or []
     
@@ -203,7 +265,7 @@ def use_item_command(message, bot, get_or_create_player_func, items_data):
         
         if effect == 'teleport':
             # Свиток телепортации
-            from utils import locations_data
+            from main import locations_data
             locations = locations_data.get("locations", {})
             
             keyboard = InlineKeyboardMarkup(row_width=2)
@@ -240,6 +302,8 @@ def use_item_command(message, bot, get_or_create_player_func, items_data):
             parse_mode='Markdown'
         )
 
+# ========== ЭКИПИРОВКА ==========
+
 def equip_item_command(message, bot, get_or_create_player_func, items_data):
     """Команда /equip_item - надеть предмет"""
     args = message.text.split()
@@ -262,6 +326,18 @@ def equip_item_command(message, bot, get_or_create_player_func, items_data):
     
     user_id = message.from_user.id
     user, character = get_or_create_player_func(user_id)
+    
+    # Проверяем, можно ли экипировать предметы в текущей локации
+    from main import locations_data
+    location_id = character.location or "start"
+    if not can_use_inventory(location_id, locations_data):
+        bot.send_message(
+            message.chat.id,
+            "❌ Нельзя экипировать предметы здесь!\n"
+            "Найди безопасное место (привал, таверна, домик).",
+            parse_mode='Markdown'
+        )
+        return
     
     inventory = character.inventory or []
     
@@ -344,6 +420,18 @@ def unequip_item_command(message, bot, get_or_create_player_func, items_data):
     user_id = message.from_user.id
     user, character = get_or_create_player_func(user_id)
     
+    # Проверяем, можно ли снимать предметы в текущей локации
+    from main import locations_data
+    location_id = character.location or "start"
+    if not can_use_inventory(location_id, locations_data):
+        bot.send_message(
+            message.chat.id,
+            "❌ Нельзя снимать предметы здесь!\n"
+            "Найди безопасное место (привал, таверна, домик).",
+            parse_mode='Markdown'
+        )
+        return
+    
     old_item = None
     if slot == "weapon" and character.equipped_weapon:
         old_item = character.equipped_weapon
@@ -371,6 +459,8 @@ def unequip_item_command(message, bot, get_or_create_player_func, items_data):
         f"✅ **{item_name}** снят со слота {slot} и возвращён в инвентарь!",
         parse_mode='Markdown'
     )
+
+# ========== ПРОДАЖА ==========
 
 def sell_item_command(message, bot, get_or_create_player_func, items_data):
     """Команда /sell_item - продать предмет"""
@@ -400,6 +490,18 @@ def sell_item_command(message, bot, get_or_create_player_func, items_data):
     
     user_id = message.from_user.id
     user, character = get_or_create_player_func(user_id)
+    
+    # Проверяем, можно ли продавать предметы в текущей локации
+    from main import locations_data
+    location_id = character.location or "start"
+    if not can_use_inventory(location_id, locations_data):
+        bot.send_message(
+            message.chat.id,
+            "❌ Нельзя продавать предметы здесь!\n"
+            "Найди торговца или безопасное место.",
+            parse_mode='Markdown'
+        )
+        return
     
     inventory = character.inventory or []
     
@@ -450,6 +552,8 @@ def sell_item_command(message, bot, get_or_create_player_func, items_data):
         f"💰 Текущее золото: {character.gold}",
         parse_mode='Markdown'
     )
+
+# ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
 
 def potions_list(message, bot, get_or_create_player_func, items_data):
     """Показать список зелий в инвентаре"""
@@ -556,6 +660,8 @@ def chests_list(message, bot, get_or_create_player_func, items_data):
         reply_markup=keyboard,
         parse_mode='Markdown'
     )
+
+# ========== ОБРАБОТЧИК КОЛБЭКОВ ==========
 
 def handle_callback(call, bot, get_or_create_player_func, items_data):
     """Обработчик callback-запросов для инвентаря"""
