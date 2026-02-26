@@ -1,3 +1,4 @@
+# /bot/handlers/combat.py
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import os
@@ -124,7 +125,7 @@ CLASS_COMBAT_BONUSES = {
 # ============================================
 
 def attack_command(message, bot_instance, get_or_create_player_func, enemies_data, locations_data):
-    """Начать бой с врагом"""
+    """Команда /attack - начать бой с врагом"""
     user_id = message.from_user.id
     user, character = get_or_create_player_func(user_id)
     
@@ -138,7 +139,8 @@ def attack_command(message, bot_instance, get_or_create_player_func, enemies_dat
         bot_instance.send_message(
             message.chat.id,
             "❌ У тебя недостаточно энергии для боя! (нужно 5⚡)\n"
-            "Отдохни или подожди восстановления."
+            "Отдохни или подожди восстановления.",
+            parse_mode='Markdown'
         )
         return
     
@@ -181,6 +183,10 @@ def attack_command(message, bot_instance, get_or_create_player_func, enemies_dat
     
     # Создаём сессию боя
     start_combat(message, bot_instance, character, enemy_id, enemy_data)
+
+def battle_command(message, bot_instance, get_or_create_player_func, enemies_data, locations_data):
+    """Команда /battle - синоним для /attack"""
+    attack_command(message, bot_instance, get_or_create_player_func, enemies_data, locations_data)
 
 def start_combat(message, bot_instance, character, enemy_id, enemy_data):
     """Начать боевую сессию"""
@@ -377,7 +383,7 @@ def combat_turn(call, bot_instance, get_or_create_player_func, enemies_data, ite
             del bot_instance.combat_sessions[user_id]
             bot_instance.delete_message(call.message.chat.id, call.message.message_id)
             from handlers.game import location_command
-            location_command(call.message)
+            location_command(call.message, bot_instance, get_or_create_player_func, {})
             return
         else:
             combat_state['combat_log'].append(f"🏃 Не удалось сбежать!")
@@ -520,7 +526,12 @@ def victory(call, bot_instance, character, combat_state, enemies_data, items_dat
             if items_data and "items" in items_data:
                 item_data = items_data["items"].get(item_id, {})
                 if item_data:
-                    character.add_item(item_id)
+                    if hasattr(character, 'add_item'):
+                        character.add_item(item_id)
+                    else:
+                        inventory = character.inventory or []
+                        inventory.append(item_id)
+                        character.inventory = inventory
                     drops.append(item_data.get("name", item_id))
     
     # Сохраняем
@@ -598,7 +609,7 @@ def calculate_magic_damage(character):
     base_magic_damage = character.intelligence * 2 + (character.magic_damage_bonus or 0)
     
     # Бонус от предметов
-    inventory = character.get_inventory()
+    inventory = character.inventory or []
     for item_id in inventory:
         if item_id in items_data.get("items", {}):
             item = items_data["items"][item_id]
@@ -610,3 +621,26 @@ def calculate_magic_damage(character):
     magic_multiplier = class_bonus.get("magic_damage_multiplier", 1.0)
     
     return int(base_magic_damage * magic_multiplier)
+
+def handle_combat_callback(call, bot_instance, get_or_create_player_func, enemies_data, items_data, action=None):
+    """Обработчик callback'ов для боя (совместимость с __init__.py)"""
+    if action is None:
+        parts = call.data.split(':')
+        if len(parts) >= 3:
+            action = parts[2]
+        else:
+            action = "unknown"
+    
+    combat_turn(call, bot_instance, get_or_create_player_func, enemies_data, items_data, action)
+
+# ============================================
+# ЭКСПОРТ
+# ============================================
+
+__all__ = [
+    'attack_command',
+    'battle_command',
+    'combat_turn',
+    'handle_combat_callback',
+    'calculate_magic_damage'
+]
