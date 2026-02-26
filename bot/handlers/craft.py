@@ -1,6 +1,9 @@
+# /bot/handlers/craft.py
 import logging
 import time
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+
+logger = logging.getLogger(__name__)
 
 def craft_command(message, bot, get_or_create_player, crafting_data, items_data):
     """Показать доступные рецепты"""
@@ -468,3 +471,12 @@ def handle_callback(call, bot, get_or_create_player, crafting_data, items_data):
     except Exception as e:
         logging.error(f"Ошибка в craft callback: {e}")
         bot.answer_callback_query(call.id, "⚠️ Ошибка")
+
+# ============================================
+# ЭКСПОРТ
+# ============================================
+
+__all__ = [
+    'craft_command',
+    'handle_callback'
+]
