@@ -23,22 +23,18 @@ router = APIRouter()
 @router.get("/location/{location_id}")
 def get_location(location_id: str):
     """Получить информацию о локации"""
-    # Проверяем в основных локациях
     location = locations_data.get("locations", {}).get(location_id)
     
-    # Если не нашли, проверяем в биомах
     if not location:
         for biome in biomes_data.get("biomes", {}).values():
             if biome.get("id") == location_id:
                 return biome
     
-    # Проверяем в островах
     if not location:
         for island in islands_data.get("islands", {}).values():
             if island.get("id") == location_id:
                 return island
     
-    # Проверяем в секретных локациях
     if not location:
         for secret in secrets_data.get("secrets", {}).values():
             if secret.get("id") == location_id:
@@ -47,7 +43,6 @@ def get_location(location_id: str):
     if not location:
         raise HTTPException(status_code=404, detail="Location not found")
     
-    # Добавляем информацию о монстрах
     if "enemies" in location:
         enemies = []
         for enemy_id in location["enemies"]:
@@ -68,21 +63,12 @@ def get_location(location_id: str):
 @router.get("/locations/all")
 def get_all_locations():
     """Получить все локации"""
-    all_locations = {}
-    
-    # Добавляем основные локации
-    all_locations["locations"] = locations_data.get("locations", {})
-    
-    # Добавляем биомы
-    all_locations["biomes"] = biomes_data.get("biomes", {})
-    
-    # Добавляем острова
-    all_locations["islands"] = islands_data.get("islands", {})
-    
-    # Добавляем секретные локации
-    all_locations["secrets"] = secrets_data.get("secrets", {})
-    
-    return all_locations
+    return {
+        "locations": locations_data.get("locations", {}),
+        "biomes": biomes_data.get("biomes", {}),
+        "islands": islands_data.get("islands", {}),
+        "secrets": secrets_data.get("secrets", {})
+    }
 
 # ========== ПОЛЬЗОВАТЕЛИ ==========
 @router.get("/user/{telegram_id}")
@@ -109,6 +95,9 @@ def get_user(telegram_id: int, db: Session = Depends(get_db)):
         "profile_frame": user.profile_frame,
         "profile_aura": user.profile_aura,
         "guild_id": user.guild_id,
+        "login_streak": user.login_streak,
+        "max_streak": user.max_streak,
+        "premium_from_streak": user.premium_from_streak,
         "character": {
             "name": character.name,
             "level": character.level,
@@ -126,6 +115,7 @@ def get_user(telegram_id: int, db: Session = Depends(get_db)):
             "luck": character.luck,
             "gold": character.gold,
             "dstn": character.destiny_tokens,
+            "stars": character.stars,
             "player_class": character.player_class,
             "class_level": character.class_level,
             "location": character.location,
@@ -143,12 +133,10 @@ def get_user(telegram_id: int, db: Session = Depends(get_db)):
 def create_user(telegram_id: int, username: str = None, first_name: str = None, 
                 last_name: str = None, db: Session = Depends(get_db)):
     """Создать нового пользователя"""
-    # Проверяем, существует ли уже
     existing = db.query(User).filter(User.telegram_id == telegram_id).first()
     if existing:
         raise HTTPException(status_code=400, detail="User already exists")
     
-    # Создаём пользователя
     user = User(
         telegram_id=telegram_id,
         username=username,
@@ -158,7 +146,6 @@ def create_user(telegram_id: int, username: str = None, first_name: str = None,
     db.add(user)
     db.flush()
     
-    # Создаём персонажа
     character = Character(
         user_id=user.id,
         name=first_name or f"Player_{telegram_id}",
@@ -168,7 +155,7 @@ def create_user(telegram_id: int, username: str = None, first_name: str = None,
         max_mana=50,
         energy=100,
         max_energy=100,
-        gold=20,  # стартовое золото
+        gold=20,
         destiny_tokens=0,
         inventory=[]
     )
@@ -193,11 +180,9 @@ def get_inventory(telegram_id: int, db: Session = Depends(get_db)):
     items = []
     item_counts = {}
     
-    # Группируем по ID и считаем количество
     for item_id in inventory:
         item_counts[item_id] = item_counts.get(item_id, 0) + 1
     
-    # Получаем информацию о каждом предмете
     for item_id, count in item_counts.items():
         item = items_data.get("items", {}).get(item_id)
         if item:
@@ -214,7 +199,6 @@ def get_inventory(telegram_id: int, db: Session = Depends(get_db)):
                 "equipped": item_id == character.equipped_weapon or item_id == character.equipped_armor
             })
     
-    # Добавляем экипировку отдельно
     equipped = {
         "weapon": character.equipped_weapon,
         "armor": character.equipped_armor,
@@ -285,12 +269,10 @@ def equip_item(telegram_id: int, item_id: str, slot: str = "weapon", db: Session
     if not character:
         raise HTTPException(status_code=404, detail="Character not found")
     
-    # Проверяем, есть ли предмет
     inventory = character.inventory or []
     if item_id not in inventory:
         raise HTTPException(status_code=400, detail="Item not in inventory")
     
-    # Проверяем тип предмета
     item = items_data.get("items", {}).get(item_id)
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -301,14 +283,6 @@ def equip_item(telegram_id: int, item_id: str, slot: str = "weapon", db: Session
     if slot == "armor" and item_type != "armor":
         raise HTTPException(status_code=400, detail="Item is not armor")
     
-    # Снимаем предыдущий предмет
-    if slot == "weapon" and character.equipped_weapon:
-        old_weapon = character.equipped_weapon
-        # Ничего не делаем, просто заменяем
-    elif slot == "armor" and character.equipped_armor:
-        old_armor = character.equipped_armor
-    
-    # Надеваем новый
     if slot == "weapon":
         character.equipped_weapon = item_id
     elif slot == "armor":
@@ -339,7 +313,6 @@ def get_codex(section: str, category: Optional[str] = None):
     
     codex_section = codex_data.get("codex", {}).get(sections[section], {})
     
-    # Если указана категория, возвращаем только её
     if category and "categories" in codex_section:
         return codex_section["categories"].get(category, {})
     
@@ -350,7 +323,6 @@ def search_codex(query: str, limit: int = 10):
     """Поиск по энциклопедии"""
     results = []
     
-    # Поиск в бестиарии
     bestiary = codex_data.get("codex", {}).get("bestiary", {})
     for cat in bestiary.get("categories", {}).values():
         for creature in cat.get("creatures", []):
@@ -362,7 +334,6 @@ def search_codex(query: str, limit: int = 10):
                     "data": creature
                 })
     
-    # Поиск в предметах
     items_section = codex_data.get("codex", {}).get("items", {})
     for cat in items_section.get("categories", {}).values():
         for item in cat.get("items", []):
@@ -382,7 +353,6 @@ def get_craft_recipe(item_id: str):
     """Получить рецепт крафта предмета"""
     recipes = crafting_data.get("crafting", {})
     
-    # Ищем во всех категориях
     for category, cat_data in recipes.items():
         if isinstance(cat_data, dict):
             for subcat, items in cat_data.items():
@@ -446,7 +416,6 @@ def upgrade_house(telegram_id: int, db: Session = Depends(get_db)):
     next_level = str(current_level + 1)
     level_data = house_data.get("house", {}).get("levels", {}).get(next_level, {})
     
-    # Проверяем ресурсы
     cost = level_data.get("build_cost", {})
     inventory = character.inventory or []
     
@@ -458,7 +427,6 @@ def upgrade_house(telegram_id: int, db: Session = Depends(get_db)):
     if missing:
         raise HTTPException(status_code=400, detail=f"Missing resources: {', '.join(missing)}")
     
-    # Тратим ресурсы
     for material, amount in cost.items():
         for _ in range(amount):
             inventory.remove(material)
@@ -496,7 +464,6 @@ def get_active_events():
     """Получить все активные ивенты"""
     active = []
     
-    # Проверяем сезонные
     seasonal = events_data.get("events", {}).get("seasonal", {})
     current_month = datetime.now().strftime("%B").lower()
     
@@ -511,7 +478,6 @@ def get_active_events():
                 "bonuses": event.get("bonuses", {})
             })
     
-    # Проверяем ежемесячные
     monthly = events_data.get("events", {}).get("monthly", {})
     for event_id, event in monthly.items():
         if event.get("frequency") == "monthly":
@@ -595,6 +561,20 @@ def get_top(category: str, limit: int = 10, db: Session = Depends(get_db)):
             })
         return result
     
+    elif category == "streak":
+        users = db.query(User).order_by(User.login_streak.desc()).limit(limit).all()
+        result = []
+        for u in users:
+            character = db.query(Character).filter(Character.user_id == u.id).first()
+            result.append({
+                "user_id": u.telegram_id,
+                "username": u.username,
+                "streak": u.login_streak,
+                "max_streak": u.max_streak,
+                "level": character.level if character else 1
+            })
+        return result
+    
     else:
         raise HTTPException(status_code=400, detail="Invalid category")
 
@@ -610,32 +590,34 @@ def get_pets(telegram_id: int, db: Session = Depends(get_db)):
     if not character:
         raise HTTPException(status_code=404, detail="Character not found")
     
-    pets = character.pets or []
-    active_pet = character.active_pet
+    pets_list = character.pets or []
+    pets_data_dict = pets_data.get("pets", {})
     
-    # Обогащаем данными из pets.json
-    enriched_pets = []
-    for pet in pets:
-        pet_id = pet.get("id")
-        pet_data = pets_data.get("pets", {}).get(pet_id, {})
-        enriched_pets.append({
-            **pet,
-            "name": pet_data.get("name", pet_id),
-            "rarity": pet_data.get("rarity", "common"),
-            "bonus": pet_data.get("bonus", {}),
-            "image": pet_data.get("image")
-        })
+    result = []
+    for pet_id in pets_list:
+        pet_info = pets_data_dict.get(pet_id)
+        if pet_info:
+            result.append({
+                "id": pet_id,
+                "name": pet_info.get("name"),
+                "type": pet_info.get("type"),
+                "rarity": pet_info.get("rarity"),
+                "level": pet_info.get("level", 1),
+                "abilities": pet_info.get("abilities", []),
+                "stats": pet_info.get("stats", {}),
+                "evolution": pet_info.get("evolution")
+            })
     
     return {
-        "pets": enriched_pets,
-        "active": active_pet,
-        "house_level": character.pet_house_level
+        "pets": result,
+        "count": len(result),
+        "max_pets": 5 + (character.house_level or 0),
+        "active_pet": character.active_pet
     }
 
-# ========== РАДУЖНЫЕ РЕСУРСЫ ==========
-@router.get("/rainbow/{telegram_id}")
-def get_rainbow_resources(telegram_id: int, db: Session = Depends(get_db)):
-    """Получить радужные ресурсы игрока"""
+@router.post("/pets/equip")
+def equip_pet(telegram_id: int, pet_id: str, db: Session = Depends(get_db)):
+    """Экипировать питомца"""
     user = db.query(User).filter(User.telegram_id == telegram_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -644,16 +626,18 @@ def get_rainbow_resources(telegram_id: int, db: Session = Depends(get_db)):
     if not character:
         raise HTTPException(status_code=404, detail="Character not found")
     
-    return {
-        "shards": character.rainbow_shards,
-        "stones": character.rainbow_stones,
-        "craft_end": character.rainbow_craft_end,
-        "history": character.rainbow_history[-10:] if character.rainbow_history else []
-    }
+    pets_list = character.pets or []
+    if pet_id not in pets_list:
+        raise HTTPException(status_code=400, detail="Pet not owned")
+    
+    character.active_pet = pet_id
+    db.commit()
+    
+    return {"status": "success", "active_pet": pet_id}
 
-@router.post("/rainbow/craft")
-def craft_rainbow_stone(telegram_id: int, db: Session = Depends(get_db)):
-    """Начать крафт радужного камня"""
+@router.post("/pets/feed")
+def feed_pet(telegram_id: int, pet_id: str, food_item: str, db: Session = Depends(get_db)):
+    """Покормить питомца"""
     user = db.query(User).filter(User.telegram_id == telegram_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -662,33 +646,712 @@ def craft_rainbow_stone(telegram_id: int, db: Session = Depends(get_db)):
     if not character:
         raise HTTPException(status_code=404, detail="Character not found")
     
-    # Проверка
-    if character.house_level < 5:
-        raise HTTPException(status_code=400, detail="Need house level 5")
+    pets_list = character.pets or []
+    if pet_id not in pets_list:
+        raise HTTPException(status_code=400, detail="Pet not owned")
     
-    if character.rainbow_shards < 9:
-        raise HTTPException(status_code=400, detail="Need 9 rainbow shards")
+    inventory = character.inventory or []
+    if food_item not in inventory:
+        raise HTTPException(status_code=400, detail="Food item not in inventory")
     
-    now = int(datetime.now().timestamp())
-    if character.rainbow_craft_end and character.rainbow_craft_end > now:
-        remaining = character.rainbow_craft_end - now
-        hours = remaining // 3600
-        minutes = (remaining % 3600) // 60
-        raise HTTPException(status_code=400, detail=f"Already crafting! Time left: {hours}h {minutes}m")
+    # Удаляем еду из инвентаря
+    inventory.remove(food_item)
+    character.inventory = inventory
     
-    # Тратим осколки
-    character.rainbow_shards -= 9
-    character.rainbow_craft_end = now + 86400  # 24 часа
+    # Обновляем сытость питомца
+    if not character.pet_happiness:
+        character.pet_happiness = {}
     
-    # История
-    if not character.rainbow_history:
-        character.rainbow_history = []
-    character.rainbow_history.append({
-        "date": datetime.now().isoformat(),
-        "action": "start_craft",
-        "amount": 9
-    })
+    character.pet_happiness[pet_id] = min(100, (character.pet_happiness.get(pet_id, 50) + 20))
     
     db.commit()
     
-    return {"status": "success", "craft_end": character.rainbow_craft_end}
+    return {
+        "status": "success",
+        "happiness": character.pet_happiness.get(pet_id, 70)
+    }
+
+# ========== ЭКСПЕДИЦИИ ==========
+@router.get("/expeditions")
+def get_expeditions():
+    """Получить список экспедиций"""
+    expeditions_data = events_data.get("expeditions", {})
+    return expeditions_data
+
+@router.post("/expedition/start/{expedition_id}")
+def start_expedition(telegram_id: int, expedition_id: str, db: Session = Depends(get_db)):
+    """Начать экспедицию"""
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    character = db.query(Character).filter(Character.user_id == user.id).first()
+    if not character:
+        raise HTTPException(status_code=404, detail="Character not found")
+    
+    expeditions = events_data.get("expeditions", {}).get("available", {})
+    expedition = expeditions.get(expedition_id)
+    
+    if not expedition:
+        raise HTTPException(status_code=404, detail="Expedition not found")
+    
+    if character.energy < expedition.get("energy_cost", 20):
+        raise HTTPException(status_code=400, detail="Not enough energy")
+    
+    duration = expedition.get("duration_hours", 1)
+    finish_time = datetime.utcnow() + timedelta(hours=duration)
+    
+    character.energy -= expedition.get("energy_cost", 20)
+    character.current_expedition = expedition_id
+    character.expedition_finish = finish_time
+    
+    db.commit()
+    
+    return {
+        "status": "started",
+        "expedition": expedition_id,
+        "finish_time": finish_time.isoformat()
+    }
+
+@router.get("/expedition/status/{telegram_id}")
+def get_expedition_status(telegram_id: int, db: Session = Depends(get_db)):
+    """Получить статус текущей экспедиции"""
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    character = db.query(Character).filter(Character.user_id == user.id).first()
+    if not character:
+        raise HTTPException(status_code=404, detail="Character not found")
+    
+    if not character.current_expedition or not character.expedition_finish:
+        return {"status": "no_active_expedition"}
+    
+    now = datetime.utcnow()
+    time_left = (character.expedition_finish - now).total_seconds()
+    
+    if time_left <= 0:
+        # Экспедиция завершена
+        return {
+            "status": "completed",
+            "expedition_id": character.current_expedition,
+            "can_claim": True
+        }
+    
+    return {
+        "status": "in_progress",
+        "expedition_id": character.current_expedition,
+        "time_left_seconds": int(time_left),
+        "finish_time": character.expedition_finish.isoformat()
+    }
+
+@router.post("/expedition/claim/{telegram_id}")
+def claim_expedition_rewards(telegram_id: int, db: Session = Depends(get_db)):
+    """Забрать награды за экспедицию"""
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    character = db.query(Character).filter(Character.user_id == user.id).first()
+    if not character:
+        raise HTTPException(status_code=404, detail="Character not found")
+    
+    if not character.current_expedition or not character.expedition_finish:
+        raise HTTPException(status_code=400, detail="No active expedition")
+    
+    now = datetime.utcnow()
+    if now < character.expedition_finish:
+        time_left = (character.expedition_finish - now).total_seconds()
+        raise HTTPException(status_code=400, detail=f"Expedition not finished yet. {int(time_left)} seconds left")
+    
+    expeditions = events_data.get("expeditions", {}).get("available", {})
+    expedition = expeditions.get(character.current_expedition, {})
+    
+    # Начисляем награды
+    rewards = expedition.get("rewards", {})
+    
+    # Золото
+    character.gold += rewards.get("gold", 0)
+    
+    # Опыт
+    experience_gain = rewards.get("experience", 0)
+    character.experience += experience_gain
+    
+    # Предметы
+    items = rewards.get("items", [])
+    inventory = character.inventory or []
+    for item in items:
+        for _ in range(item.get("count", 1)):
+            inventory.append(item.get("id"))
+    character.inventory = inventory
+    
+    # Сбрасываем экспедицию
+    character.current_expedition = None
+    character.expedition_finish = None
+    
+    # Проверка на повышение уровня
+    level_up = False
+    new_level = character.level
+    
+    # Простая формула: 1000 * уровень ^ 1.5
+    exp_needed = int(1000 * (character.level ** 1.5))
+    while character.experience >= exp_needed and character.level < 100:
+        character.experience -= exp_needed
+        character.level += 1
+        level_up = True
+        # Увеличиваем характеристики при повышении уровня
+        character.max_health += 10
+        character.health = character.max_health
+        character.max_mana += 5
+        character.mana = character.max_mana
+        exp_needed = int(1000 * (character.level ** 1.5))
+    
+    db.commit()
+    
+    return {
+        "status": "success",
+        "rewards": rewards,
+        "level_up": level_up,
+        "new_level": character.level if level_up else None,
+        "experience": character.experience,
+        "gold": character.gold
+    }
+
+# ========== ГИЛЬДИИ ==========
+@router.get("/guild/{guild_id}")
+def get_guild(guild_id: int, db: Session = Depends(get_db)):
+    """Получить информацию о гильдии"""
+    from models import Guild
+    
+    guild = db.query(Guild).filter(Guild.id == guild_id).first()
+    if not guild:
+        raise HTTPException(status_code=404, detail="Guild not found")
+    
+    members = db.query(User).filter(User.guild_id == guild_id).all()
+    member_list = []
+    for m in members:
+        character = db.query(Character).filter(Character.user_id == m.id).first()
+        member_list.append({
+            "telegram_id": m.telegram_id,
+            "username": m.username,
+            "level": character.level if character else 1,
+            "guild_role": m.guild_role
+        })
+    
+    return {
+        "id": guild.id,
+        "name": guild.name,
+        "tag": guild.tag,
+        "level": guild.level,
+        "experience": guild.experience,
+        "members_count": len(member_list),
+        "max_members": guild.max_members,
+        "members": member_list,
+        "description": guild.description,
+        "emblem": guild.emblem
+    }
+
+# ========== NFT ==========
+@router.get("/nft/list")
+def get_nft_list():
+    """Получить список NFT предметов"""
+    return nft_data.get("nft", {})
+
+@router.get("/nft/owned/{telegram_id}")
+def get_owned_nft(telegram_id: int, db: Session = Depends(get_db)):
+    """Получить NFT предметы игрока"""
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    nft_items = user.nft_items or []
+    nft_data_dict = nft_data.get("nft", {}).get("items", {})
+    
+    result = []
+    for nft_id in nft_items:
+        nft_info = nft_data_dict.get(nft_id)
+        if nft_info:
+            result.append({
+                "id": nft_id,
+                "name": nft_info.get("name"),
+                "type": nft_info.get("type"),
+                "rarity": nft_info.get("rarity"),
+                "stats": nft_info.get("stats", {}),
+                "image_url": nft_info.get("image_url"),
+                "token_id": nft_info.get("token_id")
+            })
+    
+    return {"nft_items": result}
+
+# ========== ТОРГОВЛЯ ==========
+@router.get("/exchange/rates")
+def get_exchange_rates():
+    """Получить курсы обмена валют"""
+    rates = exchange_data.get("exchange", {}).get("rates", {})
+    return rates
+
+@router.post("/exchange/convert")
+def convert_currency(telegram_id: int, from_currency: str, to_currency: str, 
+                     amount: float, db: Session = Depends(get_db)):
+    """Обменять валюту"""
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    character = db.query(Character).filter(Character.user_id == user.id).first()
+    if not character:
+        raise HTTPException(status_code=404, detail="Character not found")
+    
+    rates = exchange_data.get("exchange", {}).get("rates", {})
+    pair = f"{from_currency}/{to_currency}"
+    fee = exchange_data.get("exchange", {}).get("fee_percent", 1)
+    
+    if pair not in rates:
+        raise HTTPException(status_code=400, detail="Exchange pair not available")
+    
+    rate = rates[pair]
+    
+    if from_currency == "gold":
+        if character.gold < amount:
+            raise HTTPException(status_code=400, detail="Insufficient gold")
+        character.gold -= amount
+    elif from_currency == "dstn":
+        if character.destiny_tokens < amount:
+            raise HTTPException(status_code=400, detail="Insufficient DSTN")
+        character.destiny_tokens -= amount
+    elif from_currency == "stars":
+        if character.stars < amount:
+            raise HTTPException(status_code=400, detail="Insufficient stars")
+        character.stars -= amount
+    else:
+        raise HTTPException(status_code=400, detail="Invalid currency")
+    
+    received = amount * rate * (1 - fee / 100)
+    
+    if to_currency == "gold":
+        character.gold += received
+    elif to_currency == "dstn":
+        character.destiny_tokens += received
+    elif to_currency == "stars":
+        character.stars += received
+    
+    # Запись транзакции
+    if not character.exchange_history:
+        character.exchange_history = []
+    
+    transaction = {
+        "timestamp": datetime.utcnow().isoformat(),
+        "from": from_currency,
+        "to": to_currency,
+        "amount": amount,
+        "received": received,
+        "rate": rate,
+        "fee": fee
+    }
+    
+    character.exchange_history.append(transaction)
+    db.commit()
+    
+    return {
+        "status": "success",
+        "received": received,
+        "rate": rate,
+        "fee_percent": fee
+    }
+
+# ========== КВЕСТЫ ==========
+@router.get("/quests/daily/{telegram_id}")
+def get_daily_quests(telegram_id: int, db: Session = Depends(get_db)):
+    """Получить ежедневные квесты"""
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    today = datetime.now().date()
+    daily_quests = quests_data.get("quests", {}).get("daily", {})
+    
+    # Сброс квестов, если новый день
+    if user.last_daily_reset != today:
+        # Выбираем 3 случайных квеста
+        all_quest_ids = list(daily_quests.keys())
+        user.daily_quests = random.sample(all_quest_ids, min(3, len(all_quest_ids)))
+        user.daily_quests_progress = {}
+        user.last_daily_reset = today
+        db.commit()
+    
+    result = []
+    for quest_id in (user.daily_quests or []):
+        quest = daily_quests.get(quest_id)
+        if quest:
+            progress = (user.daily_quests_progress or {}).get(quest_id, 0)
+            completed = progress >= quest.get("requirement", 1)
+            
+            result.append({
+                "id": quest_id,
+                "name": quest.get("name"),
+                "description": quest.get("description"),
+                "requirement": quest.get("requirement"),
+                "rewards": quest.get("rewards"),
+                "progress": progress,
+                "completed": completed,
+                "expires": today.isoformat()
+            })
+    
+    return {"quests": result}
+
+@router.post("/quests/claim/{quest_id}")
+def claim_quest_reward(telegram_id: int, quest_id: str, db: Session = Depends(get_db)):
+    """Забрать награду за квест"""
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    character = db.query(Character).filter(Character.user_id == user.id).first()
+    if not character:
+        raise HTTPException(status_code=404, detail="Character not found")
+    
+    today = datetime.now().date()
+    
+    # Проверяем, есть ли квест у пользователя
+    if quest_id not in (user.daily_quests or []):
+        raise HTTPException(status_code=400, detail="Quest not assigned")
+    
+    # Получаем информацию о квесте
+    daily_quests = quests_data.get("quests", {}).get("daily", {})
+    quest = daily_quests.get(quest_id)
+    if not quest:
+        raise HTTPException(status_code=404, detail="Quest not found")
+    
+    # Проверяем прогресс
+    progress = (user.daily_quests_progress or {}).get(quest_id, 0)
+    if progress < quest.get("requirement", 1):
+        raise HTTPException(status_code=400, detail="Quest not completed")
+    
+    # Проверяем, не забрали ли уже награду
+    if user.claimed_daily_quests and quest_id in user.claimed_daily_quests:
+        raise HTTPException(status_code=400, detail="Reward already claimed")
+    
+    # Начисляем награды
+    rewards = quest.get("rewards", {})
+    
+    # Золото
+    character.gold += rewards.get("gold", 0)
+    
+    # Опыт
+    experience_gain = rewards.get("experience", 0)
+    character.experience += experience_gain
+    
+    # DSTN токены
+    character.destiny_tokens += rewards.get("dstn", 0)
+    
+    # Предметы
+    items = rewards.get("items", [])
+    inventory = character.inventory or []
+    for item in items:
+        for _ in range(item.get("count", 1)):
+            inventory.append(item.get("id"))
+    character.inventory = inventory
+    
+    # Отмечаем квест как выполненный
+    if not user.claimed_daily_quests:
+        user.claimed_daily_quests = []
+    user.claimed_daily_quests.append(quest_id)
+    
+    # Проверка на повышение уровня
+    level_up = False
+    new_level = character.level
+    
+    exp_needed = int(1000 * (character.level ** 1.5))
+    while character.experience >= exp_needed and character.level < 100:
+        character.experience -= exp_needed
+        character.level += 1
+        level_up = True
+        character.max_health += 10
+        character.health = character.max_health
+        character.max_mana += 5
+        character.mana = character.max_mana
+        exp_needed = int(1000 * (character.level ** 1.5))
+    
+    db.commit()
+    
+    return {
+        "status": "success",
+        "rewards": rewards,
+        "level_up": level_up,
+        "new_level": character.level if level_up else None
+    }
+
+# ========== БОЙ ==========
+@router.post("/battle/start")
+def start_battle(telegram_id: int, enemy_id: str, db: Session = Depends(get_db)):
+    """Начать бой с врагом"""
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    character = db.query(Character).filter(Character.user_id == user.id).first()
+    if not character:
+        raise HTTPException(status_code=404, detail="Character not found")
+    
+    # Получаем информацию о враге
+    enemy = enemies_data.get("enemies", {}).get(enemy_id)
+    if not enemy:
+        raise HTTPException(status_code=404, detail="Enemy not found")
+    
+    # Проверяем энергию
+    if character.energy < 10:
+        raise HTTPException(status_code=400, detail="Not enough energy")
+    
+    character.energy -= 10
+    
+    # Симулируем бой (упрощенно)
+    player_power = (
+        character.strength * 2 +
+        character.agility * 1.5 +
+        character.intelligence * 1.5 +
+        character.level * 5
+    )
+    
+    # Добавляем силу оружия, если экипировано
+    if character.equipped_weapon:
+        weapon = items_data.get("items", {}).get(character.equipped_weapon, {})
+        player_power += weapon.get("damage", 0) * 2
+    
+    enemy_power = (
+        enemy.get("damage", 5) * 3 +
+        enemy.get("health", 50) * 0.5 +
+        enemy.get("level", 1) * 5
+    )
+    
+    # Шанс победы
+    win_chance = player_power / (player_power + enemy_power)
+    
+    # Определяем исход
+    if random.random() < win_chance:
+        # Победа
+        experience_gain = enemy.get("exp", 50)
+        gold_gain = enemy.get("gold", random.randint(5, 20))
+        
+        character.experience += experience_gain
+        character.gold += gold_gain
+        character.kills_total += 1
+        
+        # Шанс на выпадение предмета
+        drops = enemy.get("drops", [])
+        inventory = character.inventory or []
+        
+        items_dropped = []
+        for drop in drops:
+            if random.random() < drop.get("chance", 0.1):
+                item_id = drop.get("item")
+                inventory.append(item_id)
+                items_dropped.append(item_id)
+        
+        character.inventory = inventory
+        
+        # Проверка на повышение уровня
+        level_up = False
+        exp_needed = int(1000 * (character.level ** 1.5))
+        while character.experience >= exp_needed and character.level < 100:
+            character.experience -= exp_needed
+            character.level += 1
+            level_up = True
+            character.max_health += 10
+            character.health = character.max_health
+            character.max_mana += 5
+            character.mana = character.max_mana
+            exp_needed = int(1000 * (character.level ** 1.5))
+        
+        db.commit()
+        
+        return {
+            "result": "victory",
+            "experience_gained": experience_gain,
+            "gold_gained": gold_gain,
+            "items_dropped": items_dropped,
+            "level_up": level_up,
+            "new_level": character.level if level_up else None
+        }
+    else:
+        # Поражение
+        damage_taken = enemy.get("damage", 5) * random.randint(1, 3)
+        character.health = max(0, character.health - damage_taken)
+        
+        db.commit()
+        
+        return {
+            "result": "defeat",
+            "damage_taken": damage_taken,
+            "health_left": character.health
+        }
+
+# ========== АЧИВКИ ==========
+@router.get("/achievements/{telegram_id}")
+def get_achievements(telegram_id: int, db: Session = Depends(get_db)):
+    """Получить достижения игрока"""
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    achievements_data = codex_data.get("codex", {}).get("achievements", {})
+    user_achievements = user.achievements or []
+    
+    result = []
+    for ach_id, ach_info in achievements_data.items():
+        result.append({
+            "id": ach_id,
+            "name": ach_info.get("name"),
+            "description": ach_info.get("description"),
+            "reward": ach_info.get("reward"),
+            "unlocked": ach_id in user_achievements,
+            "hidden": ach_info.get("hidden", False)
+        })
+    
+    return {"achievements": result}
+
+# ========== КЛАССЫ ==========
+@router.get("/classes")
+def get_classes():
+    """Получить информацию о всех классах"""
+    return classes_data.get("classes", {})
+
+@router.get("/class/{class_name}")
+def get_class_info(class_name: str):
+    """Получить информацию о конкретном классе"""
+    classes = classes_data.get("classes", {})
+    class_info = classes.get(class_name)
+    
+    if not class_info:
+        raise HTTPException(status_code=404, detail="Class not found")
+    
+    return class_info
+
+@router.post("/class/select")
+def select_class(telegram_id: int, class_name: str, db: Session = Depends(get_db)):
+    """Выбрать класс для персонажа"""
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    character = db.query(Character).filter(Character.user_id == user.id).first()
+    if not character:
+        raise HTTPException(status_code=404, detail="Character not found")
+    
+    if character.player_class:
+        raise HTTPException(status_code=400, detail="Class already selected")
+    
+    classes = classes_data.get("classes", {})
+    class_info = classes.get(class_name)
+    
+    if not class_info:
+        raise HTTPException(status_code=404, detail="Class not found")
+    
+    # Устанавливаем класс
+    character.player_class = class_name
+    character.class_level = 1
+    
+    # Даем стартовые бонусы
+    character.strength += class_info.get("base_stats", {}).get("strength", 0)
+    character.agility += class_info.get("base_stats", {}).get("agility", 0)
+    character.intelligence += class_info.get("base_stats", {}).get("intelligence", 0)
+    character.vitality += class_info.get("base_stats", {}).get("vitality", 0)
+    character.luck += class_info.get("base_stats", {}).get("luck", 0)
+    
+    db.commit()
+    
+    return {"status": "success", "class": class_name}
+
+# ========== РАДУЖНЫЙ РЕЖИМ ==========
+@router.get("/rainbow/status/{telegram_id}")
+def get_rainbow_status(telegram_id: int, db: Session = Depends(get_db)):
+    """Получить статус радужного режима"""
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    character = db.query(Character).filter(Character.user_id == user.id).first()
+    if not character:
+        raise HTTPException(status_code=404, detail="Character not found")
+    
+    rainbow_info = rainbow_data.get("rainbow", {})
+    
+    return {
+        "active": character.rainbow_mode_active or False,
+        "shards": character.rainbow_shards or 0,
+        "stones": character.rainbow_stones or 0,
+        "current_color": character.rainbow_color,
+        "progress": character.rainbow_progress or 0,
+        "rewards": rainbow_info.get("rewards", {}),
+        "bonuses": rainbow_info.get("bonuses", {})
+    }
+
+@router.post("/rainbow/activate")
+def activate_rainbow_mode(telegram_id: int, db: Session = Depends(get_db)):
+    """Активировать радужный режим"""
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    character = db.query(Character).filter(Character.user_id == user.id).first()
+    if not character:
+        raise HTTPException(status_code=404, detail="Character not found")
+    
+    if character.rainbow_mode_active:
+        raise HTTPException(status_code=400, detail="Rainbow mode already active")
+    
+    if (character.rainbow_shards or 0) < 100:
+        raise HTTPException(status_code=400, detail="Not enough rainbow shards")
+    
+    character.rainbow_shards -= 100
+    character.rainbow_mode_active = True
+    character.rainbow_progress = 0
+    character.rainbow_color = random.choice(["red", "orange", "yellow", "green", "blue", "indigo", "violet"])
+    
+    db.commit()
+    
+    return {
+        "status": "activated",
+        "color": character.rainbow_color,
+        "bonus": rainbow_data.get("rainbow", {}).get("bonuses", {}).get(character.rainbow_color, {})
+    }
+
+# ========== ПРЕМИУМ ==========
+@router.get("/premium/info")
+def get_premium_info():
+    """Получить информацию о премиум-подписке"""
+    return premium_data.get("premium", {})
+
+@router.post("/premium/buy")
+def buy_premium(telegram_id: int, plan: str, db: Session = Depends(get_db)):
+    """Купить премиум-подписку"""
+    user = db.query(User).filter(User.telegram_id == telegram_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    character = db.query(Character).filter(Character.user_id == user.id).first()
+    if not character:
+        raise HTTPException(status_code=404, detail="Character not found")
+    
+    premium_plans = premium_data.get("premium", {}).get("plans", {})
+    plan_info = premium_plans.get(plan)
+    
+    if not plan_info:
+        raise HTTPException(status_code=404, detail="Plan not found")
+    
+    cost = plan_info.get("cost_dstn", 0)
+    if character.destiny_tokens < cost:
+        raise HTTPException(status_code=400, detail="Insufficient DSTN")
+    
+    character.destiny_tokens -= cost
+    
+    duration_days = plan_info.get("duration_days", 30)
+    user.premium_until = datetime.utcnow() + timedelta(days=duration_days)
+    user.premium_plan = plan
+    
+    db.commit()
+    
+    return {
+        "status": "success",
+        "premium_until": user.premium_until,
+        "plan": plan
+    }
