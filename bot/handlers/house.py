@@ -1,6 +1,9 @@
+# /bot/handlers/house.py
 import logging
 import time
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+
+logger = logging.getLogger(__name__)
 
 def house_command(message, bot, get_or_create_player, house_data):
     """Показать информацию о домике"""
@@ -357,3 +360,12 @@ def handle_callback(call, bot, get_or_create_player, house_data, items_data):
     except Exception as e:
         logging.error(f"Ошибка в house callback: {e}")
         bot.answer_callback_query(call.id, "⚠️ Ошибка")
+
+# ============================================
+# ЭКСПОРТ
+# ============================================
+
+__all__ = [
+    'house_command',
+    'handle_callback'
+]
