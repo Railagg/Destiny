@@ -7,10 +7,17 @@ from main import get_or_create_player  # импорт вверху
 
 bot = telebot.TeleBot(os.getenv("BOT_TOKEN"))
 
-def top_command(message):
+def top_command(message, bot_instance=None, get_or_create_player_func=None):
     """Команда /top - рейтинги"""
+    # Для совместимости с разными вызовами
+    if bot_instance is None:
+        bot_instance = bot
+    
+    if get_or_create_player_func is None:
+        get_or_create_player_func = get_or_create_player
+    
     user_id = message.from_user.id
-    user, character = get_or_create_player(user_id)
+    user, character = get_or_create_player_func(user_id)
     
     text = "🏆 *РЕЙТИНГИ*\n\n"
     text += "Выбери категорию:\n\n"
@@ -32,7 +39,31 @@ def top_command(message):
     )
     markup.add(InlineKeyboardButton("🔙 Назад", callback_data="game:back_to_start"))
     
-    bot.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
+    bot_instance.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
+
+def top_category_command(message, bot_instance, get_or_create_player_func):
+    """Команда /top_category - показать конкретную категорию"""
+    args = message.text.split()
+    if len(args) < 2:
+        bot_instance.send_message(
+            message.chat.id,
+            "❌ Укажи категорию!\n"
+            "Пример: /top_category level\n"
+            "Категории: level, gold, pvp, guilds, achievements, mining",
+            parse_mode='Markdown'
+        )
+        return
+    
+    category = args[1].lower()
+    
+    # Создаём callback-подобный вызов
+    class FakeCall:
+        def __init__(self, message, data):
+            self.message = message
+            self.data = data
+    
+    fake_call = FakeCall(message, f"top:{category}")
+    handle_callback(fake_call, bot_instance, get_or_create_player_func)
 
 def handle_callback(call, bot_instance, get_or_create_player_func):
     """Обработка кнопок рейтингов"""
@@ -209,7 +240,17 @@ def handle_callback(call, bot_instance, get_or_create_player_func):
         )
     
     elif data == "menu":
-        top_command(call.message)
+        top_command(call.message, bot_instance, get_or_create_player_func)
     
     else:
         bot_instance.answer_callback_query(call.id, "⏳ Эта функция в разработке")
+
+# ============================================
+# ЭКСПОРТ
+# ============================================
+
+__all__ = [
+    'top_command',
+    'top_category_command',
+    'handle_callback'
+]
