@@ -100,6 +100,80 @@ def events_command(message, bot_instance, events_data):
     
     bot_instance.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
 
+def daily_event_command(message, bot_instance, events_data):
+    """Команда /daily_event - показать ежедневный ивент"""
+    weekly = events_data.get("events", {}).get("weekly", {})
+    today = datetime.now().strftime("%A").lower()
+    
+    if today not in weekly:
+        bot_instance.send_message(
+            message.chat.id,
+            "📅 Сегодня нет запланированных ивентов.",
+            parse_mode='Markdown'
+        )
+        return
+    
+    event = weekly[today]
+    
+    text = f"📅 *ИВЕНТ СЕГОДНЯ*\n\n"
+    text += f"👉 *{event.get('name')}*\n"
+    text += f"{event.get('description')}\n\n"
+    
+    if event.get('bonuses'):
+        text += "*✨ Бонусы:*\n"
+        for bonus, value in event.get('bonuses', {}).items():
+            if isinstance(value, (int, float)):
+                if value > 1:
+                    text += f"• {bonus} x{value}\n"
+                else:
+                    text += f"• {bonus} +{int((value-1)*100)}%\n"
+        text += "\n"
+    
+    if event.get('quest'):
+        quest = event['quest']
+        text += f"*📜 Особое задание:*\n"
+        text += f"• {quest.get('name')}\n"
+        if quest.get('reward'):
+            text += f"  🎁 Награда: {quest.get('reward')}\n"
+        text += "\n"
+    
+    if event.get('competition'):
+        comp = event['competition']
+        text += f"*🏆 Соревнование:*\n"
+        text += f"• {comp.get('name')}\n"
+        if comp.get('rewards'):
+            text += f"  🏅 Призы для лучших!\n"
+    
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("🔙 К ивентам", callback_data="events:menu"))
+    
+    bot_instance.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
+
+def active_events_command(message, bot_instance, events_data):
+    """Команда /active_events - показать активные ивенты"""
+    active = get_active_events(events_data)
+    
+    if not active:
+        bot_instance.send_message(
+            message.chat.id,
+            "🔥 Сейчас нет активных ивентов.",
+            parse_mode='Markdown'
+        )
+        return
+    
+    text = "🔥 *АКТИВНЫЕ ИВЕНТЫ*\n\n"
+    
+    for event in active:
+        text += f"• *{event.get('name')}*\n"
+        text += f"  {event.get('description')}\n"
+        remaining = get_remaining_time(event)
+        text += f"  ⏳ Осталось: {remaining}\n\n"
+    
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("🔙 К ивентам", callback_data="events:menu"))
+    
+    bot_instance.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
+
 def show_weekly_events(call, bot_instance, events_data):
     """Показать еженедельные ивенты"""
     weekly = events_data.get("events", {}).get("weekly", {})
@@ -527,6 +601,8 @@ def handle_callback(call, bot_instance, events_data):
 
 __all__ = [
     'events_command',
+    'daily_event_command',
+    'active_events_command',
     'handle_callback',
     'get_active_events',
     'get_upcoming_events',
