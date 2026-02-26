@@ -1,14 +1,14 @@
+# /bot/handlers/top.py
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import os
 import json
+from main import get_or_create_player  # импорт вверху
 
 bot = telebot.TeleBot(os.getenv("BOT_TOKEN"))
 
 def top_command(message):
     """Команда /top - рейтинги"""
-    from main import get_or_create_player
-    
     user_id = message.from_user.id
     user, character = get_or_create_player(user_id)
     
@@ -43,7 +43,6 @@ def handle_callback(call, bot_instance, get_or_create_player_func):
     user, character = get_or_create_player_func(user_id)
     
     if data == "level":
-        # Здесь должен быть запрос к базе данных
         text = "📊 *ТОП-10 ПО УРОВНЮ*\n\n"
         text += "1. Игрок1 - уровень 50 (престиж 5)\n"
         text += "2. Игрок2 - уровень 48 (престиж 4)\n"
@@ -55,7 +54,10 @@ def handle_callback(call, bot_instance, get_or_create_player_func):
         text += "8. Игрок8 - уровень 40 (престиж 2)\n"
         text += "9. Игрок9 - уровень 38 (престиж 1)\n"
         text += "10. Игрок10 - уровень 37 (престиж 1)\n\n"
-        text += f"Твоё место: #{character.level} с уровнем {character.level}"
+        
+        # Находим место игрока (заглушка, потом заменить на реальный запрос)
+        text += f"📍 Твоё место: в топ-{character.level // 5 + 1 if character.level else '??'}\n"
+        text += f"📊 Твой уровень: {character.level}"
         
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("🔙 Назад", callback_data="top:menu"))
@@ -80,7 +82,8 @@ def handle_callback(call, bot_instance, get_or_create_player_func):
         text += "8. Игрок8 - 1,234,567💰\n"
         text += "9. Игрок9 - 987,654💰\n"
         text += "10. Игрок10 - 765,432💰\n\n"
-        text += f"Твоё золото: {character.gold}💰"
+        text += f"📍 Твоё место: в топ-{character.gold // 100000 + 1 if character.gold else '??'}\n"
+        text += f"💰 Твоё золото: {character.gold:,}💰".replace(',', ' ')
         
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("🔙 Назад", callback_data="top:menu"))
@@ -94,7 +97,8 @@ def handle_callback(call, bot_instance, get_or_create_player_func):
         )
     
     elif data == "pvp":
-        pvp_rating = character.pvp_rating if hasattr(character, 'pvp_rating') else 1000
+        pvp_rating = getattr(character, 'pvp_rating', 1000)
+        pvp_wins = getattr(character, 'pvp_wins', 0)
         
         text = "⚔️ *ТОП-10 ПО PvP РЕЙТИНГУ*\n\n"
         text += "1. Игрок1 - 2850 рейтинга\n"
@@ -107,7 +111,8 @@ def handle_callback(call, bot_instance, get_or_create_player_func):
         text += "8. Игрок8 - 2080 рейтинга\n"
         text += "9. Игрок9 - 1970 рейтинга\n"
         text += "10. Игрок10 - 1860 рейтинга\n\n"
-        text += f"Твой рейтинг: {pvp_rating}"
+        text += f"⚔️ Твой рейтинг: {pvp_rating}\n"
+        text += f"🏆 Побед в PvP: {pvp_wins}"
         
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("🔙 Назад", callback_data="top:menu"))
@@ -131,7 +136,12 @@ def handle_callback(call, bot_instance, get_or_create_player_func):
         text += "7. Маги стихий - уровень 2 (22 участника)\n"
         text += "8. Кузнецы судьбы - уровень 2 (20 участников)\n"
         text += "9. Странники - уровень 1 (15 участников)\n"
-        text += "10. Избранные - уровень 1 (12 участников)"
+        text += "10. Избранные - уровень 1 (12 участников)\n\n"
+        
+        if user.guild_id:
+            text += f"📍 Твоя гильдия: ID {user.guild_id}"
+        else:
+            text += f"📍 Ты не состоишь в гильдии"
         
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("🔙 Назад", callback_data="top:menu"))
@@ -145,6 +155,8 @@ def handle_callback(call, bot_instance, get_or_create_player_func):
         )
     
     elif data == "achievements":
+        achievements_count = len(getattr(user, 'achievements', [])) if hasattr(user, 'achievements') else 0
+        
         text = "📈 *ТОП-10 ПО ДОСТИЖЕНИЯМ*\n\n"
         text += "1. Игрок1 - 87 достижений\n"
         text += "2. Игрок2 - 82 достижения\n"
@@ -156,8 +168,7 @@ def handle_callback(call, bot_instance, get_or_create_player_func):
         text += "8. Игрок8 - 61 достижение\n"
         text += "9. Игрок9 - 58 достижений\n"
         text += "10. Игрок10 - 55 достижений\n\n"
-        achievements_count = character.achievements_count if hasattr(character, 'achievements_count') else 0
-        text += f"Твои достижения: {achievements_count}"
+        text += f"🏆 Твои достижения: {achievements_count}"
         
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("🔙 Назад", callback_data="top:menu"))
@@ -171,6 +182,8 @@ def handle_callback(call, bot_instance, get_or_create_player_func):
         )
     
     elif data == "mining":
+        ore_mined = getattr(character, 'resources_gathered', 0)
+        
         text = "⛏️ *ТОП-10 ПО ДОБЫЧЕ*\n\n"
         text += "1. Игрок1 - 45,678 руды\n"
         text += "2. Игрок2 - 43,210 руды\n"
@@ -182,8 +195,7 @@ def handle_callback(call, bot_instance, get_or_create_player_func):
         text += "8. Игрок8 - 23,456 руды\n"
         text += "9. Игрок9 - 21,234 руды\n"
         text += "10. Игрок10 - 19,012 руды\n\n"
-        ore_mined = character.ore_mined if hasattr(character, 'ore_mined') else 0
-        text += f"Твоя добыча: {ore_mined} руды"
+        text += f"📍 Твоя добыча: {ore_mined:,} ресурсов".replace(',', ' ')
         
         markup = InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("🔙 Назад", callback_data="top:menu"))
