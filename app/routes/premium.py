@@ -286,8 +286,6 @@ RENEWAL_BONUSES = {
     }
 }
 
-# ========== ОСНОВНЫЕ МАРШРУТЫ ==========
-
 @router.get("/plans")
 def get_premium_plans():
     """Получить список премиум тарифов"""
@@ -298,15 +296,12 @@ def get_plan_details(plan_id: str):
     """Получить детали конкретного плана"""
     if plan_id not in PREMIUM_PLANS:
         raise HTTPException(status_code=404, detail="Plan not found")
-    
     return PREMIUM_PLANS[plan_id]
 
 @router.get("/renewal")
 def get_renewal_bonuses():
     """Получить награды за верность"""
     return RENEWAL_BONUSES
-
-# ========== ПОКУПКА ПРЕМИУМА ==========
 
 @router.post("/buy/{plan_id}")
 def buy_premium(
@@ -321,7 +316,6 @@ def buy_premium(
     
     plan = PREMIUM_PLANS[plan_id]
     
-    # Проверяем пользователя
     user = db.query(User).filter(User.telegram_id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -330,33 +324,27 @@ def buy_premium(
     if not character:
         raise HTTPException(status_code=404, detail="Character not found")
     
-    # Проверяем, первая ли покупка
     is_first = not user.premium_first_purchase
     
-    # Рассчитываем цену
     price = 0
     if payment_method == "stars":
         price = plan["price_stars"]
         if is_first:
             price = int(price * (100 - plan["first_purchase_discount_stars"]) / 100)
-        
-        # Проверяем баланс (упрощённо)
-        if getattr(character, 'stars', 0) < price:
+        if character.stars < price:
             raise HTTPException(status_code=400, detail="Not enough Stars")
         
     elif payment_method == "ton":
         price = plan["price_ton"]
-        # Постоянная скидка 10% на TON
-        price = int(price * 90 / 100)
+        price = int(price * 90 / 100)  # постоянная скидка 10%
         if is_first:
             price = int(price * (100 - plan["first_purchase_discount_ton"]) / 100)
-        
-        if getattr(character, 'ton', 0) < price:
+        if character.ton < price:
             raise HTTPException(status_code=400, detail="Not enough TON")
         
     elif payment_method == "dstn":
         price = plan["price_dstn"]
-        if getattr(character, 'destiny_tokens', 0) < price:
+        if character.destiny_tokens < price:
             raise HTTPException(status_code=400, detail="Not enough DSTN")
         
     else:
@@ -364,9 +352,9 @@ def buy_premium(
     
     # Списываем средства
     if payment_method == "stars":
-        character.stars = getattr(character, 'stars', 0) - price
+        character.stars -= price
     elif payment_method == "ton":
-        character.ton = getattr(character, 'ton', 0) - price
+        character.ton -= price
     elif payment_method == "dstn":
         character.destiny_tokens -= price
     
@@ -374,11 +362,9 @@ def buy_premium(
     now = datetime.utcnow()
     
     if user.premium_until and user.premium_until > now:
-        # Продлеваем существующий
         user.premium_until += timedelta(days=plan["duration"])
         user.premium_total_days = (user.premium_total_days or 0) + plan["duration"]
     else:
-        # Новый
         user.premium_until = now + timedelta(days=plan["duration"])
         user.premium_total_days = plan["duration"]
     
@@ -418,10 +404,7 @@ def buy_premium(
             user.titles = []
         user.titles.append(gift["title"])
     
-    # Применяем бонусы
     apply_premium_bonuses(character, plan)
-    
-    # Проверяем награды за верность
     check_renewal_bonuses(user, character)
     
     db.commit()
@@ -433,11 +416,9 @@ def buy_premium(
         "total_days": user.premium_total_days
     }
 
-# ========== СТАТУС ПРЕМИУМА ==========
-
 @router.get("/status/{user_id}")
 def get_premium_status(user_id: int, db: Session = Depends(get_db)):
-    """Получить статус премиума игрока"""
+    """Получить статус премиума (покупной + стрик)"""
     user = db.query(User).filter(User.telegram_id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -447,46 +428,69 @@ def get_premium_status(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Character not found")
     
     now = datetime.utcnow()
-    is_active = user.premium_until and user.premium_until > now
     
-    if is_active:
-        days_left = (user.premium_until - now).days
-        hours_left = ((user.premium_until - now).seconds // 3600)
-        
-        # Получаем план
+    paid_active = user.premium_until and user.premium_until > now
+    streak_active = user.premium_from_streak and user.premium_from_streak > now
+    any_active = paid_active or streak_active
+    
+    total_bonuses = {}
+    
+    if paid_active:
         plan = PREMIUM_PLANS.get(user.premium_plan, {})
-        
-        # Проверяем награды за верность
-        renewal_earned = []
-        if user.renewal_3months:
-            renewal_earned.append("3 месяца")
-        if user.renewal_6months:
-            renewal_earned.append("6 месяцев")
-        if user.renewal_1year:
-            renewal_earned.append("1 год")
-        if user.renewal_2years:
-            renewal_earned.append("2 года")
-        if user.renewal_3years:
-            renewal_earned.append("3 года")
-        
-        return {
-            "active": True,
-            "plan": plan.get("name"),
-            "plan_id": user.premium_plan,
-            "expires": user.premium_until.isoformat(),
-            "days_left": days_left,
-            "hours_left": hours_left,
-            "total_days": user.premium_total_days,
-            "renewal_earned": renewal_earned,
-            "bonuses": plan.get("bonuses", {})
-        }
+        total_bonuses.update(plan.get("bonuses", {}))
+        paid_plan_name = plan.get("name")
     else:
-        return {
-            "active": False,
-            "total_days": user.premium_total_days or 0
+        paid_plan_name = None
+    
+    if streak_active:
+        streak_bonuses = {
+            "max_energy": 125,
+            "gold_multiplier": 1.05,
+            "exp_multiplier": 1.05,
+            "luck": 3,
+            "chests_per_day": 1,
+            "house_rest_multiplier": 1.2,
+            "inventory_slots": 25
         }
-
-# ========== ЕЖЕДНЕВНЫЕ НАГРАДЫ ==========
+        for key, value in streak_bonuses.items():
+            if key in total_bonuses:
+                if isinstance(value, (int, float)):
+                    if isinstance(total_bonuses[key], (int, float)):
+                        total_bonuses[key] = max(total_bonuses[key], value)
+            else:
+                total_bonuses[key] = value
+    
+    # Информация о следующем премиуме за стрик
+    days_to_next_premium = None
+    if not streak_active:
+        from routes.daily import STREAK_REWARDS
+        for i in range(1, 8):
+            check_streak = user.login_streak + i
+            reward = STREAK_REWARDS.get(check_streak)
+            if reward and reward.get("premium_day"):
+                days_to_next_premium = i
+                break
+    
+    return {
+        "active": any_active,
+        "paid": {
+            "active": paid_active,
+            "plan": paid_plan_name,
+            "plan_id": user.premium_plan,
+            "expires": user.premium_until.isoformat() if paid_active else None,
+            "total_days": user.premium_total_days or 0
+        },
+        "streak": {
+            "active": streak_active,
+            "expires": user.premium_from_streak.isoformat() if streak_active else None,
+            "days_earned": user.streak_premium_days or 0,
+            "current_streak": user.login_streak,
+            "days_to_next": days_to_next_premium
+        },
+        "total_bonuses": total_bonuses,
+        "login_streak": user.login_streak,
+        "max_streak": user.max_streak or 0
+    }
 
 @router.post("/daily/{user_id}")
 def claim_daily_premium(user_id: int, db: Session = Depends(get_db)):
@@ -501,18 +505,15 @@ def claim_daily_premium(user_id: int, db: Session = Depends(get_db)):
     
     now = datetime.utcnow()
     
-    # Проверяем, активен ли премиум
     if not user.premium_until or user.premium_until <= now:
         raise HTTPException(status_code=400, detail="Premium not active")
     
-    # Проверяем, не получал ли уже сегодня
     last_claim = getattr(character, 'premium_last_daily', None)
     if last_claim:
         last = datetime.fromisoformat(last_claim) if isinstance(last_claim, str) else last_claim
         if last.date() == now.date():
             raise HTTPException(status_code=400, detail="Already claimed today")
     
-    # Определяем награду по плану
     plan = PREMIUM_PLANS.get(user.premium_plan, {})
     daily = plan.get("daily_rewards", {})
     
@@ -537,13 +538,11 @@ def claim_daily_premium(user_id: int, db: Session = Depends(get_db)):
                 character.add_item(item)
                 rewards.append(item)
     
-    # Особые награды для высоких планов
     if plan.get("premium_chest_daily"):
         character.add_item("premium_chest_key")
         rewards.append("premium_chest_key")
     
     if plan.get("rainbow_shard_weekly"):
-        # Проверяем, не получил ли уже на этой неделе
         last_weekly = getattr(character, 'premium_last_weekly', None)
         if last_weekly:
             last = datetime.fromisoformat(last_weekly) if isinstance(last_weekly, str) else last_weekly
@@ -565,8 +564,6 @@ def claim_daily_premium(user_id: int, db: Session = Depends(get_db)):
         "status": "claimed",
         "rewards": rewards
     }
-
-# ========== НАГРАДЫ ЗА ВЕРНОСТЬ ==========
 
 @router.get("/renewal/{user_id}")
 def get_renewal_status(user_id: int, db: Session = Depends(get_db)):
@@ -625,7 +622,6 @@ def claim_renewal_reward(
     
     total_days = user.premium_total_days or 0
     
-    # Проверяем, доступна ли награда
     if milestone == "3months" and total_days >= 90 and not user.renewal_3months:
         user.renewal_3months = True
         reward = RENEWAL_BONUSES["3months"]["reward"]
@@ -644,7 +640,6 @@ def claim_renewal_reward(
     else:
         raise HTTPException(status_code=400, detail="Reward not available")
     
-    # Выдаём награду
     claimed = []
     
     if reward.get("rainbow_shard"):
@@ -682,13 +677,10 @@ def claim_renewal_reward(
         "rewards": claimed
     }
 
-# ========== СРАВНЕНИЕ ПЛАНОВ ==========
-
 @router.get("/compare")
 def compare_plans():
     """Сравнить все планы"""
     comparison = []
-    
     for plan_id, plan in PREMIUM_PLANS.items():
         comparison.append({
             "id": plan_id,
@@ -706,15 +698,11 @@ def compare_plans():
                 "rainbow_shard_weekly": plan["bonuses"].get("rainbow_shard_weekly", 0)
             }
         })
-    
     return comparison
-
-# ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
 
 def apply_premium_bonuses(character, plan):
     """Применить бонусы премиума к персонажу"""
     bonuses = plan.get("bonuses", {})
-    
     character.max_energy = bonuses.get("max_energy", character.max_energy)
     character.gold_multiplier = bonuses.get("gold_multiplier", 1.0)
     character.exp_multiplier = bonuses.get("exp_multiplier", 1.0)
@@ -723,10 +711,8 @@ def apply_premium_bonuses(character, plan):
     character.inventory_slots_bonus = bonuses.get("inventory_slots", 0)
     character.house_rest_multiplier = bonuses.get("house_rest_multiplier", 1.0)
     character.pet_exp_gain = bonuses.get("pet_exp_gain", 1.0)
-    
     if bonuses.get("rainbow_shard_weekly"):
         character.rainbow_shard_weekly = bonuses["rainbow_shard_weekly"]
-    
     if bonuses.get("exchange_bonus"):
         character.exchange_bonus = bonuses["exchange_bonus"]
 
@@ -777,7 +763,6 @@ def check_renewal_bonuses(user, character):
         user.titles.append("Бог")
 
 def get_next_milestone(total_days):
-    """Получить следующий рубеж для наград"""
     if total_days < 90:
         return {"milestone": "3months", "days_needed": 90 - total_days}
     elif total_days < 180:
