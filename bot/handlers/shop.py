@@ -1,351 +1,431 @@
-import telebot
+import logging
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-import os
-import json
 
-bot = telebot.TeleBot(os.getenv("BOT_TOKEN"))
-
-def shop_command(message):
+def shop_command(message, bot, get_or_create_player, items_data):
     """Команда /shop - магазин"""
-    from main import get_or_create_player
-    
     user_id = message.from_user.id
     user, character = get_or_create_player(user_id)
     
     text = "🏪 *МАГАЗИН*\n\n"
-    text += f"💰 Твой баланс: {character.gold} золота, {character.destiny_tokens} DSTN\n\n"
-    text += "Выбери категорию:\n\n"
-    text += "⚔️ Оружие\n"
-    text += "🛡️ Броня\n"
-    text += "🛠️ Инструменты\n"
-    text += "⚗️ Зелья\n"
-    text += "🍲 Еда\n"
-    text += "🪱 Наживки\n"
-    text += "🎁 Сундуки\n"
-    text += "👑 Премиум"
+    text += f"💰 Твой баланс: {character.gold} золота\n"
+    text += f"💎 DSTN: {character.dstn or 0}\n"
+    if hasattr(character, 'rainbow_shards') and character.rainbow_shards:
+        text += f"🌈 Осколки: {character.rainbow_shards}\n"
+    if hasattr(character, 'rainbow_stones') and character.rainbow_stones:
+        text += f"💎 Радужные камни: {character.rainbow_stones}\n\n"
+    
+    text += "Выбери категорию товаров:"
     
     markup = InlineKeyboardMarkup(row_width=2)
     markup.add(
-        InlineKeyboardButton("⚔️ Оружие", callback_data="shop:weapons"),
-        InlineKeyboardButton("🛡️ Броня", callback_data="shop:armor"),
-        InlineKeyboardButton("🛠️ Инструменты", callback_data="shop:tools"),
-        InlineKeyboardButton("⚗️ Зелья", callback_data="shop:potions"),
-        InlineKeyboardButton("🍲 Еда", callback_data="shop:food"),
-        InlineKeyboardButton("🪱 Наживки", callback_data="shop:bait"),
-        InlineKeyboardButton("🎁 Сундуки", callback_data="shop:chests"),
+        InlineKeyboardButton("⚔️ Оружие", callback_data="shop:category:weapons"),
+        InlineKeyboardButton("🛡️ Броня", callback_data="shop:category:armor"),
+        InlineKeyboardButton("🛠️ Инструменты", callback_data="shop:category:tools"),
+        InlineKeyboardButton("⚗️ Зелья", callback_data="shop:category:potions"),
+        InlineKeyboardButton("🍲 Еда", callback_data="shop:category:food"),
+        InlineKeyboardButton("🪱 Наживки", callback_data="shop:category:bait"),
+        InlineKeyboardButton("🎁 Сундуки", callback_data="shop:category:chests"),
+        InlineKeyboardButton("📦 Ресурсы", callback_data="shop:category:resources"),
+        InlineKeyboardButton("✨ Расходники", callback_data="shop:category:consumables"),
         InlineKeyboardButton("👑 Премиум", callback_data="premium:menu")
     )
     markup.add(InlineKeyboardButton("🔙 Назад", callback_data="game:back_to_start"))
     
     bot.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
 
-def handle_callback(call, bot_instance, get_or_create_player_func, items_data):
-    """Обработка кнопок магазина"""
+def show_category(call, bot, get_or_create_player, items_data, category):
+    """Показать товары в категории"""
+    user_id = call.from_user.id
+    user, character = get_or_create_player(user_id)
+    
+    # Определяем товары в категории
+    items = []
+    
+    # Словарь категорий
+    categories = {
+        "weapons": {
+            "name": "⚔️ Оружие",
+            "filter": lambda item: item.get("type") == "weapon" and item.get("rarity") in ["common", "uncommon", "rare"],
+            "show_price": True
+        },
+        "armor": {
+            "name": "🛡️ Броня",
+            "filter": lambda item: item.get("type") == "armor" and item.get("rarity") in ["common", "uncommon", "rare"],
+            "show_price": True
+        },
+        "tools": {
+            "name": "🛠️ Инструменты",
+            "filter": lambda item: item.get("type") == "tool",
+            "show_price": True
+        },
+        "potions": {
+            "name": "⚗️ Зелья",
+            "filter": lambda item: item.get("type") == "potion" and item.get("rarity") in ["common", "uncommon"],
+            "show_price": True
+        },
+        "food": {
+            "name": "🍲 Еда",
+            "filter": lambda item: item.get("type") == "food",
+            "show_price": True
+        },
+        "bait": {
+            "name": "🪱 Наживки",
+            "filter": lambda item: item.get("type") == "bait",
+            "show_price": True
+        },
+        "chests": {
+            "name": "🎁 Сундуки",
+            "filter": lambda item: item.get("type") == "chest",
+            "show_price": True
+        },
+        "resources": {
+            "name": "📦 Ресурсы",
+            "filter": lambda item: item.get("type") in ["material", "ore", "herb"],
+            "show_price": True
+        },
+        "consumables": {
+            "name": "✨ Расходники",
+            "filter": lambda item: item.get("type") in ["consumable", "scroll"],
+            "show_price": True
+        }
+    }
+    
+    if category not in categories:
+        bot.answer_callback_query(call.id, "❌ Категория не найдена")
+        return
+    
+    cat_info = categories[category]
+    text = f"{cat_info['name']}\n\n"
+    
+    # Собираем подходящие предметы
+    for item_id, item in items_data.get("items", {}).items():
+        if cat_info["filter"](item):
+            level_req = item.get("level_req", 1)
+            if character.level >= level_req:
+                items.append((item_id, item))
+    
+    if not items:
+        text += "В этой категории пока нет товаров."
+    else:
+        for item_id, item in items[:10]:  # Показываем первые 10
+            name = item.get('name', item_id)
+            rarity = item.get('rarity', 'common')
+            rarity_emoji = {
+                'common': '⚪',
+                'uncommon': '🟢',
+                'rare': '🔵',
+                'epic': '🟣',
+                'legendary': '🟡',
+                'ancient': '🔴'
+            }.get(rarity, '⚪')
+            
+            value = item.get('value', 0)
+            currency = "💰" if value > 0 else ""
+            
+            text += f"{rarity_emoji} *{name}*\n"
+            
+            # Показываем характеристики
+            if item.get('damage'):
+                text += f"  ⚔️ Урон: +{item['damage']}\n"
+            if item.get('defense'):
+                text += f"  🛡️ Защита: +{item['defense']}\n"
+            if item.get('magic_damage'):
+                text += f"  🔮 Маг. урон: +{item['magic_damage']}\n"
+            if item.get('heal'):
+                text += f"  ❤️ Лечение: {item['heal']}\n"
+            if item.get('energy'):
+                text += f"  ⚡ Энергия: +{item['energy']}\n"
+            if item.get('durability'):
+                text += f"  🔧 Прочность: {item['durability']}\n"
+            if item.get('harvest_bonus'):
+                text += f"  🌿 +{item['harvest_bonus']} к сбору\n"
+            
+            text += f"  {currency} Цена: {value} золота\n"
+            
+            # Кнопка покупки для каждого предмета
+            text += "\n"
+    
+    markup = InlineKeyboardMarkup(row_width=1)
+    
+    # Добавляем кнопки покупки для первых 5 предметов
+    for item_id, item in items[:5]:
+        value = item.get('value', 0)
+        if value > 0 and character.gold >= value:
+            markup.add(InlineKeyboardButton(
+                f"✅ Купить {item.get('name', item_id)} за {value}💰",
+                callback_data=f"shop:buy:{item_id}:gold"
+            ))
+    
+    markup.add(InlineKeyboardButton("🔙 Назад", callback_data="shop:menu"))
+    
+    bot.edit_message_text(
+        text,
+        call.message.chat.id,
+        call.message.message_id,
+        reply_markup=markup,
+        parse_mode='Markdown'
+    )
+    bot.answer_callback_query(call.id)
+
+def show_chests(call, bot, get_or_create_player, items_data):
+    """Показать сундуки"""
+    user_id = call.from_user.id
+    user, character = get_or_create_player(user_id)
+    
+    text = "🎁 *СУНДУКИ*\n\n"
+    text += f"💰 Твой баланс: {character.gold} золота\n"
+    text += f"💎 DSTN: {character.dstn or 0}\n\n"
+    
+    chests = {
+        "common_chest": {
+            "name": "📦 Обычный сундук",
+            "price_gold": 100,
+            "price_dstn": 0,
+            "description": "Содержит обычные ресурсы и предметы",
+            "emoji": "📦"
+        },
+        "rare_chest": {
+            "name": "🎁 Редкий сундук",
+            "price_gold": 500,
+            "price_dstn": 5,
+            "description": "Шанс на редкие предметы",
+            "emoji": "🎁"
+        },
+        "epic_chest": {
+            "name": "🧧 Эпический сундук",
+            "price_gold": 0,
+            "price_dstn": 25,
+            "description": "Гарантированный эпический предмет",
+            "emoji": "🧧"
+        },
+        "legendary_chest": {
+            "name": "👑 Легендарный сундук",
+            "price_gold": 0,
+            "price_dstn": 100,
+            "description": "Шанс на легендарные предметы",
+            "emoji": "👑"
+        },
+        "elemental_chest": {
+            "name": "🌀 Сундук стихий",
+            "price_gold": 0,
+            "price_dstn": 50,
+            "description": "Содержит элементы стихий",
+            "emoji": "🌀"
+        }
+    }
+    
+    markup = InlineKeyboardMarkup(row_width=1)
+    
+    for chest_id, chest in chests.items():
+        text += f"{chest['emoji']} *{chest['name']}*\n"
+        text += f"  {chest['description']}\n"
+        
+        prices = []
+        if chest['price_gold'] > 0:
+            prices.append(f"{chest['price_gold']}💰")
+        if chest['price_dstn'] > 0:
+            prices.append(f"{chest['price_dstn']}💎")
+        
+        text += f"  Цена: {' + '.join(prices)}\n\n"
+        
+        # Кнопка покупки
+        can_buy_gold = chest['price_gold'] > 0 and character.gold >= chest['price_gold']
+        can_buy_dstn = chest['price_dstn'] > 0 and character.dstn >= chest['price_dstn']
+        
+        if can_buy_gold:
+            markup.add(InlineKeyboardButton(
+                f"💰 Купить {chest['name']} за {chest['price_gold']}💰",
+                callback_data=f"shop:buy_chest:{chest_id}:gold"
+            ))
+        if can_buy_dstn:
+            markup.add(InlineKeyboardButton(
+                f"💎 Купить {chest['name']} за {chest['price_dstn']}💎",
+                callback_data=f"shop:buy_chest:{chest_id}:dstn"
+            ))
+    
+    markup.add(InlineKeyboardButton("🔙 Назад", callback_data="shop:menu"))
+    
+    bot.edit_message_text(
+        text,
+        call.message.chat.id,
+        call.message.message_id,
+        reply_markup=markup,
+        parse_mode='Markdown'
+    )
+    bot.answer_callback_query(call.id)
+
+def buy_item(call, bot, get_or_create_player, items_data, item_id, currency):
+    """Купить предмет"""
     from main import save_character
     
-    data = call.data.split(':')[1]
     user_id = call.from_user.id
-    user, character = get_or_create_player_func(user_id)
+    user, character = get_or_create_player(user_id)
     
-    if data == "weapons":
-        text = "⚔️ *ОРУЖИЕ*\n\n"
-        text += "Доступные мечи:\n\n"
-        
-        weapons = []
-        for item_id, item in items_data.get("items", {}).items():
-            if item.get("type") == "weapon" and item.get("class") == "warrior":
-                if item.get("rarity") in ["common", "uncommon"] and item.get("level_req", 0) <= character.level:
-                    weapons.append(item)
-        
-        for item in weapons[:10]:
-            text += f"• *{item.get('name')}*\n"
-            text += f"  Урон: +{item.get('damage', 0)}\n"
-            text += f"  Требуется уровень: {item.get('level_req', 1)}\n"
-            text += f"  Цена: {item.get('value', 0)}💰\n\n"
-        
-        text += "Остальное оружие можно скрафтить!"
-        
-        markup = InlineKeyboardMarkup()
-        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="shop:menu"))
-        
-        bot_instance.edit_message_text(
-            text,
-            chat_id=call.message.chat.id,
-            message_id=call.message.message_id,
-            reply_markup=markup,
-            parse_mode='Markdown'
-        )
+    item = items_data.get("items", {}).get(item_id)
+    if not item:
+        bot.answer_callback_query(call.id, "❌ Предмет не найден")
+        return
     
-    elif data == "armor":
-        text = "🛡️ *БРОНЯ*\n\n"
-        text += "Доступная броня:\n\n"
-        
-        armors = []
-        for item_id, item in items_data.get("items", {}).items():
-            if item.get("type") == "armor" and item.get("rarity") in ["common", "uncommon"]:
-                if item.get("level_req", 0) <= character.level:
-                    armors.append(item)
-        
-        for item in armors[:10]:
-            text += f"• *{item.get('name')}*\n"
-            text += f"  Защита: +{item.get('defense', 0)} | ❤️ +{item.get('health', 0)}\n"
-            text += f"  Требуется уровень: {item.get('level_req', 1)}\n"
-            text += f"  Цена: {item.get('value', 0)}💰\n\n"
-        
-        markup = InlineKeyboardMarkup()
-        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="shop:menu"))
-        
-        bot_instance.edit_message_text(
-            text,
-            chat_id=call.message.chat.id,
-            message_id=call.message.message_id,
-            reply_markup=markup,
-            parse_mode='Markdown'
-        )
-    
-    elif data == "tools":
-        text = "🛠️ *ИНСТРУМЕНТЫ*\n\n"
-        text += "• ⛏️ *Кирки* - для добычи руды\n"
-        text += "• 🪣 *Удочки* - для рыбалки\n"
-        text += "• 🌿 *Серпы* - для сбора трав\n"
-        text += "• 🥕 *Мотыги* - для огорода\n\n"
-        text += "Выбери тип инструментов:"
-        
-        markup = InlineKeyboardMarkup(row_width=2)
-        markup.add(
-            InlineKeyboardButton("⛏️ Кирки", callback_data="shop:pickaxes"),
-            InlineKeyboardButton("🎣 Удочки", callback_data="shop:fishing_rods"),
-            InlineKeyboardButton("🌿 Серпы", callback_data="shop:sickles"),
-            InlineKeyboardButton("🥕 Мотыги", callback_data="shop:hoes")
-        )
-        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="shop:menu"))
-        
-        bot_instance.edit_message_text(
-            text,
-            chat_id=call.message.chat.id,
-            message_id=call.message.message_id,
-            reply_markup=markup,
-            parse_mode='Markdown'
-        )
-    
-    elif data == "pickaxes":
-        text = "⛏️ *КИРКИ*\n\n"
-        
-        pickaxes = []
-        for item_id, item in items_data.get("items", {}).items():
-            if "pickaxe" in item_id:
-                pickaxes.append(item)
-        
-        for item in pickaxes:
-            text += f"• *{item.get('name')}*\n"
-            text += f"  Прочность: {item.get('durability', 0)}\n"
-            text += f"  Цена: {item.get('value', 0)}💰\n"
-            if item.get('rarity') in ['rare', 'epic']:
-                text += f"  ✨ {item.get('description', '')}\n"
-            text += "\n"
-        
-        markup = InlineKeyboardMarkup()
-        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="shop:tools"))
-        
-        bot_instance.edit_message_text(
-            text,
-            chat_id=call.message.chat.id,
-            message_id=call.message.message_id,
-            reply_markup=markup,
-            parse_mode='Markdown'
-        )
-    
-    elif data == "fishing_rods":
-        text = "🎣 *УДОЧКИ*\n\n"
-        
-        rods = []
-        for item_id, item in items_data.get("items", {}).items():
-            if "fishing_rod" in item_id:
-                rods.append(item)
-        
-        for item in rods:
-            text += f"• *{item.get('name')}*\n"
-            text += f"  Прочность: {item.get('durability', 0)}\n"
-            if item.get('bait_bonus'):
-                text += f"  🎣 Бонус: +{item.get('bait_bonus')}% к редкой рыбе\n"
-            text += f"  Цена: {item.get('value', 0)}💰\n\n"
-        
-        markup = InlineKeyboardMarkup()
-        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="shop:tools"))
-        
-        bot_instance.edit_message_text(
-            text,
-            chat_id=call.message.chat.id,
-            message_id=call.message.message_id,
-            reply_markup=markup,
-            parse_mode='Markdown'
-        )
-    
-    elif data == "sickles":
-        text = "🌿 *СЕРПЫ*\n\n"
-        
-        sickles = []
-        for item_id, item in items_data.get("items", {}).items():
-            if "sickle" in item_id:
-                sickles.append(item)
-        
-        for item in sickles:
-            text += f"• *{item.get('name')}*\n"
-            text += f"  Прочность: {item.get('durability', 0)}\n"
-            if item.get('harvest_bonus'):
-                text += f"  🌱 +{item.get('harvest_bonus')} травы за сбор\n"
-            if item.get('rare_chance'):
-                text += f"  ✨ {item.get('rare_chance')}% шанс на редкую траву\n"
-            text += f"  Цена: {item.get('value', 0)}💰\n\n"
-        
-        markup = InlineKeyboardMarkup()
-        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="shop:tools"))
-        
-        bot_instance.edit_message_text(
-            text,
-            chat_id=call.message.chat.id,
-            message_id=call.message.message_id,
-            reply_markup=markup,
-            parse_mode='Markdown'
-        )
-    
-    elif data == "hoes":
-        text = "🥕 *МОТЫГИ*\n\n"
-        
-        hoes = []
-        for item_id, item in items_data.get("items", {}).items():
-            if "hoe" in item_id:
-                hoes.append(item)
-        
-        for item in hoes:
-            text += f"• *{item.get('name')}*\n"
-            text += f"  Прочность: {item.get('durability', 0)}\n"
-            if item.get('harvest_bonus'):
-                text += f"  🥔 +{item.get('harvest_bonus')} овоща за сбор\n"
-            if item.get('rare_chance'):
-                text += f"  ✨ {item.get('rare_chance')}% шанс на редкий овощ\n"
-            text += f"  Цена: {item.get('value', 0)}💰\n\n"
-        
-        markup = InlineKeyboardMarkup()
-        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="shop:tools"))
-        
-        bot_instance.edit_message_text(
-            text,
-            chat_id=call.message.chat.id,
-            message_id=call.message.message_id,
-            reply_markup=markup,
-            parse_mode='Markdown'
-        )
-    
-    elif data == "potions":
-        text = "⚗️ *ЗЕЛЬЯ*\n\n"
-        
-        potions = []
-        for item_id, item in items_data.get("items", {}).items():
-            if item.get("type") == "consumable" and "potion" in item_id:
-                potions.append(item)
-        
-        for item in potions[:10]:
-            text += f"• *{item.get('name')}*\n"
-            if item.get('heal'):
-                text += f"  ❤️ Восстанавливает {item.get('heal')} здоровья\n"
-            if item.get('mana'):
-                text += f"  🔮 Восстанавливает {item.get('mana')} маны\n"
-            if item.get('effect'):
-                text += f"  ✨ Эффект: {item.get('effect')}\n"
-            text += f"  Цена: {item.get('value', 0)}💰\n\n"
-        
-        markup = InlineKeyboardMarkup()
-        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="shop:menu"))
-        
-        bot_instance.edit_message_text(
-            text,
-            chat_id=call.message.chat.id,
-            message_id=call.message.message_id,
-            reply_markup=markup,
-            parse_mode='Markdown'
-        )
-    
-    elif data == "food":
-        text = "🍲 *ЕДА*\n\n"
-        
-        foods = []
-        for item_id, item in items_data.get("items", {}).items():
-            if item.get("type") == "food":
-                foods.append(item)
-        
-        for item in foods[:10]:
-            text += f"• *{item.get('name')}*\n"
-            text += f"  ❤️ +{item.get('heal', 0)} | ⚡ +{item.get('energy', 0)}\n"
-            if item.get('effect'):
-                text += f"  ✨ {item.get('effect')}\n"
-            text += f"  Цена: {item.get('value', 0)}💰\n\n"
-        
-        markup = InlineKeyboardMarkup()
-        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="shop:menu"))
-        
-        bot_instance.edit_message_text(
-            text,
-            chat_id=call.message.chat.id,
-            message_id=call.message.message_id,
-            reply_markup=markup,
-            parse_mode='Markdown'
-        )
-    
-    elif data == "bait":
-        text = "🪱 *НАЖИВКИ*\n\n"
-        
-        baits = []
-        for item_id, item in items_data.get("items", {}).items():
-            if item.get("type") == "bait":
-                baits.append(item)
-        
-        for item in baits:
-            text += f"• *{item.get('name')}*\n"
-            text += f"  🎣 Сила: {item.get('fishing_power', 0)}\n"
-            if item.get('rare_fish_chance'):
-                text += f"  ✨ +{item.get('rare_fish_chance')}% к редкой рыбе\n"
-            if item.get('legendary_fish_chance'):
-                text += f"  🌟 +{item.get('legendary_fish_chance')}% к легендарной рыбе\n"
-            text += f"  Цена: {item.get('value', 0)}💰\n\n"
-        
-        markup = InlineKeyboardMarkup()
-        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="shop:menu"))
-        
-        bot_instance.edit_message_text(
-            text,
-            chat_id=call.message.chat.id,
-            message_id=call.message.message_id,
-            reply_markup=markup,
-            parse_mode='Markdown'
-        )
-    
-    elif data == "chests":
-        text = "🎁 *СУНДУКИ*\n\n"
-        text += "• 📦 *Редкий сундук* - 50💰\n"
-        text += "  Содержит обычные и необычные предметы\n\n"
-        text += "• 🎁 *Эпический сундук* - 200💰\n"
-        text += "  Гарантированный эпический предмет\n\n"
-        text += "• 📦 *Легендарный сундук* - 1000💰\n"
-        text += "  Шанс на легендарные предметы\n\n"
-        text += "• 🎁 *Премиум сундук* - 500 DSTN\n"
-        text += "  Содержит редкие ресурсы и осколки\n\n"
-        text += "• 📦 *Радужный сундук* - 5 ⭐\n"
-        text += "  Шанс на радужные осколки"
-        
-        markup = InlineKeyboardMarkup()
-        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="shop:menu"))
-        
-        bot_instance.edit_message_text(
-            text,
-            chat_id=call.message.chat.id,
-            message_id=call.message.message_id,
-            reply_markup=markup,
-            parse_mode='Markdown'
-        )
-    
-    elif data == "menu":
-        shop_command(call.message)
-    
+    price = item.get('value', 0)
+    if currency == "gold":
+        if character.gold < price:
+            bot.answer_callback_query(call.id, f"❌ Не хватает золота! Нужно {price}")
+            return
+        character.gold -= price
+    elif currency == "dstn":
+        if character.dstn < price:
+            bot.answer_callback_query(call.id, f"❌ Не хватает DSTN! Нужно {price}")
+            return
+        character.dstn -= price
     else:
-        bot_instance.answer_callback_query(call.id, "⏳ Эта функция в разработке")
+        bot.answer_callback_query(call.id, "❌ Неизвестная валюта")
+        return
+    
+    character.add_item(item_id)
+    save_character(character)
+    
+    bot.answer_callback_query(call.id, f"✅ Куплено: {item.get('name', item_id)}!")
+    
+    # Возвращаемся в категорию
+    category = call.data.split(':')[2] if len(call.data.split(':')) > 2 else "menu"
+    if category == "chests":
+        show_chests(call, bot, get_or_create_player, items_data)
+    else:
+        show_category(call, bot, get_or_create_player, items_data, category)
+
+def buy_chest(call, bot, get_or_create_player, items_data, chest_id, currency):
+    """Купить сундук"""
+    from main import save_character
+    import random
+    
+    user_id = call.from_user.id
+    user, character = get_or_create_player(user_id)
+    
+    chests = {
+        "common_chest": {"price_gold": 100, "price_dstn": 0},
+        "rare_chest": {"price_gold": 500, "price_dstn": 5},
+        "epic_chest": {"price_gold": 0, "price_dstn": 25},
+        "legendary_chest": {"price_gold": 0, "price_dstn": 100},
+        "elemental_chest": {"price_gold": 0, "price_dstn": 50}
+    }
+    
+    if chest_id not in chests:
+        bot.answer_callback_query(call.id, "❌ Сундук не найден")
+        return
+    
+    chest = chests[chest_id]
+    price_key = f"price_{currency}"
+    price = chest.get(price_key, 0)
+    
+    if price == 0:
+        bot.answer_callback_query(call.id, "❌ Этот сундук нельзя купить за эту валюту")
+        return
+    
+    if currency == "gold":
+        if character.gold < price:
+            bot.answer_callback_query(call.id, f"❌ Не хватает золота! Нужно {price}")
+            return
+        character.gold -= price
+    elif currency == "dstn":
+        if character.dstn < price:
+            bot.answer_callback_query(call.id, f"❌ Не хватает DSTN! Нужно {price}")
+            return
+        character.dstn -= price
+    else:
+        bot.answer_callback_query(call.id, "❌ Неизвестная валюта")
+        return
+    
+    # Генерируем содержимое сундука
+    rewards = []
+    
+    if chest_id == "common_chest":
+        possible = ["wood", "stone", "herb", "berry", "copper_ore"]
+        for _ in range(3):
+            rewards.append(random.choice(possible))
+    
+    elif chest_id == "rare_chest":
+        possible = ["iron_ore", "gold_ore", "magic_herb", "leather", "health_potion"]
+        for _ in range(2):
+            rewards.append(random.choice(possible))
+        if random.random() < 0.3:
+            rewards.append("rare_chest_key")
+    
+    elif chest_id == "epic_chest":
+        possible = ["mythril_ingot", "magic_crystal", "diamond", "ruby", "epic_chest_key"]
+        for _ in range(2):
+            rewards.append(random.choice(possible))
+        if random.random() < 0.5:
+            rewards.append("epic_chest_key")
+    
+    elif chest_id == "legendary_chest":
+        possible = ["dragon_scale", "phoenix_feather", "legendary_sword", "legendary_armor", "legendary_chest_key"]
+        rewards.append(random.choice(possible))
+        if random.random() < 0.3:
+            rewards.append("rainbow_shard")
+    
+    elif chest_id == "elemental_chest":
+        possible = ["fire_gem", "ice_crystal", "elemental_core", "lava_core", "storm_essence"]
+        for _ in range(2):
+            rewards.append(random.choice(possible))
+    
+    # Добавляем предметы
+    for item_id in rewards:
+        character.add_item(item_id)
+    
+    save_character(character)
+    
+    # Показываем результат
+    reward_names = []
+    for item_id in rewards:
+        item = items_data.get("items", {}).get(item_id, {})
+        reward_names.append(item.get('name', item_id))
+    
+    text = f"🎉 *Ты получил из сундука:*\n\n"
+    for name in reward_names:
+        text += f"• {name}\n"
+    
+    bot.answer_callback_query(call.id, f"✅ Сундук открыт!")
+    
+    # Отправляем результат отдельным сообщением
+    bot.send_message(
+        call.message.chat.id,
+        text,
+        parse_mode='Markdown'
+    )
+    
+    # Возвращаемся к сундукам
+    show_chests(call, bot, get_or_create_player, items_data)
+
+def handle_callback(call, bot, get_or_create_player, items_data):
+    """Обработчик колбэков для магазина"""
+    try:
+        data = call.data.split(':')
+        action = data[1]
+        
+        if action == "menu":
+            shop_command(call.message, bot, get_or_create_player, items_data)
+        
+        elif action == "category" and len(data) > 2:
+            category = data[2]
+            if category == "chests":
+                show_chests(call, bot, get_or_create_player, items_data)
+            else:
+                show_category(call, bot, get_or_create_player, items_data, category)
+        
+        elif action == "buy" and len(data) > 3:
+            item_id = data[2]
+            currency = data[3]
+            category = data[4] if len(data) > 4 else "menu"
+            buy_item(call, bot, get_or_create_player, items_data, item_id, currency)
+        
+        elif action == "buy_chest" and len(data) > 3:
+            chest_id = data[2]
+            currency = data[3]
+            buy_chest(call, bot, get_or_create_player, items_data, chest_id, currency)
+        
+        else:
+            bot.answer_callback_query(call.id, "❌ Неизвестное действие")
+    
+    except Exception as e:
+        logging.error(f"Ошибка в shop callback: {e}")
+        bot.answer_callback_query(call.id, "⚠️ Ошибка")
