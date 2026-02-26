@@ -1,3 +1,4 @@
+# /bot/handlers/pets.py
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import os
@@ -256,48 +257,59 @@ def show_pets_list(call, bot_instance, character, pets_data):
                 if pet_id in PET_BONUSES:
                     names.append(PET_BONUSES[pet_id]["name"])
             text += ", ".join(names[:3]) + "\n"
-    else:
-        text = "🐾 *Твои питомцы*\n\n"
         
-        markup = InlineKeyboardMarkup(row_width=1)
+        markup = InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="pets:menu"))
         
-        for pet in pets:
-            pet_id = pet.get('id')
-            name = pet.get('name', PET_BONUSES.get(pet_id, {}).get('name', 'Питомец'))
-            level = pet.get('level', 1)
-            exp = pet.get('exp', 0)
-            exp_needed = level * 100
-            happiness = pet.get('happiness', 100)
-            
-            # Прогресс-бар опыта
-            exp_percent = int((exp / exp_needed) * 10)
-            exp_bar = "█" * exp_percent + "░" * (10 - exp_percent)
-            
-            # Статус
-            status = "✅ АКТИВЕН" if pet.get('id') == active_pet else ""
-            
-            # Проверка возможности эволюции
-            can_evolve = can_pet_evolve(pet)
-            evo_marker = " 🌟" if can_evolve else ""
-            
-            text += f"*{name}*{evo_marker} {status}\n"
-            text += f"  Ур.{level} | {exp_bar} {exp}/{exp_needed} опыта\n"
-            text += f"  😊 Счастье: {happiness}%\n"
-            
-            # Бонусы
-            bonus_info = PET_BONUSES.get(pet_id, {})
-            if bonus_info:
-                text += f"  ✨ Бонус: +{bonus_info.get('value', 0)} {bonus_info.get('bonus', '')}\n"
-            
-            text += "\n"
-            
-            # Кнопки для питомца
-            markup.add(InlineKeyboardButton(
-                f"📌 {name}",
-                callback_data=f"pets:view:{pet.get('id')}"
-            ))
+        bot_instance.edit_message_text(
+            text,
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            reply_markup=markup,
+            parse_mode='Markdown'
+        )
+        return
     
-    markup = InlineKeyboardMarkup() if 'markup' not in locals() else markup
+    text = "🐾 *Твои питомцы*\n\n"
+    
+    markup = InlineKeyboardMarkup(row_width=1)
+    
+    for pet in pets:
+        pet_id = pet.get('id')
+        name = pet.get('name', PET_BONUSES.get(pet_id, {}).get('name', 'Питомец'))
+        level = pet.get('level', 1)
+        exp = pet.get('exp', 0)
+        exp_needed = level * 100
+        happiness = pet.get('happiness', 100)
+        
+        # Прогресс-бар опыта
+        exp_percent = int((exp / exp_needed) * 10)
+        exp_bar = "█" * exp_percent + "░" * (10 - exp_percent)
+        
+        # Статус
+        status = "✅ АКТИВЕН" if pet.get('id') == active_pet else ""
+        
+        # Проверка возможности эволюции
+        can_evolve = can_pet_evolve(pet)
+        evo_marker = " 🌟" if can_evolve else ""
+        
+        text += f"*{name}*{evo_marker} {status}\n"
+        text += f"  Ур.{level} | {exp_bar} {exp}/{exp_needed} опыта\n"
+        text += f"  😊 Счастье: {happiness}%\n"
+        
+        # Бонусы
+        bonus_info = PET_BONUSES.get(pet_id, {})
+        if bonus_info:
+            text += f"  ✨ Бонус: +{bonus_info.get('value', 0)} {bonus_info.get('bonus', '')}\n"
+        
+        text += "\n"
+        
+        # Кнопки для питомца
+        markup.add(InlineKeyboardButton(
+            f"📌 {name}",
+            callback_data=f"pets:view:{pet.get('id')}"
+        ))
+    
     markup.add(InlineKeyboardButton("🔙 Назад", callback_data="pets:menu"))
     
     bot_instance.edit_message_text(
@@ -409,8 +421,9 @@ def feed_pet(call, bot_instance, character, pet_id):
     has_food = False
     food_type = None
     
+    inventory = character.inventory or []
     for food in food_items:
-        if character.has_item(food):
+        if food in inventory:
             has_food = True
             food_type = food
             break
@@ -420,7 +433,8 @@ def feed_pet(call, bot_instance, character, pet_id):
         return
     
     # Кормим
-    character.remove_item(food_type)
+    inventory.remove(food_type)
+    character.inventory = inventory
     
     # Опыт за еду
     exp_gain = {"meat": 10, "fish": 15, "berry": 5, "magic_food": 50}.get(food_type, 10)
@@ -564,7 +578,9 @@ def buy_food(call, bot_instance, character, food_id, pets_data):
         return
     
     character.gold -= food['price']
-    character.add_item(food_id)
+    inventory = character.inventory or []
+    inventory.append(food_id)
+    character.inventory = inventory
     save_character(character)
     
     bot_instance.answer_callback_query(call.id, f"✅ Куплен {food['name']}!")
@@ -624,7 +640,8 @@ def show_pet_house(call, bot_instance, character, pets_data):
             if cost:
                 text += "\n\n*Для улучшения нужно:*\n"
                 for mat, amount in cost.items():
-                    count = character.count_item(mat)
+                    inventory = character.inventory or []
+                    count = inventory.count(mat)
                     emoji = "✅" if count >= amount else "❌"
                     text += f"{emoji} {mat}: {count}/{amount}\n"
     
@@ -656,8 +673,9 @@ def show_eggs(call, bot_instance, character, pets_data):
     text = "🥚 *Яйца питомцев*\n\n"
     text += "Яйца можно найти в ивентах, сундуках или купить у торговца.\n\n"
     
+    inventory = character.inventory or []
     for egg_id, egg in eggs.items():
-        count = character.count_item(egg_id) if hasattr(character, 'count_item') else 0
+        count = inventory.count(egg_id)
         text += f"{egg['name']} x{count}\n"
         text += f"└ {egg['chance']}\n\n"
     
@@ -758,8 +776,11 @@ def show_help(call, bot_instance):
     text += "• 🔥 Феникс: шанс воскреснуть\n"
     text += "• 🐉 Дракон: +10 ко всем статам\n\n"
     
-    text += "🍖 *Кормление:* /pet feed [имя]\n"
-    text += "🎮 *Игры:* /pet play [имя]\n"
+    text += "🍖 *Команды:*\n"
+    text += "• /pets - список питомцев\n"
+    text += "• /feed_pet [id] [еда] - покормить\n"
+    text += "• /equip_pet [id] - сделать активным\n\n"
+    
     text += "🏠 *Конура:* улучшается в доме\n"
     text += "🥚 *Яйца:* вылупляются через 24 часа"
     
@@ -830,9 +851,10 @@ def show_evolution_menu(call, bot_instance, character, pet_id, pets_data):
     # Проверяем предметы
     items_ok = True
     missing_items = []
+    inventory = character.inventory or []
     for item_id, count in req['items'].items():
         item_name = items_data.get("items", {}).get(item_id, {}).get('name', item_id)
-        has_count = character.count_item(item_id)
+        has_count = inventory.count(item_id)
         if has_count < count:
             items_ok = False
             missing_items.append(f"{item_name}: {has_count}/{count}")
@@ -863,7 +885,7 @@ def show_evolution_menu(call, bot_instance, character, pet_id, pets_data):
     # Предметы
     for item_id, count in req['items'].items():
         item_name = items_data.get("items", {}).get(item_id, {}).get('name', item_id)
-        has_count = character.count_item(item_id)
+        has_count = inventory.count(item_id)
         status = "✅" if has_count >= count else "❌"
         text += f"{status} {item_name}: {has_count}/{count}\n"
     
@@ -945,8 +967,9 @@ def start_evolution(call, bot_instance, character, pet_id, pets_data):
         return
     
     # Проверяем предметы
+    inventory = character.inventory or []
     for item_id, count in req['items'].items():
-        if not character.has_item(item_id, count):
+        if inventory.count(item_id) < count:
             item_name = items_data.get("items", {}).get(item_id, {}).get('name', item_id)
             bot_instance.answer_callback_query(call.id, f"❌ Не хватает {item_name}")
             return
@@ -959,7 +982,8 @@ def start_evolution(call, bot_instance, character, pet_id, pets_data):
     
     for item_id, count in req['items'].items():
         for _ in range(count):
-            character.remove_item(item_id)
+            inventory.remove(item_id)
+    character.inventory = inventory
     
     # Запускаем эволюцию
     evolution_end = now + req['time']
@@ -1051,7 +1075,7 @@ def show_evolution_status(call, bot_instance, character, pet_id, pets_data):
 def complete_evolution(call, bot_instance, character, pet_id, pets_data):
     """Завершить эволюцию питомца"""
     from main import save_character
-    import random
+    import time
     
     pets = character.pets if hasattr(character, 'pets') else []
     pet_index = next((i for i, p in enumerate(pets) if p.get('id') == pet_id), None)
@@ -1188,8 +1212,133 @@ def check_evolution_completion(character):
     return completed
 
 # ============================================
-# ФУНКЦИИ ДЛЯ ДРУГИХ ХЕНДЛЕРОВ
+# ФУНКЦИИ ДЛЯ КОМАНД (СОВМЕСТИМОСТЬ С __init__.py)
 # ============================================
+
+def feed_pet_command(message, bot, get_or_create_player_func, pets_data, items_data):
+    """Команда /feed_pet - покормить питомца"""
+    args = message.text.split()
+    if len(args) < 3:
+        bot.send_message(
+            message.chat.id,
+            "❌ Укажи ID питомца и ID еды\n"
+            "Пример: /feed_pet forest_fox meat\n\n"
+            "🍖 Доступная еда:\n"
+            "• meat - мясо (+10 опыта)\n"
+            "• fish - рыба (+15 опыта)\n"
+            "• berry - ягоды (+5 опыта)\n"
+            "• magic_food - волшебный корм (+50 опыта)",
+            parse_mode='Markdown'
+        )
+        return
+    
+    pet_id = args[1]
+    food_id = args[2]
+    
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    # Проверяем наличие питомца
+    pets = character.pets if hasattr(character, 'pets') else []
+    pet_index = next((i for i, p in enumerate(pets) if p.get('id') == pet_id), None)
+    
+    if pet_index is None:
+        bot.send_message(message.chat.id, "❌ У тебя нет такого питомца!")
+        return
+    
+    # Проверяем наличие еды
+    inventory = character.inventory or []
+    if food_id not in inventory:
+        bot.send_message(message.chat.id, "❌ У тебя нет такой еды!")
+        return
+    
+    # Проверяем, не эволюционирует ли питомец
+    now = int(time.time())
+    if pets[pet_index].get('evolution_end', 0) > now:
+        bot.send_message(message.chat.id, "❌ Питомец эволюционирует, его нельзя кормить!")
+        return
+    
+    # Кормим
+    inventory.remove(food_id)
+    character.inventory = inventory
+    
+    # Опыт за еду
+    exp_gain = {"meat": 10, "fish": 15, "berry": 5, "magic_food": 50}.get(food_id, 10)
+    
+    pet = pets[pet_index]
+    pet['exp'] = pet.get('exp', 0) + exp_gain
+    pet['happiness'] = min(100, pet.get('happiness', 100) + 10)
+    
+    # Повышение уровня
+    leveled_up = False
+    while pet['exp'] >= pet.get('level', 1) * 100:
+        pet['exp'] -= pet['level'] * 100
+        pet['level'] = pet.get('level', 1) + 1
+        leveled_up = True
+        
+        # Открываем новую способность
+        if pet['level'] % 5 == 0:
+            if 'abilities' not in pet:
+                pet['abilities'] = []
+            pet['abilities'].append({
+                'name': f'Способность ур.{pet["level"]}',
+                'description': 'Новая способность открыта!'
+            })
+    
+    character.pets = pets
+    from main import save_character
+    save_character(character)
+    
+    pet_name = PET_BONUSES.get(pet_id, {}).get('name', 'Питомец')
+    response = f"✅ {pet_name} покормлен! +{exp_gain} опыта"
+    if leveled_up:
+        response += f"\n🌟 Питомец достиг {pet['level']} уровня!"
+    
+    bot.send_message(message.chat.id, response, parse_mode='Markdown')
+
+def equip_pet_command(message, bot, get_or_create_player_func, pets_data):
+    """Команда /equip_pet - сделать питомца активным"""
+    args = message.text.split()
+    if len(args) < 2:
+        bot.send_message(
+            message.chat.id,
+            "❌ Укажи ID питомца\n"
+            "Пример: /equip_pet forest_fox\n"
+            "Список питомцев: /pets",
+            parse_mode='Markdown'
+        )
+        return
+    
+    pet_id = args[1]
+    
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    # Проверяем наличие питомца
+    pets = character.pets if hasattr(character, 'pets') else []
+    pet = next((p for p in pets if p.get('id') == pet_id), None)
+    
+    if not pet:
+        bot.send_message(message.chat.id, "❌ У тебя нет такого питомца!")
+        return
+    
+    # Проверяем, не эволюционирует ли питомец
+    now = int(time.time())
+    if pet.get('evolution_end', 0) > now:
+        bot.send_message(message.chat.id, "❌ Питомец эволюционирует, его нельзя активировать!")
+        return
+    
+    character.active_pet = pet_id
+    
+    from main import save_character
+    save_character(character)
+    
+    pet_name = PET_BONUSES.get(pet_id, {}).get('name', 'Питомец')
+    bot.send_message(
+        message.chat.id,
+        f"✅ {pet_name} теперь активен! Его бонусы работают.",
+        parse_mode='Markdown'
+    )
 
 def add_pet(character, pet_id, pet_data):
     """Добавить питомца игроку"""
@@ -1218,11 +1367,14 @@ def add_pet(character, pet_id, pet_data):
 def hatch_egg(character, egg_id, pets_data):
     """Вылупить питомца из яйца"""
     import random
+    from main import save_character
     
-    if not character.has_item(egg_id):
+    inventory = character.inventory or []
+    if egg_id not in inventory:
         return None
     
-    character.remove_item(egg_id)
+    inventory.remove(egg_id)
+    character.inventory = inventory
     
     # Шансы выпадения в зависимости от яйца
     chances = {
@@ -1347,3 +1499,16 @@ def handle_callback(call, bot_instance, get_or_create_player_func, pets_data):
     
     else:
         bot_instance.answer_callback_query(call.id, "⏳ Эта функция в разработке")
+
+# ============================================
+# ЭКСПОРТ
+# ============================================
+
+__all__ = [
+    'pets_command',
+    'feed_pet_command',
+    'equip_pet_command',
+    'handle_callback',
+    'add_pet',
+    'hatch_egg'
+]
