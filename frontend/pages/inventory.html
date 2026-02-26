@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Destiny - Инвентарь</title>
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
     <style>
         .inventory-page {
             padding: 15px;
@@ -29,6 +29,22 @@
             border-radius: 20px;
             font-size: 14px;
             border: 1px solid rgba(233, 69, 96, 0.3);
+        }
+        
+        .back-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: rgba(233, 69, 96, 0.3);
+            border-color: #e94560;
         }
         
         .inventory-categories {
@@ -118,6 +134,7 @@
         .rarity-epic { background: #800080; }
         .rarity-legendary { background: #ffd700; color: #000; }
         .rarity-mythic { background: #ff0000; }
+        .rarity-junk { background: #4a4a4a; }
         
         .item-stats {
             font-size: 12px;
@@ -142,36 +159,6 @@
             left: 5px;
             font-size: 12px;
             color: #ffd700;
-        }
-        
-        .item-actions {
-            display: flex;
-            gap: 5px;
-            margin-top: 10px;
-        }
-        
-        .item-btn {
-            flex: 1;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: #fff;
-            padding: 5px;
-            border-radius: 15px;
-            font-size: 11px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .item-btn:hover {
-            background: #e94560;
-        }
-        
-        .item-btn.equip {
-            background: #4CAF50;
-        }
-        
-        .item-btn.sell {
-            background: #f44336;
         }
         
         .empty-slot {
@@ -308,12 +295,49 @@
             opacity: 0.8;
             transform: translateY(-2px);
         }
+
+        .warning-message {
+            background: rgba(233, 69, 96, 0.2);
+            border: 1px solid #e94560;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            color: #fff;
+        }
+
+        .warning-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .warning-text {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .warning-btn {
+            background: #e94560;
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .warning-btn:hover {
+            background: #ff6b7f;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
     <div class="app">
         <div class="main-screen">
             <div class="top-panel">
+                <button class="back-btn" onclick="goBack()">🔙 Назад</button>
                 <div class="stats">
                     <div class="stat-item">
                         <span class="stat-icon">⚡</span>
@@ -334,27 +358,8 @@
                 </div>
             </div>
 
-            <div class="game-content">
-                <div class="inventory-page">
-                    <div class="inventory-header">
-                        <div class="inventory-title">🎒 ИНВЕНТАРЬ</div>
-                        <div class="inventory-stats">35/100</div>
-                    </div>
-                    
-                    <div class="inventory-categories">
-                        <button class="category-btn active" data-category="all">Все</button>
-                        <button class="category-btn" data-category="weapons">⚔️ Оружие</button>
-                        <button class="category-btn" data-category="armor">🛡️ Броня</button>
-                        <button class="category-btn" data-category="consumables">🧪 Расходники</button>
-                        <button class="category-btn" data-category="materials">📦 Материалы</button>
-                        <button class="category-btn" data-category="bait">🪱 Наживки</button>
-                        <button class="category-btn" data-category="treasures">💎 Сокровища</button>
-                    </div>
-                    
-                    <div class="inventory-grid" id="inventoryGrid">
-                        <!-- Здесь будут предметы -->
-                    </div>
-                </div>
+            <div class="game-content" id="gameContent">
+                <!-- Контент будет загружаться динамически -->
             </div>
 
             <div class="bottom-menu">
@@ -412,25 +417,60 @@
     </div>
 
     <script>
+        // Инициализация Telegram WebApp
+        let tg = window.Telegram ? window.Telegram.WebApp : null;
+        if (tg) {
+            tg.expand();
+            tg.ready();
+        }
+
+        // Проверка доступа к инвентарю
+        function checkInventoryAccess() {
+            // Получаем данные из URL или от Telegram
+            const urlParams = new URLSearchParams(window.location.search);
+            const canOpen = urlParams.get('can_open') === 'true';
+            
+            const content = document.getElementById('gameContent');
+            
+            if (!canOpen) {
+                content.innerHTML = `
+                    <div class="inventory-page">
+                        <div class="warning-message">
+                            <div class="warning-icon">🎒</div>
+                            <div class="warning-text">
+                                ❌ Инвентарь можно открыть только на привалах или у торговцев!
+                            </div>
+                            <button class="warning-btn" onclick="goBack()">Вернуться в игру</button>
+                        </div>
+                    </div>
+                `;
+                return false;
+            }
+            return true;
+        }
+
         // Моковые данные для теста
-        const mockInventory = [
-            { id: 'iron_sword', name: 'Железный меч', icon: '⚔️', rarity: 'uncommon', type: 'weapon', damage: 10, value: 60, count: 1, equipped: true },
-            { id: 'leather_armor', name: 'Кожаная броня', icon: '🛡️', rarity: 'common', type: 'armor', defense: 5, health: 15, value: 25, count: 1, equipped: true },
-            { id: 'health_potion', name: 'Зелье здоровья', icon: '🧪', rarity: 'common', type: 'consumable', heal: 50, value: 10, count: 5 },
-            { id: 'mana_potion', name: 'Зелье маны', icon: '🔮', rarity: 'common', type: 'consumable', mana: 50, value: 10, count: 3 },
-            { id: 'iron_ore', name: 'Железная руда', icon: '⛏️', rarity: 'uncommon', type: 'material', value: 8, count: 15 },
-            { id: 'wolf_skin', name: 'Волчья шкура', icon: '🐺', rarity: 'common', type: 'material', value: 10, count: 3 },
-            { id: 'worm', name: 'Червяк', icon: '🪱', rarity: 'common', type: 'bait', value: 1, count: 12 },
-            { id: 'golden_carp', name: 'Золотой карп', icon: '🐟', rarity: 'legendary', type: 'treasure', value: 1000, count: 1 },
-            { id: 'ancient_coin', name: 'Древняя монета', icon: '🪙', rarity: 'epic', type: 'treasure', value: 500, count: 2 },
+        let inventory = [
+            { id: 'iron_sword', name: 'Железный меч', icon: '⚔️', rarity: 'uncommon', type: 'weapon', damage: 10, value: 60, count: 1, equipped: true, description: 'Качественный железный меч. Острый и надёжный.' },
+            { id: 'leather_armor', name: 'Кожаная броня', icon: '🛡️', rarity: 'common', type: 'armor', defense: 5, health: 15, value: 25, count: 1, equipped: true, description: 'Лёгкая броня из кожи.' },
+            { id: 'health_potion', name: 'Зелье здоровья', icon: '🧪', rarity: 'common', type: 'consumable', heal: 50, value: 10, count: 5, description: 'Восстанавливает 50 здоровья.' },
+            { id: 'mana_potion', name: 'Зелье маны', icon: '🔮', rarity: 'common', type: 'consumable', mana: 50, value: 10, count: 3, description: 'Восстанавливает 50 маны.' },
+            { id: 'iron_ore', name: 'Железная руда', icon: '⛏️', rarity: 'uncommon', type: 'material', value: 8, count: 15, description: 'Руда для выплавки железа.' },
+            { id: 'wolf_skin', name: 'Волчья шкура', icon: '🐺', rarity: 'common', type: 'material', value: 10, count: 3, description: 'Тёплая шкура волка.' },
+            { id: 'worm', name: 'Червяк', icon: '🪱', rarity: 'common', type: 'bait', value: 1, count: 12, description: 'Наживка для рыбалки.' },
+            { id: 'golden_carp', name: 'Золотой карп', icon: '🐟', rarity: 'legendary', type: 'treasure', value: 1000, count: 1, description: 'Редкая золотая рыба.' },
+            { id: 'ancient_coin', name: 'Древняя монета', icon: '🪙', rarity: 'epic', type: 'treasure', value: 500, count: 2, description: 'Монета древней цивилизации.' },
         ];
         
         let currentCategory = 'all';
         let selectedItem = null;
+        let maxInventory = 100;
         
         function renderInventory(category = 'all') {
             const grid = document.getElementById('inventoryGrid');
-            const filtered = category === 'all' ? mockInventory : mockInventory.filter(item => item.type === category);
+            if (!grid) return;
+            
+            const filtered = category === 'all' ? inventory : inventory.filter(item => item.type === category);
             
             let html = '';
             filtered.forEach(item => {
@@ -447,6 +487,7 @@
                             ${item.damage ? `⚔️ +${item.damage}` : ''}
                             ${item.defense ? `🛡️ +${item.defense}` : ''}
                             ${item.heal ? `❤️ +${item.heal}` : ''}
+                            ${item.mana ? `🔮 +${item.mana}` : ''}
                         </div>
                         <div class="item-count">${item.count}</div>
                     </div>
@@ -465,10 +506,13 @@
             }
             
             grid.innerHTML = html;
+            
+            // Обновляем счётчик
+            document.getElementById('inventoryCount').textContent = `${inventory.length}/${maxInventory}`;
         }
         
         function showItemDetail(itemId) {
-            const item = mockInventory.find(i => i.id === itemId);
+            const item = inventory.find(i => i.id === itemId);
             if (!item) return;
             
             selectedItem = item;
@@ -481,7 +525,7 @@
             raritySpan.style.padding = '3px 10px';
             raritySpan.textContent = item.rarity;
             
-            document.getElementById('detailDesc').textContent = `Качественный предмет.${item.equipped ? ' Уже надет.' : ''}`;
+            document.getElementById('detailDesc').textContent = item.description || 'Описание отсутствует';
             
             let statsHtml = '';
             if (item.damage) statsHtml += `<div class="stat-row"><span class="stat-label">⚔️ Урон</span><span class="stat-value positive">+${item.damage}</span></div>`;
@@ -489,6 +533,10 @@
             if (item.health) statsHtml += `<div class="stat-row"><span class="stat-label">❤️ Здоровье</span><span class="stat-value positive">+${item.health}</span></div>`;
             if (item.heal) statsHtml += `<div class="stat-row"><span class="stat-label">💊 Лечение</span><span class="stat-value positive">+${item.heal}</span></div>`;
             if (item.mana) statsHtml += `<div class="stat-row"><span class="stat-label">🔮 Мана</span><span class="stat-value positive">+${item.mana}</span></div>`;
+            if (item.mana_regen) statsHtml += `<div class="stat-row"><span class="stat-label">⚡ Реген маны</span><span class="stat-value positive">+${item.mana_regen}</span></div>`;
+            if (item.crit_chance) statsHtml += `<div class="stat-row"><span class="stat-label">🎯 Крит</span><span class="stat-value positive">+${item.crit_chance}%</span></div>`;
+            if (item.luck) statsHtml += `<div class="stat-row"><span class="stat-label">🍀 Удача</span><span class="stat-value positive">+${item.luck}</span></div>`;
+            
             statsHtml += `<div class="stat-row"><span class="stat-label">💰 Цена</span><span class="stat-value">${item.value}</span></div>`;
             statsHtml += `<div class="stat-row"><span class="stat-label">📦 Количество</span><span class="stat-value">${item.count}</span></div>`;
             
@@ -503,22 +551,103 @@
         
         function equipItem() {
             if (selectedItem) {
+                // Отправляем в бот
+                if (tg) {
+                    tg.sendData(JSON.stringify({
+                        action: 'equip',
+                        item_id: selectedItem.id
+                    }));
+                }
+                
+                // Обновляем локально
+                inventory.forEach(item => {
+                    if (item.type === selectedItem.type && item.equipped) {
+                        item.equipped = false;
+                    }
+                });
+                selectedItem.equipped = true;
+                
                 alert(`⚔️ Предмет ${selectedItem.name} надет!`);
                 closeItemDetail();
+                renderInventory(currentCategory);
             }
         }
         
         function sellItem() {
+            if (selectedItem && selectedItem.equipped) {
+                alert(`❌ Нельзя продать надетый предмет! Сначала сними.`);
+                return;
+            }
+            
             if (selectedItem) {
+                // Отправляем в бот
+                if (tg) {
+                    tg.sendData(JSON.stringify({
+                        action: 'sell',
+                        item_id: selectedItem.id,
+                        price: selectedItem.value
+                    }));
+                }
+                
+                // Удаляем из инвентаря
+                const index = inventory.findIndex(i => i.id === selectedItem.id);
+                if (index !== -1) {
+                    inventory.splice(index, 1);
+                }
+                
                 alert(`💰 Предмет ${selectedItem.name} продан за ${selectedItem.value} золота!`);
                 closeItemDetail();
+                renderInventory(currentCategory);
+            }
+        }
+        
+        function goBack() {
+            if (tg) {
+                tg.close();
+            } else {
+                window.location.href = 'game.html';
             }
         }
         
         // Инициализация
         document.addEventListener('DOMContentLoaded', () => {
+            // Проверяем доступ
+            if (!checkInventoryAccess()) {
+                return;
+            }
+            
+            // Загружаем реальные данные от бота, если есть
+            if (tg && tg.initDataUnsafe && tg.initDataUnsafe.inventory) {
+                inventory = tg.initDataUnsafe.inventory;
+            }
+            
+            // Создаём HTML структуру
+            const content = document.getElementById('gameContent');
+            content.innerHTML = `
+                <div class="inventory-page">
+                    <div class="inventory-header">
+                        <div class="inventory-title">🎒 ИНВЕНТАРЬ</div>
+                        <div class="inventory-stats" id="inventoryCount">${inventory.length}/${maxInventory}</div>
+                    </div>
+                    
+                    <div class="inventory-categories">
+                        <button class="category-btn active" data-category="all">Все</button>
+                        <button class="category-btn" data-category="weapon">⚔️ Оружие</button>
+                        <button class="category-btn" data-category="armor">🛡️ Броня</button>
+                        <button class="category-btn" data-category="consumable">🧪 Расходники</button>
+                        <button class="category-btn" data-category="material">📦 Материалы</button>
+                        <button class="category-btn" data-category="bait">🪱 Наживки</button>
+                        <button class="category-btn" data-category="treasure">💎 Сокровища</button>
+                        <button class="category-btn" data-category="tool">🛠️ Инструменты</button>
+                    </div>
+                    
+                    <div class="inventory-grid" id="inventoryGrid"></div>
+                </div>
+            `;
+            
             renderInventory();
             
+            // Обработчики категорий
             document.querySelectorAll('.category-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
@@ -527,8 +656,18 @@
                     renderInventory(currentCategory);
                 });
             });
+            
+            // Обработчики меню
+            document.querySelectorAll('.menu-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const page = btn.dataset.page;
+                    if (page === 'game') window.location.href = 'game.html';
+                    else if (page === 'map') window.location.href = 'map.html';
+                    else if (page === 'profile') window.location.href = 'profile.html';
+                    else if (page === 'shop') window.location.href = 'shop.html';
+                });
+            });
         });
     </script>
-    <script src="../script.js"></script>
 </body>
 </html>
