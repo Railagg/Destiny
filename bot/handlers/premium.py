@@ -633,3 +633,82 @@ def handle_callback(call, bot_instance, get_or_create_player_func, premium_data)
     
     else:
         bot_instance.answer_callback_query(call.id, "⏳ Эта функция в разработке")
+        # ============================================
+# ФУНКЦИИ ДЛЯ СОВМЕСТИМОСТИ С __init__.py
+# ============================================
+
+def buy_premium_command(message, bot_instance, get_or_create_player_func, premium_data):
+    """Команда /buy_premium - купить премиум"""
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    text = "💎 *ПОКУПКА ПРЕМИУМА*\n\n"
+    text += "Выбери способ оплаты:\n\n"
+    text += "• ⭐ Stars (Telegram Stars)\n"
+    text += "• 💎 TON (криптовалюта)\n"
+    text += "• 💫 DSTN (игровая валюта)\n\n"
+    
+    text += "Подробнее о тарифах: /premium"
+    
+    markup = InlineKeyboardMarkup(row_width=2)
+    markup.add(
+        InlineKeyboardButton("⭐ Stars", callback_data="premium:buy:stars"),
+        InlineKeyboardButton("💎 TON", callback_data="premium:buy:ton"),
+        InlineKeyboardButton("💫 DSTN", callback_data="premium:buy:dstn")
+    )
+    markup.add(InlineKeyboardButton("🔙 Назад", callback_data="premium:menu"))
+    
+    bot_instance.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
+
+def premium_status_command(message, bot_instance, get_or_create_player_func, premium_data):
+    """Команда /premium_status - показать статус премиума"""
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    premium_status = get_premium_status(character)
+    
+    text = "👑 *ТВОЙ ПРЕМИУМ СТАТУС*\n\n"
+    
+    if premium_status['active']:
+        text += f"✅ *Активен*\n"
+        text += f"📅 План: {premium_status['plan_name']}\n"
+        text += f"⏳ Истекает через: {premium_status['days_left']} дней\n"
+        text += f"📊 Всего дней: {premium_status['total_days']}\n\n"
+        
+        text += "✨ *Твои бонусы:*\n"
+        text += f"• ⚡ Энергия: {character.max_energy}\n"
+        text += f"• 💰 Золото: +{int((premium_status['gold_mult']-1)*100)}%\n"
+        text += f"• ✨ Опыт: +{int((premium_status['exp_mult']-1)*100)}%\n"
+        text += f"• 🎁 Сундуков в день: +{premium_status['chests']}\n"
+        
+        if premium_status['rainbow_shard_weekly']:
+            text += f"• 🌈 Осколков в неделю: +{premium_status['rainbow_shard_weekly']}\n"
+        
+        # Награды за верность
+        renewal = get_renewal_bonuses(character)
+        if renewal:
+            text += f"\n🏆 *Награды за верность:*\n"
+            for bonus in renewal:
+                text += f"• {bonus}\n"
+    else:
+        text += "❌ *Премиум не активен*\n\n"
+        text += "Купи подписку: /premium"
+    
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("🔙 Назад", callback_data="premium:menu"))
+    
+    bot_instance.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
+
+# ============================================
+# ЭКСПОРТ
+# ============================================
+
+__all__ = [
+    'premium_command',
+    'buy_premium_command',
+    'premium_status_command',
+    'handle_callback',
+    'get_premium_status',
+    'activate_premium',
+    'check_renewal_bonuses'
+]
