@@ -49,6 +49,125 @@ PET_BONUSES = {
 }
 
 # ============================================
+# КОНСТАНТЫ ЭВОЛЮЦИИ
+# ============================================
+
+EVOLUTION_REQUIREMENTS = {
+    "common": {
+        "name": "⚪ Обычный → 🟢 Необычный",
+        "level": 10,
+        "rainbow_stones": 0,
+        "gold": 5000,
+        "time": 3600,  # 1 час
+        "difficulty": "Легко",
+        "difficulty_emoji": "🟢",
+        "items": {
+            "magic_dust": 5,
+            "crystal": 3,
+            "herb": 10
+        },
+        "next_rarity": "uncommon",
+        "description": "Питомец светится мягким светом"
+    },
+    "uncommon": {
+        "name": "🟢 Необычный → 🔵 Редкий",
+        "level": 15,
+        "rainbow_stones": 0,
+        "gold": 15000,
+        "time": 10800,  # 3 часа
+        "difficulty": "Средне",
+        "difficulty_emoji": "🟡",
+        "items": {
+            "magic_crystal": 3,
+            "iron_ingot": 10,
+            "magic_herb": 5
+        },
+        "next_rarity": "rare",
+        "description": "Питомец окутывается магической аурой"
+    },
+    "rare": {
+        "name": "🔵 Редкий → 🟣 Эпический",
+        "level": 20,
+        "rainbow_stones": 0,
+        "gold": 30000,
+        "time": 43200,  # 12 часов
+        "difficulty": "Трудно",
+        "difficulty_emoji": "🟠",
+        "items": {
+            "elemental_core": 2,
+            "mythril_ingot": 5,
+            "diamond": 2
+        },
+        "next_rarity": "epic",
+        "description": "Вокруг питомца танцуют стихии"
+    },
+    "epic": {
+        "name": "🟣 Эпический → 🟡 Легендарный",
+        "level": 25,
+        "rainbow_stones": 1,
+        "gold": 75000,
+        "time": 86400,  # 24 часа
+        "difficulty": "Очень трудно",
+        "difficulty_emoji": "🔴",
+        "items": {
+            "dragon_scale": 3,
+            "phoenix_feather": 1,
+            "golem_heart": 2
+        },
+        "next_rarity": "legendary",
+        "description": "Питомец заворачивается в клубок света"
+    },
+    "legendary": {
+        "name": "🟡 Легендарный → 🔴 Древний",
+        "level": 30,
+        "rainbow_stones": 3,
+        "gold": 150000,
+        "time": 172800,  # 48 часов
+        "difficulty": "Эпически сложно",
+        "difficulty_emoji": "🟣",
+        "items": {
+            "dragon_heart": 1,
+            "divine_essence": 1,
+            "ancient_relic": 2
+        },
+        "next_rarity": "ancient",
+        "description": "Питомец исчезает в столпе света"
+    },
+    "ancient": {
+        "name": "🔴 Древний → 💜 Мифический",
+        "level": 35,
+        "rainbow_stones": 5,
+        "gold": 300000,
+        "time": 259200,  # 72 часа
+        "difficulty": "Божественно",
+        "difficulty_emoji": "💫",
+        "items": {
+            "dragon_king_heart": 1,
+            "divine_essence": 3,
+            "rainbow_stone": 1
+        },
+        "next_rarity": "mythic",
+        "description": "Пространство и время искажаются вокруг"
+    }
+}
+
+# Цепочки эволюции
+EVOLUTION_CHAINS = {
+    "forest_fox": "forest_fox_elite",
+    "forest_fox_elite": "forest_fox_legend",
+    "forest_wolf": "wolf_alpha",
+    "wolf_alpha": "ancient_wolf",
+    "mountain_eagle": "royal_eagle",
+    "royal_eagle": "thunder_eagle",
+    "desert_lizard": "desert_cobra",
+    "desert_cobra": "sand_wyrm",
+    "ice_penguin": "ice_emperor",
+    "ice_owl": "ice_phoenix",
+    "young_dragon": "adult_dragon",
+    "adult_dragon": "ancient_dragon"
+}
+
+# ============================================
 # ОСНОВНЫЕ КОМАНДЫ
 # ============================================
 
@@ -157,7 +276,11 @@ def show_pets_list(call, bot_instance, character, pets_data):
             # Статус
             status = "✅ АКТИВЕН" if pet.get('id') == active_pet else ""
             
-            text += f"*{name}* {status}\n"
+            # Проверка возможности эволюции
+            can_evolve = can_pet_evolve(pet)
+            evo_marker = " 🌟" if can_evolve else ""
+            
+            text += f"*{name}*{evo_marker} {status}\n"
             text += f"  Ур.{level} | {exp_bar} {exp}/{exp_needed} опыта\n"
             text += f"  😊 Счастье: {happiness}%\n"
             
@@ -187,6 +310,8 @@ def show_pets_list(call, bot_instance, character, pets_data):
 
 def show_pet_details(call, bot_instance, character, pet_id, pets_data):
     """Показать детали питомца"""
+    from main import items_data
+    
     pets = character.pets if hasattr(character, 'pets') else []
     pet = next((p for p in pets if p.get('id') == pet_id), None)
     
@@ -194,11 +319,18 @@ def show_pet_details(call, bot_instance, character, pet_id, pets_data):
         bot_instance.answer_callback_query(call.id, "❌ Питомец не найден")
         return
     
+    # Проверяем, не эволюционирует ли питомец
+    now = int(time.time())
+    if pet.get('evolution_end', 0) > now:
+        show_evolution_status(call, bot_instance, character, pet_id, pets_data)
+        return
+    
     name = pet.get('name', PET_BONUSES.get(pet_id, {}).get('name', 'Питомец'))
     level = pet.get('level', 1)
     exp = pet.get('exp', 0)
     exp_needed = level * 100
     happiness = pet.get('happiness', 100)
+    rarity = pet.get('rarity', 'common')
     
     # Прогресс-бар
     exp_percent = int((exp / exp_needed) * 10)
@@ -207,19 +339,30 @@ def show_pet_details(call, bot_instance, character, pet_id, pets_data):
     # Способности
     abilities = pet.get('abilities', [])
     
-    text = f"🐾 *{name}*\n\n"
+    rarity_emoji = {
+        "common": "⚪",
+        "uncommon": "🟢",
+        "rare": "🔵",
+        "epic": "🟣",
+        "legendary": "🟡",
+        "ancient": "🔴",
+        "mythic": "💜"
+    }.get(rarity, "⚪")
+    
+    text = f"{rarity_emoji} *{name}*\n\n"
     text += f"📊 Уровень: {level}\n"
     text += f"📈 Опыт: {exp_bar} {exp}/{exp_needed}\n"
-    text += f"😊 Счастье: {happiness}%\n\n"
+    text += f"😊 Счастье: {happiness}%\n"
+    text += f"✨ Редкость: {PET_RARITIES.get(rarity, rarity)}\n\n"
     
     # Бонусы
     bonus_info = PET_BONUSES.get(pet_id, {})
     if bonus_info:
-        text += f"✨ *Бонус:* +{bonus_info.get('value', 0)} {bonus_info.get('bonus', '')}\n\n"
+        text += f"🎯 *Бонус:* +{bonus_info.get('value', 0)} {bonus_info.get('bonus', '')}\n\n"
     
     # Способности
     if abilities:
-        text += "*🎯 Способности:*\n"
+        text += "*⚡ Способности:*\n"
         for ability in abilities[:3]:
             text += f"• {ability.get('name')}: {ability.get('description', '')}\n"
     
@@ -227,8 +370,13 @@ def show_pet_details(call, bot_instance, character, pet_id, pets_data):
     markup.add(
         InlineKeyboardButton("🍖 Кормить", callback_data=f"pets:feed:{pet_id}"),
         InlineKeyboardButton("🎮 Играть", callback_data=f"pets:play:{pet_id}"),
-        InlineKeyboardButton("⭐ Сделать активным", callback_data=f"pets:activate:{pet_id}")
+        InlineKeyboardButton("⭐ Активный", callback_data=f"pets:activate:{pet_id}")
     )
+    
+    # Кнопка эволюции, если доступна
+    if can_pet_evolve(pet):
+        markup.add(InlineKeyboardButton("🌟 Эволюция", callback_data=f"pets:evolution:{pet_id}"))
+    
     markup.add(InlineKeyboardButton("🔙 Назад", callback_data="pets:list"))
     
     bot_instance.edit_message_text(
@@ -248,6 +396,12 @@ def feed_pet(call, bot_instance, character, pet_id):
     
     if pet_index is None:
         bot_instance.answer_callback_query(call.id, "❌ Питомец не найден")
+        return
+    
+    # Проверяем, не эволюционирует ли питомец
+    now = int(time.time())
+    if pets[pet_index].get('evolution_end', 0) > now:
+        bot_instance.answer_callback_query(call.id, "❌ Питомец эволюционирует, его нельзя кормить!")
         return
     
     # Проверяем наличие еды
@@ -306,6 +460,12 @@ def play_with_pet(call, bot_instance, character, pet_id):
         bot_instance.answer_callback_query(call.id, "❌ Питомец не найден")
         return
     
+    # Проверяем, не эволюционирует ли питомец
+    now = int(time.time())
+    if pets[pet_index].get('evolution_end', 0) > now:
+        bot_instance.answer_callback_query(call.id, "❌ Питомец эволюционирует, с ним нельзя играть!")
+        return
+    
     # Проверяем энергию
     if character.energy < 5:
         bot_instance.answer_callback_query(call.id, "❌ Нужно 5⚡ энергии!")
@@ -325,6 +485,19 @@ def play_with_pet(call, bot_instance, character, pet_id):
 def activate_pet(call, bot_instance, character, pet_id):
     """Сделать питомца активным"""
     from main import save_character
+    
+    # Проверяем, не эволюционирует ли питомец
+    pets = character.pets if hasattr(character, 'pets') else []
+    pet = next((p for p in pets if p.get('id') == pet_id), None)
+    
+    if not pet:
+        bot_instance.answer_callback_query(call.id, "❌ Питомец не найден")
+        return
+    
+    now = int(time.time())
+    if pet.get('evolution_end', 0) > now:
+        bot_instance.answer_callback_query(call.id, "❌ Питомец эволюционирует, его нельзя активировать!")
+        return
     
     character.active_pet = pet_id
     save_character(character)
@@ -516,9 +689,18 @@ def show_pet_stats(call, bot_instance, character, pets_data):
     
     # Распределение по редкости
     rarity_count = {}
+    evolving_count = 0
+    now = int(time.time())
+    
     for pet in pets:
         rarity = pet.get('rarity', 'common')
         rarity_count[rarity] = rarity_count.get(rarity, 0) + 1
+        
+        if pet.get('evolution_end', 0) > now:
+            evolving_count += 1
+    
+    if evolving_count > 0:
+        text += f"✨ Эволюционирует: {evolving_count} питомцев\n\n"
     
     if rarity_count:
         text += "*По редкости:*\n"
@@ -556,6 +738,14 @@ def show_help(call, bot_instance):
     text += "• Счастье - падает со временем, растёт от игр\n"
     text += "• Способности - открываются на 5, 10, 15 уровне\n\n"
     
+    text += "🌟 *Эволюция:*\n"
+    text += "• Обычный → Необычный: ур.10, 1ч, легко\n"
+    text += "• Необычный → Редкий: ур.15, 3ч, средне\n"
+    text += "• Редкий → Эпический: ур.20, 12ч, трудно\n"
+    text += "• Эпический → Легендарный: ур.25, 24ч, 1💎\n"
+    text += "• Легендарный → Древний: ур.30, 48ч, 3💎\n"
+    text += "• Древний → Мифический: ур.35, 72ч, 5💎\n\n"
+    
     text += "🎯 *Бонусы питомцев:*\n"
     text += "• 🦊 Лиса: +5% к поиску трав\n"
     text += "• 🐺 Волк: +3 к урону\n"
@@ -583,6 +773,419 @@ def show_help(call, bot_instance):
         reply_markup=markup,
         parse_mode='Markdown'
     )
+
+# ============================================
+# ФУНКЦИИ ЭВОЛЮЦИИ
+# ============================================
+
+def show_evolution_menu(call, bot_instance, character, pet_id, pets_data):
+    """Показать меню эволюции питомца"""
+    from main import items_data
+    import time
+    
+    pets = character.pets if hasattr(character, 'pets') else []
+    pet = next((p for p in pets if p.get('id') == pet_id), None)
+    
+    if not pet:
+        bot_instance.answer_callback_query(call.id, "❌ Питомец не найден")
+        return
+    
+    # Проверяем, не начата ли уже эволюция
+    now = int(time.time())
+    if pet.get('evolution_end', 0) > now:
+        remaining = pet['evolution_end'] - now
+        hours = remaining // 3600
+        minutes = (remaining % 3600) // 60
+        bot_instance.answer_callback_query(
+            call.id, 
+            f"⏳ Питомец уже эволюционирует! Осталось {hours}ч {minutes}м"
+        )
+        return
+    
+    # Получаем данные о следующей форме
+    next_form = get_next_evolution_form(pet_id)
+    if not next_form:
+        bot_instance.answer_callback_query(call.id, "❌ Этот питомец не может эволюционировать дальше")
+        return
+    
+    # Определяем требования для эволюции
+    current_rarity = pet.get('rarity', 'common')
+    
+    req = EVOLUTION_REQUIREMENTS.get(current_rarity)
+    if not req:
+        bot_instance.answer_callback_query(call.id, "❌ Этот питомец не может эволюционировать")
+        return
+    
+    # Проверяем уровень
+    level_ok = pet.get('level', 1) >= req['level']
+    
+    # Проверяем радужные камни (только для эпических+)
+    stones_ok = True
+    if req['rainbow_stones'] > 0:
+        stones_ok = (character.rainbow_stones or 0) >= req['rainbow_stones']
+    
+    # Проверяем золото
+    gold_ok = character.gold >= req['gold']
+    
+    # Проверяем предметы
+    items_ok = True
+    missing_items = []
+    for item_id, count in req['items'].items():
+        item_name = items_data.get("items", {}).get(item_id, {}).get('name', item_id)
+        has_count = character.count_item(item_id)
+        if has_count < count:
+            items_ok = False
+            missing_items.append(f"{item_name}: {has_count}/{count}")
+    
+    text = f"🌟 *Эволюция питомца*\n\n"
+    text += f"*{pet.get('name')}* → *{next_form}*\n"
+    text += f"✨ {req['name']}\n"
+    text += f"📊 Сложность: {req['difficulty_emoji']} {req['difficulty']}\n\n"
+    
+    text += f"⏳ *Время эволюции:* {req['time'] // 3600} часов\n"
+    text += f"📝 *Описание:* {req['description']}\n\n"
+    
+    text += "*Требования:*\n"
+    
+    # Уровень
+    status = "✅" if level_ok else "❌"
+    text += f"{status} Уровень питомца: {pet.get('level', 1)}/{req['level']}\n"
+    
+    # Радужные камни (если нужны)
+    if req['rainbow_stones'] > 0:
+        status = "✅" if stones_ok else "❌"
+        text += f"{status} Радужные камни: {character.rainbow_stones or 0}/{req['rainbow_stones']} 💎\n"
+    
+    # Золото
+    status = "✅" if gold_ok else "❌"
+    text += f"{status} Золото: {character.gold}/{req['gold']} 💰\n"
+    
+    # Предметы
+    for item_id, count in req['items'].items():
+        item_name = items_data.get("items", {}).get(item_id, {}).get('name', item_id)
+        has_count = character.count_item(item_id)
+        status = "✅" if has_count >= count else "❌"
+        text += f"{status} {item_name}: {has_count}/{count}\n"
+    
+    if missing_items:
+        text += "\n❌ *Не хватает:*\n" + "\n".join(missing_items) + "\n"
+    
+    # Информация о времени игры
+    if current_rarity in ["common", "uncommon", "rare"]:
+        text += "\n📊 *Для этой эволюции нужно:*\n"
+        text += "• Просто играть в игру и собирать ресурсы\n"
+        text += "• Выполнять квесты и убивать монстров\n"
+        text += "• Терпение и настойчивость!"
+    elif current_rarity == "epic":
+        text += "\n💎 *Для легендарной эволюции нужен радужный камень!*\n"
+        text += "• Крафтится из 9 осколков\n"
+        text += "• Можно получить в ивентах\n"
+        text += "• Можно купить за Stars/TON"
+    
+    can_evolve = level_ok and stones_ok and gold_ok and items_ok
+    
+    markup = InlineKeyboardMarkup()
+    if can_evolve:
+        markup.add(InlineKeyboardButton(
+            f"🌟 Начать эволюцию ({req['time'] // 3600}ч)",
+            callback_data=f"pets:evolve_start:{pet_id}"
+        ))
+    markup.add(InlineKeyboardButton("🔙 Назад", callback_data=f"pets:view:{pet_id}"))
+    
+    bot_instance.edit_message_text(
+        text,
+        chat_id=call.message.chat.id,
+        message_id=call.message.message_id,
+        reply_markup=markup,
+        parse_mode='Markdown'
+    )
+
+def start_evolution(call, bot_instance, character, pet_id, pets_data):
+    """Начать эволюцию питомца"""
+    from main import save_character, items_data
+    import time
+    
+    pets = character.pets if hasattr(character, 'pets') else []
+    pet_index = next((i for i, p in enumerate(pets) if p.get('id') == pet_id), None)
+    
+    if pet_index is None:
+        bot_instance.answer_callback_query(call.id, "❌ Питомец не найден")
+        return
+    
+    pet = pets[pet_index]
+    
+    # Проверяем, не начата ли уже эволюция
+    now = int(time.time())
+    if pet.get('evolution_end', 0) > now:
+        bot_instance.answer_callback_query(call.id, "❌ Питомец уже эволюционирует")
+        return
+    
+    # Получаем требования
+    current_rarity = pet.get('rarity', 'common')
+    
+    req = EVOLUTION_REQUIREMENTS.get(current_rarity)
+    if not req:
+        bot_instance.answer_callback_query(call.id, "❌ Этот питомец не может эволюционировать")
+        return
+    
+    # Проверяем уровень
+    if pet.get('level', 1) < req['level']:
+        bot_instance.answer_callback_query(call.id, f"❌ Нужен уровень {req['level']}")
+        return
+    
+    # Проверяем радужные камни (если нужны)
+    if req['rainbow_stones'] > 0:
+        if (character.rainbow_stones or 0) < req['rainbow_stones']:
+            bot_instance.answer_callback_query(call.id, f"❌ Нужно {req['rainbow_stones']} радужных камней")
+            return
+    
+    # Проверяем золото
+    if character.gold < req['gold']:
+        bot_instance.answer_callback_query(call.id, f"❌ Нужно {req['gold']} золота")
+        return
+    
+    # Проверяем предметы
+    for item_id, count in req['items'].items():
+        if not character.has_item(item_id, count):
+            item_name = items_data.get("items", {}).get(item_id, {}).get('name', item_id)
+            bot_instance.answer_callback_query(call.id, f"❌ Не хватает {item_name}")
+            return
+    
+    # Тратим ресурсы
+    if req['rainbow_stones'] > 0:
+        character.rainbow_stones -= req['rainbow_stones']
+    
+    character.gold -= req['gold']
+    
+    for item_id, count in req['items'].items():
+        for _ in range(count):
+            character.remove_item(item_id)
+    
+    # Запускаем эволюцию
+    evolution_end = now + req['time']
+    pet['evolution_end'] = evolution_end
+    pet['evolution_next'] = get_next_evolution_form(pet_id)
+    pet['evolution_start'] = now
+    
+    # Визуальный статус в зависимости от редкости
+    status_messages = {
+        "common": "✨ Питомец светится мягким светом!",
+        "uncommon": "🌀 Питомец окутывается магической аурой!",
+        "rare": "⚡ Вокруг питомца танцуют стихии!",
+        "epic": "🌟 Питомец заворачивается в клубок света!",
+        "legendary": "💫 Питомец исчезает в столпе света!",
+        "ancient": "🌌 Пространство и время искажаются вокруг!"
+    }
+    
+    pet['evolution_status'] = status_messages.get(current_rarity, "✨ Питомец эволюционирует!")
+    
+    character.pets = pets
+    save_character(character)
+    
+    # Форматируем время
+    hours = req['time'] // 3600
+    days = hours // 24
+    hours_remain = hours % 24
+    
+    time_text = f"{days}д {hours_remain}ч" if days > 0 else f"{hours}ч"
+    
+    bot_instance.answer_callback_query(
+        call.id, 
+        f"✨ Питомец начал эволюцию! Время: {time_text}"
+    )
+    
+    # Показываем статус
+    show_evolution_status(call, bot_instance, character, pet_id, pets_data)
+
+def show_evolution_status(call, bot_instance, character, pet_id, pets_data):
+    """Показать статус эволюции"""
+    import time
+    
+    pets = character.pets if hasattr(character, 'pets') else []
+    pet = next((p for p in pets if p.get('id') == pet_id), None)
+    
+    if not pet:
+        bot_instance.answer_callback_query(call.id, "❌ Питомец не найден")
+        return
+    
+    now = int(time.time())
+    evolution_end = pet.get('evolution_end', 0)
+    evolution_next = pet.get('evolution_next', '')
+    
+    if evolution_end <= now:
+        # Эволюция завершена
+        complete_evolution(call, bot_instance, character, pet_id, pets_data)
+        return
+    
+    # Время до завершения
+    remaining = evolution_end - now
+    hours = remaining // 3600
+    minutes = (remaining % 3600) // 60
+    seconds = remaining % 60
+    
+    # Прогресс-бар
+    evolution_start = pet.get('evolution_start', now - remaining)
+    total_time = evolution_end - evolution_start
+    progress = 100 - int((remaining / total_time) * 100)
+    progress_bar = "█" * (progress // 10) + "░" * (10 - (progress // 10))
+    
+    text = f"🌟 *Эволюция питомца*\n\n"
+    text += f"*{pet.get('name')}* → *{evolution_next}*\n\n"
+    text += f"{pet.get('evolution_status', '✨ Питомец завёрнут в клубок света!')}\n\n"
+    text += f"📊 *Прогресс:* {progress_bar} {progress}%\n"
+    text += f"⏳ *Осталось:* {hours}ч {minutes}м {seconds}с\n\n"
+    text += "✨ Вокруг питомца танцуют искры магии..."
+    
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("🔄 Обновить", callback_data=f"pets:evolution:{pet_id}"))
+    markup.add(InlineKeyboardButton("🔙 Назад", callback_data="pets:list"))
+    
+    bot_instance.edit_message_text(
+        text,
+        chat_id=call.message.chat.id,
+        message_id=call.message.message_id,
+        reply_markup=markup,
+        parse_mode='Markdown'
+    )
+
+def complete_evolution(call, bot_instance, character, pet_id, pets_data):
+    """Завершить эволюцию питомца"""
+    from main import save_character
+    import random
+    
+    pets = character.pets if hasattr(character, 'pets') else []
+    pet_index = next((i for i, p in enumerate(pets) if p.get('id') == pet_id), None)
+    
+    if pet_index is None:
+        bot_instance.answer_callback_query(call.id, "❌ Питомец не найден")
+        return
+    
+    pet = pets[pet_index]
+    evolution_next = pet.get('evolution_next', '')
+    
+    if not evolution_next:
+        bot_instance.answer_callback_query(call.id, "❌ Ошибка: нет следующей формы")
+        return
+    
+    # Создаём нового питомца
+    new_pet = {
+        'id': evolution_next,
+        'name': PET_BONUSES.get(evolution_next, {}).get('name', evolution_next),
+        'level': pet.get('level', 1),  # Уровень сохраняется
+        'exp': pet.get('exp', 0),
+        'happiness': 100,  # Полное счастье после эволюции
+        'rarity': get_next_rarity(pet.get('rarity', 'common')),
+        'abilities': [],
+        'acquired': pet.get('acquired', time.time()),
+        'evolved_from': pet_id,
+        'evolution_history': pet.get('evolution_history', []) + [pet_id]
+    }
+    
+    # Добавляем базовые способности
+    if pet.get('level', 1) >= 5:
+        new_pet['abilities'].append({
+            'name': 'Базовая способность',
+            'description': 'Питомец помогает в приключениях'
+        })
+    
+    # Заменяем питомца
+    pets[pet_index] = new_pet
+    character.pets = pets
+    
+    save_character(character)
+    
+    text = f"🎉 *Эволюция завершена!*\n\n"
+    text += f"🌟 Твой питомец превратился в *{new_pet['name']}*!\n\n"
+    text += f"✨ Новая редкость: {get_rarity_emoji(new_pet['rarity'])} {new_pet['rarity'].capitalize()}\n"
+    text += f"😊 Счастье восстановлено до 100%\n\n"
+    text += f"📊 Уровень сохранён: {new_pet['level']}\n"
+    
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("🐾 Посмотреть питомца", callback_data=f"pets:view:{evolution_next}"))
+    markup.add(InlineKeyboardButton("🔙 В список", callback_data="pets:list"))
+    
+    bot_instance.edit_message_text(
+        text,
+        chat_id=call.message.chat.id,
+        message_id=call.message.message_id,
+        reply_markup=markup,
+        parse_mode='Markdown'
+    )
+
+def can_pet_evolve(pet):
+    """Проверить, может ли питомец эволюционировать"""
+    if not pet:
+        return False
+    
+    # Проверяем, не эволюционирует ли уже
+    now = int(time.time())
+    if pet.get('evolution_end', 0) > now:
+        return False
+    
+    # Проверяем, есть ли следующая форма
+    next_form = get_next_evolution_form(pet.get('id'))
+    if not next_form:
+        return False
+    
+    # Проверяем, достиг ли нужного уровня
+    current_rarity = pet.get('rarity', 'common')
+    req = EVOLUTION_REQUIREMENTS.get(current_rarity)
+    
+    if not req:
+        return False
+    
+    return pet.get('level', 1) >= req['level']
+
+def get_next_evolution_form(pet_id):
+    """Получить ID следующей формы эволюции"""
+    return EVOLUTION_CHAINS.get(pet_id)
+
+def get_next_rarity(current_rarity):
+    """Получить следующую редкость"""
+    rarities = ["common", "uncommon", "rare", "epic", "legendary", "ancient", "mythic"]
+    try:
+        index = rarities.index(current_rarity)
+        if index < len(rarities) - 1:
+            return rarities[index + 1]
+    except ValueError:
+        pass
+    return current_rarity
+
+def get_rarity_emoji(rarity):
+    """Получить эмодзи для редкости"""
+    emojis = {
+        "common": "⚪",
+        "uncommon": "🟢",
+        "rare": "🔵",
+        "epic": "🟣",
+        "legendary": "🟡",
+        "ancient": "🔴",
+        "mythic": "💜"
+    }
+    return emojis.get(rarity, "⚪")
+
+def check_evolution_completion(character):
+    """Проверить завершение эволюции (вызывать периодически)"""
+    from main import save_character
+    import time
+    
+    if not hasattr(character, 'pets') or not character.pets:
+        return []
+    
+    now = int(time.time())
+    completed = []
+    
+    for pet in character.pets:
+        if pet.get('evolution_end', 0) > 0 and pet['evolution_end'] <= now:
+            # Отмечаем для завершения
+            pet['evolution_end'] = 0
+            pet['evolution_status'] = "✅ Эволюция завершена! Проверь питомца!"
+            completed.append(pet.get('name', 'Питомец'))
+    
+    if completed:
+        save_character(character)
+    
+    return completed
 
 # ============================================
 # ФУНКЦИИ ДЛЯ ДРУГИХ ХЕНДЛЕРОВ
@@ -687,6 +1290,9 @@ def handle_callback(call, bot_instance, get_or_create_player_func, pets_data):
     user_id = call.from_user.id
     user, character = get_or_create_player_func(user_id)
     
+    # Проверяем завершение эволюции
+    check_evolution_completion(character)
+    
     if action == "menu":
         pets_command(call.message, bot_instance, get_or_create_player_func, pets_data)
     
@@ -708,6 +1314,14 @@ def handle_callback(call, bot_instance, get_or_create_player_func, pets_data):
     elif action == "activate" and len(parts) > 2:
         pet_id = parts[2]
         activate_pet(call, bot_instance, character, pet_id)
+    
+    elif action == "evolution" and len(parts) > 2:
+        pet_id = parts[2]
+        show_evolution_menu(call, bot_instance, character, pet_id, pets_data)
+    
+    elif action == "evolve_start" and len(parts) > 2:
+        pet_id = parts[2]
+        start_evolution(call, bot_instance, character, pet_id, pets_data)
     
     elif action == "food":
         show_food_shop(call, bot_instance, character, pets_data)
