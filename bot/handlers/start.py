@@ -1,5 +1,58 @@
+# /bot/handlers/start.py
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 import json
+
+# ============================================
+# КОНСТАНТЫ КЛАССОВ
+# ============================================
+
+CLASSES = {
+    "warrior": {
+        "name": "⚔️ Воин",
+        "emoji": "⚔️",
+        "description": "Мастер клинка, наносящий огромный урон"
+    },
+    "archer": {
+        "name": "🏹 Лучник",
+        "emoji": "🏹",
+        "description": "Меткий стрелок, поражающий цели издалека"
+    },
+    "mage": {
+        "name": "🔮 Маг",
+        "emoji": "🔮",
+        "description": "Повелитель стихий и магии"
+    },
+    "guardian": {
+        "name": "🛡️ Страж",
+        "emoji": "🛡️",
+        "description": "Несокрушимый защитник"
+    },
+    "paladin": {
+        "name": "⚔️✨ Паладин",
+        "emoji": "⚔️✨",
+        "description": "Святой воин с божественной магией"
+    },
+    "rogue": {
+        "name": "🗡️ Разбойник",
+        "emoji": "🗡️",
+        "description": "Мастер скрытности и смертоносных атак"
+    },
+    "druid": {
+        "name": "🌿 Друид",
+        "emoji": "🌿",
+        "description": "Хранитель леса и сил природы"
+    },
+    "warlock": {
+        "name": "💀 Чернокнижник",
+        "emoji": "💀",
+        "description": "Тёмный маг, заключивший сделку с демонами"
+    },
+    "shaman": {
+        "name": "🥁 Шаман",
+        "emoji": "🥁",
+        "description": "Посредник между мирами"
+    }
+}
 
 def start_command(message, bot):
     """Обработчик команды /start"""
@@ -95,16 +148,15 @@ def start_command(message, bot):
     if not character.player_class:
         text = f"👋 *Добро пожаловать, {first_name}!*\n\n"
         text += "🌟 *Выбери свой класс*, чтобы начать приключение!\n\n"
-        text += "⚡ Энергия: {character.energy}/{character.max_energy}\n"
-        text += "💰 Золото: {character.gold}\n"
-        text += "💎 DSTN: {character.dstn or 0}\n"
-        text += "❤️ Здоровье: {character.health}/{character.max_health}\n"
-        text += "📈 Уровень: {character.level}\n\n"
-        text += "📅 Стрик входа: {character.login_streak or 0} дней\n\n"
+        text += f"⚡ Энергия: {character.energy}/{character.max_energy}\n"
+        text += f"💰 Золото: {character.gold}\n"
+        text += f"💎 DSTN: {character.dstn or 0}\n"
+        text += f"❤️ Здоровье: {character.health}/{character.max_health}\n"
+        text += f"📈 Уровень: {character.level}\n\n"
+        text += f"📅 Стрик входа: {character.login_streak or 0} дней\n\n"
         text += "👇 Нажми кнопку ниже, чтобы выбрать класс!"
         
         # Добавляем кнопки классов
-        from handlers.game import CLASSES
         class_markup = InlineKeyboardMarkup(row_width=3)
         class_buttons = []
         for class_id, class_info in CLASSES.items():
@@ -136,7 +188,6 @@ def start_command(message, bot):
         text += f"❤️ Здоровье: {character.health}/{character.max_health}\n"
         text += f"📈 Уровень: {character.level}\n"
         if character.player_class:
-            from handlers.game import CLASSES
             class_info = CLASSES.get(character.player_class, {})
             class_name = class_info.get('name', character.player_class)
             text += f"🎭 Класс: {class_name}\n"
@@ -285,3 +336,13 @@ def handle_webapp_data(call, bot):
     except Exception as e:
         print(f"❌ Ошибка обработки WebApp данных: {e}")
         bot.answer_callback_query(call.id, "❌ Ошибка")
+
+# ============================================
+# ЭКСПОРТ
+# ============================================
+
+__all__ = [
+    'start_command',
+    'help_command',
+    'handle_webapp_data'
+]
