@@ -1,3 +1,4 @@
+# /bot/handlers/exchange.py
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import os
@@ -7,452 +8,306 @@ from datetime import datetime, timedelta
 bot = telebot.TeleBot(os.getenv("BOT_TOKEN"))
 
 # ============================================
-# КОНСТАНТЫ ОБМЕНА
+# КОНСТАНТЫ ОБМЕННИКА
 # ============================================
 
-# Базовый курс
-BASE_TON_TO_DSTN = 2500
+EXCHANGE_RATES = {
+    "gold_to_dstn": 0.01,  # 100 золота = 1 DSTN
+    "dstn_to_gold": 100,    # 1 DSTN = 100 золота
+    "stars_to_dstn": 50,     # 1 звезда = 50 DSTN
+    "dstn_to_stars": 0.02,   # 50 DSTN = 1 звезда
+    "ton_to_dstn": 2500,     # 1 TON = 2500 DSTN
+    "dstn_to_ton": 0.0004,   # 2500 DSTN = 1 TON
+}
 
-# Недельные лимиты DSTN по уровням игрока
-WEEKLY_LIMITS = [
-    {"level_min": 1, "level_max": 5, "limit": 50, "name": "🌱 Новичок"},
-    {"level_min": 6, "level_max": 10, "limit": 100, "name": "🌿 Подмастерье"},
-    {"level_min": 11, "level_max": 15, "limit": 250, "name": "⚔️ Воин"},
-    {"level_min": 16, "level_max": 20, "limit": 500, "name": "🛡️ Ветеран"},
-    {"level_min": 21, "level_max": 25, "limit": 1000, "name": "🔰 Элитный воин"},
-    {"level_min": 26, "level_max": 30, "limit": 2500, "name": "⚡ Мастер"},
-    {"level_min": 31, "level_max": 35, "limit": 5000, "name": "✨ Герой"},
-    {"level_min": 36, "level_max": 40, "limit": 7500, "name": "👑 Легенда"},
-    {"level_min": 41, "level_max": 45, "limit": 10000, "name": "🌟 Полубог"},
-    {"level_min": 46, "level_max": 50, "limit": 15000, "name": "💫 Бог"},
-    {"level_min": 51, "level_max": 55, "limit": 25000, "name": "🌌 Титан"},
-    {"level_min": 56, "level_max": 60, "limit": 50000, "name": "∞ Бессмертный"}
-]
-
-# Бонусы премиум-подписки
 PREMIUM_BONUSES = {
-    "7days": {
-        "name": "🟢 Стартовый",
-        "ton_to_dstn": 2550,
-        "fee_discount": 50,
-        "limit_multiplier": 1.5,
-        "priority": False
-    },
-    "28days": {
-        "name": "🔵 Базовый",
-        "ton_to_dstn": 2600,
-        "fee_discount": 75,
-        "limit_multiplier": 2.0,
-        "priority": False
-    },
-    "90days": {
-        "name": "🟣 Продвинутый",
-        "ton_to_dstn": 2650,
-        "fee_discount": 90,
-        "limit_multiplier": 2.5,
-        "priority": False
-    },
-    "180days": {
-        "name": "🟡 Элитный",
-        "ton_to_dstn": 2700,
-        "fee_discount": 100,
-        "fee_free": True,
-        "limit_multiplier": 3.0,
-        "priority": True
-    },
-    "365days": {
-        "name": "🔴 Легендарный",
-        "ton_to_dstn": 2800,
-        "fee_discount": 100,
-        "fee_free": True,
-        "limit_multiplier": 5.0,
-        "priority": True,
-        "express": True
-    }
+    "7days": {"ton_to_dstn": 2550, "fee_discount": 50},
+    "28days": {"ton_to_dstn": 2600, "fee_discount": 75},
+    "90days": {"ton_to_dstn": 2650, "fee_discount": 90},
+    "180days": {"ton_to_dstn": 2700, "fee_free": True},
+    "365days": {"ton_to_dstn": 2800, "fee_free": True, "priority": True}
 }
 
 # ============================================
-# ФУНКЦИИ ДЛЯ РАСЧЁТА
-# ============================================
-
-def get_weekly_limit(character):
-    """Получить недельный лимит DSTN по уровню игрока"""
-    player_level = character.level
-    
-    for limit_info in WEEKLY_LIMITS:
-        if limit_info["level_min"] <= player_level <= limit_info["level_max"]:
-            base_limit = limit_info["limit"]
-            
-            # Бонус за премиум
-            limit_multiplier = 1.0
-            if hasattr(character, 'premium_plan') and character.premium_plan:
-                premium_info = PREMIUM_BONUSES.get(character.premium_plan, {})
-                limit_multiplier = premium_info.get("limit_multiplier", 1.0)
-            
-            return {
-                "limit": int(base_limit * limit_multiplier),
-                "name": limit_info["name"],
-                "level_range": f"{limit_info['level_min']}-{limit_info['level_max']}",
-                "base_limit": base_limit,
-                "multiplier": limit_multiplier
-            }
-    
-    # Для уровней выше 60
-    return {
-        "limit": 100000,
-        "name": "∞ Абсолют",
-        "level_range": "60+",
-        "base_limit": 100000,
-        "multiplier": 1.0
-    }
-
-def get_exchange_rate(character, direction="ton_to_dstn"):
-    """Получить актуальный курс обмена с учётом бонусов"""
-    base_rate = BASE_TON_TO_DSTN
-    
-    # Базовая комиссия (только для DSTN → TON)
-    fee_percent = 5
-    fee_free = False
-    
-    # Бонусы за премиум
-    premium_bonus = 0
-    fee_discount = 0
-    
-    if hasattr(character, 'premium_plan') and character.premium_plan:
-        premium_info = PREMIUM_BONUSES.get(character.premium_plan, {})
-        
-        # Улучшенный курс для TON → DSTN
-        if direction == "ton_to_dstn":
-            premium_bonus = premium_info.get("ton_to_dstn", base_rate) - base_rate
-        
-        # Скидка на комиссию
-        fee_discount = premium_info.get("fee_discount", 0)
-        
-        # Бесплатная комиссия
-        if premium_info.get("fee_free", False):
-            fee_free = True
-    
-    # Итоговый курс
-    final_rate = base_rate + premium_bonus
-    
-    # Итоговая комиссия
-    final_fee = 0 if fee_free else max(0, fee_percent - (fee_percent * fee_discount / 100))
-    
-    return {
-        "rate": final_rate,
-        "fee_percent": final_fee,
-        "premium_bonus": premium_bonus,
-        "fee_discount": fee_discount,
-        "fee_free": fee_free,
-        "base_rate": base_rate
-    }
-
-def get_used_this_week(character):
-    """Получить использованный лимит за неделю"""
-    if not hasattr(character, 'exchange_used_week'):
-        return 0
-    
-    # Проверяем, не прошла ли неделя
-    last_reset = getattr(character, 'exchange_last_reset', 0)
-    now = datetime.utcnow()
-    
-    if last_reset and (now - last_reset).days >= 7:
-        return 0
-    
-    return character.exchange_used_week
-
-def update_used_limit(character, amount):
-    """Обновить использованный лимит"""
-    from main import save_character
-    
-    now = datetime.utcnow()
-    
-    # Сбрасываем если прошла неделя
-    if hasattr(character, 'exchange_last_reset'):
-        last = character.exchange_last_reset
-        if last and (now - last).days >= 7:
-            character.exchange_used_week = 0
-    
-    character.exchange_used_week = get_used_this_week(character) + amount
-    character.exchange_last_reset = now
-    save_character(character)
-
-# ============================================
-# ОСНОВНАЯ КОМАНДА
+# ОСНОВНЫЕ КОМАНДЫ
 # ============================================
 
 def exchange_command(message, bot_instance, get_or_create_player_func, exchange_data):
-    """Команда /exchange - обмен TON на DSTN и обратно"""
+    """Команда /exchange - обмен валют"""
     user_id = message.from_user.id
     user, character = get_or_create_player_func(user_id)
     
-    # Получаем данные обмена
-    exchange_settings = exchange_data.get("exchange", {})
-    limits = exchange_settings.get("limits", {}).get("daily", {})
+    text = "💱 *Обменный пункт*\n\n"
+    text += f"💰 Твой баланс:\n"
+    text += f"• Золото: {character.gold} 🪙\n"
+    text += f"• DSTN: {character.destiny_tokens or 0} 💫\n"
+    text += f"• Stars: {character.stars or 0} ⭐\n"
+    text += f"• TON: {character.ton or 0} 💎\n\n"
     
-    # Получаем курс и лимиты
-    rate_info = get_exchange_rate(character)
-    limit_info = get_weekly_limit(character)
-    used_this_week = get_used_this_week(character)
-    remaining = limit_info["limit"] - used_this_week
+    text += "*Курсы обмена:*\n"
+    text += "• 100 🪙 = 1 💫\n"
+    text += "• 1 💫 = 100 🪙\n"
+    text += "• 1 ⭐ = 50 💫\n"
+    text += "• 50 💫 = 1 ⭐\n"
+    text += "• 1 💎 = 2500 💫\n"
+    text += "• 2500 💫 = 1 💎\n\n"
     
-    text = "💱 *DESTINY EXCHANGE*\n\n"
-    text += f"💰 *Курс:* 1 TON = {rate_info['rate']} DSTN\n"
-    
-    if rate_info['premium_bonus'] > 0:
-        text += f"  ✨ Премиум бонус: +{rate_info['premium_bonus']} DSTN\n"
-    
-    text += f"💎 *Комиссия:* {rate_info['fee_percent']}% (только DSTN → TON)\n"
-    
-    if rate_info['fee_free']:
-        text += "  ✅ Бесплатный обмен для премиум\n"
-    elif rate_info['fee_discount'] > 0:
-        text += f"  📉 Скидка {rate_info['fee_discount']}% для премиум\n"
-    
-    text += f"\n📊 *Твой баланс:* {character.dstn or 0} DSTN\n"
-    text += f"📈 *Уровень:* {character.level}\n"
-    text += f"🎭 *Статус:* {limit_info['name']}\n"
-    text += f"📊 *Недельный лимит:* {limit_info['limit']} DSTN\n"
-    text += f"📉 *Использовано:* {used_this_week} DSTN\n"
-    text += f"📈 *Осталось:* {remaining} DSTN\n\n"
-    
-    if limit_info['multiplier'] > 1:
-        text += f"✨ Премиум бонус: x{limit_info['multiplier']} к лимиту\n"
-    
-    text += "📋 *Лимиты по уровням:*\n"
-    
-    # Показываем ближайшие уровни
-    for l in WEEKLY_LIMITS[:5]:
-        emoji = "✅" if l["level_min"] <= character.level <= l["level_max"] else "⏳"
-        text += f"{emoji} Ур.{l['level_min']}-{l['level_max']}: {l['limit']} DSTN/нед\n"
-    
-    text += "\n🔗 Подключи TON кошелёк для обмена"
+    # Премиум бонусы
+    if user.premium_until and user.premium_until > datetime.utcnow():
+        plan = user.premium_plan
+        bonus = PREMIUM_BONUSES.get(plan, {})
+        if bonus:
+            text += "✨ *Твои премиум-бонусы:*\n"
+            if bonus.get("ton_to_dstn"):
+                text += f"• 1 💎 = {bonus['ton_to_dstn']} 💫 (+{bonus['ton_to_dstn'] - 2500})\n"
+            if bonus.get("fee_discount"):
+                text += f"• Скидка на комиссию: {bonus['fee_discount']}%\n"
+            if bonus.get("fee_free"):
+                text += "• Без комиссии за обмен\n"
+            if bonus.get("priority"):
+                text += "• Приоритетные операции\n"
     
     markup = InlineKeyboardMarkup(row_width=2)
-    
-    # Кнопки обмена
     markup.add(
-        InlineKeyboardButton("💎 Купить DSTN за TON", callback_data="exchange:buy"),
-        InlineKeyboardButton("💰 Продать DSTN за TON", callback_data="exchange:sell")
+        InlineKeyboardButton("🪙 → 💫", callback_data="exchange:gold_to_dstn"),
+        InlineKeyboardButton("💫 → 🪙", callback_data="exchange:dstn_to_gold"),
+        InlineKeyboardButton("⭐ → 💫", callback_data="exchange:stars_to_dstn"),
+        InlineKeyboardButton("💫 → ⭐", callback_data="exchange:dstn_to_stars"),
+        InlineKeyboardButton("💎 → 💫", callback_data="exchange:ton_to_dstn"),
+        InlineKeyboardButton("💫 → 💎", callback_data="exchange:dstn_to_ton"),
+        InlineKeyboardButton("📊 Курсы", callback_data="exchange:rates"),
+        InlineKeyboardButton("📜 История", callback_data="exchange:history")
     )
-    
-    # Информационные кнопки
-    markup.add(
-        InlineKeyboardButton("📊 Все лимиты", callback_data="exchange:all_limits"),
-        InlineKeyboardButton("📋 Мои операции", callback_data="exchange:history")
-    )
-    
-    # Премиум и настройки
-    if hasattr(character, 'premium_plan') and character.premium_plan:
-        premium_name = PREMIUM_BONUSES.get(character.premium_plan, {}).get("name", "Премиум")
-        markup.add(InlineKeyboardButton(f"✨ {premium_name} активен", callback_data="premium:status"))
-    else:
-        markup.add(InlineKeyboardButton("👑 Купить премиум", callback_data="premium:menu"))
-    
     markup.add(InlineKeyboardButton("🔙 Назад", callback_data="game:back_to_start"))
     
     bot_instance.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
 
-def show_buy_menu(call, bot_instance, character, exchange_data):
-    """Показать меню покупки DSTN за TON"""
-    rate_info = get_exchange_rate(character, "ton_to_dstn")
-    limit_info = get_weekly_limit(character)
-    used = get_used_this_week(character)
-    remaining = limit_info["limit"] - used
+def rates_command(message, bot_instance, get_or_create_player_func, exchange_data):
+    """Команда /rates - показать курсы обмена"""
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
     
-    text = "💎 *Покупка DSTN за TON*\n\n"
-    text += f"💰 Курс: 1 TON = {rate_info['rate']} DSTN\n"
-    text += f"📊 Доступно: {remaining} DSTN из {limit_info['limit']}\n\n"
+    text = "📊 *Текущие курсы обмена*\n\n"
     
-    # Предустановленные суммы
-    amounts = [10, 50, 100, 500, 1000]
+    text += "💰 *Золото (🪙) → DSTN (💫)*\n"
+    text += "• 100 🪙 = 1 💫\n"
+    text += "• 500 🪙 = 5 💫\n"
+    text += "• 1000 🪙 = 10 💫\n\n"
     
-    text += "Выбери сумму в TON:\n"
-    for amount in amounts:
-        dstn = amount * rate_info['rate']
-        if dstn <= remaining:
-            text += f"• {amount} TON = {dstn} DSTN\n"
+    text += "💫 *DSTN → Золото*\n"
+    text += "• 1 💫 = 100 🪙\n"
+    text += "• 5 💫 = 500 🪙\n"
+    text += "• 10 💫 = 1000 🪙\n\n"
     
-    text += "\n🔜 Функция появится после интеграции с TON Connect"
+    text += "⭐ *Stars → DSTN*\n"
+    text += "• 1 ⭐ = 50 💫\n"
+    text += "• 5 ⭐ = 250 💫\n"
+    text += "• 10 ⭐ = 500 💫\n\n"
     
-    markup = InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton("🔙 Назад", callback_data="exchange:menu"))
+    text += "💎 *TON → DSTN*\n"
     
-    bot_instance.edit_message_text(
-        text,
-        chat_id=call.message.chat.id,
-        message_id=call.message.message_id,
-        reply_markup=markup,
-        parse_mode='Markdown'
-    )
-
-def show_sell_menu(call, bot_instance, character, exchange_data):
-    """Показать меню продажи DSTN за TON"""
-    rate_info = get_exchange_rate(character, "dstn_to_ton")
+    # Базовый курс
+    text += f"• 1 💎 = {EXCHANGE_RATES['ton_to_dstn']} 💫 (базовый)\n"
     
-    # С учётом комиссии
-    effective_rate = rate_info['rate'] * (1 - rate_info['fee_percent'] / 100)
+    # Премиум курсы
+    if user.premium_until and user.premium_until > datetime.utcnow():
+        plan = user.premium_plan
+        bonus = PREMIUM_BONUSES.get(plan, {})
+        if bonus.get("ton_to_dstn"):
+            text += f"• 1 💎 = {bonus['ton_to_dstn']} 💫 (твой премиум-курс)\n"
     
-    text = "💰 *Продажа DSTN за TON*\n\n"
-    text += f"💰 Курс: {rate_info['rate']} DSTN = 1 TON\n"
-    text += f"📉 Комиссия: {rate_info['fee_percent']}%\n"
-    text += f"💎 Итоговый курс: {int(effective_rate)} DSTN = 1 TON\n\n"
-    
-    if rate_info['fee_free']:
-        text += "✅ Премиум: комиссия 0%\n"
-    
-    text += f"📊 Твой баланс: {character.dstn or 0} DSTN\n"
-    text += f"📈 Минимальная сумма: 1000 DSTN\n\n"
-    
-    text += "🔜 Функция появится после интеграции с TON Connect"
+    text += "\n💎 *Преимущества премиума:*\n"
+    text += "• 🔵 Базовый: +100 DSTN за TON\n"
+    text += "• 🟣 Продвинутый: +150 DSTN за TON\n"
+    text += "• 🟡 Элитный: +200 DSTN за TON, без комиссии\n"
+    text += "• 🔴 Легендарный: +300 DSTN за TON, приоритет"
     
     markup = InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton("🔙 Назад", callback_data="exchange:menu"))
+    markup.add(InlineKeyboardButton("🔙 В обменник", callback_data="exchange:menu"))
     
-    bot_instance.edit_message_text(
-        text,
-        chat_id=call.message.chat.id,
-        message_id=call.message.message_id,
-        reply_markup=markup,
-        parse_mode='Markdown'
-    )
+    bot_instance.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
 
-def show_all_limits(call, bot_instance, character):
-    """Показать все лимиты по уровням"""
-    text = "📊 *НЕДЕЛЬНЫЕ ЛИМИТЫ ПО УРОВНЯМ*\n\n"
-    text += "Количество DSTN, которое можно обменять за неделю:\n\n"
+def convert_command(message, bot_instance, get_or_create_player_func, exchange_data):
+    """Команда /convert - конвертировать валюту"""
+    args = message.text.split()
+    if len(args) < 4:
+        bot.send_message(
+            message.chat.id,
+            "❌ Укажи: /convert [из] [в] [количество]\n"
+            "Пример: /convert gold dstn 500\n\n"
+            "Доступные валюты:\n"
+            "• gold - золото 🪙\n"
+            "• dstn - DSTN 💫\n"
+            "• stars - звёзды ⭐\n"
+            "• ton - TON 💎",
+            parse_mode='Markdown'
+        )
+        return
     
-    current_level = character.level
+    from_currency = args[1].lower()
+    to_currency = args[2].lower()
     
-    for limit in WEEKLY_LIMITS:
-        # Отметка текущего диапазона
-        if limit["level_min"] <= current_level <= limit["level_max"]:
-            marker = "👉 "
-            status = "ТВОЙ ТЕКУЩИЙ"
-        else:
-            marker = "  "
-            status = ""
+    try:
+        amount = float(args[3])
+    except ValueError:
+        bot.send_message(message.chat.id, "❌ Количество должно быть числом!")
+        return
+    
+    if amount <= 0:
+        bot.send_message(message.chat.id, "❌ Количество должно быть положительным!")
+        return
+    
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    # Проверяем наличие средств
+    if from_currency == "gold" and character.gold < amount:
+        bot.send_message(message.chat.id, f"❌ У тебя только {character.gold} золота!")
+        return
+    elif from_currency == "dstn" and (character.destiny_tokens or 0) < amount:
+        bot.send_message(message.chat.id, f"❌ У тебя только {character.destiny_tokens or 0} DSTN!")
+        return
+    elif from_currency == "stars" and (character.stars or 0) < amount:
+        bot.send_message(message.chat.id, f"❌ У тебя только {character.stars or 0} звёзд!")
+        return
+    elif from_currency == "ton" and (character.ton or 0) < amount:
+        bot.send_message(message.chat.id, f"❌ У тебя только {character.ton or 0} TON!")
+        return
+    
+    # Определяем курс
+    rate = 0
+    pair = f"{from_currency}_to_{to_currency}"
+    
+    if pair == "gold_to_dstn":
+        rate = EXCHANGE_RATES["gold_to_dstn"]  # 0.01
+        received = amount * rate
+        character.gold -= amount
+        character.destiny_tokens = (character.destiny_tokens or 0) + received
+        result_text = f"✅ Обменяно {amount} 🪙 на {received} 💫"
+    
+    elif pair == "dstn_to_gold":
+        rate = EXCHANGE_RATES["dstn_to_gold"]  # 100
+        received = amount * rate
+        character.destiny_tokens = (character.destiny_tokens or 0) - amount
+        character.gold += received
+        result_text = f"✅ Обменяно {amount} 💫 на {received} 🪙"
+    
+    elif pair == "stars_to_dstn":
+        rate = EXCHANGE_RATES["stars_to_dstn"]  # 50
+        received = amount * rate
+        character.stars = (character.stars or 0) - amount
+        character.destiny_tokens = (character.destiny_tokens or 0) + received
+        result_text = f"✅ Обменяно {amount} ⭐ на {received} 💫"
+    
+    elif pair == "dstn_to_stars":
+        rate = EXCHANGE_RATES["dstn_to_stars"]  # 0.02
+        received = amount * rate
+        character.destiny_tokens = (character.destiny_tokens or 0) - amount
+        character.stars = (character.stars or 0) + received
+        result_text = f"✅ Обменяно {amount} 💫 на {received} ⭐"
+    
+    elif pair == "ton_to_dstn":
+        rate = EXCHANGE_RATES["ton_to_dstn"]  # 2500
         
-        text += f"{marker}*Ур.{limit['level_min']}-{limit['level_max']}:* {limit['limit']} DSTN/нед"
-        if status:
-            text += f" ⬅️ {status}"
-        text += "\n"
+        # Премиум бонус
+        if user.premium_until and user.premium_until > datetime.utcnow():
+            plan = user.premium_plan
+            bonus = PREMIUM_BONUSES.get(plan, {})
+            if bonus.get("ton_to_dstn"):
+                rate = bonus["ton_to_dstn"]
+        
+        received = amount * rate
+        character.ton = (character.ton or 0) - amount
+        character.destiny_tokens = (character.destiny_tokens or 0) + received
+        result_text = f"✅ Обменяно {amount} 💎 на {received} 💫"
     
-    # Информация о премиум бонусе
-    text += "\n✨ *Премиум бонус:*\n"
-    text += "• 🟢 Стартовый: x1.5 к лимиту\n"
-    text += "• 🔵 Базовый: x2.0 к лимиту\n"
-    text += "• 🟣 Продвинутый: x2.5 к лимиту\n"
-    text += "• 🟡 Элитный: x3.0 к лимиту\n"
-    text += "• 🔴 Легендарный: x5.0 к лимиту\n"
+    elif pair == "dstn_to_ton":
+        rate = EXCHANGE_RATES["dstn_to_ton"]  # 0.0004
+        received = amount * rate
+        if received < 0.01:
+            bot.send_message(message.chat.id, "❌ Минимальная сумма обмена: 2500 DSTN = 1 TON")
+            return
+        character.destiny_tokens = (character.destiny_tokens or 0) - amount
+        character.ton = (character.ton or 0) + received
+        result_text = f"✅ Обменяно {amount} 💫 на {received:.2f} 💎"
     
-    markup = InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton("🔙 Назад", callback_data="exchange:menu"))
+    else:
+        bot.send_message(message.chat.id, "❌ Неподдерживаемая пара валют!")
+        return
     
-    bot_instance.edit_message_text(
-        text,
-        chat_id=call.message.chat.id,
-        message_id=call.message.message_id,
-        reply_markup=markup,
-        parse_mode='Markdown'
-    )
+    # Сохраняем изменения
+    from main import save_character
+    save_character(character)
+    
+    # Записываем историю
+    if not hasattr(character, 'exchange_history'):
+        character.exchange_history = []
+    
+    character.exchange_history.append({
+        'timestamp': datetime.utcnow().isoformat(),
+        'from': from_currency,
+        'to': to_currency,
+        'amount': amount,
+        'received': received,
+        'rate': rate
+    })
+    save_character(character)
+    
+    # Показываем результат
+    text = f"{result_text}\n\n"
+    text += f"💰 Новый баланс:\n"
+    text += f"• Золото: {character.gold} 🪙\n"
+    text += f"• DSTN: {character.destiny_tokens or 0} 💫\n"
+    text += f"• Stars: {character.stars or 0} ⭐\n"
+    text += f"• TON: {character.ton or 0} 💎"
+    
+    bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
-def show_history(call, bot_instance, character):
+def show_history(message, bot_instance, character):
     """Показать историю обменов"""
-    history = getattr(character, 'exchange_history', [])
-    
-    text = "📋 *ИСТОРИЯ ОБМЕНОВ*\n\n"
+    history = character.exchange_history if hasattr(character, 'exchange_history') else []
     
     if not history:
-        text += "У тебя пока нет совершённых обменов."
-    else:
-        for entry in history[-10:]:  # Последние 10
-            date = entry.get('date', '')
-            type = entry.get('type', '')
-            amount = entry.get('amount', 0)
-            result = entry.get('result', 0)
-            text += f"• {date}: {type} {amount} → {result}\n"
+        bot.send_message(
+            message.chat.id,
+            "📜 История обменов пуста",
+            parse_mode='Markdown'
+        )
+        return
     
-    markup = InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton("🔙 Назад", callback_data="exchange:menu"))
+    text = "📜 *История обменов*\n\n"
     
-    bot_instance.edit_message_text(
-        text,
-        chat_id=call.message.chat.id,
-        message_id=call.message.message_id,
-        reply_markup=markup,
-        parse_mode='Markdown'
-    )
-
-def process_exchange(character, direction, amount, exchange_data):
-    """Обработать обмен (внутренняя функция)"""
-    from main import save_character
+    for entry in history[-10:]:  # Показываем последние 10
+        timestamp = entry.get('timestamp', '')
+        if timestamp:
+            try:
+                dt = datetime.fromisoformat(timestamp)
+                time_str = dt.strftime("%d.%m %H:%M")
+            except:
+                time_str = timestamp
+        else:
+            time_str = "неизвестно"
+        
+        from_curr = entry.get('from', '?')
+        to_curr = entry.get('to', '?')
+        amount = entry.get('amount', 0)
+        received = entry.get('received', 0)
+        
+        emoji_from = {"gold": "🪙", "dstn": "💫", "stars": "⭐", "ton": "💎"}.get(from_curr, "❓")
+        emoji_to = {"gold": "🪙", "dstn": "💫", "stars": "⭐", "ton": "💎"}.get(to_curr, "❓")
+        
+        text += f"{time_str}: {amount}{emoji_from} → {received:.2f}{emoji_to}\n"
     
-    rate_info = get_exchange_rate(character, direction)
-    limit_info = get_weekly_limit(character)
-    used = get_used_this_week(character)
-    
-    if direction == "ton_to_dstn":
-        # TON → DSTN
-        dstn_amount = amount * rate_info['rate']
-        
-        # Проверка лимита
-        if used + dstn_amount > limit_info['limit']:
-            return False, "Превышение недельного лимита"
-        
-        character.dstn = (character.dstn or 0) + dstn_amount
-        update_used_limit(character, dstn_amount)
-        
-        # Запись в историю
-        if not hasattr(character, 'exchange_history'):
-            character.exchange_history = []
-        character.exchange_history.append({
-            'date': datetime.now().strftime('%Y-%m-%d %H:%M'),
-            'type': 'TON → DSTN',
-            'amount': amount,
-            'result': dstn_amount
-        })
-        
-        save_character(character)
-        return True, dstn_amount
-    
-    else:
-        # DSTN → TON
-        if character.dstn < amount:
-            return False, "Недостаточно DSTN"
-        
-        if amount < 1000:
-            return False, "Минимальная сумма 1000 DSTN"
-        
-        ton_amount = amount / rate_info['rate']
-        
-        # Применяем комиссию
-        if not rate_info['fee_free']:
-            fee = ton_amount * (rate_info['fee_percent'] / 100)
-            ton_amount -= fee
-        
-        character.dstn -= amount
-        update_used_limit(character, amount)
-        
-        # Запись в историю
-        if not hasattr(character, 'exchange_history'):
-            character.exchange_history = []
-        character.exchange_history.append({
-            'date': datetime.now().strftime('%Y-%m-%d %H:%M'),
-            'type': 'DSTN → TON',
-            'amount': amount,
-            'result': round(ton_amount, 2)
-        })
-        
-        save_character(character)
-        return True, round(ton_amount, 2)
+    bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
 # ============================================
 # ОБРАБОТКА КНОПОК
 # ============================================
 
 def handle_callback(call, bot_instance, get_or_create_player_func, exchange_data):
-    """Обработка кнопок обмена"""
+    """Обработка кнопок обменника"""
+    from main import save_character
+    
     parts = call.data.split(':')
     action = parts[1] if len(parts) > 1 else "menu"
     
@@ -462,21 +317,316 @@ def handle_callback(call, bot_instance, get_or_create_player_func, exchange_data
     if action == "menu":
         exchange_command(call.message, bot_instance, get_or_create_player_func, exchange_data)
     
-    elif action == "buy":
-        show_buy_menu(call, bot_instance, character, exchange_data)
-    
-    elif action == "sell":
-        show_sell_menu(call, bot_instance, character, exchange_data)
-    
-    elif action == "all_limits":
-        show_all_limits(call, bot_instance, character)
+    elif action == "rates":
+        # Показать детальные курсы
+        text = "📊 *Детальные курсы обмена*\n\n"
+        
+        text += "💰 *Золото ↔ DSTN*\n"
+        text += "• 100 🪙 = 1 💫\n"
+        text += "• 1 💫 = 100 🪙\n\n"
+        
+        text += "⭐ *Stars ↔ DSTN*\n"
+        text += "• 1 ⭐ = 50 💫\n"
+        text += "• 50 💫 = 1 ⭐\n\n"
+        
+        text += "💎 *TON ↔ DSTN*\n"
+        text += f"• 1 💎 = {EXCHANGE_RATES['ton_to_dstn']} 💫\n"
+        text += f"• {EXCHANGE_RATES['ton_to_dstn']} 💫 = 1 💎\n\n"
+        
+        if user.premium_until and user.premium_until > datetime.utcnow():
+            plan = user.premium_plan
+            bonus = PREMIUM_BONUSES.get(plan, {})
+            if bonus.get("ton_to_dstn"):
+                text += f"✨ *Твой премиум-курс:*\n"
+                text += f"• 1 💎 = {bonus['ton_to_dstn']} 💫\n"
+        
+        markup = InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="exchange:menu"))
+        
+        bot_instance.edit_message_text(
+            text,
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            reply_markup=markup,
+            parse_mode='Markdown'
+        )
     
     elif action == "history":
-        show_history(call, bot_instance, character)
+        history = character.exchange_history if hasattr(character, 'exchange_history') else []
+        
+        if not history:
+            text = "📜 История обменов пуста"
+        else:
+            text = "📜 *История обменов*\n\n"
+            for entry in history[-10:]:
+                timestamp = entry.get('timestamp', '')
+                try:
+                    dt = datetime.fromisoformat(timestamp)
+                    time_str = dt.strftime("%d.%m %H:%M")
+                except:
+                    time_str = timestamp[:16] if timestamp else "?"
+                
+                from_curr = entry.get('from', '?')
+                to_curr = entry.get('to', '?')
+                amount = entry.get('amount', 0)
+                received = entry.get('received', 0)
+                
+                emoji_from = {"gold": "🪙", "dstn": "💫", "stars": "⭐", "ton": "💎"}.get(from_curr, "❓")
+                emoji_to = {"gold": "🪙", "dstn": "💫", "stars": "⭐", "ton": "💎"}.get(to_curr, "❓")
+                
+                text += f"{time_str}: {amount}{emoji_from} → {received:.2f}{emoji_to}\n"
+        
+        markup = InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="exchange:menu"))
+        
+        bot_instance.edit_message_text(
+            text,
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            reply_markup=markup,
+            parse_mode='Markdown'
+        )
     
-    elif action.startswith("exchange:"):
-        # Обработка конкретных сумм (будет позже)
-        bot_instance.answer_callback_query(call.id, "🔜 Функция в разработке")
+    elif action == "gold_to_dstn":
+        # Создаём клавиатуру с суммами
+        markup = InlineKeyboardMarkup(row_width=2)
+        amounts = [100, 500, 1000, 5000]
+        for amount in amounts:
+            markup.add(InlineKeyboardButton(
+                f"{amount} 🪙 → {amount // 100} 💫",
+                callback_data=f"exchange:do:gold_to_dstn:{amount}"
+            ))
+        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="exchange:menu"))
+        
+        bot_instance.edit_message_text(
+            "💰 Выбери сумму для обмена:",
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            reply_markup=markup,
+            parse_mode='Markdown'
+        )
+    
+    elif action == "dstn_to_gold":
+        markup = InlineKeyboardMarkup(row_width=2)
+        amounts = [1, 5, 10, 50]
+        for amount in amounts:
+            markup.add(InlineKeyboardButton(
+                f"{amount} 💫 → {amount * 100} 🪙",
+                callback_data=f"exchange:do:dstn_to_gold:{amount}"
+            ))
+        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="exchange:menu"))
+        
+        bot_instance.edit_message_text(
+            "💫 Выбери сумму для обмена:",
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            reply_markup=markup,
+            parse_mode='Markdown'
+        )
+    
+    elif action == "stars_to_dstn":
+        markup = InlineKeyboardMarkup(row_width=2)
+        amounts = [1, 5, 10, 20]
+        for amount in amounts:
+            markup.add(InlineKeyboardButton(
+                f"{amount} ⭐ → {amount * 50} 💫",
+                callback_data=f"exchange:do:stars_to_dstn:{amount}"
+            ))
+        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="exchange:menu"))
+        
+        bot_instance.edit_message_text(
+            "⭐ Выбери сумму для обмена:",
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            reply_markup=markup,
+            parse_mode='Markdown'
+        )
+    
+    elif action == "dstn_to_stars":
+        markup = InlineKeyboardMarkup(row_width=2)
+        amounts = [50, 100, 250, 500]
+        for amount in amounts:
+            markup.add(InlineKeyboardButton(
+                f"{amount} 💫 → {amount // 50} ⭐",
+                callback_data=f"exchange:do:dstn_to_stars:{amount}"
+            ))
+        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="exchange:menu"))
+        
+        bot_instance.edit_message_text(
+            "💫 Выбери сумму для обмена:",
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            reply_markup=markup,
+            parse_mode='Markdown'
+        )
+    
+    elif action == "ton_to_dstn":
+        # Определяем курс
+        rate = EXCHANGE_RATES["ton_to_dstn"]
+        if user.premium_until and user.premium_until > datetime.utcnow():
+            plan = user.premium_plan
+            bonus = PREMIUM_BONUSES.get(plan, {})
+            if bonus.get("ton_to_dstn"):
+                rate = bonus["ton_to_dstn"]
+        
+        markup = InlineKeyboardMarkup(row_width=2)
+        amounts = [1, 5, 10, 20]
+        for amount in amounts:
+            markup.add(InlineKeyboardButton(
+                f"{amount} 💎 → {amount * rate} 💫",
+                callback_data=f"exchange:do:ton_to_dstn:{amount}"
+            ))
+        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="exchange:menu"))
+        
+        bot_instance.edit_message_text(
+            f"💎 Выбери сумму для обмена (курс: 1💎 = {rate}💫):",
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            reply_markup=markup,
+            parse_mode='Markdown'
+        )
+    
+    elif action == "dstn_to_ton":
+        rate = EXCHANGE_RATES["dstn_to_ton"]  # 0.0004
+        min_amount = int(1 / rate)  # 2500
+        
+        markup = InlineKeyboardMarkup(row_width=2)
+        amounts = [min_amount, min_amount * 2, min_amount * 5, min_amount * 10]
+        for amount in amounts:
+            markup.add(InlineKeyboardButton(
+                f"{amount} 💫 → {amount * rate:.2f} 💎",
+                callback_data=f"exchange:do:dstn_to_ton:{amount}"
+            ))
+        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="exchange:menu"))
+        
+        bot_instance.edit_message_text(
+            f"💫 Выбери сумму для обмена (минимум: {min_amount}💫 = 1💎):",
+            chat_id=call.message.chat.id,
+            message_id=call.message.message_id,
+            reply_markup=markup,
+            parse_mode='Markdown'
+        )
+    
+    elif action.startswith("do:"):
+        # Выполняем обмен
+        parts = action.split(':')
+        pair = parts[1]
+        amount = float(parts[2])
+        
+        if pair == "gold_to_dstn":
+            if character.gold < amount:
+                bot_instance.answer_callback_query(call.id, f"❌ Нужно {amount} золота!")
+                return
+            
+            received = amount // 100
+            character.gold -= amount
+            character.destiny_tokens = (character.destiny_tokens or 0) + received
+            
+            result_text = f"✅ {amount} 🪙 → {received} 💫"
+        
+        elif pair == "dstn_to_gold":
+            if (character.destiny_tokens or 0) < amount:
+                bot_instance.answer_callback_query(call.id, f"❌ Нужно {amount} DSTN!")
+                return
+            
+            received = amount * 100
+            character.destiny_tokens = (character.destiny_tokens or 0) - amount
+            character.gold += received
+            
+            result_text = f"✅ {amount} 💫 → {received} 🪙"
+        
+        elif pair == "stars_to_dstn":
+            if (character.stars or 0) < amount:
+                bot_instance.answer_callback_query(call.id, f"❌ Нужно {amount} звёзд!")
+                return
+            
+            received = amount * 50
+            character.stars = (character.stars or 0) - amount
+            character.destiny_tokens = (character.destiny_tokens or 0) + received
+            
+            result_text = f"✅ {amount} ⭐ → {received} 💫"
+        
+        elif pair == "dstn_to_stars":
+            if (character.destiny_tokens or 0) < amount:
+                bot_instance.answer_callback_query(call.id, f"❌ Нужно {amount} DSTN!")
+                return
+            
+            received = amount // 50
+            character.destiny_tokens = (character.destiny_tokens or 0) - amount
+            character.stars = (character.stars or 0) + received
+            
+            result_text = f"✅ {amount} 💫 → {received} ⭐"
+        
+        elif pair == "ton_to_dstn":
+            if (character.ton or 0) < amount:
+                bot_instance.answer_callback_query(call.id, f"❌ Нужно {amount} TON!")
+                return
+            
+            rate = EXCHANGE_RATES["ton_to_dstn"]
+            if user.premium_until and user.premium_until > datetime.utcnow():
+                plan = user.premium_plan
+                bonus = PREMIUM_BONUSES.get(plan, {})
+                if bonus.get("ton_to_dstn"):
+                    rate = bonus["ton_to_dstn"]
+            
+            received = amount * rate
+            character.ton = (character.ton or 0) - amount
+            character.destiny_tokens = (character.destiny_tokens or 0) + received
+            
+            result_text = f"✅ {amount} 💎 → {received} 💫"
+        
+        elif pair == "dstn_to_ton":
+            if (character.destiny_tokens or 0) < amount:
+                bot_instance.answer_callback_query(call.id, f"❌ Нужно {amount} DSTN!")
+                return
+            
+            rate = EXCHANGE_RATES["dstn_to_ton"]  # 0.0004
+            received = amount * rate
+            if received < 0.01:
+                bot_instance.answer_callback_query(call.id, "❌ Минимальная сумма: 2500 DSTN = 1 TON")
+                return
+            
+            character.destiny_tokens = (character.destiny_tokens or 0) - amount
+            character.ton = (character.ton or 0) + received
+            
+            result_text = f"✅ {amount} 💫 → {received:.2f} 💎"
+        
+        else:
+            bot_instance.answer_callback_query(call.id, "❌ Неподдерживаемая операция")
+            return
+        
+        # Сохраняем
+        save_character(character)
+        
+        # Записываем историю
+        if not hasattr(character, 'exchange_history'):
+            character.exchange_history = []
+        
+        character.exchange_history.append({
+            'timestamp': datetime.utcnow().isoformat(),
+            'from': pair.split('_to_')[0],
+            'to': pair.split('_to_')[1],
+            'amount': amount,
+            'received': received,
+            'rate': received / amount if amount > 0 else 0
+        })
+        save_character(character)
+        
+        bot_instance.answer_callback_query(call.id, result_text)
+        
+        # Возвращаемся в меню
+        exchange_command(call.message, bot_instance, get_or_create_player_func, exchange_data)
     
     else:
-        bot_instance.answer_callback_query(call.id, "⏳ Эта функция в разработке")
+        bot_instance.answer_callback_query(call.id, "⏳ В разработке")
+
+# ============================================
+# ЭКСПОРТ
+# ============================================
+
+__all__ = [
+    'exchange_command',
+    'rates_command',
+    'convert_command',
+    'handle_callback'
+]
