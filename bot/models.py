@@ -1,25 +1,19 @@
-from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime, JSON, ForeignKey, Text
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String, BigInteger, DateTime, ForeignKey, Text, Boolean, JSON, Float
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import json
-
-Base = declarative_base()
+from database import Base
 
 class User(Base):
     __tablename__ = "users"
     
     id = Column(Integer, primary_key=True, index=True)
-    telegram_id = Column(Integer, unique=True, index=True, nullable=False)
+    telegram_id = Column(BigInteger, unique=True, index=True, nullable=False)
     username = Column(String, nullable=True)
     first_name = Column(String, nullable=True)
     last_name = Column(String, nullable=True)
-    
     created_at = Column(DateTime, default=datetime.utcnow)
     last_active = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
-    # Связь с персонажем
-    character = relationship("Character", back_populates="user", uselist=False, cascade="all, delete-orphan")
     
     # Премиум статус
     premium_until = Column(DateTime, nullable=True)
@@ -43,14 +37,27 @@ class User(Base):
     event_achievements = Column(JSON, default=list)
     event_stats = Column(JSON, default=dict)
     
+    # Гильдия
+    guild_id = Column(Integer, nullable=True)
+    guild_rank = Column(String, default="member")
+    guild_join_time = Column(Integer, default=0)
+    guild_leave_time = Column(Integer, default=0)
+    guild_contribution = Column(Integer, default=0)
+    guild_donated_gold = Column(Integer, default=0)
+    guild_donated_dstn = Column(Integer, default=0)
+    guild_wars = Column(Integer, default=0)
+    
+    # Связь с персонажем
+    character = relationship("Character", back_populates="user", uselist=False, cascade="all, delete-orphan")
+    
     def __repr__(self):
-        return f"<User(id={self.telegram_id}, username={self.username})>"
+        return f"<User {self.telegram_id}>"
 
 class Character(Base):
     __tablename__ = "characters"
     
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True)
     
     user = relationship("User", back_populates="character")
     
@@ -59,43 +66,59 @@ class Character(Base):
     experience = Column(Integer, default=0)
     
     # Здоровье
-    max_health = Column(Integer, default=100)
     health = Column(Integer, default=100)
+    max_health = Column(Integer, default=100)
     health_regen = Column(Integer, default=0)
     
     # Энергия
-    max_energy = Column(Integer, default=100)
     energy = Column(Integer, default=100)
-    last_update = Column(Integer, default=0)  # для восстановления энергии
+    max_energy = Column(Integer, default=100)
+    last_update = Column(Integer, default=0)
     
     # Мана
-    max_magic = Column(Integer, default=100)
-    magic = Column(Integer, default=100)
+    magic = Column(Integer, default=50)
+    max_magic = Column(Integer, default=50)
     magic_regen = Column(Integer, default=0)
-    last_magic_update = Column(Integer, default=0)  # для восстановления маны
+    last_magic_update = Column(Integer, default=0)
     
     # Ресурсы
-    gold = Column(Integer, default=0)
-    dstn = Column(Integer, default=0)  # премиум-валюта
+    gold = Column(Integer, default=20)
+    dstn = Column(Integer, default=0)  # переименовано с destiny_tokens
     
     # Радужные ресурсы
-    rainbow_shards = Column(Integer, default=0)  # 🌈 осколки
-    rainbow_stones = Column(Integer, default=0)  # 💎 камни
-    rainbow_craft_end = Column(Integer, default=0)  # время окончания крафта камня
-    rainbow_shards_collected = Column(Integer, default=0)  # всего собрано осколков
-    rainbow_stones_used = Column(Integer, default=0)  # всего использовано камней
-    rainbow_history = Column(JSON, default=list)  # история операций
+    rainbow_shards = Column(Integer, default=0)
+    rainbow_stones = Column(Integer, default=0)
+    rainbow_craft_end = Column(Integer, default=0)
+    rainbow_shards_collected = Column(Integer, default=0)
+    rainbow_stones_used = Column(Integer, default=0)
+    rainbow_history = Column(JSON, default=list)
     
-    # Статы
+    # Инвентарь (храним как JSON строку)
+    _inventory = Column(Text, default="[]")
+    
+    # Экипировка
+    equipped_weapon = Column(String, nullable=True)
+    equipped_armor = Column(String, nullable=True)
+    equipped_accessory = Column(String, nullable=True)
+    
+    # Локация
+    location = Column(String, default="start")
+    current_location = Column(String, default="start")
+    
+    # Класс
+    player_class = Column(String, nullable=True)
+    class_level = Column(Integer, default=1)
+    
+    # Базовые статы
     strength = Column(Integer, default=1)
     dexterity = Column(Integer, default=1)
     intelligence = Column(Integer, default=1)
     vitality = Column(Integer, default=1)
     luck = Column(Integer, default=0)
     
-    # Боевые статы
-    base_damage = Column(Integer, default=1)
-    base_magic_damage = Column(Integer, default=1)
+    # Боевые характеристики
+    base_damage = Column(Integer, default=5)
+    base_magic_damage = Column(Integer, default=2)
     defense_bonus = Column(Integer, default=0)
     magic_damage_bonus = Column(Integer, default=0)
     
@@ -124,40 +147,39 @@ class Character(Base):
     holy_damage = Column(Integer, default=0)
     shadow_damage = Column(Integer, default=0)
     
-    # Класс
-    player_class = Column(String, nullable=True)
-    class_level = Column(Integer, default=1)
-    
     # Класс-специфичные статы
-    paladin_shield = Column(Integer, default=0)  # щит паладина
-    stealth = Column(Boolean, default=False)  # скрытность разбойника
-    stealth_bonus = Column(Integer, default=0)  # бонус к скрытности
-    rage = Column(Integer, default=0)  # ярость воина
-    totem_power = Column(Integer, default=0)  # сила тотемов шамана
-    spirit_power = Column(Integer, default=0)  # сила духов шамана
-    heal_power = Column(Integer, default=0)  # сила лечения друида
-    life_steal = Column(Integer, default=0)  # вампиризм чернокнижника
-    curse_power = Column(Integer, default=0)  # сила проклятий
-    summon_power = Column(Integer, default=0)  # сила призыва
-    nature_power = Column(Integer, default=0)  # сила природы друида
-    elemental_power = Column(Integer, default=0)  # сила стихий
+    paladin_shield = Column(Integer, default=0)
+    stealth = Column(Boolean, default=False)
+    stealth_bonus = Column(Integer, default=0)
+    rage = Column(Integer, default=0)
+    totem_power = Column(Integer, default=0)
+    spirit_power = Column(Integer, default=0)
+    heal_power = Column(Integer, default=0)
+    life_steal = Column(Integer, default=0)
+    curse_power = Column(Integer, default=0)
+    summon_power = Column(Integer, default=0)
+    nature_power = Column(Integer, default=0)
+    elemental_power = Column(Integer, default=0)
     
-    # Локация
-    current_location = Column(String, default="start")
+    # Боевые параметры
+    current_health = Column(Integer, default=100)
+    current_mana = Column(Integer, default=50)
+    in_combat = Column(Boolean, default=False)
+    combat_enemy = Column(String, nullable=True)
+    combat_turn = Column(Integer, default=0)
     
-    # Дом
+    # Домик
     house_level = Column(Integer, default=0)
-    house_furniture = Column(JSON, default=list)  # мебель в доме
-    house_pets = Column(JSON, default=list)  # питомцы в доме
-    house_garden = Column(JSON, default=dict)  # огород
-    house_buildings = Column(JSON, default=dict)  # постройки
-    last_rest_time = Column(Integer, default=0)  # время последнего отдыха
+    house_furniture = Column(JSON, default=list)
+    house_pets = Column(JSON, default=list)
+    house_garden = Column(JSON, default=dict)
+    house_buildings = Column(JSON, default=dict)
+    last_rest_time = Column(Integer, default=0)
     
-    # Инвентарь
-    inventory = Column(JSON, default=list)
-    equipped_weapon = Column(String, nullable=True)
-    equipped_armor = Column(String, nullable=True)
-    equipped_accessory = Column(String, nullable=True)
+    # Питомцы
+    pets = Column(JSON, default=list)
+    active_pet = Column(Integer, nullable=True)
+    pet_house_level = Column(Integer, default=1)
     
     # Квесты
     active_quests = Column(JSON, default=list)
@@ -168,15 +190,10 @@ class Character(Base):
     
     # Ежедневные квесты
     daily_quests = Column(JSON, default=dict)
-    daily_quests_date = Column(String, nullable=True)  # дата последнего обновления
+    daily_quests_date = Column(String, nullable=True)
     
     # Ивенты
-    event_tokens = Column(Integer, default=0)  # токены ивентов
-    
-    # Питомцы
-    pets = Column(JSON, default=list)  # список питомцев
-    active_pet = Column(Integer, nullable=True)  # ID активного питомца
-    pet_house_level = Column(Integer, default=1)  # уровень домика для питомцев
+    event_tokens = Column(Integer, default=0)
     
     # Крафт
     crafting_level = Column(Integer, default=1)
@@ -206,48 +223,58 @@ class Character(Base):
     items_crafted = Column(Integer, default=0)
     resources_gathered = Column(Integer, default=0)
     
+    # NFT коллекция
+    nft_collection = Column(JSON, default=list)
+    
+    # Временные метки
+    last_update = Column(Integer, default=0)
+    last_magic_update = Column(Integer, default=0)
+    
+    @property
+    def inventory(self):
+        """Получить инвентарь как список"""
+        try:
+            return json.loads(self._inventory) if self._inventory else []
+        except:
+            return []
+    
+    @inventory.setter
+    def inventory(self, value):
+        """Сохранить инвентарь как JSON строку"""
+        self._inventory = json.dumps(value, ensure_ascii=False)
+    
     def get_inventory(self):
-        """Получить инвентарь"""
-        if isinstance(self.inventory, str):
-            try:
-                return json.loads(self.inventory)
-            except:
-                return []
-        return self.inventory or []
+        """Вернуть инвентарь (для совместимости)"""
+        return self.inventory
     
-    def set_inventory(self, inventory_list):
-        """Установить инвентарь"""
-        self.inventory = inventory_list
-    
-    def add_item(self, item_id, count=1):
+    def add_item(self, item_id):
         """Добавить предмет в инвентарь"""
-        inventory = self.get_inventory()
-        for _ in range(count):
-            inventory.append(item_id)
-        self.set_inventory(inventory)
+        inv = self.inventory
+        inv.append(item_id)
+        self.inventory = inv
     
-    def remove_item(self, item_id, count=1):
+    def remove_item(self, item_id):
         """Удалить предмет из инвентаря"""
-        inventory = self.get_inventory()
-        removed = 0
-        new_inventory = []
-        for item in inventory:
-            if item == item_id and removed < count:
-                removed += 1
-            else:
-                new_inventory.append(item)
-        self.set_inventory(new_inventory)
-        return removed
+        inv = self.inventory
+        if item_id in inv:
+            inv.remove(item_id)
+            self.inventory = inv
+            return True
+        return False
     
-    def has_item(self, item_id, count=1):
+    def has_item(self, item_id):
         """Проверить наличие предмета"""
-        inventory = self.get_inventory()
-        return inventory.count(item_id) >= count
+        return item_id in self.inventory
     
     def count_item(self, item_id):
         """Посчитать количество предмета"""
-        inventory = self.get_inventory()
-        return inventory.count(item_id)
+        inv = self.inventory
+        return inv.count(item_id)
     
     def __repr__(self):
-        return f"<Character(user_id={self.user_id}, level={self.level})>"
+        return f"<Character {self.id} level {self.level}>"
+
+# Создаем таблицы
+def init_db():
+    Base.metadata.create_all(bind=engine)
+    print("✅ Таблицы созданы")
