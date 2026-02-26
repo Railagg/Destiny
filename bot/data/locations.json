@@ -93,7 +93,7 @@
       "description": "Ты заходишь в чащу. Здесь царит полумрак, ветви деревьев сплетаются в плотный полог. Это идеальное место для охоты — здесь много диких зверей.",
       "image": "deep_forest.jpg",
       "level_req": 2,
-      "enemies": ["wolf", "wild_boar"],
+      "enemies": ["wolf", "wild_boar", "forest_spider", "forest_troll"],
       "hidden_stash": {
         "name": "🌿 Лесной схрон",
         "description": "Под корнями старого дуба ты замечаешь небольшой тайник.",
@@ -110,7 +110,8 @@
           {"item": "wood", "chance": 50, "amount_min": 1, "amount_max": 2}
         ],
         "rare_items": [
-          {"item": "health_potion", "chance": 10, "amount_min": 1, "amount_max": 1}
+          {"item": "health_potion", "chance": 10, "amount_min": 1, "amount_max": 1},
+          {"item": "magic_herb", "chance": 5, "amount_min": 1, "amount_max": 1}
         ]
       },
       "rest_spot": {
@@ -123,6 +124,7 @@
       "actions": [
         {"text": "⚔️ Сразиться с волком", "type": "combat", "enemy": "wolf"},
         {"text": "🐗 Поискать кабана", "type": "combat", "enemy": "wild_boar"},
+        {"text": "🕷️ Найти лесного паука", "type": "combat", "enemy": "forest_spider"},
         {"text": "🌿 Собирать травы", "type": "gather_herbs", "energy_cost": 2, "cooldown": 1800, "last_gather": 0},
         {"text": "🪵 Отдохнуть на валежнике", "type": "rest", "energy_gain": 12, "cooldown": 2700},
         {"text": "↩️ Вернуться на развилку", "type": "move", "next": "forest_crossroads"}
@@ -683,6 +685,7 @@
       "actions": [
         {"text": "⛏️ Пойти к шахте", "type": "move", "next": "mine_entrance"},
         {"text": "🏔️ Подняться на вершину", "type": "move", "next": "mountain_peak"},
+        {"text": "🌋 Спуститься к вулкану", "type": "move", "next": "volcano_path", "energy_cost": 3, "level_req": 25},
         {"text": "↩️ Вернуться на развилку", "type": "move", "next": "forest_crossroads"}
       ]
     },
@@ -957,6 +960,20 @@
       "actions": [
         {"text": "🚶 Войти в пещеру", "type": "move", "next": "maze_entrance"},
         {"text": "↩️ Вернуться на перевал", "type": "move", "next": "mountain_pass"}
+      ]
+    },
+    
+    "mountain_pass": {
+      "id": "mountain_pass",
+      "name": "🏔️ Горный перевал",
+      "description": "Ты добираешься до горного перевала. Отсюда открываются два пути: налево тропа ведёт к заброшенной шахте, направо — ко входу в таинственную пещеру, за которой скрывается древний лабиринт. Вокруг только острые скалы и холодный ветер.",
+      "image": "mountain_pass.jpg",
+      "level_req": 20,
+      "actions": [
+        {"text": "⛏️ Пойти к шахте", "type": "move", "next": "mine_entrance"},
+        {"text": "🏛️ Пойти к пещере", "type": "move", "next": "cave_entrance"},
+        {"text": "🔥 Спуститься к вулкану", "type": "move", "next": "volcano_path", "energy_cost": 2},
+        {"text": "↩️ Вернуться на горную тропу", "type": "move", "next": "mountain_path"}
       ]
     },
     
@@ -1257,7 +1274,7 @@
     "volcano_path": {
       "id": "volcano_path",
       "name": "🌋 Тропа к вулкану",
-      "description": "Ты поднимаешься выше. Воздух становится горячее. Вдалеке виден силуэт вулкана.",
+      "description": "Ты поднимаешься выше. Воздух становится горячее. Вдалеке виден силуэт вулкана. Слышен гул и запах серы.",
       "image": "volcano_path.jpg",
       "level_req": 25,
       "hidden_stash": {
@@ -1275,9 +1292,17 @@
           {"item": "fire_gem", "chance": 10, "amount_min": 1, "amount_max": 1}
         ]
       },
+      "rest_spot": {
+        "name": "🪨 Тёплый камень",
+        "description": "Большой плоский камень, нагретый вулканом.",
+        "energy_gain": 15,
+        "cooldown": 3600,
+        "last_rest": 0
+      },
       "actions": [
         {"text": "🚶 К жерлу", "type": "move", "next": "volcano_crater"},
-        {"text": "↩️ Назад", "type": "move", "next": "mountain_pass"}
+        {"text": "🏖️ Спуститься к пляжу", "type": "move", "next": "volcanic_beach_path", "energy_cost": 2},
+        {"text": "↩️ Вернуться на перевал", "type": "move", "next": "mountain_pass"}
       ]
     },
     
@@ -1313,6 +1338,110 @@
       ]
     },
     
+    "volcanic_beach_path": {
+      "id": "volcanic_beach_path",
+      "name": "🏖️ Спуск к пляжу",
+      "description": "Тропа ведёт вниз, к побережью. Воздух становится свежее, слышен шум прибоя. Вдалеке виден чёрный песок.",
+      "image": "volcanic_beach_path.jpg",
+      "level_req": 20,
+      "hidden_stash": {
+        "name": "🌊 В скалах",
+        "description": "В скалах есть небольшая пещерка, куда заплывает вода.",
+        "find_chance": 30,
+        "cooldown": 7200,
+        "last_search": 0,
+        "guaranteed": {
+          "gold_min": 10,
+          "gold_max": 20
+        },
+        "items": [
+          {"item": "seashell", "chance": 50, "amount_min": 1, "amount_max": 3},
+          {"item": "crab_meat", "chance": 30, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "🏖️ Спуститься на пляж", "type": "move", "next": "volcanic_beach"},
+        {"text": "🌋 Вернуться к вулкану", "type": "move", "next": "volcano_path"}
+      ]
+    },
+    
+    "volcanic_beach": {
+      "id": "volcanic_beach",
+      "name": "🏖️ Вулканический пляж",
+      "description": "Уникальное место, где чёрный вулканический песок встречается с бирюзовой водой. Горячие источники бьют прямо из-под земли. Пальмы растут прямо на склонах. Здесь удивительно красиво и тепло.",
+      "image": "volcanic_beach.jpg",
+      "level_req": 20,
+      "enemies": ["tropical_crab", "volcanic_crab"],
+      "boss": "giant_volcanic_crab",
+      "resources": ["coconut", "tropical_fish", "pearl"],
+      "hidden_stash": {
+        "name": "🐚 Под скалой",
+        "description": "Под большой скалой видна раковина необычного размера.",
+        "find_chance": 35,
+        "cooldown": 7200,
+        "last_search": 0,
+        "guaranteed": {
+          "gold_min": 15,
+          "gold_max": 30
+        },
+        "items": [
+          {"item": "pearl", "chance": 30, "amount_min": 1, "amount_max": 1},
+          {"item": "coconut", "chance": 50, "amount_min": 1, "amount_max": 2},
+          {"item": "crab_meat", "chance": 40, "amount_min": 1, "amount_max": 2}
+        ]
+      },
+      "rest_spot": {
+        "name": "♨️ Горячие источники",
+        "description": "Естественные бассейны с тёплой минеральной водой.",
+        "energy_gain": 25,
+        "health_gain": 20,
+        "cooldown": 7200,
+        "last_rest": 0
+      },
+      "actions": [
+        {"text": "🦀 Искать крабов", "type": "combat", "enemy": "tropical_crab"},
+        {"text": "🌋 Найти вулканического краба", "type": "combat", "enemy": "volcanic_crab"},
+        {"text": "🥥 Собрать кокосы", "type": "gather", "resource": "coconut", "energy_cost": 2, "cooldown": 1800},
+        {"text": "🎣 Рыбачить в лагуне", "type": "fish", "energy_cost": 2, "cooldown": 1800, "bait_bonus": 10},
+        {"text": "♨️ Отдохнуть в источниках", "type": "rest", "energy_gain": 25, "health_gain": 20, "cooldown": 7200},
+        {"text": "🏝️ Зайти в лавовую лагуну", "type": "move", "next": "lava_lagoon", "level_req": 25},
+        {"text": "↩️ Вернуться на тропу", "type": "move", "next": "volcanic_beach_path"}
+      ]
+    },
+    
+    "lava_lagoon": {
+      "id": "lava_lagoon",
+      "name": "🌊 Лавовая лагуна",
+      "description": "Удивительное место, где лава встречается с океаном. Пар и шипение создают нереальный пейзаж. Здесь водятся особенно сильные вулканические крабы.",
+      "image": "lava_lagoon.jpg",
+      "level_req": 25,
+      "enemies": ["volcanic_crab", "lava_golem"],
+      "boss": "giant_volcanic_crab",
+      "hidden_stash": {
+        "name": "🔥 В лаве",
+        "description": "В застывшей лаве виден силуэт сундука.",
+        "find_chance": 40,
+        "cooldown": 43200,
+        "last_search": 0,
+        "guaranteed": {
+          "gold_min": 100,
+          "gold_max": 200,
+          "rainbow_shard": 1
+        },
+        "items": [
+          {"item": "lava_core", "chance": 60, "amount_min": 1, "amount_max": 2},
+          {"item": "obsidian", "chance": 70, "amount_min": 2, "amount_max": 4},
+          {"item": "fire_gem", "chance": 40, "amount_min": 1, "amount_max": 2}
+        ]
+      },
+      "actions": [
+        {"text": "🦀 Сразиться с королём крабов", "type": "combat", "enemy": "giant_volcanic_crab"},
+        {"text": "🌋 Атаковать лавового голема", "type": "combat", "enemy": "lava_golem"},
+        {"text": "🔥 Обыскать лагуну", "type": "search_stash", "stash": "lava_lagoon"},
+        {"text": "↩️ Вернуться на пляж", "type": "move", "next": "volcanic_beach"}
+      ]
+    },
+    
     "bridge_before_dragon": {
       "id": "bridge_before_dragon",
       "name": "🌉 Мост перед драконом",
@@ -1342,8 +1471,15 @@
         "cooldown": 14400,
         "last_rest": 0
       },
+      "special_action": {
+        "name": "🔥 Разжечь костёр",
+        "description": "Разжечь костёр из шкуры и дров",
+        "ingredients": {"leather": 1, "wood": 5},
+        "achievement": "dragon_slayer_camper"
+      },
       "actions": [
         {"text": "🪵 Отдохнуть у костра (+30⚡, +30❤️)", "type": "rest", "energy_gain": 30, "health_gain": 30, "cooldown": 14400},
+        {"text": "🔥 Разжечь особый костёр (шкура + дрова)", "type": "special_craft", "recipe": "dragon_campfire", "one_time": true},
         {"text": "🚶 Пойти по мосту к дракону", "type": "move", "next": "dragon_lair"}
       ]
     },
@@ -1387,7 +1523,7 @@
       "description": "Бескрайние пески, где водятся скорпионы и песчаные черви. Солнце нещадно палит, но вдалеке виднеется оазис.",
       "image": "desert.jpg",
       "level_req": 30,
-      "enemies": ["scorpion", "sand_worm"],
+      "enemies": ["scorpion", "sand_worm", "scorpion_queen"],
       "boss": "sand_dragon",
       "hidden_stash": {
         "name": "🏜️ Под песком",
@@ -1414,7 +1550,8 @@
       "actions": [
         {"text": "🏜️ Исследовать пустыню", "type": "explore", "energy_cost": 3},
         {"text": "🏝️ Отдохнуть в оазисе (+15⚡)", "type": "rest", "energy_gain": 15, "cooldown": 3600},
-        {"text": "🏪 Зайти в оазис", "type": "move", "next": "desert_oasis"}
+        {"text": "🏪 Зайти в оазис", "type": "move", "next": "desert_oasis"},
+        {"text": "🔺 Найти пирамиду", "type": "move", "next": "desert_pyramid_entrance", "level_req": 32}
       ]
     },
     
@@ -1446,10 +1583,111 @@
         "cooldown": 7200,
         "last_rest": 0
       },
+      "shop": {
+        "name": "🏪 Торговец из каравана",
+        "items": [
+          {"item": "water_flask", "price": 5},
+          {"item": "desert_cloak", "price": 100},
+          {"item": "scorpion_antidote", "price": 30},
+          {"item": "cactus_fruit", "price": 3}
+        ]
+      },
       "actions": [
         {"text": "🌴 Отдохнуть под пальмой (+20⚡)", "type": "rest", "energy_gain": 20, "cooldown": 7200},
-        {"text": "💧 Набрать воды", "type": "take_item", "item": "water"},
+        {"text": "💧 Набрать воды", "type": "take_item", "item": "water_flask", "one_time": false},
+        {"text": "🏪 Поговорить с торговцем", "type": "open_shop", "shop": "oasis"},
+        {"text": "🔺 Пойти к пирамиде", "type": "move", "next": "desert_pyramid_entrance"},
         {"text": "🏜️ Вернуться в пустыню", "type": "move", "next": "desert"}
+      ]
+    },
+    
+    "desert_pyramid_entrance": {
+      "id": "desert_pyramid_entrance",
+      "name": "🔺 Вход в пирамиду",
+      "description": "Перед тобой возвышается огромная пирамида, сложенная из каменных блоков. Вход охраняют две статуи с головами соколов.",
+      "image": "desert_pyramid_entrance.jpg",
+      "level_req": 32,
+      "hidden_stash": {
+        "name": "🗿 У статуи",
+        "description": "У подножия статуи что-то зарыто в песке.",
+        "find_chance": 30,
+        "cooldown": 21600,
+        "last_search": 0,
+        "guaranteed": {
+          "gold_min": 30,
+          "gold_max": 60
+        },
+        "items": [
+          {"item": "ancient_coin", "chance": 50, "amount_min": 1, "amount_max": 2},
+          {"item": "scarab", "chance": 20, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "🚶 Войти в пирамиду", "type": "move", "next": "desert_pyramid_hall"},
+        {"text": "↩️ Вернуться в оазис", "type": "move", "next": "desert_oasis"}
+      ]
+    },
+    
+    "desert_pyramid_hall": {
+      "id": "desert_pyramid_hall",
+      "name": "🏛️ Зал пирамиды",
+      "description": "Ты внутри пирамиды. Массивные колонны уходят в темноту, на стенах hieroglyphs светятся слабым светом. В центре зала стоит каменный саркофаг.",
+      "image": "desert_pyramid_hall.jpg",
+      "level_req": 32,
+      "enemies": ["skeleton_warrior", "mummy"],
+      "hidden_stash": {
+        "name": "⚱️ В саркофаге",
+        "description": "В саркофаге что-то блестит.",
+        "find_chance": 50,
+        "cooldown": 43200,
+        "last_search": 0,
+        "guaranteed": {
+          "gold_min": 50,
+          "gold_max": 100
+        },
+        "items": [
+          {"item": "ancient_relic", "chance": 40, "amount_min": 1, "amount_max": 1},
+          {"item": "gold_ingot", "chance": 50, "amount_min": 1, "amount_max": 2},
+          {"item": "scarab", "chance": 30, "amount_min": 1, "amount_max": 2}
+        ]
+      },
+      "actions": [
+        {"text": "⬇️ Спуститься вниз", "type": "move", "next": "desert_pyramid_depths"},
+        {"text": "🔍 Обыскать зал", "type": "search_stash", "stash": "desert_pyramid_hall"},
+        {"text": "↩️ Вернуться к выходу", "type": "move", "next": "desert_pyramid_entrance"}
+      ]
+    },
+    
+    "desert_pyramid_depths": {
+      "id": "desert_pyramid_depths",
+      "name": "🔺 Глубины пирамиды",
+      "description": "Спускаясь ниже, ты попадаешь в огромную камеру, где на возвышении стоит золотой саркофаг. В воздухе чувствуется древняя магия.",
+      "image": "desert_pyramid_depths.jpg",
+      "level_req": 35,
+      "enemies": ["ancient_guardian"],
+      "boss": "sand_dragon",
+      "hidden_stash": {
+        "name": "👑 Золотой саркофаг",
+        "description": "В саркофаге покоятся останки фараона и его сокровища.",
+        "find_chance": 100,
+        "cooldown": 86400,
+        "last_search": 0,
+        "unlock_condition": "defeat_sand_dragon",
+        "guaranteed": {
+          "gold_min": 200,
+          "gold_max": 500,
+          "rainbow_shard": 2
+        },
+        "items": [
+          {"item": "sand_heart", "chance": 100, "amount_min": 1, "amount_max": 1},
+          {"item": "gold_scale", "chance": 80, "amount_min": 2, "amount_max": 4},
+          {"item": "desert_rose", "chance": 50, "amount_min": 1, "amount_max": 1},
+          {"item": "ancient_relic", "chance": 70, "amount_min": 1, "amount_max": 2}
+        ]
+      },
+      "actions": [
+        {"text": "🐉 Сразиться с песчаным драконом", "type": "combat", "enemy": "sand_dragon"},
+        {"text": "↩️ Вернуться наверх", "type": "move", "next": "desert_pyramid_hall"}
       ]
     },
     
@@ -1459,7 +1697,7 @@
       "description": "Зловонное болото, окутанное густым туманом. Гнилые деревья тянутся к небу, из воды доносятся странные звуки.",
       "image": "swamp.jpg",
       "level_req": 35,
-      "enemies": ["zombie", "witch"],
+      "enemies": ["swamp_zombie", "giant_frog", "snake"],
       "boss": "swamp_monster",
       "hidden_stash": {
         "name": "🍄 Под грибом",
@@ -1486,7 +1724,8 @@
       "actions": [
         {"text": "🌿 Исследовать болото", "type": "explore", "energy_cost": 3},
         {"text": "🍄 Отдохнуть на островке (+10⚡)", "type": "rest", "energy_gain": 10, "cooldown": 1800},
-        {"text": "🏚️ Зайти в хижину ведьмы", "type": "move", "next": "witch_hut"}
+        {"text": "🏚️ Зайти в хижину ведьмы", "type": "move", "next": "witch_hut"},
+        {"text": "🌊 Найти болотную топь", "type": "move", "next": "swamp_depths", "level_req": 38}
       ]
     },
     
@@ -1520,10 +1759,52 @@
         "cooldown": 14400,
         "last_rest": 0
       },
+      "shop": {
+        "name": "🧙 Ведьма",
+        "items": [
+          {"item": "swamp_brew", "price": 50},
+          {"item": "witch_potion", "price": 100},
+          {"item": "antidote", "price": 25},
+          {"item": "frog_legs", "price": 10}
+        ]
+      },
       "actions": [
         {"text": "🪑 Отдохнуть у печи (+25⚡, +30❤️)", "type": "rest", "energy_gain": 25, "health_gain": 30, "cooldown": 14400},
-        {"text": "🧪 Обыскать стол", "type": "search"},
+        {"text": "🧪 Купить зелья", "type": "open_shop", "shop": "witch"},
+        {"text": "📜 Взять задание", "type": "accept_quest", "quest": "witch_quests"},
         {"text": "🌿 Вернуться на болото", "type": "move", "next": "swamp"}
+      ]
+    },
+    
+    "swamp_depths": {
+      "id": "swamp_depths",
+      "name": "🌊 Болотная топь",
+      "description": "Самое глубокое и опасное место болота. Вода здесь чёрная, а пузырьки газа поднимаются со дна. В центре топи виден светящийся гриб огромных размеров.",
+      "image": "swamp_depths.jpg",
+      "level_req": 38,
+      "enemies": ["swamp_zombie", "witch", "swamp_monster"],
+      "boss": "swamp_monster",
+      "hidden_stash": {
+        "name": "🍄 Светящийся гриб",
+        "description": "Под гигантским грибом есть тайник.",
+        "find_chance": 40,
+        "cooldown": 43200,
+        "last_search": 0,
+        "guaranteed": {
+          "gold_min": 50,
+          "gold_max": 100,
+          "rainbow_shard": 1
+        },
+        "items": [
+          {"item": "glowing_mushroom", "chance": 80, "amount_min": 1, "amount_max": 2},
+          {"item": "swamp_heart", "chance": 30, "amount_min": 1, "amount_max": 1},
+          {"item": "poison_gland", "chance": 40, "amount_min": 1, "amount_max": 2}
+        ]
+      },
+      "actions": [
+        {"text": "👹 Сразиться с болотным монстром", "type": "combat", "enemy": "swamp_monster"},
+        {"text": "🔍 Обыскать топь", "type": "search_stash", "stash": "swamp_depths"},
+        {"text": "↩️ Вернуться на болото", "type": "move", "next": "swamp"}
       ]
     },
     
@@ -1533,8 +1814,10 @@
       "description": "Бескрайние снежные просторы, где ветер пронизывает до костей. В небе танцует северное сияние.",
       "image": "ice_plains.jpg",
       "level_req": 40,
-      "enemies": ["ice_wolf", "white_bear", "ice_spirit"],
+      "enemies": ["ice_wolf", "white_bear", "ice_spirit", "ice_wolf_alpha"],
       "boss": "ice_giant",
+      "cold_damage": 10,
+      "required_items": ["winter_cloak", "hot_tea"],
       "hidden_stash": {
         "name": "❄️ Под снегом",
         "description": "Снег провалился, открыв что-то твёрдое.",
@@ -1560,7 +1843,8 @@
       "actions": [
         {"text": "❄️ Исследовать равнины", "type": "explore", "energy_cost": 4},
         {"text": "🪵 Отдохнуть в пещере (+15⚡)", "type": "rest", "energy_gain": 15, "cooldown": 3600},
-        {"text": "🧊 Зайти в ледяную пещеру", "type": "move", "next": "ice_cave"}
+        {"text": "🧊 Зайти в ледяную пещеру", "type": "move", "next": "ice_cave"},
+        {"text": "🧊 Пойти к замёрзшему океану", "type": "move", "next": "frozen_ocean_path", "level_req": 42}
       ]
     },
     
@@ -1570,8 +1854,9 @@
       "description": "Своды пещеры покрыты инеем, стены светятся голубым светом. Здесь обитает ледяной гигант.",
       "image": "ice_cave.jpg",
       "level_req": 42,
-      "enemies": ["ice_spirit"],
+      "enemies": ["ice_spirit", "ice_elemental"],
       "boss": "ice_giant",
+      "cold_damage": 15,
       "hidden_stash": {
         "name": "❄️ За сталагмитом",
         "description": "За ледяным столбом что-то спрятано.",
@@ -1603,6 +1888,191 @@
       ]
     },
     
+    "frozen_ocean_path": {
+      "id": "frozen_ocean_path",
+      "name": "🧊 Тропа к океану",
+      "description": "Снежная тропа ведёт к побережью. Ветер становится сильнее, в воздухе чувствуется солёный запах. Вдалеке видна бескрайняя ледяная гладь.",
+      "image": "frozen_ocean_path.jpg",
+      "level_req": 42,
+      "cold_damage": 10,
+      "hidden_stash": {
+        "name": "❄️ Подо льдом",
+        "description": "Под тонким слоем льда видно что-то тёмное.",
+        "find_chance": 30,
+        "cooldown": 7200,
+        "last_search": 0,
+        "guaranteed": {
+          "gold_min": 20,
+          "gold_max": 40
+        },
+        "items": [
+          {"item": "frozen_fish", "chance": 50, "amount_min": 1, "amount_max": 2},
+          {"item": "ice_crystal", "chance": 30, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "🧊 Выйти к океану", "type": "move", "next": "frozen_ocean"},
+        {"text": "↩️ Вернуться на равнины", "type": "move", "next": "ice_plains"}
+      ]
+    },
+    
+    "frozen_ocean": {
+      "id": "frozen_ocean",
+      "name": "🧊 Замёрзший океан",
+      "description": "Бескрайний ледяной океан, скованный вечной мерзлотой. Лёд такой толстый, что выдерживает вес человека. В некоторых местах видны тёмные глубины. Подо льдом, по слухам, спит древний город.",
+      "image": "frozen_ocean.jpg",
+      "level_req": 42,
+      "enemies": ["seal", "walrus", "ice_spirit"],
+      "boss": "leviathan",
+      "cold_damage": 20,
+      "required_items": ["winter_cloak", "hot_tea"],
+      "hidden_stash": {
+        "name": "🧊 Лунка",
+        "description": "Во льду видна прорубь, откуда доносится странный звук.",
+        "find_chance": 25,
+        "cooldown": 10800,
+        "last_search": 0,
+        "guaranteed": {
+          "gold_min": 20,
+          "gold_max": 40
+        },
+        "items": [
+          {"item": "frozen_fish", "chance": 60, "amount_min": 1, "amount_max": 3},
+          {"item": "ice_crystal", "chance": 30, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "rest_spot": {
+        "name": "🧊 Ледяной грот",
+        "description": "Небольшая пещера во льду, защищающая от ветра.",
+        "energy_gain": 15,
+        "cooldown": 3600,
+        "last_rest": 0
+      },
+      "actions": [
+        {"text": "🧊 Исследовать океан", "type": "explore", "energy_cost": 4},
+        {"text": "🎣 Рыбачить подлёдным ловом", "type": "ice_fish", "energy_cost": 3, "cooldown": 2700},
+        {"text": "🦭 Поохотиться на тюленей", "type": "combat", "enemy": "seal"},
+        {"text": "⚓ Найти затонувший корабль", "type": "move", "next": "frozen_shipwreck", "level_req": 44},
+        {"text": "🏛️ Искать вход в замёрзший город", "type": "move", "next": "frozen_city_entrance", "level_req": 45},
+        {"text": "↩️ Вернуться на тропу", "type": "move", "next": "frozen_ocean_path"}
+      ]
+    },
+    
+    "frozen_shipwreck": {
+      "id": "frozen_shipwreck",
+      "name": "⚓ Затонувший корабль",
+      "description": "Старый корабль, вмёрзший в лёд. Мачты сломаны, корпус покрыт инеем. Видимо, попал в шторм и замёрз много лет назад.",
+      "image": "frozen_shipwreck.jpg",
+      "level_req": 44,
+      "enemies": ["ice_spirit", "frozen_zombie"],
+      "hidden_stash": {
+        "name": "⚓ В трюме",
+        "description": "В трюме корабля видны старые сундуки.",
+        "find_chance": 60,
+        "cooldown": 43200,
+        "last_search": 0,
+        "guaranteed": {
+          "gold_min": 100,
+          "gold_max": 200,
+          "rainbow_shard": 1
+        },
+        "items": [
+          {"item": "ancient_coin", "chance": 70, "amount_min": 2, "amount_max": 5},
+          {"item": "old_compass", "chance": 40, "amount_min": 1, "amount_max": 1},
+          {"item": "captain_hat", "chance": 20, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "⚓ Обыскать корабль", "type": "search_stash", "stash": "frozen_shipwreck"},
+        {"text": "👻 Сразиться с призраками", "type": "combat", "enemy": "ice_spirit"},
+        {"text": "↩️ Вернуться на лёд", "type": "move", "next": "frozen_ocean"}
+      ]
+    },
+    
+    "frozen_city_entrance": {
+      "id": "frozen_city_entrance",
+      "name": "🏛️ Вход в замёрзший город",
+      "description": "Во льду виден огромный провал, ведущий вниз. Внизу угадываются очертания древних зданий, вмёрзших в лёд. Вход охраняет ледяная статуя.",
+      "image": "frozen_city_entrance.jpg",
+      "level_req": 45,
+      "enemies": ["ice_elemental"],
+      "boss": "ancient_guardian",
+      "entry_requirement": {
+        "item": "frozen_key",
+        "message": "Нужен ледяной ключ, чтобы войти"
+      },
+      "actions": [
+        {"text": "🗝️ Использовать ледяной ключ", "type": "use_key", "key": "frozen_key", "next": "frozen_city"},
+        {"text": "↩️ Вернуться на лёд", "type": "move", "next": "frozen_ocean"}
+      ]
+    },
+    
+    "frozen_city": {
+      "id": "frozen_city",
+      "name": "🏛️ Замёрзший город",
+      "description": "Древний город, законсервированный во льду. Дома, храмы, статуи — всё покрыто толстым слоем льда. В центре города возвышается огромный дворец, откуда доносится гул.",
+      "image": "frozen_city.jpg",
+      "level_req": 45,
+      "enemies": ["ice_spirit", "frozen_zombie", "ice_elemental"],
+      "boss": "leviathan",
+      "cold_damage": 30,
+      "hidden_stash": {
+        "name": "🏛️ В храме",
+        "description": "В древнем храме на алтаре стоит светящаяся шкатулка.",
+        "find_chance": 50,
+        "cooldown": 86400,
+        "last_search": 0,
+        "guaranteed": {
+          "gold_min": 200,
+          "gold_max": 500,
+          "rainbow_stone": 1
+        },
+        "items": [
+          {"item": "eternal_ice", "chance": 70, "amount_min": 1, "amount_max": 2},
+          {"item": "ancient_relic", "chance": 60, "amount_min": 1, "amount_max": 2},
+          {"item": "leviathan_scale", "chance": 30, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "🏛️ Исследовать город", "type": "explore", "energy_cost": 5},
+        {"text": "🐋 Спуститься к левиафану", "type": "move", "next": "leviathan_lair"},
+        {"text": "↩️ Вернуться ко входу", "type": "move", "next": "frozen_city_entrance"}
+      ]
+    },
+    
+    "leviathan_lair": {
+      "id": "leviathan_lair",
+      "name": "🐋 Логово левиафана",
+      "description": "Огромная подлёдная пещера. В центре, в воде, видна гигантская тень. Левиафан просыпается.",
+      "image": "leviathan_lair.jpg",
+      "level_req": 48,
+      "enemies": ["leviathan"],
+      "boss": "leviathan",
+      "hidden_stash": {
+        "name": "💎 Сокровища глубин",
+        "description": "На дне пещеры видно мерцание сокровищ.",
+        "find_chance": 100,
+        "cooldown": 86400,
+        "last_search": 0,
+        "unlock_condition": "defeat_leviathan",
+        "guaranteed": {
+          "gold_min": 500,
+          "gold_max": 1000,
+          "rainbow_stone": 2
+        },
+        "items": [
+          {"item": "leviathan_scale", "chance": 100, "amount_min": 3, "amount_max": 5},
+          {"item": "ocean_core", "chance": 100, "amount_min": 1, "amount_max": 1},
+          {"item": "eternal_ice", "chance": 80, "amount_min": 2, "amount_max": 4},
+          {"item": "trident", "chance": 20, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "🐋 Сразиться с левиафаном", "type": "combat", "enemy": "leviathan"},
+        {"text": "↩️ Вернуться в город", "type": "move", "next": "frozen_city"}
+      ]
+    },
+    
     "volcanic_island": {
       "id": "volcanic_island",
       "name": "🌋 Огненный остров",
@@ -1621,8 +2091,6 @@
         "guaranteed": {
           "gold_min": 500,
           "gold_max": 1000,
-          "dstn_min": 200,
-          "dstn_max": 400,
           "rainbow_shard_min": 3,
           "rainbow_shard_max": 5
         },
@@ -1646,7 +2114,41 @@
       "actions": [
         {"text": "🌋 Исследовать остров", "type": "explore", "energy_cost": 5},
         {"text": "🌊 Отдохнуть в лагуне (+20⚡)", "type": "rest", "energy_gain": 20, "cooldown": 7200},
-        {"text": "🌋 Открыть сундук расплавленной магмы", "type": "open_legendary_chest", "chest": "volcano", "cooldown": 86400}
+        {"text": "🌋 Открыть сундук расплавленной магмы", "type": "open_legendary_chest", "chest": "volcano", "cooldown": 86400},
+        {"text": "👑 Найти короля вулкана", "type": "move", "next": "volcano_king_throne", "level_req": 48}
+      ]
+    },
+    
+    "volcano_king_throne": {
+      "id": "volcano_king_throne",
+      "name": "👑 Трон короля вулкана",
+      "description": "В самом сердце острова, на троне из лавы, восседает король вулкана. Он ждёт достойного противника.",
+      "image": "volcano_king_throne.jpg",
+      "level_req": 48,
+      "enemies": ["volcano_king"],
+      "boss": "volcano_king",
+      "hidden_stash": {
+        "name": "👑 Под троном",
+        "description": "Под троном виден тайник.",
+        "find_chance": 100,
+        "cooldown": 86400,
+        "last_search": 0,
+        "unlock_condition": "defeat_volcano_king",
+        "guaranteed": {
+          "gold_min": 800,
+          "gold_max": 1500,
+          "rainbow_stone": 1
+        },
+        "items": [
+          {"item": "volcano_heart", "chance": 100, "amount_min": 1, "amount_max": 1},
+          {"item": "lava_core", "chance": 100, "amount_min": 3, "amount_max": 5},
+          {"item": "ruby", "chance": 80, "amount_min": 2, "amount_max": 4},
+          {"item": "crown_of_fire", "chance": 20, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "👑 Сразиться с королём вулкана", "type": "combat", "enemy": "volcano_king"},
+        {"text": "↩️ Вернуться на остров", "type": "move", "next": "volcanic_island"}
       ]
     },
     
@@ -1668,8 +2170,6 @@
         "guaranteed": {
           "gold_min": 800,
           "gold_max": 1500,
-          "dstn_min": 300,
-          "dstn_max": 600,
           "rainbow_shard_min": 5,
           "rainbow_shard_max": 7
         },
@@ -1694,7 +2194,41 @@
       "actions": [
         {"text": "💎 Исследовать остров", "type": "explore", "energy_cost": 5},
         {"text": "🔮 Отдохнуть в кристальном гроте (+35⚡, +50🔮)", "type": "rest", "energy_gain": 35, "magic_gain": 50, "cooldown": 21600},
-        {"text": "💎 Открыть сундук сияющих глубин", "type": "open_legendary_chest", "chest": "crystal", "cooldown": 86400}
+        {"text": "💎 Открыть сундук сияющих глубин", "type": "open_legendary_chest", "chest": "crystal", "cooldown": 86400},
+        {"text": "✨ Найти кристального дракона", "type": "move", "next": "crystal_dragon_lair", "level_req": 52}
+      ]
+    },
+    
+    "crystal_dragon_lair": {
+      "id": "crystal_dragon_lair",
+      "name": "✨ Логово кристального дракона",
+      "description": "Пещера из чистейших кристаллов. В центре, на горе самоцветов, лежит кристальный дракон. Его чешуя переливается всеми цветами радуги.",
+      "image": "crystal_dragon_lair.jpg",
+      "level_req": 52,
+      "enemies": ["crystal_dragon"],
+      "boss": "crystal_dragon",
+      "hidden_stash": {
+        "name": "💎 Гора самоцветов",
+        "description": "Под драконом целая гора сокровищ.",
+        "find_chance": 100,
+        "cooldown": 86400,
+        "last_search": 0,
+        "unlock_condition": "defeat_crystal_dragon",
+        "guaranteed": {
+          "gold_min": 1000,
+          "gold_max": 2000,
+          "rainbow_stone": 2
+        },
+        "items": [
+          {"item": "crystal_dragon_heart", "chance": 100, "amount_min": 1, "amount_max": 1},
+          {"item": "perfect_crystal", "chance": 100, "amount_min": 3, "amount_max": 5},
+          {"item": "diamond", "chance": 90, "amount_min": 2, "amount_max": 4},
+          {"item": "crystal_crown", "chance": 20, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "✨ Сразиться с кристальным драконом", "type": "combat", "enemy": "crystal_dragon"},
+        {"text": "↩️ Вернуться на остров", "type": "move", "next": "crystal_island"}
       ]
     },
     
@@ -1703,7 +2237,7 @@
       "name": "🐉 Остров драконов",
       "description": "Легендарный остров, где обитают древние драконы. Доступен за 5 радужных камней.",
       "image": "dragon_island.jpg",
-      "level_req": 60,
+      "level_req": 55,
       "entry_cost": {"rainbow_stone": 5},
       "enemies": ["young_dragon"],
       "boss": "dragon_king",
@@ -1716,8 +2250,6 @@
         "guaranteed": {
           "gold_min": 2000,
           "gold_max": 5000,
-          "dstn_min": 1000,
-          "dstn_max": 2000,
           "rainbow_stone_min": 1,
           "rainbow_stone_max": 2
         },
@@ -1743,7 +2275,43 @@
       "actions": [
         {"text": "🐉 Исследовать остров", "type": "explore", "energy_cost": 5},
         {"text": "🦴 Отдохнуть в логове (+50⚡, +100❤️)", "type": "rest", "energy_gain": 50, "health_gain": 100, "cooldown": 86400},
-        {"text": "👑 Открыть сундук древних драконов", "type": "open_legendary_chest", "chest": "dragon", "cooldown": 86400}
+        {"text": "👑 Открыть сундук древних драконов", "type": "open_legendary_chest", "chest": "dragon", "cooldown": 86400},
+        {"text": "👑 Найти короля драконов", "type": "move", "next": "dragon_king_throne", "level_req": 58}
+      ]
+    },
+    
+    "dragon_king_throne": {
+      "id": "dragon_king_throne",
+      "name": "👑 Трон короля драконов",
+      "description": "Величайший зал, когда-либо виденный тобой. На троне из золота и драконьих костей восседает сам король драконов. Финальный босс.",
+      "image": "dragon_king_throne.jpg",
+      "level_req": 58,
+      "enemies": ["dragon_king"],
+      "boss": "dragon_king",
+      "hidden_stash": {
+        "name": "👑 Сокровищница короля",
+        "description": "За троном скрывается вход в сокровищницу.",
+        "find_chance": 100,
+        "cooldown": 86400,
+        "last_search": 0,
+        "unlock_condition": "defeat_dragon_king",
+        "guaranteed": {
+          "gold_min": 5000,
+          "gold_max": 10000,
+          "rainbow_stone": 5
+        },
+        "items": [
+          {"item": "dragon_king_heart", "chance": 100, "amount_min": 1, "amount_max": 1},
+          {"item": "dragon_crown", "chance": 100, "amount_min": 1, "amount_max": 1},
+          {"item": "dragon_scale", "chance": 100, "amount_min": 5, "amount_max": 10},
+          {"item": "dragon_blood", "chance": 100, "amount_min": 3, "amount_max": 5},
+          {"item": "dragon_sword", "chance": 50, "amount_min": 1, "amount_max": 1},
+          {"item": "dragon_armor", "chance": 50, "amount_min": 1, "amount_max": 1}
+        ]
+      },
+      "actions": [
+        {"text": "👑 Сразиться с королём драконов", "type": "combat", "enemy": "dragon_king"},
+        {"text": "↩️ Вернуться на остров", "type": "move", "next": "dragon_island"}
       ]
     }
   }
