@@ -1,5 +1,9 @@
+# /bot/handlers/shop.py
 import logging
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+import random
+
+logger = logging.getLogger(__name__)
 
 def shop_command(message, bot, get_or_create_player, items_data):
     """Команда /shop - магазин"""
@@ -8,7 +12,7 @@ def shop_command(message, bot, get_or_create_player, items_data):
     
     text = "🏪 *МАГАЗИН*\n\n"
     text += f"💰 Твой баланс: {character.gold} золота\n"
-    text += f"💎 DSTN: {character.dstn or 0}\n"
+    text += f"💎 DSTN: {character.destiny_tokens or 0}\n"
     if hasattr(character, 'rainbow_shards') and character.rainbow_shards:
         text += f"🌈 Осколки: {character.rainbow_shards}\n"
     if hasattr(character, 'rainbow_stones') and character.rainbow_stones:
@@ -29,6 +33,79 @@ def shop_command(message, bot, get_or_create_player, items_data):
         InlineKeyboardButton("✨ Расходники", callback_data="shop:category:consumables"),
         InlineKeyboardButton("👑 Премиум", callback_data="premium:menu")
     )
+    markup.add(InlineKeyboardButton("🔙 Назад", callback_data="game:back_to_start"))
+    
+    bot.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
+
+def buy_command(message, bot, get_or_create_player, items_data):
+    """Команда /buy - купить предмет"""
+    user_id = message.from_user.id
+    user, character = get_or_create_player(user_id)
+    
+    args = message.text.split()
+    if len(args) < 2:
+        bot.send_message(
+            message.chat.id,
+            "❌ Укажи ID предмета!\n"
+            "Пример: /buy health_potion\n"
+            "Список товаров: /shop",
+            parse_mode='Markdown'
+        )
+        return
+    
+    item_id = args[1]
+    item = items_data.get("items", {}).get(item_id)
+    
+    if not item:
+        bot.send_message(
+            message.chat.id,
+            "❌ Предмет не найден!",
+            parse_mode='Markdown'
+        )
+        return
+    
+    price = item.get('value', 0)
+    
+    if character.gold < price:
+        bot.send_message(
+            message.chat.id,
+            f"❌ Не хватает золота! Нужно {price}💰",
+            parse_mode='Markdown'
+        )
+        return
+    
+    character.gold -= price
+    character.add_item(item_id)
+    
+    from main import save_character
+    save_character(character)
+    
+    bot.send_message(
+        message.chat.id,
+        f"✅ Куплено: {item.get('name', item_id)} за {price}💰",
+        parse_mode='Markdown'
+    )
+
+def shop_categories_command(message, bot, get_or_create_player, items_data):
+    """Команда /shop_categories - список категорий магазина"""
+    user_id = message.from_user.id
+    user, character = get_or_create_player(user_id)
+    
+    text = "📋 *КАТЕГОРИИ МАГАЗИНА*\n\n"
+    text += "⚔️ Оружие - мечи, луки, посохи\n"
+    text += "🛡️ Броня - шлемы, нагрудники, поножи\n"
+    text += "🛠️ Инструменты - кирки, топоры, удочки\n"
+    text += "⚗️ Зелья - лечения, маны, силы\n"
+    text += "🍲 Еда - восстанавливает здоровье\n"
+    text += "🪱 Наживки - для рыбалки\n"
+    text += "🎁 Сундуки - случайные предметы\n"
+    text += "📦 Ресурсы - руда, дерево, травы\n"
+    text += "✨ Расходники - свитки, зелья\n"
+    text += "👑 Премиум - особые товары\n\n"
+    text += "Используй /shop для просмотра товаров."
+    
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("🏪 В магазин", callback_data="shop:menu"))
     markup.add(InlineKeyboardButton("🔙 Назад", callback_data="game:back_to_start"))
     
     bot.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
@@ -141,8 +218,6 @@ def show_category(call, bot, get_or_create_player, items_data, category):
                 text += f"  🌿 +{item['harvest_bonus']} к сбору\n"
             
             text += f"  {currency} Цена: {value} золота\n"
-            
-            # Кнопка покупки для каждого предмета
             text += "\n"
     
     markup = InlineKeyboardMarkup(row_width=1)
@@ -153,7 +228,7 @@ def show_category(call, bot, get_or_create_player, items_data, category):
         if value > 0 and character.gold >= value:
             markup.add(InlineKeyboardButton(
                 f"✅ Купить {item.get('name', item_id)} за {value}💰",
-                callback_data=f"shop:buy:{item_id}:gold"
+                callback_data=f"shop:buy:{item_id}:gold:{category}"
             ))
     
     markup.add(InlineKeyboardButton("🔙 Назад", callback_data="shop:menu"))
@@ -174,7 +249,7 @@ def show_chests(call, bot, get_or_create_player, items_data):
     
     text = "🎁 *СУНДУКИ*\n\n"
     text += f"💰 Твой баланс: {character.gold} золота\n"
-    text += f"💎 DSTN: {character.dstn or 0}\n\n"
+    text += f"💎 DSTN: {character.destiny_tokens or 0}\n\n"
     
     chests = {
         "common_chest": {
@@ -230,7 +305,7 @@ def show_chests(call, bot, get_or_create_player, items_data):
         
         # Кнопка покупки
         can_buy_gold = chest['price_gold'] > 0 and character.gold >= chest['price_gold']
-        can_buy_dstn = chest['price_dstn'] > 0 and character.dstn >= chest['price_dstn']
+        can_buy_dstn = chest['price_dstn'] > 0 and character.destiny_tokens >= chest['price_dstn']
         
         if can_buy_gold:
             markup.add(InlineKeyboardButton(
@@ -254,7 +329,7 @@ def show_chests(call, bot, get_or_create_player, items_data):
     )
     bot.answer_callback_query(call.id)
 
-def buy_item(call, bot, get_or_create_player, items_data, item_id, currency):
+def buy_item(call, bot, get_or_create_player, items_data, item_id, currency, category="menu"):
     """Купить предмет"""
     from main import save_character
     
@@ -273,10 +348,10 @@ def buy_item(call, bot, get_or_create_player, items_data, item_id, currency):
             return
         character.gold -= price
     elif currency == "dstn":
-        if character.dstn < price:
+        if character.destiny_tokens < price:
             bot.answer_callback_query(call.id, f"❌ Не хватает DSTN! Нужно {price}")
             return
-        character.dstn -= price
+        character.destiny_tokens -= price
     else:
         bot.answer_callback_query(call.id, "❌ Неизвестная валюта")
         return
@@ -287,7 +362,6 @@ def buy_item(call, bot, get_or_create_player, items_data, item_id, currency):
     bot.answer_callback_query(call.id, f"✅ Куплено: {item.get('name', item_id)}!")
     
     # Возвращаемся в категорию
-    category = call.data.split(':')[2] if len(call.data.split(':')) > 2 else "menu"
     if category == "chests":
         show_chests(call, bot, get_or_create_player, items_data)
     else:
@@ -327,10 +401,10 @@ def buy_chest(call, bot, get_or_create_player, items_data, chest_id, currency):
             return
         character.gold -= price
     elif currency == "dstn":
-        if character.dstn < price:
+        if character.destiny_tokens < price:
             bot.answer_callback_query(call.id, f"❌ Не хватает DSTN! Нужно {price}")
             return
-        character.dstn -= price
+        character.destiny_tokens -= price
     else:
         bot.answer_callback_query(call.id, "❌ Неизвестная валюта")
         return
@@ -416,7 +490,7 @@ def handle_callback(call, bot, get_or_create_player, items_data):
             item_id = data[2]
             currency = data[3]
             category = data[4] if len(data) > 4 else "menu"
-            buy_item(call, bot, get_or_create_player, items_data, item_id, currency)
+            buy_item(call, bot, get_or_create_player, items_data, item_id, currency, category)
         
         elif action == "buy_chest" and len(data) > 3:
             chest_id = data[2]
@@ -429,3 +503,14 @@ def handle_callback(call, bot, get_or_create_player, items_data):
     except Exception as e:
         logging.error(f"Ошибка в shop callback: {e}")
         bot.answer_callback_query(call.id, "⚠️ Ошибка")
+
+# ============================================
+# ЭКСПОРТ
+# ============================================
+
+__all__ = [
+    'shop_command',
+    'buy_command',
+    'shop_categories_command',
+    'handle_callback'
+]
