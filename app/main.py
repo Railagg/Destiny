@@ -34,19 +34,19 @@ app.include_router(nft.router, prefix="/api/nft", tags=["NFT"])
 
 # ========== РАЗДАЧА ФРОНТЕНДА ==========
 
-# Путь к папке fronted (на уровень выше от app/)
-fronted_path = Path(__file__).parent.parent / "fronted"
+# Исправлено: fronted → frontend
+frontend_path = Path(__file__).parent.parent / "frontend"
 
-if fronted_path.exists():
+if frontend_path.exists():
     # Раздаем статические файлы
-    app.mount("/fronted", StaticFiles(directory=str(fronted_path), html=True), name="fronted")
-    print(f"✅ Фронтенд загружен из {fronted_path}")
+    app.mount("/frontend", StaticFiles(directory=str(frontend_path), html=True), name="frontend")
+    print(f"✅ Фронтенд загружен из {frontend_path}")
     
-    # Добавляем редирект с корня на фронтенд (опционально)
+    # Добавляем редирект с корня на фронтенд
     @app.get("/")
     async def root_with_frontend():
         from fastapi.responses import FileResponse
-        index_path = fronted_path / "index.html"
+        index_path = frontend_path / "index.html"
         if index_path.exists():
             return FileResponse(index_path)
         return {
@@ -56,7 +56,7 @@ if fronted_path.exists():
             "version": "2.0"
         }
 else:
-    print(f"❌ Папка fronted не найдена по пути: {fronted_path}")
+    print(f"❌ Папка frontend не найдена по пути: {frontend_path}")
     
     @app.get("/")
     def root():
