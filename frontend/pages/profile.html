@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Destiny - Профиль</title>
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
     <style>
         .profile-page {
             padding: 15px;
@@ -30,6 +30,22 @@
             animation: rotate 20s linear infinite;
         }
         
+        .profile-header.premium {
+            background: linear-gradient(135deg, #ffd700, #e6c200);
+            color: #000;
+        }
+        
+        .profile-header.legendary {
+            background: linear-gradient(135deg, #ff0000, #8b0000);
+            animation: glow 2s ease-in-out infinite;
+        }
+        
+        @keyframes glow {
+            0% { box-shadow: 0 0 10px rgba(255,0,0,0.5); }
+            50% { box-shadow: 0 0 30px rgba(255,0,0,0.8); }
+            100% { box-shadow: 0 0 10px rgba(255,0,0,0.5); }
+        }
+        
         @keyframes rotate {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
@@ -51,6 +67,20 @@
             z-index: 1;
         }
         
+        .profile-avatar.premium {
+            border-color: #ffd700;
+            animation: rainbow 3s linear infinite;
+        }
+        
+        @keyframes rainbow {
+            0% { border-color: #ff0000; }
+            20% { border-color: #ffd700; }
+            40% { border-color: #00ff00; }
+            60% { border-color: #0000ff; }
+            80% { border-color: #800080; }
+            100% { border-color: #ff0000; }
+        }
+        
         .profile-name {
             font-size: 24px;
             font-weight: bold;
@@ -58,6 +88,10 @@
             margin-bottom: 5px;
             position: relative;
             z-index: 1;
+        }
+        
+        .profile-name.premium {
+            text-shadow: 0 0 10px rgba(255,215,0,0.5);
         }
         
         .profile-class {
@@ -81,6 +115,25 @@
             z-index: 1;
             left: 50%;
             transform: translateX(-50%);
+        }
+        
+        .profile-titles {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .title-badge {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            padding: 4px 10px;
+            font-size: 11px;
+            backdrop-filter: blur(5px);
         }
         
         .stats-cards {
@@ -193,6 +246,45 @@
             font-weight: bold;
         }
         
+        .class-specific-stats {
+            background: rgba(233,69,96,0.1);
+            border: 1px solid #e94560;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .class-specific-title {
+            font-size: 14px;
+            color: #e94560;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .class-specific-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .class-specific-item {
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
+        }
+        
+        .class-specific-label {
+            font-size: 11px;
+            color: #ccc;
+            margin-bottom: 3px;
+        }
+        
+        .class-specific-value {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
         .badge-container {
             display: flex;
             flex-wrap: wrap;
@@ -223,6 +315,11 @@
         .badge.purple {
             background: rgba(128, 0, 128, 0.1);
             border-color: #800080;
+        }
+        
+        .badge.rainbow {
+            background: linear-gradient(90deg, rgba(255,0,0,0.1), rgba(255,215,0,0.1), rgba(0,255,0,0.1), rgba(0,0,255,0.1), rgba(128,0,128,0.1));
+            border-image: linear-gradient(90deg, #ff0000, #ffd700, #00ff00, #0000ff, #800080) 1;
         }
         
         .achievement-grid {
@@ -277,6 +374,39 @@
             border-bottom: 2px solid rgba(233, 69, 96, 0.3);
         }
         
+        .rainbow-resources {
+            display: flex;
+            gap: 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .rainbow-item {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .rainbow-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .rainbow-label {
+            font-size: 11px;
+            color: #ccc;
+            margin-bottom: 3px;
+        }
+        
+        .rainbow-value {
+            font-size: 16px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #ff0000, #ffd700, #00ff00, #0000ff, #800080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
         .premium-status {
             background: linear-gradient(135deg, #ffd700, #e6c200);
             color: #000;
@@ -286,6 +416,11 @@
             display: flex;
             align-items: center;
             gap: 15px;
+        }
+        
+        .premium-status.active {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: #fff;
         }
         
         .premium-icon {
@@ -307,6 +442,12 @@
             opacity: 0.8;
         }
         
+        .premium-timer {
+            font-size: 11px;
+            margin-top: 5px;
+            opacity: 0.7;
+        }
+        
         .premium-btn {
             background: #000;
             color: #ffd700;
@@ -318,14 +459,23 @@
             transition: all 0.3s;
         }
         
+        .premium-btn.active {
+            background: #fff;
+            color: #4CAF50;
+        }
+        
         .premium-btn:hover {
             transform: scale(1.05);
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
         
-        .premium-active {
-            background: #4CAF50;
-            color: #fff;
+        .renewal-badge {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 11px;
+            margin-top: 5px;
+            display: inline-block;
         }
     </style>
 </head>
@@ -344,167 +494,18 @@
                     </div>
                     <div class="stat-item">
                         <span class="stat-icon">💰</span>
-                        <span class="stat-value" id="gold">1250</span>
+                        <span class="stat-value" id="gold">0</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-icon">🪙</span>
-                        <span class="stat-value" id="dstn">350</span>
+                        <span class="stat-value" id="dstn">0</span>
                     </div>
                 </div>
             </div>
 
             <div class="game-content">
-                <div class="profile-page">
-                    <!-- Шапка профиля -->
-                    <div class="profile-header">
-                        <div class="profile-avatar">⚔️</div>
-                        <div class="profile-name">Railagg</div>
-                        <div class="profile-class">⚔️ Мечник • Уровень 30</div>
-                        <div class="profile-level">✨ Престиж 2</div>
-                    </div>
-                    
-                    <!-- Основные статы -->
-                    <div class="stats-cards">
-                        <div class="stat-card">
-                            <div class="stat-icon-large">⚔️</div>
-                            <div class="stat-name">Урон</div>
-                            <div class="stat-number">124</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon-large">🛡️</div>
-                            <div class="stat-name">Защита</div>
-                            <div class="stat-number">58</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon-large">⚡</div>
-                            <div class="stat-name">Крит</div>
-                            <div class="stat-number">24%</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon-large">💨</div>
-                            <div class="stat-name">Уклонение</div>
-                            <div class="stat-number">15%</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Прогресс уровня -->
-                    <div class="progress-section">
-                        <div class="progress-title">
-                            <span>Уровень 30 → 31</span>
-                            <span>1,450 / 2,000 опыта</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width:72%"></div>
-                        </div>
-                        <div class="badge-container">
-                            <span class="badge"><span class="badge-icon">⚔️</span> Воин</span>
-                            <span class="badge gold"><span class="badge-icon">👑</span> Ветеран</span>
-                            <span class="badge purple"><span class="badge-icon">🐉</span> Драконобойца</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Атрибуты -->
-                    <div class="section-title">📊 АТРИБУТЫ</div>
-                    <div class="attributes-grid">
-                        <div class="attribute-item">
-                            <div class="attribute-label">
-                                <span class="attribute-icon">💪</span>
-                                <span class="attribute-name">Сила</span>
-                            </div>
-                            <span class="attribute-value">28</span>
-                        </div>
-                        <div class="attribute-item">
-                            <div class="attribute-label">
-                                <span class="attribute-icon">🏃</span>
-                                <span class="attribute-name">Ловкость</span>
-                            </div>
-                            <span class="attribute-value">15</span>
-                        </div>
-                        <div class="attribute-item">
-                            <div class="attribute-label">
-                                <span class="attribute-icon">🧠</span>
-                                <span class="attribute-name">Интеллект</span>
-                            </div>
-                            <span class="attribute-value">12</span>
-                        </div>
-                        <div class="attribute-item">
-                            <div class="attribute-label">
-                                <span class="attribute-icon">❤️</span>
-                                <span class="attribute-name">Живучесть</span>
-                            </div>
-                            <span class="attribute-value">22</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Достижения -->
-                    <div class="section-title">🏆 ДОСТИЖЕНИЯ (12/45)</div>
-                    <div class="achievement-grid">
-                        <div class="achievement-item completed">
-                            <div class="achievement-icon">⚔️</div>
-                            <div class="achievement-name">Первая кровь</div>
-                            <div class="achievement-progress">✅</div>
-                        </div>
-                        <div class="achievement-item completed">
-                            <div class="achievement-icon">🐺</div>
-                            <div class="achievement-name">Волкодав</div>
-                            <div class="achievement-progress">100/100</div>
-                        </div>
-                        <div class="achievement-item completed">
-                            <div class="achievement-icon">⛏️</div>
-                            <div class="achievement-name">Шахтёр</div>
-                            <div class="achievement-progress">1000/1000</div>
-                        </div>
-                        <div class="achievement-item">
-                            <div class="achievement-icon">🎣</div>
-                            <div class="achievement-name">Рыбак</div>
-                            <div class="achievement-progress">45/500</div>
-                        </div>
-                        <div class="achievement-item">
-                            <div class="achievement-icon">🐉</div>
-                            <div class="achievement-name">Драконобойца</div>
-                            <div class="achievement-progress">3/10</div>
-                        </div>
-                        <div class="achievement-item">
-                            <div class="achievement-icon">🏆</div>
-                            <div class="achievement-name">Чемпион</div>
-                            <div class="achievement-progress">15/50</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Статистика -->
-                    <div class="section-title">📈 СТАТИСТИКА</div>
-                    <div class="stats-cards">
-                        <div class="stat-card">
-                            <div class="stat-icon-large">👾</div>
-                            <div class="stat-name">Убито мобов</div>
-                            <div class="stat-number small">2,547</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon-large">⚔️</div>
-                            <div class="stat-name">PvP побед</div>
-                            <div class="stat-number small">47</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon-large">🔨</div>
-                            <div class="stat-name">Скрафчено</div>
-                            <div class="stat-number small">234</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon-large">🎣</div>
-                            <div class="stat-name">Поймано рыб</div>
-                            <div class="stat-number small">892</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Премиум статус -->
-                    <div class="premium-status">
-                        <div class="premium-icon">👑</div>
-                        <div class="premium-info">
-                            <div class="premium-title">Премиум не активен</div>
-                            <div class="premium-desc">Купи подписку для бонусов</div>
-                        </div>
-                        <button class="premium-btn" onclick="window.location.href='shop.html?tab=premium'">Купить</button>
-                    </div>
+                <div class="profile-page" id="profileContent">
+                    <!-- Контент будет загружен динамически -->
                 </div>
             </div>
 
@@ -534,11 +535,406 @@
     </div>
 
     <script>
-        // Здесь будет загрузка реальных данных из API
+        // Инициализация Telegram WebApp
+        let tg = window.Telegram ? window.Telegram.WebApp : null;
+        if (tg) {
+            tg.expand();
+            tg.ready();
+        }
+
+        // Класс-специфичные эмодзи
+        const CLASS_EMOJI = {
+            'warrior': '⚔️',
+            'archer': '🏹',
+            'mage': '🔮',
+            'guardian': '🛡️',
+            'paladin': '⚔️✨',
+            'rogue': '🗡️',
+            'druid': '🌿',
+            'warlock': '💀',
+            'shaman': '🥁'
+        };
+
+        // Названия классов
+        const CLASS_NAMES = {
+            'warrior': 'Мечник',
+            'archer': 'Лучник',
+            'mage': 'Маг',
+            'guardian': 'Страж',
+            'paladin': 'Паладин',
+            'rogue': 'Разбойник',
+            'druid': 'Друид',
+            'warlock': 'Чернокнижник',
+            'shaman': 'Шаман'
+        };
+
+        // Получение данных игрока
+        function getPlayerData() {
+            try {
+                if (window.opener && window.opener.playerData) {
+                    return window.opener.playerData;
+                }
+                if (window.parent && window.parent.playerData) {
+                    return window.parent.playerData;
+                }
+                const saved = localStorage.getItem('playerData');
+                if (saved) {
+                    return JSON.parse(saved);
+                }
+            } catch(e) {
+                console.log('Ошибка получения данных:', e);
+            }
+            return null;
+        }
+
+        // Форматирование чисел
+        function formatNumber(num) {
+            if (num >= 1000000) return (num/1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num/1000).toFixed(1) + 'K';
+            return num.toString();
+        }
+
+        // Получение цвета для редкости
+        function getRarityColor(rarity) {
+            const colors = {
+                'common': '#808080',
+                'uncommon': '#00ff00',
+                'rare': '#0000ff',
+                'epic': '#800080',
+                'legendary': '#ffd700',
+                'ancient': '#ff0000',
+                'mythic': '#ff00ff'
+            };
+            return colors[rarity] || '#808080';
+        }
+
+        // Рендер профиля
+        function renderProfile() {
+            const playerData = getPlayerData() || {
+                username: 'Игрок',
+                level: 1,
+                exp: 0,
+                max_exp: 1000,
+                player_class: 'warrior',
+                class_level: 1,
+                health: 100,
+                max_health: 100,
+                energy: 100,
+                max_energy: 100,
+                gold: 20,
+                dstn: 0,
+                strength: 1,
+                dexterity: 1,
+                intelligence: 1,
+                vitality: 1,
+                damage: 5,
+                defense: 0,
+                crit_chance: 0,
+                dodge_chance: 0,
+                luck: 0,
+                kills_total: 0,
+                pvp_wins: 0,
+                items_crafted: 0,
+                resources_gathered: 0,
+                rainbow_shards: 0,
+                rainbow_stones: 0,
+                titles: [],
+                premium_until: null,
+                premium_plan: null,
+                renewal_3months: false,
+                renewal_6months: false,
+                renewal_1year: false,
+                renewal_2years: false,
+                renewal_3years: false,
+                profile_frame: null,
+                profile_aura: null,
+                paladin_shield: 0,
+                stealth: false,
+                rage: 0,
+                totem_power: 0,
+                spirit_power: 0,
+                heal_power: 0,
+                life_steal: 0,
+                curse_power: 0,
+                summon_power: 0
+            };
+
+            const classEmoji = CLASS_EMOJI[playerData.player_class] || '⚔️';
+            const className = CLASS_NAMES[playerData.player_class] || 'Воин';
+            
+            // Проверка премиум статуса
+            const isPremium = playerData.premium_until && new Date(playerData.premium_until) > new Date();
+            
+            // Проверка наград за верность
+            const renewalBadges = [];
+            if (playerData.renewal_3months) renewalBadges.push('3м');
+            if (playerData.renewal_6months) renewalBadges.push('6м');
+            if (playerData.renewal_1year) renewalBadges.push('1г');
+            if (playerData.renewal_2years) renewalBadges.push('2г');
+            if (playerData.renewal_3years) renewalBadges.push('3г');
+
+            // Вычисление прогресса уровня
+            const expNeeded = playerData.level * 1000;
+            const expProgress = Math.min(100, (playerData.exp / expNeeded) * 100);
+
+            // Сбор класс-специфичных статов
+            const classStats = [];
+            if (playerData.paladin_shield > 0) {
+                classStats.push({ label: 'Щит паладина', value: playerData.paladin_shield, icon: '🛡️' });
+            }
+            if (playerData.rage > 0) {
+                classStats.push({ label: 'Ярость', value: playerData.rage, icon: '⚡' });
+            }
+            if (playerData.totem_power > 0) {
+                classStats.push({ label: 'Сила тотемов', value: playerData.totem_power, icon: '🥁' });
+            }
+            if (playerData.spirit_power > 0) {
+                classStats.push({ label: 'Сила духов', value: playerData.spirit_power, icon: '👻' });
+            }
+            if (playerData.heal_power > 0) {
+                classStats.push({ label: 'Сила лечения', value: playerData.heal_power, icon: '💚' });
+            }
+            if (playerData.life_steal > 0) {
+                classStats.push({ label: 'Вампиризм', value: playerData.life_steal + '%', icon: '🩸' });
+            }
+            if (playerData.curse_power > 0) {
+                classStats.push({ label: 'Сила проклятий', value: playerData.curse_power, icon: '😈' });
+            }
+            if (playerData.summon_power > 0) {
+                classStats.push({ label: 'Сила призыва', value: playerData.summon_power, icon: '👹' });
+            }
+
+            const content = document.getElementById('profileContent');
+            
+            let html = `
+                <!-- Шапка профиля -->
+                <div class="profile-header ${isPremium ? 'premium' : ''} ${playerData.profile_aura ? 'legendary' : ''}">
+                    <div class="profile-avatar ${isPremium ? 'premium' : ''}">${classEmoji}</div>
+                    <div class="profile-name ${isPremium ? 'premium' : ''}">${playerData.username || 'Игрок'}</div>
+                    <div class="profile-class">${classEmoji} ${className} • Уровень ${playerData.level}</div>
+                    <div class="profile-level">✨ Престиж ${playerData.prestige || 0}</div>
+                    
+                    <!-- Титулы -->
+                    ${playerData.titles && playerData.titles.length > 0 ? `
+                        <div class="profile-titles">
+                            ${playerData.titles.slice(0, 3).map(title => 
+                                `<span class="title-badge">${title}</span>`
+                            ).join('')}
+                            ${playerData.titles.length > 3 ? `<span class="title-badge">+${playerData.titles.length - 3}</span>` : ''}
+                        </div>
+                    ` : ''}
+                    
+                    <!-- Награды за верность -->
+                    ${renewalBadges.length > 0 ? `
+                        <div class="profile-titles">
+                            ${renewalBadges.map(badge => 
+                                `<span class="title-badge" style="background: rgba(255,215,0,0.3); border-color: #ffd700;">👑 ${badge}</span>`
+                            ).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+                
+                <!-- Основные статы -->
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <div class="stat-icon-large">⚔️</div>
+                        <div class="stat-name">Урон</div>
+                        <div class="stat-number">${playerData.damage || 0}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-large">🛡️</div>
+                        <div class="stat-name">Защита</div>
+                        <div class="stat-number">${playerData.defense || 0}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-large">⚡</div>
+                        <div class="stat-name">Крит</div>
+                        <div class="stat-number">${playerData.crit_chance || 0}%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-large">💨</div>
+                        <div class="stat-name">Уклонение</div>
+                        <div class="stat-number">${playerData.dodge_chance || 0}%</div>
+                    </div>
+                </div>
+                
+                <!-- Радужные ресурсы -->
+                <div class="rainbow-resources">
+                    <div class="rainbow-item">
+                        <div class="rainbow-icon">🌈</div>
+                        <div class="rainbow-label">Осколки</div>
+                        <div class="rainbow-value">${playerData.rainbow_shards || 0}</div>
+                    </div>
+                    <div class="rainbow-item">
+                        <div class="rainbow-icon">🌟</div>
+                        <div class="rainbow-label">Камни</div>
+                        <div class="rainbow-value">${playerData.rainbow_stones || 0}</div>
+                    </div>
+                </div>
+                
+                <!-- Прогресс уровня -->
+                <div class="progress-section">
+                    <div class="progress-title">
+                        <span>Уровень ${playerData.level} → ${playerData.level + 1}</span>
+                        <span>${formatNumber(playerData.exp)} / ${formatNumber(expNeeded)} опыта</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width:${expProgress}%"></div>
+                    </div>
+                    
+                    <!-- Достижения -->
+                    <div class="badge-container">
+                        <span class="badge"><span class="badge-icon">👾</span> Убито: ${formatNumber(playerData.kills_total || 0)}</span>
+                        <span class="badge gold"><span class="badge-icon">⚔️</span> PvP: ${playerData.pvp_wins || 0}</span>
+                        <span class="badge purple"><span class="badge-icon">🔨</span> Крафт: ${playerData.items_crafted || 0}</span>
+                    </div>
+                </div>
+                
+                <!-- Атрибуты -->
+                <div class="section-title">📊 АТРИБУТЫ</div>
+                <div class="attributes-grid">
+                    <div class="attribute-item">
+                        <div class="attribute-label">
+                            <span class="attribute-icon">💪</span>
+                            <span class="attribute-name">Сила</span>
+                        </div>
+                        <span class="attribute-value">${playerData.strength || 1}</span>
+                    </div>
+                    <div class="attribute-item">
+                        <div class="attribute-label">
+                            <span class="attribute-icon">🏃</span>
+                            <span class="attribute-name">Ловкость</span>
+                        </div>
+                        <span class="attribute-value">${playerData.dexterity || 1}</span>
+                    </div>
+                    <div class="attribute-item">
+                        <div class="attribute-label">
+                            <span class="attribute-icon">🧠</span>
+                            <span class="attribute-name">Интеллект</span>
+                        </div>
+                        <span class="attribute-value">${playerData.intelligence || 1}</span>
+                    </div>
+                    <div class="attribute-item">
+                        <div class="attribute-label">
+                            <span class="attribute-icon">❤️</span>
+                            <span class="attribute-name">Живучесть</span>
+                        </div>
+                        <span class="attribute-value">${playerData.vitality || 1}</span>
+                    </div>
+                </div>
+                
+                <!-- Класс-специфичные статы -->
+                ${classStats.length > 0 ? `
+                    <div class="class-specific-stats">
+                        <div class="class-specific-title">🎯 КЛАССОВЫЕ ОСОБЕННОСТИ</div>
+                        <div class="class-specific-grid">
+                            ${classStats.map(stat => `
+                                <div class="class-specific-item">
+                                    <div class="class-specific-label">${stat.icon} ${stat.label}</div>
+                                    <div class="class-specific-value">${stat.value}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <!-- Статистика -->
+                <div class="section-title">📈 СТАТИСТИКА</div>
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <div class="stat-icon-large">👾</div>
+                        <div class="stat-name">Убито мобов</div>
+                        <div class="stat-number small">${formatNumber(playerData.kills_total || 0)}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-large">⚔️</div>
+                        <div class="stat-name">PvP побед</div>
+                        <div class="stat-number small">${playerData.pvp_wins || 0}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-large">🔨</div>
+                        <div class="stat-name">Скрафчено</div>
+                        <div class="stat-number small">${playerData.items_crafted || 0}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-large">📦</div>
+                        <div class="stat-name">Собрано</div>
+                        <div class="stat-number small">${formatNumber(playerData.resources_gathered || 0)}</div>
+                    </div>
+                </div>
+            `;
+
+            // Премиум статус
+            if (isPremium) {
+                const premiumUntil = new Date(playerData.premium_until);
+                const daysLeft = Math.ceil((premiumUntil - new Date()) / (1000 * 60 * 60 * 24));
+                
+                html += `
+                    <div class="premium-status active">
+                        <div class="premium-icon">👑</div>
+                        <div class="premium-info">
+                            <div class="premium-title">Премиум активен</div>
+                            <div class="premium-desc">План: ${playerData.premium_plan || 'Премиум'}</div>
+                            <div class="premium-timer">⏳ Осталось: ${daysLeft} дней</div>
+                        </div>
+                        <button class="premium-btn active" onclick="window.location.href='shop.html?tab=premium'">Продлить</button>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="premium-status">
+                        <div class="premium-icon">👑</div>
+                        <div class="premium-info">
+                            <div class="premium-title">Премиум не активен</div>
+                            <div class="premium-desc">Купи подписку для бонусов</div>
+                        </div>
+                        <button class="premium-btn" onclick="window.location.href='shop.html?tab=premium'">Купить</button>
+                    </div>
+                `;
+            }
+
+            content.innerHTML = html;
+        }
+
+        // Обновление статистики в шапке
+        function updateStats() {
+            const playerData = getPlayerData();
+            if (!playerData) return;
+
+            document.getElementById('energy').textContent = `${playerData.energy || 100}/${playerData.max_energy || 100}`;
+            document.getElementById('health').textContent = `${playerData.health || 100}/${playerData.max_health || 100}`;
+            document.getElementById('gold').textContent = playerData.gold || 0;
+            document.getElementById('dstn').textContent = playerData.dstn || 0;
+        }
+
+        // Инициализация
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('Profile page loaded');
+            renderProfile();
+            updateStats();
+
+            // Слушаем сообщения
+            window.addEventListener('message', (event) => {
+                if (event.data.type === 'updateStats') {
+                    updateStats();
+                    renderProfile();
+                }
+                if (event.data.type === 'updateProfile') {
+                    renderProfile();
+                }
+            });
+
+            // Обработчики меню
+            document.querySelectorAll('.menu-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const page = btn.dataset.page;
+                    if (page === 'game') window.location.href = 'game.html';
+                    else if (page === 'map') window.location.href = 'map.html';
+                    else if (page === 'inventory') window.location.href = 'inventory.html';
+                    else if (page === 'shop') window.location.href = 'shop.html';
+                });
+            });
         });
     </script>
-    <script src="../script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
