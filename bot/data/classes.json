@@ -636,6 +636,755 @@
       },
       "image": "class_guardian.jpg",
       "icon_image": "icon_guardian.jpg"
+    },
+    
+    "paladin": {
+      "id": "paladin",
+      "name": "⚔️ ПАЛАДИН",
+      "description": "Святой воин, сочетающий мощь меча с божественной магией. Может лечить союзников и карать нежить. Его щит растёт с каждым ударом, становясь непробиваемым.",
+      "role": "hybrid_tank_healer",
+      "icon": "⚔️",
+      "color": "gold",
+      "difficulty": "⭐⭐",
+      "base_stats": {
+        "health": 150,
+        "damage": 10,
+        "defense": 12,
+        "magic_damage": 8,
+        "mana": 80,
+        "mana_regen": 3,
+        "block_chance": 10,
+        "block_amount": 40
+      },
+      "per_level": {
+        "health": 15,
+        "damage": 1.5,
+        "defense": 1.5,
+        "magic_damage": 1,
+        "mana": 8,
+        "mana_regen": 0.3,
+        "block_chance": 0.8,
+        "block_amount": 1.5
+      },
+      "stats_at_level_30": {
+        "health": 585,
+        "damage": 53.5,
+        "defense": 55.5,
+        "magic_damage": 37,
+        "mana": 312,
+        "mana_regen": 11.7,
+        "block_chance": 33.2,
+        "block_amount": 83.5
+      },
+      "abilities": [
+        {
+          "id": "paladin_1",
+          "name": "⚡ Священный удар",
+          "level": 1,
+          "description": "Удар, наносящий 120% урона и восстанавливающий 10 здоровья.",
+          "cooldown": 2,
+          "mana_cost": 10,
+          "damage_multiplier": 1.2,
+          "heal": 10,
+          "icon": "⚡"
+        },
+        {
+          "id": "paladin_2",
+          "name": "🛡️ Божественный щит",
+          "level": 5,
+          "description": "На 2 хода защита увеличивается на 30%. Каждый удар по врагу добавляет +3 к щиту (суммируется до 150).",
+          "cooldown": 4,
+          "mana_cost": 20,
+          "duration": 2,
+          "buff": {"defense_multiplier": 1.3},
+          "stackable_buff": {"block_bonus": 3, "max": 150},
+          "icon": "🛡️"
+        },
+        {
+          "id": "paladin_3",
+          "name": "💫 Свет исцеления",
+          "level": 10,
+          "description": "Восстанавливает 50 здоровья союзнику.",
+          "cooldown": 3,
+          "mana_cost": 25,
+          "heal": 50,
+          "icon": "💫"
+        },
+        {
+          "id": "paladin_4",
+          "name": "⚔️ Кара нежити",
+          "level": 15,
+          "description": "Наносит 200% урона нежити и 100% обычным врагам.",
+          "cooldown": 3,
+          "mana_cost": 30,
+          "damage_multiplier": 1.0,
+          "undead_multiplier": 2.0,
+          "icon": "⚔️"
+        },
+        {
+          "id": "paladin_5",
+          "name": "✨ Благословение",
+          "level": 20,
+          "description": "На 3 хода союзник получает +20% ко всем характеристикам.",
+          "cooldown": 4,
+          "mana_cost": 35,
+          "duration": 3,
+          "buff": {"all_stats_multiplier": 1.2},
+          "icon": "✨"
+        },
+        {
+          "id": "paladin_6",
+          "name": "🏰 Священная земля",
+          "level": 25,
+          "description": "На 3 хода все союзники восстанавливают 15 здоровья за ход.",
+          "cooldown": 5,
+          "mana_cost": 50,
+          "duration": 3,
+          "aura": {"heal_per_turn": 15},
+          "aoe": true,
+          "icon": "🏰"
+        },
+        {
+          "id": "paladin_7",
+          "name": "🌟 Божественное вмешательство",
+          "level": 30,
+          "description": "Восстанавливает 100% здоровья союзнику и даёт неуязвимость на 1 ход.",
+          "cooldown": 10,
+          "mana_cost": 100,
+          "heal_percent": 100,
+          "buff": {"invulnerable": true, "duration": 1},
+          "icon": "🌟"
+        }
+      ],
+      "mastery": {
+        "id": "paladin_mastery",
+        "name": "Божественная защита",
+        "description": "Щит паладина растёт вдвое быстрее и даёт +10% к сопротивлению магии.",
+        "effect": {"shield_growth_multiplier": 2.0, "magic_resist_bonus": 10}
+      },
+      "passives": {
+        "paladin_passive_1": {
+          "name": "Святой воин",
+          "level": 10,
+          "description": "+15% урона по нежити и демонам."
+        },
+        "paladin_passive_2": {
+          "name": "Божественное провидение",
+          "level": 20,
+          "description": "10% шанс полностью избежать урона."
+        }
+      },
+      "playstyle": "Паладин — универсальный боец, который может и танковать, и лечить. В бою нужно накапливать щит, поддерживать союзников и карать нежить.",
+      "pros": ["Универсальность", "Хорошее лечение", "Растущий щит"],
+      "cons": ["Средний урон", "Зависимость от маны", "Требует постоянной активности"],
+      "equipment": {
+        "weapon": "⚔️ Мечи и булавы",
+        "armor": "🛡️ Тяжёлая броня",
+        "preferred_stats": ["сила", "интеллект", "защита"]
+      },
+      "image": "class_paladin.jpg",
+      "icon_image": "icon_paladin.jpg"
+    },
+    
+    "rogue": {
+      "id": "rogue",
+      "name": "🗡️ РАЗБОЙНИК",
+      "description": "Тень в ночи, мастер скрытности и смертоносных атак из тени. Высокая ловкость позволяет уклоняться от любых ударов, а острые клинки наносят сокрушительные критические удары.",
+      "role": "assassin",
+      "icon": "🗡️",
+      "color": "purple",
+      "difficulty": "⭐⭐⭐",
+      "base_stats": {
+        "health": 90,
+        "damage": 12,
+        "defense": 4,
+        "dodge": 15,
+        "crit_chance": 15,
+        "crit_multiplier": 2.2,
+        "speed": 9,
+        "stealth_chance": 10
+      },
+      "per_level": {
+        "health": 9,
+        "damage": 2.2,
+        "defense": 0.4,
+        "dodge": 1.2,
+        "crit_chance": 0.6,
+        "crit_multiplier": 0.06,
+        "speed": 0.4,
+        "stealth_chance": 0.5
+      },
+      "stats_at_level_30": {
+        "health": 351,
+        "damage": 75.8,
+        "defense": 15.6,
+        "dodge": 49.8,
+        "crit_chance": 32.4,
+        "crit_multiplier": 3.88,
+        "speed": 20.6,
+        "stealth_chance": 24.5
+      },
+      "abilities": [
+        {
+          "id": "rogue_1",
+          "name": "🗡️ Удар в спину",
+          "level": 1,
+          "description": "Атака с 150% урона. Если цель не видит разбойника, крит гарантирован.",
+          "cooldown": 2,
+          "mana_cost": 8,
+          "damage_multiplier": 1.5,
+          "guaranteed_crit_stealth": true,
+          "icon": "🗡️"
+        },
+        {
+          "id": "rogue_2",
+          "name": "👻 Скрытность",
+          "level": 5,
+          "description": "На 2 хода разбойник становится невидимым. Следующая атака наносит +50% урона.",
+          "cooldown": 4,
+          "mana_cost": 15,
+          "duration": 2,
+          "buff": {"stealth": true, "next_damage_bonus": 0.5},
+          "icon": "👻"
+        },
+        {
+          "id": "rogue_3",
+          "name": "💨 Ускользание",
+          "level": 10,
+          "description": "На 1 ход уклонение повышается до 90%.",
+          "cooldown": 3,
+          "mana_cost": 10,
+          "duration": 1,
+          "buff": {"dodge": 90},
+          "icon": "💨"
+        },
+        {
+          "id": "rogue_4",
+          "name": "🔪 Отравленный клинок",
+          "level": 15,
+          "description": "Атака с 100% урона и ядом, наносящим 15 урона в ход 3 хода.",
+          "cooldown": 3,
+          "mana_cost": 20,
+          "damage_multiplier": 1.0,
+          "poison": 15,
+          "poison_duration": 3,
+          "icon": "🔪"
+        },
+        {
+          "id": "rogue_5",
+          "name": "🌀 Танцующие клинки",
+          "level": 20,
+          "description": "4 быстрых удара по случайным целям, каждый с 70% урона.",
+          "cooldown": 4,
+          "mana_cost": 35,
+          "hits": 4,
+          "damage_multiplier": 0.7,
+          "random_targets": true,
+          "icon": "🌀"
+        },
+        {
+          "id": "rogue_6",
+          "name": "💀 Смертельный удар",
+          "level": 25,
+          "description": "Атака с 300% урона, но требует скрытности.",
+          "cooldown": 5,
+          "mana_cost": 40,
+          "damage_multiplier": 3.0,
+          "stealth_required": true,
+          "icon": "💀"
+        },
+        {
+          "id": "rogue_7",
+          "name": "🌟 Танец теней",
+          "level": 30,
+          "description": "Разбойник исчезает, оставляя 3 теней. Тени атакуют врагов (каждая с 50% урона), а разбойник получает невидимость на 2 хода.",
+          "cooldown": 8,
+          "mana_cost": 70,
+          "summon": "shadow_clone",
+          "summon_count": 3,
+          "summon_power": 0.5,
+          "buff": {"stealth": true, "duration": 2},
+          "icon": "🌟"
+        }
+      ],
+      "mastery": {
+        "id": "rogue_mastery",
+        "name": "Смертоносная тень",
+        "description": "Атаки из скрытности наносят на 50% больше урона.",
+        "effect": {"stealth_damage_bonus": 0.5}
+      },
+      "passives": {
+        "rogue_passive_1": {
+          "name": "Острые клинки",
+          "level": 10,
+          "description": "+15% к урону при критическом ударе."
+        },
+        "rogue_passive_2": {
+          "name": "Кошачья грация",
+          "level": 20,
+          "description": "+20% к уклонению, когда здоровье ниже 30%."
+        }
+      },
+      "playstyle": "Разбойник — мастер убийств из тени. Нужно правильно использовать скрытность, накапливать критический урон и уклоняться от ответных атак.",
+      "pros": ["Огромный крит", "Высокое уклонение", "Смертоносный"],
+      "cons": ["Очень хрупкий", "Зависит от скрытности", "Слаб в открытом бою"],
+      "equipment": {
+        "weapon": "🗡️ Кинжалы",
+        "armor": "👕 Кожаная броня",
+        "preferred_stats": ["ловкость", "крит", "уклонение"]
+      },
+      "image": "class_rogue.jpg",
+      "icon_image": "icon_rogue.jpg"
+    },
+    
+    "druid": {
+      "id": "druid",
+      "name": "🌿 ДРУИД",
+      "description": "Хранитель леса, повелевающий силами природы. Может лечить, превращаться в зверей и призывать союзников из мира животных. Связан с жизненной силой всего живого.",
+      "role": "healer_summoner",
+      "icon": "🌿",
+      "color": "green",
+      "difficulty": "⭐⭐⭐",
+      "base_stats": {
+        "health": 110,
+        "damage": 7,
+        "defense": 6,
+        "magic_damage": 12,
+        "mana": 100,
+        "mana_regen": 4,
+        "heal_power": 15
+      },
+      "per_level": {
+        "health": 11,
+        "damage": 0.8,
+        "defense": 0.6,
+        "magic_damage": 1.5,
+        "mana": 10,
+        "mana_regen": 0.4,
+        "heal_power": 2
+      },
+      "stats_at_level_30": {
+        "health": 429,
+        "damage": 30.2,
+        "defense": 23.4,
+        "magic_damage": 55.5,
+        "mana": 390,
+        "mana_regen": 15.6,
+        "heal_power": 73
+      },
+      "abilities": [
+        {
+          "id": "druid_1",
+          "name": "🌱 Шипы",
+          "level": 1,
+          "description": "Атака шипами, наносящая 100% магического урона и оставляющая кровотечение (10 урона за ход).",
+          "cooldown": 2,
+          "mana_cost": 10,
+          "damage_multiplier": 1.0,
+          "bleed": 10,
+          "bleed_duration": 3,
+          "icon": "🌱"
+        },
+        {
+          "id": "druid_2",
+          "name": "💚 Исцеляющий цветок",
+          "level": 5,
+          "description": "Восстанавливает 50 здоровья цели и 25 всем остальным.",
+          "cooldown": 3,
+          "mana_cost": 25,
+          "heal": 50,
+          "aoe_heal": 25,
+          "icon": "💚"
+        },
+        {
+          "id": "druid_3",
+          "name": "🐻 Превращение в медведя",
+          "level": 10,
+          "description": "На 3 хода превращается в медведя: +100% здоровья, +50% урона, новые способности.",
+          "cooldown": 6,
+          "mana_cost": 40,
+          "duration": 3,
+          "transform": "bear",
+          "stats_multiplier": {"health": 2.0, "damage": 1.5},
+          "icon": "🐻"
+        },
+        {
+          "id": "druid_4",
+          "name": "🐺 Призыв волка",
+          "level": 15,
+          "description": "Призывает волка с 70% силы друида на 4 хода.",
+          "cooldown": 4,
+          "mana_cost": 35,
+          "summon": "wolf",
+          "summon_power": 0.7,
+          "duration": 4,
+          "icon": "🐺"
+        },
+        {
+          "id": "druid_5",
+          "name": "🌿 Благословение леса",
+          "level": 20,
+          "description": "На 3 хода все союзники восстанавливают 20 здоровья за ход.",
+          "cooldown": 4,
+          "mana_cost": 40,
+          "duration": 3,
+          "aura": {"heal_per_turn": 20},
+          "aoe": true,
+          "icon": "🌿"
+        },
+        {
+          "id": "druid_6",
+          "name": "🌀 Корни природы",
+          "level": 25,
+          "description": "Опутывает всех врагов корнями, обездвиживая на 1 ход.",
+          "cooldown": 4,
+          "mana_cost": 50,
+          "duration": 1,
+          "effect": {"root": true},
+          "aoe": true,
+          "icon": "🌀"
+        },
+        {
+          "id": "druid_7",
+          "name": "🦅 Дух леса",
+          "level": 30,
+          "description": "Призывает могучего духа леса, который лечит союзников и атакует врагов (4 хода).",
+          "cooldown": 10,
+          "mana_cost": 100,
+          "summon": "forest_spirit",
+          "summon_power": 1.0,
+          "duration": 4,
+          "icon": "🦅"
+        }
+      ],
+      "mastery": {
+        "id": "druid_mastery",
+        "name": "Связь с природой",
+        "description": "Все призывы живут на 1 ход дольше и имеют +20% силы.",
+        "effect": {"summon_duration_bonus": 1, "summon_power_bonus": 0.2}
+      },
+      "passives": {
+        "druid_passive_1": {
+          "name": "Зелёный покров",
+          "level": 10,
+          "description": "+20% к эффективности лечения в лесу."
+        },
+        "druid_passive_2": {
+          "name": "Голос природы",
+          "level": 20,
+          "description": "10% шанс призвать союзника автоматически при получении урона."
+        }
+      },
+      "playstyle": "Друид — универсальный класс поддержки. Можно лечить союзников, призывать помощников или превращаться в зверя для ближнего боя.",
+      "pros": ["Отличное лечение", "Призывы", "Гибкость"],
+      "cons": ["Средний урон", "Сложен в управлении", "Зависит от маны"],
+      "equipment": {
+        "weapon": "🌿 Посохи",
+        "armor": "🧥 Кожаная броня",
+        "preferred_stats": ["интеллект", "лечение", "мана"]
+      },
+      "image": "class_druid.jpg",
+      "icon_image": "icon_druid.jpg"
+    },
+    
+    "warlock": {
+      "id": "warlock",
+      "name": "💀 ЧЕРНОКНИЖНИК",
+      "description": "Тёмный маг, заключивший сделку с демонами. Использует тёмную магию, проклятия и призывает демонов. Может жертвовать здоровьем ради могущества.",
+      "role": "dark_mage_summoner",
+      "icon": "💀",
+      "color": "dark_purple",
+      "difficulty": "⭐⭐⭐",
+      "base_stats": {
+        "health": 100,
+        "damage": 5,
+        "defense": 5,
+        "magic_damage": 18,
+        "mana": 110,
+        "mana_regen": 4,
+        "life_steal": 5,
+        "curse_power": 10
+      },
+      "per_level": {
+        "health": 10,
+        "damage": 0.5,
+        "defense": 0.5,
+        "magic_damage": 2.2,
+        "mana": 11,
+        "mana_regen": 0.4,
+        "life_steal": 0.3,
+        "curse_power": 1
+      },
+      "stats_at_level_30": {
+        "health": 390,
+        "damage": 19.5,
+        "defense": 19.5,
+        "magic_damage": 81.8,
+        "mana": 429,
+        "mana_regen": 15.6,
+        "life_steal": 13.7,
+        "curse_power": 39
+      },
+      "abilities": [
+        {
+          "id": "warlock_1",
+          "name": "💀 Теневая стрела",
+          "level": 1,
+          "description": "Сгусток тьмы с 120% магического урона и 10% вампиризма.",
+          "cooldown": 2,
+          "mana_cost": 12,
+          "damage_multiplier": 1.2,
+          "life_steal": 0.1,
+          "icon": "💀"
+        },
+        {
+          "id": "warlock_2",
+          "name": "😈 Проклятие слабости",
+          "level": 5,
+          "description": "На 3 хода цель получает на 25% больше урона и наносит на 20% меньше.",
+          "cooldown": 3,
+          "mana_cost": 20,
+          "duration": 3,
+          "debuff": {"damage_taken": 1.25, "damage_dealt": 0.8},
+          "icon": "😈"
+        },
+        {
+          "id": "warlock_3",
+          "name": "🔥 Жертвенный огонь",
+          "level": 10,
+          "description": "Жертвует 10% здоровья, нанося 200% магического урона цели.",
+          "cooldown": 3,
+          "mana_cost": 15,
+          "health_cost_percent": 10,
+          "damage_multiplier": 2.0,
+          "icon": "🔥"
+        },
+        {
+          "id": "warlock_4",
+          "name": "👹 Призыв беса",
+          "level": 15,
+          "description": "Призывает беса с 60% силы чернокнижника на 3 хода.",
+          "cooldown": 4,
+          "mana_cost": 40,
+          "summon": "imp",
+          "summon_power": 0.6,
+          "duration": 3,
+          "icon": "👹"
+        },
+        {
+          "id": "warlock_5",
+          "name": "💀 Кольцо тьмы",
+          "level": 20,
+          "description": "Взрыв тьмы по всем врагам с 100% урона и 30% шансом страха.",
+          "cooldown": 4,
+          "mana_cost": 45,
+          "damage_multiplier": 1.0,
+          "aoe": true,
+          "effect": {"fear_chance": 30},
+          "icon": "💀"
+        },
+        {
+          "id": "warlock_6",
+          "name": "🩸 Кровавая жатва",
+          "level": 25,
+          "description": "Все проклятия на врагах взрываются, нанося урон равный 200% от нанесённого за время действия.",
+          "cooldown": 5,
+          "mana_cost": 60,
+          "detonate_curse": true,
+          "detonate_multiplier": 2.0,
+          "icon": "🩸"
+        },
+        {
+          "id": "warlock_7",
+          "name": "👑 Призыв демона",
+          "level": 30,
+          "description": "Призывает могучего демона с 100% силы на 4 хода.",
+          "cooldown": 10,
+          "mana_cost": 120,
+          "health_cost_percent": 20,
+          "summon": "greater_demon",
+          "summon_power": 1.0,
+          "duration": 4,
+          "icon": "👑"
+        }
+      ],
+      "mastery": {
+        "id": "warlock_mastery",
+        "name": "Тёмный договор",
+        "description": "Заклинания, требующие здоровья, наносят на 30% больше урона.",
+        "effect": {"health_cost_damage_bonus": 0.3}
+      },
+      "passives": {
+        "warlock_passive_1": {
+          "name": "Демоническая кровь",
+          "level": 10,
+          "description": "+15% к вампиризму."
+        },
+        "warlock_passive_2": {
+          "name": "Усиление проклятий",
+          "level": 20,
+          "description": "Проклятия длятся на 1 ход дольше."
+        }
+      },
+      "playstyle": "Чернокнижник — опасный маг, играющий на грани смерти. Нужно грамотно использовать проклятия, жертвовать здоровьем ради могущества и вовремя призывать демонов.",
+      "pros": ["Огромный урон", "Проклятия", "Призывы демонов"],
+      "cons": ["Рискованный", "Тратит здоровье", "Сложен в освоении"],
+      "equipment": {
+        "weapon": "💀 Тёмные посохи",
+        "armor": "👘 Тёмные мантии",
+        "preferred_stats": ["интеллект", "вампиризм", "проклятия"]
+      },
+      "image": "class_warlock.jpg",
+      "icon_image": "icon_warlock.jpg"
+    },
+    
+    "shaman": {
+      "id": "shaman",
+      "name": "🥁 ШАМАН",
+      "description": "Посредник между мирами, использующий силу духов предков и стихий. Может насылать проклятия, усиливать союзников и призывать духов. Его тотемы меняют ход битвы.",
+      "role": "support_buffer",
+      "icon": "🥁",
+      "color": "teal",
+      "difficulty": "⭐⭐",
+      "base_stats": {
+        "health": 120,
+        "damage": 8,
+        "defense": 8,
+        "magic_damage": 12,
+        "mana": 90,
+        "mana_regen": 3.5,
+        "totem_power": 10,
+        "spirit_power": 8
+      },
+      "per_level": {
+        "health": 12,
+        "damage": 0.8,
+        "defense": 0.8,
+        "magic_damage": 1.5,
+        "mana": 9,
+        "mana_regen": 0.35,
+        "totem_power": 1,
+        "spirit_power": 0.8
+      },
+      "stats_at_level_30": {
+        "health": 468,
+        "damage": 31.2,
+        "defense": 31.2,
+        "magic_damage": 55.5,
+        "mana": 351,
+        "mana_regen": 13.65,
+        "totem_power": 39,
+        "spirit_power": 31.2
+      },
+      "abilities": [
+        {
+          "id": "shaman_1",
+          "name": "⚡ Удар духов",
+          "level": 1,
+          "description": "Атака духа с 100% магического урона и 20% шансом оглушить.",
+          "cooldown": 2,
+          "mana_cost": 10,
+          "damage_multiplier": 1.0,
+          "effect": {"stun_chance": 20},
+          "icon": "⚡"
+        },
+        {
+          "id": "shaman_2",
+          "name": "🪓 Тотем ярости",
+          "level": 5,
+          "description": "Ставит тотем на 3 хода, дающий +20% урона всем союзникам.",
+          "cooldown": 3,
+          "mana_cost": 25,
+          "duration": 3,
+          "totem": {"damage_buff": 0.2, "aura": true},
+          "icon": "🪓"
+        },
+        {
+          "id": "shaman_3",
+          "name": "🛡️ Тотем земли",
+          "level": 10,
+          "description": "Ставит тотем на 3 хода, дающий +30% защиты всем союзникам.",
+          "cooldown": 3,
+          "mana_cost": 25,
+          "duration": 3,
+          "totem": {"defense_buff": 0.3, "aura": true},
+          "icon": "🛡️"
+        },
+        {
+          "id": "shaman_4",
+          "name": "💧 Тотем исцеления",
+          "level": 15,
+          "description": "Ставит тотем на 3 хода, восстанавливающий 20 здоровья всем союзникам за ход.",
+          "cooldown": 4,
+          "mana_cost": 35,
+          "duration": 3,
+          "totem": {"heal_per_turn": 20, "aura": true},
+          "icon": "💧"
+        },
+        {
+          "id": "shaman_5",
+          "name": "🌀 Призыв духа предка",
+          "level": 20,
+          "description": "Призывает дух предка с 50% силы на 4 хода. Дух может лечить и атаковать.",
+          "cooldown": 5,
+          "mana_cost": 50,
+          "summon": "ancestor_spirit",
+          "summon_power": 0.5,
+          "duration": 4,
+          "icon": "🌀"
+        },
+        {
+          "id": "shaman_6",
+          "name": "🔥 Очищение",
+          "level": 25,
+          "description": "Снимает все проклятия с союзников и лечит 50 здоровья.",
+          "cooldown": 4,
+          "mana_cost": 40,
+          "cleanse": true,
+          "heal": 50,
+          "aoe": true,
+          "icon": "🔥"
+        },
+        {
+          "id": "shaman_7",
+          "name": "🌟 Танец духов",
+          "level": 30,
+          "description": "Все тотемы работают на 50% сильнее, и можно поставить один дополнительный тотем на 2 хода.",
+          "cooldown": 8,
+          "mana_cost": 80,
+          "buff": {"totem_power_multiplier": 1.5, "extra_totem": true},
+          "duration": 2,
+          "icon": "🌟"
+        }
+      ],
+      "mastery": {
+        "id": "shaman_mastery",
+        "name": "Голос предков",
+        "description": "Тотемы работают на 1 ход дольше и имеют +20% эффективности.",
+        "effect": {"totem_duration_bonus": 1, "totem_power_bonus": 0.2}
+      },
+      "passives": {
+        "shaman_passive_1": {
+          "name": "Связь с духами",
+          "level": 10,
+          "description": "10% шанс, что тотем не исчезнет после окончания действия (останется на 1 ход)."
+        },
+        "shaman_passive_2": {
+          "name": "Благословение предков",
+          "level": 20,
+          "description": "Когда тотем исчезает, даёт союзникам 10% здоровья."
+        }
+      },
+      "playstyle": "Шаман — мастер поддержки через тотемы. Нужно правильно расставлять тотемы под ситуацию, поддерживать союзников и призывать духов предков.",
+      "pros": ["Отличная поддержка", "Гибкость тотемов", "Хорошее лечение"],
+      "cons": ["Средний урон", "Зависит от позиционирования", "Тотемы можно уничтожить"],
+      "equipment": {
+        "weapon": "🥁 Ритуальные бубны",
+        "armor": "🧥 Шаманские одежды",
+        "preferred_stats": ["интеллект", "тотемы", "лечение"]
+      },
+      "image": "class_shaman.jpg",
+      "icon_image": "icon_shaman.jpg"
     }
   },
   
@@ -648,13 +1397,23 @@
       "warrior": {"damage": 5, "defense": 2, "utility": 2},
       "archer": {"damage": 4, "defense": 1, "utility": 4},
       "mage": {"damage": 5, "defense": 1, "utility": 3},
-      "guardian": {"damage": 1, "defense": 5, "utility": 3}
+      "guardian": {"damage": 1, "defense": 5, "utility": 3},
+      "paladin": {"damage": 3, "defense": 4, "utility": 4},
+      "rogue": {"damage": 5, "defense": 1, "utility": 3},
+      "druid": {"damage": 2, "defense": 2, "utility": 5},
+      "warlock": {"damage": 5, "defense": 1, "utility": 3},
+      "shaman": {"damage": 2, "defense": 2, "utility": 5}
     },
     "popularity": {
-      "warrior": 30,
-      "archer": 25,
-      "mage": 30,
-      "guardian": 15
+      "warrior": 20,
+      "archer": 15,
+      "mage": 20,
+      "guardian": 10,
+      "paladin": 10,
+      "rogue": 8,
+      "druid": 7,
+      "warlock": 5,
+      "shaman": 5
     }
   }
 }
