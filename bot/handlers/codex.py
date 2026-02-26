@@ -1,3 +1,4 @@
+# /bot/handlers/codex.py
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import os
@@ -191,7 +192,7 @@ BIOMES_INFO = {
 # ОСНОВНАЯ КОМАНДА
 # ============================================
 
-def codex_command(message, bot_instance):
+def codex_command(message, bot_instance, get_or_create_player_func=None, codex_data=None):
     """Команда /codex - энциклопедия"""
     text = "📚 *ЭНЦИКЛОПЕДИЯ DESTINY*\n\n"
     text += "Собрание всех знаний о мире игры.\n"
@@ -217,6 +218,119 @@ def codex_command(message, bot_instance):
         InlineKeyboardButton("🌈 Радуга", callback_data="codex:rainbow")
     )
     markup.add(InlineKeyboardButton("🔙 Назад", callback_data="game:back_to_start"))
+    
+    bot_instance.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
+
+def codex_search_command(message, bot_instance, get_or_create_player_func, codex_data):
+    """Команда /codex_search - поиск по энциклопедии"""
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    args = message.text.split()
+    if len(args) < 2:
+        bot_instance.send_message(
+            message.chat.id,
+            "❌ Укажи, что искать!\n"
+            "Пример: /codex_search дракон\n"
+            "Или: /codex_search меч",
+            parse_mode='Markdown'
+        )
+        return
+    
+    query = ' '.join(args[1:]).lower()
+    
+    text = f"🔍 *РЕЗУЛЬТАТЫ ПОИСКА: {query}*\n\n"
+    
+    results = []
+    
+    # Поиск в классах
+    for class_id, class_info in CLASS_INFO.items():
+        if query in class_info['name'].lower() or query in class_info['description'].lower():
+            results.append({
+                "type": "class",
+                "name": class_info['name'],
+                "info": class_info
+            })
+    
+    # Поиск в биомах
+    for biome_id, biome in BIOMES_INFO.items():
+        if query in biome['name'].lower():
+            results.append({
+                "type": "biome",
+                "name": biome['name'],
+                "info": biome
+            })
+        for mob in biome['mobs']:
+            if query in mob.lower():
+                results.append({
+                    "type": "mob",
+                    "name": mob,
+                    "location": biome['name']
+                })
+    
+    if not results:
+        text += "Ничего не найдено. Попробуй другое слово."
+    else:
+        text += f"Найдено {len(results)} результатов:\n\n"
+        for i, res in enumerate(results[:10], 1):
+            if res['type'] == 'class':
+                text += f"{i}. 🎭 *{res['name']}* (Класс)\n"
+            elif res['type'] == 'biome':
+                text += f"{i}. 🗺️ *{res['name']}* (Локация)\n"
+            elif res['type'] == 'mob':
+                text += f"{i}. 👾 *{res['name']}* (Монстр в {res['location']})\n"
+    
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("🔙 Назад", callback_data="codex:menu"))
+    
+    bot_instance.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
+
+def codex_view_command(message, bot_instance, get_or_create_player_func, codex_data):
+    """Команда /codex_view - просмотр раздела"""
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    args = message.text.split()
+    if len(args) < 2:
+        bot_instance.send_message(
+            message.chat.id,
+            "❌ Укажи раздел!\n"
+            "Пример: /codex_view bestiary\n"
+            "Доступные разделы: bestiary, items, locations, classes, pets, crafting, achievements, rainbow",
+            parse_mode='Markdown'
+        )
+        return
+    
+    section = args[1].lower()
+    
+    if section == "bestiary":
+        text = "👾 *БЕСТИАРИЙ*\n\n"
+        text += "Информация о всех монстрах и боссах мира Destiny.\n\n"
+        for biome_id, biome in BIOMES_INFO.items():
+            text += f"• *{biome['name']}*\n"
+            for mob in biome['mobs'][:3]:
+                text += f"  └ {mob}\n"
+            text += f"  └ 👑 {biome['boss']}\n\n"
+    elif section == "classes":
+        text = "🎭 *КЛАССЫ ПЕРСОНАЖЕЙ*\n\n"
+        for class_id, class_info in CLASS_INFO.items():
+            text += f"• *{class_info['name']}* {class_info['difficulty']}\n"
+            text += f"  {class_info['description'][:50]}...\n"
+    elif section == "locations":
+        text = "🗺️ *ЛОКАЦИИ*\n\n"
+        for biome_id, biome in BIOMES_INFO.items():
+            text += f"• *{biome['name']}* (ур. {biome['level']})\n"
+    elif section == "rainbow":
+        text = "🌈 *РАДУЖНАЯ СИСТЕМА*\n\n"
+        text += "Радужные осколки и камни — легендарные ресурсы.\n\n"
+        text += "• 🌈 Осколки: 3-й и 6-й день входа, боссы (10%)\n"
+        text += "• 💎 Камни: крафт из 9 осколков, премиум\n"
+    else:
+        text = f"📚 *РАЗДЕЛ {section.upper()}*\n\n"
+        text += "Информация временно недоступна."
+    
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("🔙 Назад", callback_data="codex:menu"))
     
     bot_instance.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
 
@@ -672,7 +786,17 @@ def handle_callback(call, bot_instance, codex_data):
     # Заглушки для остальных разделов
     elif data in ["items", "crafting", "achievements"]:
         bot_instance.answer_callback_query(call.id, "⏳ Раздел в разработке")
-        # Здесь можно добавить аналогичную структуру
     
     else:
         bot_instance.answer_callback_query(call.id, "⏳ Эта функция в разработке")
+
+# ============================================
+# ЭКСПОРТ
+# ============================================
+
+__all__ = [
+    'codex_command',
+    'codex_search_command',
+    'codex_view_command',
+    'handle_callback'
+]
