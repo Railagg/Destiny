@@ -1,3 +1,4 @@
+# /bot/handlers/events.py
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import os
@@ -519,3 +520,15 @@ def handle_callback(call, bot_instance, events_data):
     
     else:
         bot_instance.answer_callback_query(call.id, "⏳ Эта функция в разработке")
+
+# ============================================
+# ЭКСПОРТ
+# ============================================
+
+__all__ = [
+    'events_command',
+    'handle_callback',
+    'get_active_events',
+    'get_upcoming_events',
+    'get_current_season'
+]
