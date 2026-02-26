@@ -145,7 +145,8 @@ from handlers import (
     quests,
     combat,
     craft,
-    house
+    house,
+    inventory  # ✅ Добавил отдельный хендлер для инвентаря
 )
 
 # ============================================
@@ -264,13 +265,45 @@ def get_daily_reward(streak):
     rewards = {
         1: {"gold": 100, "dstn": 5, "items": ["health_potion"]},
         2: {"gold": 200, "dstn": 10, "items": ["mana_potion"]},
-        3: {"gold": 300, "dstn": 15, "items": ["teleport_scroll"]},
-        4: {"gold": 400, "dstn": 20, "items": ["rainbow_shard"]},
+        3: {
+            "gold": 300, 
+            "dstn": 15, 
+            "items": ["teleport_scroll"],
+            "rainbow_shard": 1  # ✅ Осколок на 3-й день
+        },
+        4: {"gold": 400, "dstn": 20, "items": ["epic_chest"]},
         5: {"gold": 500, "dstn": 25, "items": ["legendary_chest"]},
-        6: {"gold": 600, "dstn": 30, "items": ["epic_chest"]},
-        7: {"gold": 1000, "dstn": 50, "items": ["mythril_ingot", 3]}
+        6: {
+            "gold": 600, 
+            "dstn": 30, 
+            "items": ["mythril_ingot", 2],
+            "rainbow_shard": 1  # ✅ Осколок на 6-й день
+        },
+        7: {"gold": 1000, "dstn": 50, "items": ["mythril_ingot", 5, "legendary_pet_egg"]}
     }
     return rewards.get(streak, rewards[1])
+
+def can_show_inventory(location_id):
+    """Проверить, можно ли показать инвентарь в текущей локации"""
+    if not locations_data or "locations" not in locations_data:
+        return False
+    
+    location = locations_data["locations"].get(location_id, {})
+    location_name = location.get("name", "").lower()
+    
+    # Инвентарь показываем только на привалах и у торговцев
+    rest_keywords = ["привал", "стоянка", "лагерь", "отдых", "костёр", "приют"]
+    shop_keywords = ["торговец", "лавка", "магазин", "кузница", "таверна"]
+    
+    show_inventory = (
+        any(keyword in location_name for keyword in rest_keywords) or
+        any(keyword in location_name for keyword in shop_keywords) or
+        location_id.startswith("house_") or  # В доме всегда можно
+        location_id == "bridge_before_dragon" or  # У дракона особое место
+        "rest_spot" in location  # Если есть место для отдыха
+    )
+    
+    return show_inventory
 
 # ============================================
 # БАЗОВЫЕ КОМАНДЫ
@@ -300,7 +333,6 @@ def help_command(message):
         text += "/start - информация о боте\n"
         text += "/profile - профиль\n"
         text += "/status - статус\n"
-        text += "/inventory - инвентарь\n"
         text += "/location - локация\n"
         text += "/map - карта мира\n"
         text += "/class - выбор класса\n"
@@ -312,7 +344,6 @@ def help_command(message):
         text += "/exchange - обмен\n"
         text += "/rainbow - радужные камни\n"
         text += "/premium - премиум\n"
-        text += "/nft - NFT\n"
         text += "/guild - гильдия\n"
         text += "/pvp - арена\n"
         text += "/codex - энциклопедия\n"
@@ -345,7 +376,18 @@ def status_command(message):
 @bot.message_handler(commands=['inventory'])
 def inventory_command(message):
     try:
-        game.inventory_command(message, bot, get_or_create_player, items_data)
+        user, character = get_or_create_player(message.from_user.id)
+        location_id = character.current_location or "start"
+        
+        # Проверяем, можно ли показывать инвентарь
+        if can_show_inventory(location_id):
+            inventory.show_inventory_command(message, bot, get_or_create_player, items_data)
+        else:
+            bot.send_message(
+                message.chat.id,
+                "🎒 Инвентарь можно открыть только на привалах или у торговцев.\n"
+                "Найди место для отдыха!"
+            )
     except Exception as e:
         logging.error(f"Ошибка в /inventory: {e}")
         bot.send_message(message.chat.id, "❌ Команда /inventory временно недоступна")
@@ -375,6 +417,12 @@ def map_command(message):
         text += "⛰️ Горы\n"
         text += "⛏️ Шахта\n"
         text += "🏛️ Руины\n"
+        text += "🏜️ Пустыня\n"
+        text += "🌿 Болото\n"
+        text += "❄️ Ледяные равнины\n"
+        text += "🌋 Вулкан\n"
+        text += "🏖️ Вулканический пляж\n"
+        text += "🧊 Замёрзший океан"
         bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
 @bot.message_handler(commands=['class'])
@@ -478,14 +526,6 @@ def premium_command(message):
         logging.error(f"Ошибка в /premium: {e}")
         bot.send_message(message.chat.id, "❌ Команда /premium временно недоступна")
 
-@bot.message_handler(commands=['nft'])
-def nft_command(message):
-    try:
-        nft.nft_command(message, bot, get_or_create_player, nft_data)
-    except Exception as e:
-        logging.error(f"Ошибка в /nft: {e}")
-        bot.send_message(message.chat.id, "❌ Команда /nft временно недоступна")
-
 @bot.message_handler(commands=['guild'])
 def guild_command(message):
     try:
@@ -560,7 +600,19 @@ def handle_callback(call):
                 elif action == "status":
                     status_command(call.message)
                 elif action == "inventory":
-                    inventory_command(call.message)
+                    # Проверяем перед показом инвентаря
+                    user, character = get_or_create_player(call.from_user.id)
+                    location_id = character.current_location or "start"
+                    
+                    if can_show_inventory(location_id):
+                        inventory.show_inventory_command(
+                            call.message, bot, get_or_create_player, items_data
+                        )
+                    else:
+                        bot.answer_callback_query(
+                            call.id, 
+                            "🎒 Инвентарь можно открыть только на привалах!"
+                        )
                 elif action == "map":
                     map_command(call.message)
                 elif action == "location":
@@ -575,23 +627,39 @@ def handle_callback(call):
                         return
                     
                     character.player_class = class_name
-                    if class_name == "warrior":
-                        character.strength = 3
-                        character.base_damage += 2
-                    elif class_name == "archer":
-                        character.dexterity = 3
-                        character.dodge_chance += 5
-                    elif class_name == "mage":
-                        character.intelligence = 3
-                        character.max_magic += 30
-                        character.magic += 30
-                        character.current_mana += 30
-                    elif class_name == "guardian":
-                        character.vitality = 3
-                        character.max_health += 30
-                        character.health += 30
-                        character.current_health += 30
-                        character.defense_bonus += 5
+                    
+                    # Балансировка классов
+                    class_bonuses = {
+                        "warrior": {"strength": 3, "base_damage": 2},
+                        "archer": {"dexterity": 3, "dodge_chance": 5},
+                        "mage": {"intelligence": 3, "max_magic": 30},
+                        "guardian": {"vitality": 3, "max_health": 30, "defense_bonus": 5},
+                        "paladin": {
+                            "strength": 2, "vitality": 2, 
+                            "max_health": 20, "base_damage": 1
+                        },
+                        "rogue": {
+                            "dexterity": 3, "dodge_chance": 8, 
+                            "crit_chance": 5, "base_damage": 1
+                        },
+                        "druid": {
+                            "intelligence": 2, "vitality": 1,
+                            "max_magic": 20, "max_health": 10
+                        },
+                        "warlock": {
+                            "intelligence": 3, "base_magic_damage": 2,
+                            "max_magic": 25
+                        },
+                        "shaman": {
+                            "intelligence": 2, "vitality": 1,
+                            "max_magic": 20, "defense_bonus": 2
+                        }
+                    }
+                    
+                    bonuses = class_bonuses.get(class_name, {})
+                    for stat, value in bonuses.items():
+                        if hasattr(character, stat):
+                            setattr(character, stat, getattr(character, stat) + value)
                     
                     save_character(character)
                     bot.answer_callback_query(call.id, f"✅ Ты стал {class_name}!")
@@ -599,6 +667,21 @@ def handle_callback(call):
                     start_command(call.message)
                 else:
                     bot.answer_callback_query(call.id, "⏳ В разработке")
+        
+        elif handler == "inventory" and hasattr(inventory, 'handle_callback'):
+            # Проверяем перед обработкой инвентаря
+            user, character = get_or_create_player(call.from_user.id)
+            location_id = character.current_location or "start"
+            
+            if can_show_inventory(location_id):
+                inventory.handle_callback(
+                    call, bot, get_or_create_player, items_data, locations_data
+                )
+            else:
+                bot.answer_callback_query(
+                    call.id, 
+                    "🎒 Инвентарь можно использовать только на привалах!"
+                )
         
         elif handler == "pets" and hasattr(pets, 'handle_callback'):
             pets.handle_callback(call, bot, get_or_create_player, pets_data)
@@ -608,8 +691,6 @@ def handle_callback(call):
             rainbow.handle_callback(call, bot, get_or_create_player, rainbow_data)
         elif handler == "premium" and hasattr(premium, 'handle_callback'):
             premium.handle_callback(call, bot, get_or_create_player, premium_data)
-        elif handler == "nft" and hasattr(nft, 'handle_callback'):
-            nft.handle_callback(call, bot, get_or_create_player, nft_data)
         elif handler == "guild" and hasattr(guild, 'handle_callback'):
             guild.handle_callback(call, bot, get_or_create_player)
         elif handler == "pvp" and hasattr(pvp, 'handle_callback'):
