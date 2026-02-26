@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Destiny - Карта мира</title>
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
     <style>
         body {
             background: #1a1a2e;
@@ -189,6 +189,9 @@
         .legend-dot.start { background: #4caf50; }
         .legend-dot.village { background: #ff9800; }
         .legend-dot.boss { background: #f44336; }
+        .legend-dot.desert { background: #ffd700; }
+        .legend-dot.ice { background: #00ffff; }
+        .legend-dot.volcanic { background: #ff4500; }
         
         /* Нижнее меню */
         .bottom-menu {
@@ -239,6 +242,28 @@
                 border-width: 2px;
             }
         }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            color: #e94560;
+            padding: 12px 24px;
+            border-radius: 30px;
+            border: 2px solid #e94560;
+            font-size: 14px;
+            z-index: 9999;
+            animation: fadeInOut 2s ease forwards;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            90% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+        }
     </style>
 </head>
 <body>
@@ -269,7 +294,7 @@
                 <!-- КАРТА С МАРКЕРОМ ИГРОКА -->
                 <div class="map-wrapper" id="mapWrapper">
                     <!-- Картинка карты -->
-                    <img src="../images/map.jpeg" class="map-image" usemap="#destiny-map" alt="Карта мира Destiny" id="mapImage">
+                    <img src="images/map.jpeg" class="map-image" usemap="#destiny-map" alt="Карта мира Destiny" id="mapImage" onload="showPlayerMarker()">
                     
                     <!-- Слой для маркера игрока -->
                     <div class="player-marker-layer" id="playerMarkerLayer">
@@ -279,80 +304,120 @@
                     <!-- Подсказка -->
                     <div class="map-instruction">👆 Нажми на значок локации</div>
                     
-                    <!-- Кликабельные области (координаты нужно будет подогнать под твою карту) -->
+                    <!-- Кликабельные области -->
                     <map name="destiny-map" id="destinyMap">
                         <!-- 🌲 Лесная опушка -->
                         <area shape="circle" coords="200,250,30" href="#" 
-                              onclick="goToLocation('start'); return false;" 
+                              onclick="goToLocation('start', this); return false;" 
                               title="🌲 Лесная опушка" data-loc="start">
                         
-                        <!-- 🏘️ Деревня (центральная площадь) -->
+                        <!-- 🏘️ Деревня -->
                         <area shape="circle" coords="350,200,35" href="#" 
-                              onclick="goToLocation('village'); return false;" 
+                              onclick="goToLocation('village', this); return false;" 
                               title="🏘️ Деревенская площадь" data-loc="village">
                         
                         <!-- 🍺 Таверна -->
                         <area shape="circle" coords="330,180,20" href="#" 
-                              onclick="goToLocation('tavern'); return false;" 
+                              onclick="goToLocation('tavern', this); return false;" 
                               title="🍺 Таверна" data-loc="tavern">
                         
                         <!-- ⚒️ Кузница -->
                         <area shape="circle" coords="370,190,20" href="#" 
-                              onclick="goToLocation('crafting_bench'); return false;" 
+                              onclick="goToLocation('crafting_bench', this); return false;" 
                               title="⚒️ Кузница" data-loc="crafting_bench">
                         
                         <!-- 🔮 Башня мага -->
                         <area shape="circle" coords="350,160,20" href="#" 
-                              onclick="goToLocation('magic_tower'); return false;" 
+                              onclick="goToLocation('magic_tower', this); return false;" 
                               title="🔮 Башня мага" data-loc="magic_tower">
                         
                         <!-- 🏞️ Берег озера -->
                         <area shape="circle" coords="450,300,30" href="#" 
-                              onclick="goToLocation('lake_shore'); return false;" 
+                              onclick="goToLocation('lake_shore', this); return false;" 
                               title="🏞️ Берег озера" data-loc="lake_shore">
                         
                         <!-- ⛏️ Вход в шахту -->
                         <area shape="circle" coords="500,150,30" href="#" 
-                              onclick="goToLocation('mine_entrance'); return false;" 
+                              onclick="goToLocation('mine_entrance', this); return false;" 
                               title="⛏️ Вход в шахту" data-loc="mine_entrance">
+                        
+                        <!-- 🏔️ Горная вершина (новая) -->
+                        <area shape="circle" coords="450,80,20" href="#" 
+                              onclick="goToLocation('mountain_peak', this); return false;" 
+                              title="🏔️ Горная вершина" data-loc="mountain_peak">
                         
                         <!-- 🌋 Вулкан -->
                         <area shape="circle" coords="600,100,30" href="#" 
-                              onclick="goToLocation('volcano_crater'); return false;" 
+                              onclick="goToLocation('volcano_crater', this); return false;" 
                               title="🌋 Жерло вулкана" data-loc="volcano_crater">
+                        
+                        <!-- 🏖️ Вулканический пляж (новая) -->
+                        <area shape="circle" coords="620,180,25" href="#" 
+                              onclick="goToLocation('volcanic_beach', this); return false;" 
+                              title="🏖️ Вулканический пляж" data-loc="volcanic_beach">
                         
                         <!-- 🏜️ Пустыня -->
                         <area shape="circle" coords="650,300,35" href="#" 
-                              onclick="goToLocation('desert'); return false;" 
+                              onclick="goToLocation('desert', this); return false;" 
                               title="🏜️ Пустыня" data-loc="desert">
+                        
+                        <!-- 🏝️ Оазис (новая) -->
+                        <area shape="circle" coords="670,280,20" href="#" 
+                              onclick="goToLocation('desert_oasis', this); return false;" 
+                              title="🏝️ Оазис" data-loc="desert_oasis">
                         
                         <!-- 🌿 Болото -->
                         <area shape="circle" coords="500,400,30" href="#" 
-                              onclick="goToLocation('swamp'); return false;" 
+                              onclick="goToLocation('swamp', this); return false;" 
                               title="🌿 Болото" data-loc="swamp">
+                        
+                        <!-- 🏚️ Хижина ведьмы (новая) -->
+                        <area shape="circle" coords="520,420,18" href="#" 
+                              onclick="goToLocation('witch_hut', this); return false;" 
+                              title="🏚️ Хижина ведьмы" data-loc="witch_hut">
                         
                         <!-- ❄️ Ледяные равнины -->
                         <area shape="circle" coords="300,450,30" href="#" 
-                              onclick="goToLocation('ice_plains'); return false;" 
+                              onclick="goToLocation('ice_plains', this); return false;" 
                               title="❄️ Ледяные равнины" data-loc="ice_plains">
                         
-                        <!-- 🏝️ Острова -->
-                        <area shape="circle" coords="150,80,25" href="#" 
-                              onclick="goToLocation('volcanic_island'); return false;" 
-                              title="🌋 Огненный остров" data-loc="volcanic_island">
+                        <!-- 🧊 Ледяная пещера (новая) -->
+                        <area shape="circle" coords="320,470,20" href="#" 
+                              onclick="goToLocation('ice_cave', this); return false;" 
+                              title="🧊 Ледяная пещера" data-loc="ice_cave">
                         
-                        <area shape="circle" coords="180,120,25" href="#" 
-                              onclick="goToLocation('crystal_island'); return false;" 
-                              title="💎 Кристальный остров" data-loc="crystal_island">
-                        
-                        <area shape="circle" coords="130,140,25" href="#" 
-                              onclick="goToLocation('dragon_island'); return false;" 
-                              title="🐉 Остров драконов" data-loc="dragon_island">
+                        <!-- 🧊 Замёрзший океан (новая) -->
+                        <area shape="circle" coords="250,500,25" href="#" 
+                              onclick="goToLocation('frozen_ocean', this); return false;" 
+                              title="🧊 Замёрзший океан" data-loc="frozen_ocean">
                         
                         <!-- 🏛️ Древние руины -->
                         <area shape="circle" coords="550,200,25" href="#" 
-                              onclick="goToLocation('ancient_ruins'); return false;" 
+                              onclick="goToLocation('ancient_ruins', this); return false;" 
                               title="🏛️ Древние руины" data-loc="ancient_ruins">
+                        
+                        <!-- 🌉 Мост перед драконом (новая) -->
+                        <area shape="circle" coords="550,220,15" href="#" 
+                              onclick="goToLocation('bridge_before_dragon', this); return false;" 
+                              title="🌉 Мост перед драконом" data-loc="bridge_before_dragon">
+                        
+                        <!-- 🐉 Логово дракона (новая) -->
+                        <area shape="circle" coords="570,240,20" href="#" 
+                              onclick="goToLocation('dragon_lair', this); return false;" 
+                              title="🐉 Логово дракона" data-loc="dragon_lair">
+                        
+                        <!-- 🏝️ Острова -->
+                        <area shape="circle" coords="150,80,25" href="#" 
+                              onclick="goToLocation('volcanic_island', this); return false;" 
+                              title="🌋 Огненный остров" data-loc="volcanic_island">
+                        
+                        <area shape="circle" coords="180,120,25" href="#" 
+                              onclick="goToLocation('crystal_island', this); return false;" 
+                              title="💎 Кристальный остров" data-loc="crystal_island">
+                        
+                        <area shape="circle" coords="130,140,25" href="#" 
+                              onclick="goToLocation('dragon_island', this); return false;" 
+                              title="🐉 Остров драконов" data-loc="dragon_island">
                     </map>
                 </div>
                 
@@ -364,15 +429,27 @@
                     </div>
                     <div class="legend-item">
                         <div class="legend-dot start"></div>
-                        <span>Лес</span>
+                        <span>🌲 Лес</span>
                     </div>
                     <div class="legend-item">
                         <div class="legend-dot village"></div>
-                        <span>Деревня</span>
+                        <span>🏘️ Деревня</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot desert"></div>
+                        <span>🏜️ Пустыня</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot ice"></div>
+                        <span>❄️ Лёд</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot volcanic"></div>
+                        <span>🌋 Вулкан</span>
                     </div>
                     <div class="legend-item">
                         <div class="legend-dot boss"></div>
-                        <span>Босс</span>
+                        <span>👑 Босс</span>
                     </div>
                 </div>
             </div>
@@ -404,58 +481,129 @@
     </div>
 
     <script>
-        // Координаты всех локаций (подогнать под твою карту!)
+        // Координаты всех локаций
         const LOCATION_COORDS = {
-            'start': { x: 200, y: 250 },        // Лесная опушка
-            'village': { x: 350, y: 200 },       // Деревня
-            'tavern': { x: 330, y: 180 },        // Таверна
-            'crafting_bench': { x: 370, y: 190 }, // Кузница
-            'magic_tower': { x: 350, y: 160 },    // Башня мага
-            'lake_shore': { x: 450, y: 300 },     // Озеро
-            'mine_entrance': { x: 500, y: 150 },  // Шахта
-            'volcano_crater': { x: 600, y: 100 }, // Вулкан
-            'desert': { x: 650, y: 300 },         // Пустыня
-            'swamp': { x: 500, y: 400 },          // Болото
-            'ice_plains': { x: 300, y: 450 },     // Ледяные равнины
-            'ancient_ruins': { x: 550, y: 200 },  // Древние руины
-            'volcanic_island': { x: 150, y: 80 }, // Огненный остров
-            'crystal_island': { x: 180, y: 120 }, // Кристальный остров
-            'dragon_island': { x: 130, y: 140 }   // Остров драконов
+            'start': { x: 200, y: 250 },
+            'village': { x: 350, y: 200 },
+            'tavern': { x: 330, y: 180 },
+            'crafting_bench': { x: 370, y: 190 },
+            'magic_tower': { x: 350, y: 160 },
+            'lake_shore': { x: 450, y: 300 },
+            'mine_entrance': { x: 500, y: 150 },
+            'mountain_peak': { x: 450, y: 80 },
+            'volcano_crater': { x: 600, y: 100 },
+            'volcanic_beach': { x: 620, y: 180 },
+            'desert': { x: 650, y: 300 },
+            'desert_oasis': { x: 670, y: 280 },
+            'swamp': { x: 500, y: 400 },
+            'witch_hut': { x: 520, y: 420 },
+            'ice_plains': { x: 300, y: 450 },
+            'ice_cave': { x: 320, y: 470 },
+            'frozen_ocean': { x: 250, y: 500 },
+            'ancient_ruins': { x: 550, y: 200 },
+            'bridge_before_dragon': { x: 550, y: 220 },
+            'dragon_lair': { x: 570, y: 240 },
+            'volcanic_island': { x: 150, y: 80 },
+            'crystal_island': { x: 180, y: 120 },
+            'dragon_island': { x: 130, y: 140 }
+        };
+        
+        // Требования по уровню
+        const LEVEL_REQS = {
+            'volcanic_island': 55,
+            'crystal_island': 55,
+            'dragon_island': 60,
+            'frozen_ocean': 40,
+            'ice_cave': 42,
+            'desert': 30,
+            'swamp': 35,
+            'ice_plains': 40,
+            'volcano_crater': 45,
+            'volcanic_beach': 20,
+            'bridge_before_dragon': 50,
+            'dragon_lair': 50
         };
         
         // Получаем данные игрока
         function getPlayerData() {
-            return window.opener?.playerData || 
-                   window.parent?.playerData || 
-                   window.playerData;
+            try {
+                if (window.opener && window.opener.playerData) {
+                    return window.opener.playerData;
+                }
+                if (window.parent && window.parent.playerData) {
+                    return window.parent.playerData;
+                }
+                // Попытка получить из localStorage
+                const saved = localStorage.getItem('playerData');
+                if (saved) {
+                    return JSON.parse(saved);
+                }
+            } catch(e) {
+                console.log('Ошибка получения данных:', e);
+            }
+            return { level: 1, location: 'start', rainbow_shards: 0, rainbow_stones: 0 };
+        }
+        
+        // Показать уведомление
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 2000);
         }
         
         // Переход в локацию
-        function goToLocation(locationId) {
+        function goToLocation(locationId, element) {
             console.log('🗺️ Переход в локацию:', locationId);
             
             const playerData = getPlayerData();
+            const level = playerData?.level || 1;
             
-            // Проверяем, доступна ли локация (для островов)
-            if (locationId.includes('island') && playerData?.level < 50) {
-                alert('⛔ Острова доступны с 50 уровня!');
+            // Проверка уровня
+            const requiredLevel = LEVEL_REQS[locationId];
+            if (requiredLevel && level < requiredLevel) {
+                showToast(`⛔ Требуется уровень ${requiredLevel}!`);
                 return;
             }
             
-            // Перемещаем игрока
+            // Проверка ресурсов для островов
+            if (locationId === 'volcanic_island' && (playerData?.rainbow_shards || 0) < 3) {
+                showToast('⛔ Нужно 3 радужных осколка!');
+                return;
+            }
+            
+            if (locationId === 'crystal_island' && (playerData?.rainbow_stones || 0) < 1) {
+                showToast('⛔ Нужен 1 радужный камень!');
+                return;
+            }
+            
+            if (locationId === 'dragon_island' && (playerData?.rainbow_stones || 0) < 5) {
+                showToast('⛔ Нужно 5 радужных камней!');
+                return;
+            }
+            
+            // Отправляем данные родительскому окну
             if (window.opener) {
-                window.opener.playerData.location = locationId;
-                window.opener.loadPage('game');
+                window.opener.postMessage({
+                    type: 'locationChange',
+                    location: locationId
+                }, '*');
                 window.close();
             } else if (window.parent) {
-                window.parent.playerData.location = locationId;
-                window.parent.loadPage('game');
+                window.parent.postMessage({
+                    type: 'locationChange',
+                    location: locationId
+                }, '*');
             } else {
-                window.location.href = `../index.html?location=${locationId}`;
+                window.location.href = `index.html?location=${locationId}`;
             }
         }
         
-        // Показываем маркер текущей локации
+        // Показываем маркер игрока
         function showPlayerMarker() {
             const playerData = getPlayerData();
             if (!playerData) return;
@@ -473,22 +621,15 @@
             
             if (!marker || !mapImage) return;
             
-            // Ждём, пока загрузится картинка
-            if (!mapImage.complete) {
-                mapImage.onload = () => positionMarker(marker, coords, mapImage);
-            } else {
-                positionMarker(marker, coords, mapImage);
-            }
-        }
-        
-        // Позиционируем маркер
-        function positionMarker(marker, coords, mapImage) {
             const rect = mapImage.getBoundingClientRect();
             const wrapper = document.getElementById('mapWrapper');
             
-            if (!rect.width) return;
+            if (!rect.width) {
+                setTimeout(showPlayerMarker, 100);
+                return;
+            }
             
-            // Масштабируем координаты под реальный размер картинки
+            // Масштабируем координаты
             const scaleX = rect.width / mapImage.naturalWidth;
             const scaleY = rect.height / mapImage.naturalHeight;
             
@@ -500,44 +641,32 @@
             marker.style.top = y + 'px';
         }
         
-        // Обновляем статистику в шапке
-        function updateStatsFromParent() {
+        // Обновляем статистику
+        function updateStats() {
             const playerData = getPlayerData();
             if (!playerData) return;
             
-            const energyEl = document.getElementById('energy');
-            const healthEl = document.getElementById('health');
-            const goldEl = document.getElementById('gold');
-            const dstnEl = document.getElementById('dstn');
-            
-            if (energyEl) energyEl.textContent = `${playerData.energy || 100}/${playerData.max_energy || 100}`;
-            if (healthEl) healthEl.textContent = `${playerData.health || 100}/${playerData.max_health || 100}`;
-            if (goldEl) goldEl.textContent = playerData.gold || 0;
-            if (dstnEl) dstnEl.textContent = playerData.destiny_tokens || 0;
+            document.getElementById('energy').textContent = `${playerData.energy || 100}/${playerData.max_energy || 100}`;
+            document.getElementById('health').textContent = `${playerData.health || 100}/${playerData.max_health || 100}`;
+            document.getElementById('gold').textContent = playerData.gold || 0;
+            document.getElementById('dstn').textContent = playerData.dstn || 0;
         }
         
-        // Запуск при загрузке
+        // Инициализация
         document.addEventListener('DOMContentLoaded', () => {
-            updateStatsFromParent();
-            showPlayerMarker();
+            updateStats();
             
-            // Обновляем при изменении размера окна
-            window.addEventListener('resize', showPlayerMarker);
-        });
-        
-        // Обработка кликов по меню
-        document.querySelectorAll('.menu-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const page = btn.dataset.page;
-                if (page === 'game' && window.opener) {
-                    window.opener.loadPage('game');
-                    window.close();
-                } else if (page === 'game') {
-                    window.location.href = '../index.html';
+            // Слушаем сообщения
+            window.addEventListener('message', (event) => {
+                if (event.data.type === 'updateStats') {
+                    updateStats();
                 }
             });
         });
+        
+        // Обновляем при изменении размера
+        window.addEventListener('resize', showPlayerMarker);
     </script>
-    <script src="../script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
