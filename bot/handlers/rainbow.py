@@ -1,3 +1,4 @@
+# /bot/handlers/rainbow.py
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import os
@@ -350,7 +351,7 @@ def check_craft_completion(character):
     from main import save_character
     
     now = int(time.time())
-    if hasattr(character, 'rainbow_craft_end') and character.rainbow_craft_end <= now:
+    if hasattr(character, 'rainbow_craft_end') and character.rainbow_craft_end <= now and character.rainbow_craft_end > 0:
         # Крафт завершён
         character.rainbow_stones = (character.rainbow_stones or 0) + 1
         character.rainbow_craft_end = 0
@@ -522,6 +523,118 @@ def check_rainbow_achievements(character):
     return achievements_earned
 
 # ============================================
+# ФУНКЦИИ ДЛЯ СОВМЕСТИМОСТИ С __init__.py
+# ============================================
+
+def rainbow_status_command(message, bot_instance, get_or_create_player_func, rainbow_data):
+    """Команда /rainbow_status - показать статус радужной системы"""
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    rainbow_shards = character.rainbow_shards if hasattr(character, 'rainbow_shards') else 0
+    rainbow_stones = character.rainbow_stones if hasattr(character, 'rainbow_stones') else 0
+    
+    craft_end = character.rainbow_craft_end if hasattr(character, 'rainbow_craft_end') else 0
+    now = int(time.time())
+    crafting = craft_end > now
+    
+    text = "🌈 *СТАТУС РАДУЖНОЙ СИСТЕМЫ*\n\n"
+    text += f"📊 *Твои ресурсы:*\n"
+    text += f"• 🌈 Осколки: {rainbow_shards}\n"
+    text += f"• 💎 Радужные камни: {rainbow_stones}\n\n"
+    
+    if crafting:
+        remaining = craft_end - now
+        hours = remaining // 3600
+        minutes = (remaining % 3600) // 60
+        text += f"⏳ *Крафт в процессе:* осталось {hours}ч {minutes}м\n\n"
+    
+    text += "📅 *Получено осколков:*\n"
+    text += f"• Собрано всего: {character.rainbow_shards_collected or 0}\n"
+    text += f"• Использовано камней: {character.rainbow_stones_used or 0}\n"
+    
+    # Достижения
+    achievements = []
+    if hasattr(character, 'achievement_rainbow_100'):
+        achievements.append("Повелитель радуги")
+    if hasattr(character, 'achievement_rainbow_10'):
+        achievements.append("Хранитель радуги")
+    
+    if achievements:
+        text += f"\n🏆 *Достижения:*\n"
+        for ach in achievements:
+            text += f"• {ach}\n"
+    
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("🔙 Назад", callback_data="rainbow:menu"))
+    
+    bot_instance.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
+
+def activate_rainbow_command(message, bot_instance, get_or_create_player_func, rainbow_data):
+    """Команда /activate_rainbow - начать крафт радужного камня"""
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    rainbow_shards = character.rainbow_shards if hasattr(character, 'rainbow_shards') else 0
+    
+    if rainbow_shards < RAINBOW_INFO['shards_per_stone']:
+        bot_instance.send_message(
+            message.chat.id,
+            f"❌ Нужно {RAINBOW_INFO['shards_per_stone']} радужных осколков!\n"
+            f"У тебя: {rainbow_shards}",
+            parse_mode='Markdown'
+        )
+        return
+    
+    if character.house_level < RAINBOW_INFO['min_house_level']:
+        bot_instance.send_message(
+            message.chat.id,
+            f"❌ Нужен {RAINBOW_INFO['min_house_level']} уровень дома!",
+            parse_mode='Markdown'
+        )
+        return
+    
+    # Проверяем, не крафтит ли уже
+    now = int(time.time())
+    if hasattr(character, 'rainbow_craft_end') and character.rainbow_craft_end > now:
+        remaining = character.rainbow_craft_end - now
+        hours = remaining // 3600
+        minutes = (remaining % 3600) // 60
+        bot_instance.send_message(
+            message.chat.id,
+            f"⏳ Крафт уже запущен! Осталось {hours}ч {minutes}м",
+            parse_mode='Markdown'
+        )
+        return
+    
+    # Запускаем крафт
+    craft_end = now + RAINBOW_INFO['craft_time']
+    character.rainbow_craft_end = craft_end
+    character.rainbow_shards = rainbow_shards - RAINBOW_INFO['shards_per_stone']
+    
+    # Добавляем в историю
+    if not hasattr(character, 'rainbow_history'):
+        character.rainbow_history = []
+    character.rainbow_history.append({
+        'date': datetime.now().strftime('%Y-%m-%d %H:%M'),
+        'action': 'start_craft',
+        'amount': RAINBOW_INFO['shards_per_stone'],
+        'resource': '🌈'
+    })
+    
+    from main import save_character
+    save_character(character)
+    
+    bot_instance.send_message(
+        message.chat.id,
+        f"🔮 *КРАФТ ЗАПУЩЕН!*\n\n"
+        f"Радужный камень будет готов через {RAINBOW_INFO['craft_time'] // 3600} часов.\n"
+        f"Использовано: {RAINBOW_INFO['shards_per_stone']} 🌈\n"
+        f"Осталось осколков: {character.rainbow_shards}",
+        parse_mode='Markdown'
+    )
+
+# ============================================
 # ОБРАБОТКА КНОПОК
 # ============================================
 
@@ -569,3 +682,16 @@ def handle_callback(call, bot_instance, get_or_create_player_func, rainbow_data)
     
     else:
         bot_instance.answer_callback_query(call.id, "⏳ Эта функция в разработке")
+
+# ============================================
+# ЭКСПОРТ
+# ============================================
+
+__all__ = [
+    'rainbow_command',
+    'rainbow_status_command',
+    'activate_rainbow_command',
+    'handle_callback',
+    'add_rainbow_shard',
+    'check_rainbow_achievements'
+]
