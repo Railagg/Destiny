@@ -1,3 +1,4 @@
+# /bot/handlers/nft.py
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import os
@@ -473,7 +474,9 @@ def handle_callback(call, bot_instance, get_or_create_player_func, nft_data):
         bot_instance.answer_callback_query(call.id)
     
     else:
-        # ============================================
+        bot_instance.answer_callback_query(call.id, "⏳ Эта функция в разработке")
+
+# ============================================
 # ФУНКЦИИ ДЛЯ СОВМЕСТИМОСТИ С __init__.py
 # ============================================
 
@@ -546,4 +549,3 @@ __all__ = [
     'nft_owned_command',
     'handle_callback'
 ]
-        bot_instance.answer_callback_query(call.id, "⏳ Эта функция в разработке")
