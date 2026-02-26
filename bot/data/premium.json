@@ -57,7 +57,6 @@
           }
         ]
       },
-      
       "ton": {
         "id": "ton",
         "name": "💎 TON",
@@ -106,7 +105,6 @@
           }
         ]
       },
-      
       "dstn": {
         "id": "dstn",
         "name": "💫 DSTN",
@@ -119,7 +117,6 @@
         }
       }
     },
-    
     "plans": {
       "7days": {
         "id": "7days",
@@ -161,7 +158,6 @@
         "chat_access": false,
         "badge": "🟢"
       },
-      
       "28days": {
         "id": "28days",
         "name": "🔵 БАЗОВЫЙ",
@@ -203,7 +199,6 @@
         "chat_access": false,
         "badge": "🔵"
       },
-      
       "90days": {
         "id": "90days",
         "name": "🟣 ПРОДВИНУТЫЙ",
@@ -248,7 +243,6 @@
         "chat_access": "vip",
         "badge": "🟣"
       },
-      
       "180days": {
         "id": "180days",
         "name": "🟡 ЭЛИТНЫЙ",
@@ -297,7 +291,6 @@
         "chat_access": "elite",
         "badge": "🟡"
       },
-      
       "365days": {
         "id": "365days",
         "name": "🔴 ЛЕГЕНДАРНЫЙ",
@@ -355,7 +348,6 @@
         "badge": "🔴"
       }
     },
-    
     "first_purchase_bonus": {
       "enabled": true,
       "stars_discount": 50,
@@ -365,7 +357,6 @@
       "max_duration": 59,
       "description": "При первой покупке премиума до 59 дней: 50% скидка на Stars, 25% на TON!"
     },
-    
     "ton_discount": {
       "enabled": true,
       "discount_percent": 10,
@@ -373,7 +364,6 @@
       "stackable_with_first_purchase": false,
       "valid_for": ["all_plans", "rainbow_stone", "shop_items"]
     },
-    
     "premium_shop": {
       "categories": {
         "consumables": "🧪 Расходники",
@@ -382,7 +372,6 @@
         "cosmetics": "✨ Косметика",
         "services": "🔧 Услуги"
       },
-      
       "items": {
         "energy_refill": {
           "id": "energy_refill",
@@ -580,7 +569,6 @@
           "unlimited": true
         }
       },
-      
       "daily_deals": {
         "enabled": true,
         "refresh": "00:00 UTC",
@@ -613,7 +601,6 @@
         ]
       }
     },
-    
     "subscription_benefits": {
       "compare_table": {
         "7days": {
@@ -670,7 +657,6 @@
         }
       }
     },
-    
     "renewal_bonuses": {
       "3months": {
         "id": "3months",
@@ -730,7 +716,6 @@
         }
       }
     },
-    
     "premium_quests": {
       "weekly": {
         "enabled": true,
@@ -841,7 +826,6 @@
         "enabled": true
       }
     },
-    
     "gift_system": {
       "enabled": true,
       "can_gift_premium": true,
@@ -866,7 +850,6 @@
         }
       }
     },
-    
     "subscription_stats": {
       "total_premium_users": 0,
       "active_subscriptions": 0,
@@ -876,7 +859,6 @@
       "renewal_rate": 0,
       "avg_subscription_duration": 0
     },
-    
     "promo_codes": {
       "enabled": true,
       "max_uses_per_code": 1000,
@@ -905,3 +887,7 @@
           "expires": "2024-12-31",
           "max_uses": 5000
         }
+      ]
+    }
+  }
+}
