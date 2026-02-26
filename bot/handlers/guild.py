@@ -1,3 +1,4 @@
+# /bot/handlers/guild.py
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import os
@@ -1027,3 +1028,77 @@ def handle_callback(call, bot_instance, get_or_create_player_func):
     
     else:
         bot_instance.answer_callback_query(call.id, "⏳ Эта функция в разработке")
+
+# ============================================
+# ФУНКЦИИ ДЛЯ СОВМЕСТИМОСТИ С __init__.py
+# ============================================
+
+def guild_create_command(message, bot_instance, get_or_create_player_func):
+    """Команда /guild_create - создать гильдию"""
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    if character.guild_id:
+        bot_instance.send_message(
+            message.chat.id,
+            "❌ Ты уже состоишь в гильдии!",
+            parse_mode='Markdown'
+        )
+        return
+    
+    text = "✨ *СОЗДАНИЕ ГИЛЬДИИ*\n\n"
+    text += "Для создания гильдии нужно:\n"
+    text += "• Уровень 20+\n"
+    text += "• 10,000 золота\n"
+    text += "• 500 DSTN\n\n"
+    
+    if character.level < 20:
+        text += f"❌ Твой уровень: {character.level}/20\n"
+    else:
+        text += f"✅ Твой уровень: {character.level}/20\n"
+    
+    if character.gold < 10000:
+        text += f"❌ Золото: {character.gold}/10000\n"
+    else:
+        text += f"✅ Золото: {character.gold}/10000\n"
+    
+    if character.destiny_tokens < 500:
+        text += f"❌ DSTN: {character.destiny_tokens}/500\n"
+    else:
+        text += f"✅ DSTN: {character.destiny_tokens}/500\n"
+    
+    can_create = character.level >= 20 and character.gold >= 10000 and character.destiny_tokens >= 500
+    
+    markup = InlineKeyboardMarkup()
+    if can_create:
+        markup.add(InlineKeyboardButton("✅ Создать гильдию", callback_data="guild:create_confirm"))
+    markup.add(InlineKeyboardButton("🔙 Назад", callback_data="guild:menu"))
+    
+    bot_instance.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
+
+def guild_info_command(message, bot_instance, get_or_create_player_func):
+    """Команда /guild_info - информация о текущей гильдии"""
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    if not character.guild_id:
+        bot_instance.send_message(
+            message.chat.id,
+            "❌ Ты не состоишь в гильдии!",
+            parse_mode='Markdown'
+        )
+        return
+    
+    # Показываем информацию о гильдии
+    guild_command(message, bot_instance, get_or_create_player_func)
+
+# ============================================
+# ЭКСПОРТ
+# ============================================
+
+__all__ = [
+    'guild_command',
+    'guild_create_command',
+    'guild_info_command',
+    'handle_callback'
+]
