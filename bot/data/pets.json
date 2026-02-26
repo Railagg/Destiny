@@ -1,667 +1,1720 @@
 {
   "pets": {
+    "categories": {
+      "common": "⚪ Обычные",
+      "uncommon": "🟢 Необычные",
+      "rare": "🔵 Редкие",
+      "epic": "🟣 Эпические",
+      "legendary": "🟡 Легендарные",
+      "ancient": "🔴 Древние",
+      "mythic": "💜 Мифические"
+    },
+    
     "common": {
-      "cat": {
-        "id": "cat",
-        "name": "🐱 Кошка",
+      "forest_fox": {
+        "id": "forest_fox",
+        "name": "🦊 Лесная лиса",
         "rarity": "common",
-        "description": "Ласковая кошка, которая любит греться на солнышке. Приносит удачу.",
+        "description": "Рыжая лисица с пушистым хвостом. Помогает находить ягоды и травы.",
+        "biome": "forest",
         "level_req": 5,
-        "max_level": 10,
-        "base_stats": {
-          "luck": 2,
-          "friendship": 5
+        "find_chance": 30,
+        "image": "pet_forest_fox.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 100,
+          "max_level": 10
         },
-        "per_level": {
-          "luck": 0.5,
-          "friendship": 1
+        "base_bonus": {
+          "herb_find_chance": 5,
+          "berry_find_chance": 10
         },
-        "abilities": [
-          {
-            "name": "Мурлыканье",
-            "level": 1,
-            "effect": "+5% к восстановлению энергии во время отдыха"
-          },
-          {
-            "name": "Охотник на мышей",
-            "level": 5,
-            "effect": "Защищает запасы от грызунов (+10% сохранность еды)"
-          }
-        ],
-        "evolution": {
-          "level": 10,
-          "into": "magic_cat",
-          "cost": {"magic_crystal": 5}
+        "per_level_bonus": {
+          "herb_find_chance": 1,
+          "berry_find_chance": 2
         },
-        "found_in": ["village", "tavern"],
-        "food": ["fish", "milk", "meat"]
-      },
-      
-      "dog": {
-        "id": "dog",
-        "name": "🐕 Собака",
-        "rarity": "common",
-        "description": "Верный пёс, готовый защитить хозяина.",
-        "level_req": 5,
-        "max_level": 10,
-        "base_stats": {
-          "defense": 3,
-          "alert": 5
-        },
-        "per_level": {
-          "defense": 0.8,
-          "damage": 0.5
+        "max_level_bonus": {
+          "herb_find_chance": 15,
+          "berry_find_chance": 30
         },
         "abilities": [
           {
-            "name": "Лаять",
-            "level": 1,
-            "effect": "Предупреждает о приближении врагов (раннее обнаружение)"
-          },
-          {
-            "name": "Защитник",
-            "level": 5,
-            "effect": "В бою может принять удар на себя (10% шанс)"
-          }
-        ],
-        "evolution": {
-          "level": 10,
-          "into": "wolf_dog",
-          "cost": {"iron_ingot": 10, "wolf_fang": 5}
-        },
-        "found_in": ["village", "forest"],
-        "food": ["meat", "bone", "bread"]
-      },
-      
-      "rabbit": {
-        "id": "rabbit",
-        "name": "🐇 Кролик",
-        "rarity": "common",
-        "description": "Пушистый кролик, который любит морковку.",
-        "level_req": 3,
-        "max_level": 5,
-        "base_stats": {
-          "speed": 5,
-          "luck": 1
-        },
-        "abilities": [
-          {
-            "name": "Быстрые лапки",
-            "level": 1,
-            "effect": "+5% к скорости передвижения"
-          },
-          {
-            "name": "Садовник",
+            "name": "Чуткий нос",
             "level": 3,
-            "effect": "Помогает в огороде (+10% к урожаю)"
+            "description": "Находит скрытые травы в лесу.",
+            "effect": "reveal_hidden_herbs"
           }
         ],
-        "found_in": ["forest", "garden"],
-        "food": ["carrot", "cabbage", "herb"]
+        "food": ["berry", "meat"],
+        "evolution": {
+          "next_form": "forest_fox_elder",
+          "level": 10,
+          "item": "magic_berry"
+        }
+      },
+      
+      "mountain_goat": {
+        "id": "mountain_goat",
+        "name": "🐐 Горный козёл",
+        "rarity": "common",
+        "description": "Выносливый козёл, помогающий карабкаться по горам.",
+        "biome": "mountains",
+        "level_req": 10,
+        "find_chance": 25,
+        "image": "pet_mountain_goat.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 120,
+          "max_level": 10
+        },
+        "base_bonus": {
+          "mining_speed": 5,
+          "fall_damage_reduction": 10
+        },
+        "per_level_bonus": {
+          "mining_speed": 1,
+          "fall_damage_reduction": 2
+        },
+        "max_level_bonus": {
+          "mining_speed": 15,
+          "fall_damage_reduction": 30
+        },
+        "abilities": [
+          {
+            "name": "Крепкие копыта",
+            "level": 5,
+            "description": "Позволяет ходить по острым камням без повреждений.",
+            "effect": "ignore_terrain_damage"
+          }
+        ],
+        "food": ["hay", "apple"]
+      },
+      
+      "desert_lizard": {
+        "id": "desert_lizard",
+        "name": "🦎 Пустынная ящерица",
+        "rarity": "common",
+        "description": "Маленькая ящерица, помогающая находить воду в пустыне.",
+        "biome": "desert",
+        "level_req": 25,
+        "find_chance": 20,
+        "image": "pet_desert_lizard.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 150,
+          "max_level": 10
+        },
+        "base_bonus": {
+          "water_conservation": 10,
+          "heat_resist": 5
+        },
+        "per_level_bonus": {
+          "water_conservation": 2,
+          "heat_resist": 1
+        },
+        "max_level_bonus": {
+          "water_conservation": 30,
+          "heat_resist": 15
+        },
+        "abilities": [
+          {
+            "name": "Запасливый хвост",
+            "level": 4,
+            "description": "Носит с собой запас воды.",
+            "effect": "extra_water_flask"
+          }
+        ],
+        "food": ["insects", "cactus_fruit"]
+      },
+      
+      "swamp_frog": {
+        "id": "swamp_frog",
+        "name": "🐸 Болотная лягушка",
+        "rarity": "common",
+        "description": "Зелёная лягушка, помогающая находить грибы и защищать от ядов.",
+        "biome": "swamp",
+        "level_req": 30,
+        "find_chance": 25,
+        "image": "pet_swamp_frog.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 160,
+          "max_level": 10
+        },
+        "base_bonus": {
+          "mushroom_find_chance": 5,
+          "poison_resist": 5
+        },
+        "per_level_bonus": {
+          "mushroom_find_chance": 1,
+          "poison_resist": 1
+        },
+        "max_level_bonus": {
+          "mushroom_find_chance": 15,
+          "poison_resist": 15
+        },
+        "abilities": [
+          {
+            "name": "Длинный язык",
+            "level": 5,
+            "description": "Может доставать предметы из труднодоступных мест.",
+            "effect": "reach_hidden_items"
+          }
+        ],
+        "food": ["flies", "small_fish"]
+      },
+      
+      "ice_penguin": {
+        "id": "ice_penguin",
+        "name": "🐧 Ледяной пингвин",
+        "rarity": "common",
+        "description": "Забавный пингвин, помогающий скользить по льду.",
+        "biome": "ice_plains",
+        "level_req": 35,
+        "find_chance": 20,
+        "image": "pet_ice_penguin.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 180,
+          "max_level": 10
+        },
+        "base_bonus": {
+          "ice_speed": 10,
+          "cold_resist": 5
+        },
+        "per_level_bonus": {
+          "ice_speed": 2,
+          "cold_resist": 1
+        },
+        "max_level_bonus": {
+          "ice_speed": 30,
+          "cold_resist": 15
+        },
+        "abilities": [
+          {
+            "name": "Скольжение",
+            "level": 4,
+            "description": "Позволяет быстро перемещаться по льду.",
+            "effect": "ice_skating"
+          }
+        ],
+        "food": ["fish", "squid"]
+      },
+      
+      "beach_crab": {
+        "id": "beach_crab",
+        "name": "🦀 Пляжный краб",
+        "rarity": "common",
+        "description": "Маленький краб, помогающий находить жемчуг и ракушки.",
+        "biome": "volcanic_beach",
+        "level_req": 15,
+        "find_chance": 30,
+        "image": "pet_beach_crab.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 140,
+          "max_level": 10
+        },
+        "base_bonus": {
+          "pearl_find_chance": 2,
+          "shell_find_chance": 10
+        },
+        "per_level_bonus": {
+          "pearl_find_chance": 1,
+          "shell_find_chance": 2
+        },
+        "max_level_bonus": {
+          "pearl_find_chance": 12,
+          "shell_find_chance": 30
+        },
+        "abilities": [
+          {
+            "name": "Цепкие клешни",
+            "level": 5,
+            "description": "Может открывать запечатанные раковины.",
+            "effect": "open_closed_shells"
+          }
+        ],
+        "food": ["small_fish", "algae"]
+      },
+      
+      "frozen_seal": {
+        "id": "frozen_seal",
+        "name": "🦭 Ледяной тюлень",
+        "rarity": "common",
+        "description": "Милый тюлень, помогающий нырять в ледяную воду.",
+        "biome": "frozen_ocean",
+        "level_req": 40,
+        "find_chance": 15,
+        "image": "pet_frozen_seal.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 200,
+          "max_level": 10
+        },
+        "base_bonus": {
+          "diving_time": 10,
+          "cold_resist": 10
+        },
+        "per_level_bonus": {
+          "diving_time": 2,
+          "cold_resist": 2
+        },
+        "max_level_bonus": {
+          "diving_time": 30,
+          "cold_resist": 30
+        },
+        "abilities": [
+          {
+            "name": "Ныряльщик",
+            "level": 5,
+            "description": "Может находить предметы подо льдом.",
+            "effect": "under_ice_search"
+          }
+        ],
+        "food": ["fish", "squid"]
       }
     },
     
     "uncommon": {
-      "fox": {
-        "id": "fox",
-        "name": "🦊 Лиса",
+      "forest_wolf": {
+        "id": "forest_wolf",
+        "name": "🐺 Лесной волк",
         "rarity": "uncommon",
-        "description": "Хитрая и ловкая лиса, обожающая блестящие вещи.",
+        "description": "Молодой волк, помогающий в охоте.",
+        "biome": "forest",
         "level_req": 10,
-        "max_level": 15,
-        "base_stats": {
-          "luck": 3,
-          "stealth": 5
+        "find_chance": 15,
+        "image": "pet_forest_wolf.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 200,
+          "max_level": 15
         },
-        "per_level": {
-          "luck": 0.5,
-          "stealth": 1
+        "base_bonus": {
+          "damage": 3,
+          "hunting_speed": 5
+        },
+        "per_level_bonus": {
+          "damage": 0.5,
+          "hunting_speed": 1
+        },
+        "max_level_bonus": {
+          "damage": 10,
+          "hunting_speed": 20
         },
         "abilities": [
           {
-            "name": "Находчивость",
-            "level": 1,
-            "effect": "+5% шанс найти редкие предметы"
-          },
-          {
-            "name": "Лисья хитрость",
+            "name": "Волчья стая",
             "level": 5,
-            "effect": "Может украсть предмет у врага (5% шанс)"
+            "description": "Призывает ещё одного волка в помощь.",
+            "effect": "summon_wolf"
           },
           {
-            "name": "Невидимка",
+            "name": "Чувство крови",
             "level": 10,
-            "effect": "Враги реже замечают тебя в лесу"
+            "description": "Находит раненых врагов.",
+            "effect": "track_wounded"
           }
         ],
+        "food": ["meat", "bone"],
         "evolution": {
+          "next_form": "forest_wolf_alpha",
           "level": 15,
-          "into": "nine_tailed_fox",
-          "cost": {"magic_crystal": 10, "gold_ingot": 5, "rainbow_shard": 2}
-        },
-        "found_in": ["deep_forest", "mountain_path"],
-        "food": ["meat", "berry", "egg"]
+          "item": "alpha_fang"
+        }
       },
       
-      "owl": {
-        "id": "owl",
-        "name": "🦉 Сова",
+      "mountain_eagle": {
+        "id": "mountain_eagle",
+        "name": "🦅 Горный орёл",
         "rarity": "uncommon",
-        "description": "Мудрая птица, которая видит в темноте.",
-        "level_req": 10,
-        "max_level": 15,
-        "base_stats": {
-          "wisdom": 5,
-          "night_vision": true
+        "description": "Величественный орёл, помогающий в разведке.",
+        "biome": "mountains",
+        "level_req": 15,
+        "find_chance": 10,
+        "image": "pet_mountain_eagle.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 220,
+          "max_level": 15
         },
-        "per_level": {
-          "exp_bonus": 2,
-          "magic_damage": 0.5
+        "base_bonus": {
+          "vision_range": 20,
+          "dodge": 3
+        },
+        "per_level_bonus": {
+          "vision_range": 2,
+          "dodge": 0.5
+        },
+        "max_level_bonus": {
+          "vision_range": 50,
+          "dodge": 10
         },
         "abilities": [
           {
-            "name": "Ночное зрение",
-            "level": 1,
-            "effect": "Видит в темноте (открывает скрытые тропы в пещерах)"
-          },
-          {
-            "name": "Мудрость веков",
+            "name": "Орлиный глаз",
             "level": 5,
-            "effect": "+10% к опыту"
+            "description": "Видит скрытые сундуки издалека.",
+            "effect": "spot_treasure"
           },
           {
-            "name": "Тихий полёт",
+            "name": "Пикирование",
             "level": 10,
-            "effect": "Может разведывать локации без риска"
+            "description": "Атакует врагов с неба.",
+            "effect": "aerial_attack"
           }
         ],
-        "evolution": {
-          "level": 15,
-          "into": "ancient_owl",
-          "cost": {"magic_crystal": 10, "ancient_relic": 2}
+        "food": ["fish", "small_animals"]
+      },
+      
+      "desert_camel": {
+        "id": "desert_camel",
+        "name": "🐫 Пустынный верблюд",
+        "rarity": "uncommon",
+        "description": "Выносливый верблюд, несущий грузы.",
+        "biome": "desert",
+        "level_req": 25,
+        "find_chance": 10,
+        "image": "pet_desert_camel.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 250,
+          "max_level": 15
         },
-        "found_in": ["magic_tower", "ancient_ruins"],
-        "food": ["meat", "magic_herb", "crystal"]
+        "base_bonus": {
+          "carry_capacity": 50,
+          "water_conservation": 20
+        },
+        "per_level_bonus": {
+          "carry_capacity": 10,
+          "water_conservation": 2
+        },
+        "max_level_bonus": {
+          "carry_capacity": 200,
+          "water_conservation": 50
+        },
+        "abilities": [
+          {
+            "name": "Караван",
+            "level": 5,
+            "description": "Позволяет переносить больше предметов.",
+            "effect": "extra_inventory"
+          },
+          {
+            "name": "Запас воды",
+            "level": 10,
+            "description": "Носит с собой дополнительную воду.",
+            "effect": "extra_water"
+          }
+        ],
+        "food": ["hay", "cactus"]
+      },
+      
+      "swamp_snake": {
+        "id": "swamp_snake",
+        "name": "🐍 Болотная змея",
+        "rarity": "uncommon",
+        "description": "Тихая и опасная змея, помогающая в скрытности.",
+        "biome": "swamp",
+        "level_req": 32,
+        "find_chance": 12,
+        "image": "pet_swamp_snake.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 240,
+          "max_level": 15
+        },
+        "base_bonus": {
+          "stealth": 10,
+          "poison_resist": 10
+        },
+        "per_level_bonus": {
+          "stealth": 1,
+          "poison_resist": 1
+        },
+        "max_level_bonus": {
+          "stealth": 25,
+          "poison_resist": 25
+        },
+        "abilities": [
+          {
+            "name": "Ядовитый укус",
+            "level": 5,
+            "description": "Отравляет врагов при атаке.",
+            "effect": "poison_bite"
+          },
+          {
+            "name": "Бесшумность",
+            "level": 10,
+            "description": "Не привлекает внимание врагов.",
+            "effect": "silent_movement"
+          }
+        ],
+        "food": ["eggs", "small_animals"]
+      },
+      
+      "ice_owl": {
+        "id": "ice_owl",
+        "name": "🦉 Ледяная сова",
+        "rarity": "uncommon",
+        "description": "Белая сова, видящая в темноте.",
+        "biome": "ice_plains",
+        "level_req": 38,
+        "find_chance": 8,
+        "image": "pet_ice_owl.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 260,
+          "max_level": 15
+        },
+        "base_bonus": {
+          "night_vision": 20,
+          "magic_find": 5
+        },
+        "per_level_bonus": {
+          "night_vision": 2,
+          "magic_find": 1
+        },
+        "max_level_bonus": {
+          "night_vision": 50,
+          "magic_find": 20
+        },
+        "abilities": [
+          {
+            "name": "Ночной охотник",
+            "level": 5,
+            "description": "Видит в полной темноте.",
+            "effect": "full_night_vision"
+          },
+          {
+            "name": "Мудрость",
+            "level": 10,
+            "description": "Увеличивает получаемый опыт.",
+            "effect": "exp_bonus"
+          }
+        ],
+        "food": ["fish", "small_rodents"]
+      },
+      
+      "lava_salamander": {
+        "id": "lava_salamander",
+        "name": "🦎 Лавовая саламандра",
+        "rarity": "uncommon",
+        "description": "Маленькая саламандра, живущая в лаве.",
+        "biome": "volcanic",
+        "level_req": 42,
+        "find_chance": 10,
+        "image": "pet_lava_salamander.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 280,
+          "max_level": 15
+        },
+        "base_bonus": {
+          "fire_resist": 20,
+          "lava_walk": 5
+        },
+        "per_level_bonus": {
+          "fire_resist": 2,
+          "lava_walk": 1
+        },
+        "max_level_bonus": {
+          "fire_resist": 50,
+          "lava_walk": 20
+        },
+        "abilities": [
+          {
+            "name": "Огненное дыхание",
+            "level": 5,
+            "description": "Плюётся огнём во врагов.",
+            "effect": "fire_breath"
+          },
+          {
+            "name": "Лавовое сердце",
+            "level": 10,
+            "description": "Позволяет ходить по лаве.",
+            "effect": "lava_walking"
+          }
+        ],
+        "food": ["fire_gem", "lava_core"]
+      },
+      
+      "crystal_bunny": {
+        "id": "crystal_bunny",
+        "name": "🐇 Кристальный зайчик",
+        "rarity": "uncommon",
+        "description": "Маленький зайчик с кристальной шёрсткой.",
+        "biome": "crystal_island",
+        "level_req": 48,
+        "find_chance": 5,
+        "image": "pet_crystal_bunny.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 300,
+          "max_level": 15
+        },
+        "base_bonus": {
+          "luck": 5,
+          "crystal_find": 10
+        },
+        "per_level_bonus": {
+          "luck": 1,
+          "crystal_find": 2
+        },
+        "max_level_bonus": {
+          "luck": 20,
+          "crystal_find": 40
+        },
+        "abilities": [
+          {
+            "name": "Удачный прыжок",
+            "level": 5,
+            "description": "Увеличивает шанс найти редкие предметы.",
+            "effect": "luck_boost"
+          },
+          {
+            "name": "Кристальный блеск",
+            "level": 10,
+            "description": "Привлекает драгоценные камни.",
+            "effect": "attract_crystals"
+          }
+        ],
+        "food": ["magic_herb", "crystal_shard"]
       }
     },
     
     "rare": {
-      "wolf_cub": {
-        "id": "wolf_cub",
-        "name": "🐺 Волчонок",
+      "forest_spirit": {
+        "id": "forest_spirit",
+        "name": "🌿 Лесной дух",
         "rarity": "rare",
-        "description": "Маленький волчонок, который однажды станет могучим волком.",
-        "level_req": 15,
-        "max_level": 20,
-        "base_stats": {
-          "damage": 5,
-          "speed": 3
+        "description": "Дух леса, защищающий природу.",
+        "biome": "forest",
+        "level_req": 20,
+        "find_chance": 5,
+        "image": "pet_forest_spirit.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 400,
+          "max_level": 20
         },
-        "per_level": {
-          "damage": 1,
-          "health": 10
+        "base_bonus": {
+          "nature_damage": 10,
+          "heal_power": 10,
+          "herb_growth": 10
+        },
+        "per_level_bonus": {
+          "nature_damage": 1,
+          "heal_power": 1,
+          "herb_growth": 1
+        },
+        "max_level_bonus": {
+          "nature_damage": 30,
+          "heal_power": 30,
+          "herb_growth": 30
         },
         "abilities": [
           {
-            "name": "Острый нюх",
-            "level": 1,
-            "effect": "Находит скрытые тайники (+10% к поиску)"
-          },
-          {
-            "name": "Стайный охотник",
+            "name": "Исцеляющий свет",
             "level": 5,
-            "effect": "+10% урона при атаке с питомцем"
+            "description": "Лечит владельца каждый ход.",
+            "effect": "passive_heal"
           },
           {
-            "name": "Вой",
+            "name": "Зов леса",
             "level": 10,
-            "effect": "Пугает врагов, снижая их защиту на 10%"
+            "description": "Призывает лесных животных на помощь.",
+            "effect": "summon_forest_creatures"
+          },
+          {
+            "name": "Природный щит",
+            "level": 15,
+            "description": "Защищает от урона в лесу.",
+            "effect": "forest_protection"
           }
         ],
-        "evolution": {
-          "level": 10,
-          "into": "wolf",
-          "cost": {"wolf_skin": 10, "wolf_fang": 10}
-        },
-        "evolution_2": {
-          "level": 20,
-          "into": "alpha_wolf",
-          "cost": {"alpha_fang": 3, "dragon_blood": 2, "rainbow_shard": 3}
-        },
-        "found_in": ["deep_forest"],
-        "drop_from": ["wolf_female"],
-        "chance": 5,
-        "food": ["meat", "wolf_meat", "bone"]
+        "food": ["magic_herb", "ancient_relic"]
       },
       
-      "bear_cub": {
-        "id": "bear_cub",
-        "name": "🐻 Медвежонок",
+      "desert_phoenix": {
+        "id": "desert_phoenix",
+        "name": "🔥 Пустынный феникс",
         "rarity": "rare",
-        "description": "Пушистый медвежонок, который любит мёд.",
-        "level_req": 15,
-        "max_level": 20,
-        "base_stats": {
-          "health": 50,
-          "defense": 5
+        "description": "Птенец феникса, только начинающий свой путь.",
+        "biome": "desert",
+        "level_req": 35,
+        "find_chance": 3,
+        "image": "pet_desert_phoenix.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 500,
+          "max_level": 20
         },
-        "per_level": {
-          "health": 15,
-          "defense": 1
+        "base_bonus": {
+          "fire_damage": 15,
+          "heat_resist": 20,
+          "revive_chance": 5
+        },
+        "per_level_bonus": {
+          "fire_damage": 1.5,
+          "heat_resist": 1,
+          "revive_chance": 0.5
+        },
+        "max_level_bonus": {
+          "fire_damage": 45,
+          "heat_resist": 40,
+          "revive_chance": 15
         },
         "abilities": [
           {
-            "name": "Крепыш",
-            "level": 1,
-            "effect": "+10% к максимальному здоровью владельца"
-          },
-          {
-            "name": "Собиратель мёда",
+            "name": "Искра жизни",
             "level": 5,
-            "effect": "Находит мёд в лесу"
+            "description": "Даёт шанс воскреснуть после смерти.",
+            "effect": "revive"
           },
           {
-            "name": "Топот",
+            "name": "Пылающие перья",
             "level": 10,
-            "effect": "Может оглушить врага (10% шанс)"
+            "description": "Атакует врагов огненными перьями.",
+            "effect": "fire_feathers"
+          },
+          {
+            "name": "Возрождение",
+            "level": 15,
+            "description": "Воскресает сам, если погиб.",
+            "effect": "self_revive"
           }
         ],
-        "evolution": {
-          "level": 20,
-          "into": "bear",
-          "cost": {"bear_skin": 10, "bear_claw": 10, "honey": 20}
-        },
-        "found_in": ["deep_forest", "mountain_path"],
-        "drop_from": ["bear_female"],
-        "chance": 3,
-        "food": ["meat", "bear_meat", "honey", "berry"]
+        "food": ["fire_gem", "phoenix_feather"]
       },
       
-      "moose_calf": {
-        "id": "moose_calf",
-        "name": "🦌 Лосёнок",
+      "swamp_kraken": {
+        "id": "swamp_kraken",
+        "name": "🐙 Болотный кракен",
         "rarity": "rare",
-        "description": "Маленький лосёнок с большими глазами.",
-        "level_req": 12,
-        "max_level": 18,
-        "base_stats": {
-          "speed": 5,
-          "carry": 10
+        "description": "Маленький кракен, обитающий в болотных водах.",
+        "biome": "swamp",
+        "level_req": 40,
+        "find_chance": 3,
+        "image": "pet_swamp_kraken.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 480,
+          "max_level": 20
+        },
+        "base_bonus": {
+          "water_damage": 12,
+          "poison_damage": 10,
+          "grab_chance": 5
+        },
+        "per_level_bonus": {
+          "water_damage": 1.2,
+          "poison_damage": 1,
+          "grab_chance": 0.5
+        },
+        "max_level_bonus": {
+          "water_damage": 36,
+          "poison_damage": 30,
+          "grab_chance": 15
         },
         "abilities": [
           {
-            "name": "Быстроного",
-            "level": 1,
-            "effect": "+5% к скорости передвижения"
-          },
-          {
-            "name": "Вьючный зверь",
+            "name": "Щупальца",
             "level": 5,
-            "effect": "+10 слотов в инвентаре"
+            "description": "Хватает врага, не давая ему убежать.",
+            "effect": "grab"
           },
           {
-            "name": "Лесной дух",
+            "name": "Чернильная завеса",
             "level": 10,
-            "effect": "Находит редкие травы в лесу"
+            "description": "Ослепляет врагов.",
+            "effect": "blind"
+          },
+          {
+            "name": "Болотный яд",
+            "level": 15,
+            "description": "Отравляет всех врагов в бою.",
+            "effect": "aoe_poison"
           }
         ],
-        "evolution": {
-          "level": 18,
-          "into": "moose",
-          "cost": {"moose_skin": 10, "moose_antler": 5}
+        "food": ["fish", "swamp_heart"]
+      },
+      
+      "ice_elemental": {
+        "id": "ice_elemental",
+        "name": "❄️ Ледяной элементаль",
+        "rarity": "rare",
+        "description": "Маленький элементаль холода.",
+        "biome": "ice_plains",
+        "level_req": 45,
+        "find_chance": 2,
+        "image": "pet_ice_elemental.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 550,
+          "max_level": 20
         },
-        "found_in": ["forest_path", "lake_shore"],
-        "drop_from": ["moose_female"],
-        "chance": 4,
-        "food": ["herb", "vegetables", "apple"]
+        "base_bonus": {
+          "cold_damage": 20,
+          "cold_resist": 30,
+          "freeze_chance": 5
+        },
+        "per_level_bonus": {
+          "cold_damage": 2,
+          "cold_resist": 1,
+          "freeze_chance": 0.5
+        },
+        "max_level_bonus": {
+          "cold_damage": 60,
+          "cold_resist": 50,
+          "freeze_chance": 15
+        },
+        "abilities": [
+          {
+            "name": "Ледяной шип",
+            "level": 5,
+            "description": "Атакует врага ледяным копьём.",
+            "effect": "ice_spike"
+          },
+          {
+            "name": "Морозная аура",
+            "level": 10,
+            "description": "Замедляет врагов рядом.",
+            "effect": "slow_aura"
+          },
+          {
+            "name": "Вечная мерзлота",
+            "level": 15,
+            "description": "Замораживает врага на месте.",
+            "effect": "freeze"
+          }
+        ],
+        "food": ["ice_crystal", "ice_heart"]
+      },
+      
+      "lava_elemental": {
+        "id": "lava_elemental",
+        "name": "🌋 Лавовый элементаль",
+        "rarity": "rare",
+        "description": "Маленький элементаль огня и лавы.",
+        "biome": "volcanic",
+        "level_req": 48,
+        "find_chance": 2,
+        "image": "pet_lava_elemental.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 600,
+          "max_level": 20
+        },
+        "base_bonus": {
+          "fire_damage": 25,
+          "fire_resist": 30,
+          "burn_chance": 10
+        },
+        "per_level_bonus": {
+          "fire_damage": 2.5,
+          "fire_resist": 1,
+          "burn_chance": 1
+        },
+        "max_level_bonus": {
+          "fire_damage": 75,
+          "fire_resist": 50,
+          "burn_chance": 30
+        },
+        "abilities": [
+          {
+            "name": "Лавовый шар",
+            "level": 5,
+            "description": "Кидается шаром лавы во врага.",
+            "effect": "lava_ball"
+          },
+          {
+            "name": "Огненная аура",
+            "level": 10,
+            "description": "Поджигает врагов рядом.",
+            "effect": "burn_aura"
+          },
+          {
+            "name": "Извержение",
+            "level": 15,
+            "description": "Мощная атака по площади.",
+            "effect": "eruption"
+          }
+        ],
+        "food": ["lava_core", "fire_gem"]
+      },
+      
+      "crystal_butterfly": {
+        "id": "crystal_butterfly",
+        "name": "🦋 Кристальная бабочка",
+        "rarity": "rare",
+        "description": "Бабочка с крыльями из чистого кристалла.",
+        "biome": "crystal_island",
+        "level_req": 52,
+        "find_chance": 1,
+        "image": "pet_crystal_butterfly.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 650,
+          "max_level": 20
+        },
+        "base_bonus": {
+          "luck": 10,
+          "magic_damage": 15,
+          "mana_regen": 5
+        },
+        "per_level_bonus": {
+          "luck": 1,
+          "magic_damage": 1.5,
+          "mana_regen": 0.5
+        },
+        "max_level_bonus": {
+          "luck": 30,
+          "magic_damage": 45,
+          "mana_regen": 15
+        },
+        "abilities": [
+          {
+            "name": "Кристальная пыльца",
+            "level": 5,
+            "description": "Усыпляет врагов.",
+            "effect": "sleep"
+          },
+          {
+            "name": "Радужное сияние",
+            "level": 10,
+            "description": "Увеличивает удачу всей группы.",
+            "effect": "party_luck"
+          },
+          {
+            "name": "Превращение",
+            "level": 15,
+            "description": "Превращает врага в кристалл.",
+            "effect": "crystallize"
+          }
+        ],
+        "food": ["magic_dust", "crystal_shard"]
       }
     },
     
     "epic": {
-      "wolf": {
-        "id": "wolf",
-        "name": "🐺 Волк",
+      "wolf_alpha": {
+        "id": "wolf_alpha",
+        "name": "🐺👑 Вожак волков",
         "rarity": "epic",
-        "description": "Верный волк, преданный своему хозяину.",
-        "level_req": 20,
-        "max_level": 30,
-        "base_stats": {
+        "description": "Легендарный вожак волчьей стаи.",
+        "biome": "forest",
+        "level_req": 30,
+        "evolution_from": "forest_wolf",
+        "image": "pet_wolf_alpha.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 800,
+          "max_level": 25
+        },
+        "base_bonus": {
           "damage": 15,
-          "speed": 8
+          "crit_chance": 10,
+          "pack_power": 10
+        },
+        "per_level_bonus": {
+          "damage": 1,
+          "crit_chance": 0.5,
+          "pack_power": 0.5
+        },
+        "max_level_bonus": {
+          "damage": 40,
+          "crit_chance": 22,
+          "pack_power": 22
         },
         "abilities": [
           {
-            "name": "Стальная хватка",
-            "effect": "Кусает врага, нанося дополнительный урон"
+            "name": "Волчий вой",
+            "level": 5,
+            "description": "Пугает врагов, снижая их атаку.",
+            "effect": "fear"
           },
           {
-            "name": "Волчья ярость",
+            "name": "Вожак стаи",
+            "level": 10,
+            "description": "Усиливает всех питомцев в группе.",
+            "effect": "boost_pets"
+          },
+          {
+            "name": "Смертельный укус",
             "level": 15,
-            "effect": "+20% урона, когда здоровье ниже 30%"
+            "description": "Мгновенно убивает слабого врага.",
+            "effect": "instant_kill"
           },
           {
-            "name": "Вожак",
-            "level": 25,
-            "effect": "Другие питомцы получают +10% к урону"
+            "name": "Стая",
+            "level": 20,
+            "description": "Призывает 3 волков в помощь.",
+            "effect": "summon_pack"
           }
         ],
-        "evolution": {
-          "level": 30,
-          "into": "alpha_wolf",
-          "cost": {"alpha_fang": 5, "dragon_blood": 3, "rainbow_stone": 1}
-        },
-        "food": ["meat", "wolf_meat", "bone"]
+        "food": ["alpha_fang", "dragon_meat"]
       },
       
-      "bear": {
-        "id": "bear",
-        "name": "🐻 Медведь",
+      "desert_roc": {
+        "id": "desert_roc",
+        "name": "🦅 Пустынный рок",
         "rarity": "epic",
-        "description": "Могучий медведь, гора мышц и силы.",
-        "level_req": 25,
-        "max_level": 30,
-        "base_stats": {
-          "health": 200,
-          "defense": 20
+        "description": "Гигантская птица, способная унести верблюда.",
+        "biome": "desert",
+        "level_req": 40,
+        "image": "pet_desert_roc.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 900,
+          "max_level": 25
+        },
+        "base_bonus": {
+          "damage": 20,
+          "dodge": 15,
+          "fly_speed": 30
+        },
+        "per_level_bonus": {
+          "damage": 1.5,
+          "dodge": 0.8,
+          "fly_speed": 2
+        },
+        "max_level_bonus": {
+          "damage": 57,
+          "dodge": 34,
+          "fly_speed": 78
         },
         "abilities": [
           {
-            "name": "Медвежья сила",
-            "effect": "+20% к урону владельца"
+            "name": "Схватить добычу",
+            "level": 5,
+            "description": "Уносит врага с поля боя.",
+            "effect": "carry_away"
           },
           {
-            "name": "Неуклюжесть",
-            "effect": "10% шанс оглушить врага ударом лапы"
+            "name": "Воздушный разведчик",
+            "level": 10,
+            "description": "Показывает всех врагов на карте.",
+            "effect": "reveal_enemies"
           },
           {
-            "name": "Зимняя спячка",
-            "effect": "Во время отдыха восстанавливает вдвое больше здоровья"
+            "name": "Пикирующий орёл",
+            "level": 15,
+            "description": "Мощная атака с неба.",
+            "effect": "dive_attack"
+          },
+          {
+            "name": "Буря крыльев",
+            "level": 20,
+            "description": "Создаёт песчаную бурю.",
+            "effect": "sandstorm"
           }
         ],
-        "food": ["meat", "bear_meat", "honey", "fish"]
+        "food": ["scorpion_queen_stinger", "sand_heart"]
       },
       
-      "moose": {
-        "id": "moose",
-        "name": "🦌 Лось",
+      "ice_phoenix": {
+        "id": "ice_phoenix",
+        "name": "❄️🔥 Ледяной феникс",
         "rarity": "epic",
-        "description": "Величественный лось с огромными рогами.",
-        "level_req": 20,
-        "max_level": 25,
-        "base_stats": {
-          "speed": 15,
-          "carry": 30
+        "description": "Мифическая птица, несущая холод.",
+        "biome": "ice_plains",
+        "level_req": 48,
+        "image": "pet_ice_phoenix.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 1000,
+          "max_level": 25
+        },
+        "base_bonus": {
+          "cold_damage": 35,
+          "freeze_chance": 10,
+          "cold_resist": 50
+        },
+        "per_level_bonus": {
+          "cold_damage": 2,
+          "freeze_chance": 0.6,
+          "cold_resist": 2
+        },
+        "max_level_bonus": {
+          "cold_damage": 85,
+          "freeze_chance": 24,
+          "cold_resist": 98
         },
         "abilities": [
           {
-            "name": "Рогатая атака",
-            "effect": "Может бодать врага, отбрасывая его"
+            "name": "Ледяной вихрь",
+            "level": 5,
+            "description": "Атакует всех врагов холодом.",
+            "effect": "ice_whirlwind"
           },
           {
-            "name": "Вьючный гигант",
-            "effect": "+20 слотов в инвентаре"
+            "name": "Морозное возрождение",
+            "level": 10,
+            "description": "Воскресает, замораживая врагов.",
+            "effect": "cold_revive"
           },
           {
-            "name": "Благородство",
-            "effect": "+10% к репутации с NPC"
+            "name": "Вечная зима",
+            "level": 15,
+            "description": "Замораживает всю область.",
+            "effect": "eternal_winter"
+          },
+          {
+            "name": "Северное сияние",
+            "level": 20,
+            "description": "Исцеляет и даёт баффы союзникам.",
+            "effect": "aurora"
           }
         ],
-        "food": ["herb", "vegetables", "mushroom"]
+        "food": ["ice_giant_heart", "eternal_ice"]
+      },
+      
+      "magma_dragon": {
+        "id": "magma_dragon",
+        "name": "🐲 Магмовый дракон",
+        "rarity": "epic",
+        "description": "Маленький дракон, рождённый в магме.",
+        "biome": "volcanic",
+        "level_req": 52,
+        "image": "pet_magma_dragon.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 1200,
+          "max_level": 25
+        },
+        "base_bonus": {
+          "fire_damage": 40,
+          "fire_resist": 50,
+          "lava_walk": 30
+        },
+        "per_level_bonus": {
+          "fire_damage": 2.5,
+          "fire_resist": 2,
+          "lava_walk": 2
+        },
+        "max_level_bonus": {
+          "fire_damage": 102,
+          "fire_resist": 98,
+          "lava_walk": 78
+        },
+        "abilities": [
+          {
+            "name": "Лавовое дыхание",
+            "level": 5,
+            "description": "Дышит лавой на врагов.",
+            "effect": "lava_breath"
+          },
+          {
+            "name": "Каменная кожа",
+            "level": 10,
+            "description": "Увеличивает защиту.",
+            "effect": "stone_skin"
+          },
+          {
+            "name": "Расплавленное сердце",
+            "level": 15,
+            "description": "Плавит броню врагов.",
+            "effect": "melt_armor"
+          },
+          {
+            "name": "Извержение",
+            "level": 20,
+            "description": "Вызывает извержение вулкана.",
+            "effect": "volcanic_eruption"
+          }
+        ],
+        "food": ["volcano_heart", "lava_core"]
       }
     },
     
     "legendary": {
-      "alpha_wolf": {
-        "id": "alpha_wolf",
-        "name": "🐺👑 Альфа-волк",
+      "phoenix": {
+        "id": "phoenix",
+        "name": "🔥 Феникс",
         "rarity": "legendary",
-        "description": "Король волков, величайший из своей стаи.",
-        "level_req": 30,
-        "max_level": 40,
-        "base_stats": {
-          "damage": 30,
-          "speed": 15,
-          "leadership": true
+        "description": "Легендарная птица, возрождающаяся из пепла.",
+        "biome": "volcanic",
+        "level_req": 55,
+        "unique": true,
+        "image": "pet_phoenix.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 2000,
+          "max_level": 30
+        },
+        "base_bonus": {
+          "fire_damage": 60,
+          "fire_resist": 70,
+          "revive_chance": 30,
+          "heal_power": 30
+        },
+        "per_level_bonus": {
+          "fire_damage": 3,
+          "fire_resist": 2,
+          "revive_chance": 1,
+          "heal_power": 1.5
+        },
+        "max_level_bonus": {
+          "fire_damage": 147,
+          "fire_resist": 128,
+          "revive_chance": 59,
+          "heal_power": 73
         },
         "abilities": [
           {
-            "name": "Королевский вой",
-            "effect": "Пугает всех врагов в округе, снижая их защиту на 20%"
+            "name": "Песнь жизни",
+            "level": 5,
+            "description": "Лечит всех союзников.",
+            "effect": "healing_song"
           },
           {
-            "name": "Альфа-статус",
-            "effect": "Все питомцы в группе получают +15% к характеристикам"
+            "name": "Огненный шторм",
+            "level": 10,
+            "description": "Мощная атака огнём по площади.",
+            "effect": "fire_storm"
           },
           {
-            "name": "Серебряный клык",
-            "effect": "Атаки игнорируют 30% защиты врага"
+            "name": "Возрождение",
+            "level": 15,
+            "description": "Воскрешает владельца 1 раз в день.",
+            "effect": "daily_revive"
+          },
+          {
+            "name": "Солнечный свет",
+            "level": 20,
+            "description": "Даёт всем союзникам бафф на урон.",
+            "effect": "sunlight"
+          },
+          {
+            "name": "Бессмертие",
+            "level": 25,
+            "description": "Феникс не может умереть в бою.",
+            "effect": "immortal"
           }
         ],
-        "evolution": {
-          "level": 40,
-          "into": "dragon_wolf",
-          "cost": {"dragon_heart": 2, "rainbow_stone": 3, "alpha_fang": 10}
-        },
-        "food": ["meat", "wolf_meat", "dragon_meat"]
+        "food": ["phoenix_feather", "dragon_blood", "rainbow_stone"]
       },
       
-      "nine_tailed_fox": {
-        "id": "nine_tailed_fox",
-        "name": "🦊✨ Девятихвостая лиса",
+      "crystal_dragon": {
+        "id": "crystal_dragon",
+        "name": "💎 Кристальный дракон",
         "rarity": "legendary",
-        "description": "Мифическая лисица с девятью хвостами, приносящая невероятную удачу.",
-        "level_req": 30,
-        "max_level": 40,
-        "base_stats": {
+        "description": "Маленький дракон с чешуёй из драгоценных камней.",
+        "biome": "crystal_island",
+        "level_req": 55,
+        "unique": true,
+        "image": "pet_crystal_dragon.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 2200,
+          "max_level": 30
+        },
+        "base_bonus": {
+          "magic_damage": 50,
           "luck": 20,
-          "magic_damage": 20
+          "mana_regen": 15,
+          "crystal_find": 30
+        },
+        "per_level_bonus": {
+          "magic_damage": 3,
+          "luck": 1,
+          "mana_regen": 1,
+          "crystal_find": 2
+        },
+        "max_level_bonus": {
+          "magic_damage": 137,
+          "luck": 49,
+          "mana_regen": 44,
+          "crystal_find": 88
         },
         "abilities": [
           {
-            "name": "Девять жизней",
-            "effect": "Может избежать смертельного удара 1 раз в день"
+            "name": "Кристальный взрыв",
+            "level": 5,
+            "description": "Взрывает врагов кристаллами.",
+            "effect": "crystal_explosion"
           },
           {
-            "name": "Лисье пламя",
-            "effect": "Атаки наносят дополнительный магический урон"
+            "name": "Сияние",
+            "level": 10,
+            "description": "Увеличивает магию всей группы.",
+            "effect": "magic_aura"
           },
           {
-            "name": "Иллюзия",
-            "effect": "Создаёт иллюзию, отвлекающую врагов"
+            "name": "Алмазная кожа",
+            "level": 15,
+            "description": "Невероятно увеличивает защиту.",
+            "effect": "diamond_skin"
+          },
+          {
+            "name": "Кристальный дождь",
+            "level": 20,
+            "description": "Атакует всех врагов кристаллами.",
+            "effect": "crystal_rain"
+          },
+          {
+            "name": "Превращение в кристалл",
+            "level": 25,
+            "description": "Превращает врага в кристалл навсегда.",
+            "effect": "permanent_crystallize"
           }
         ],
-        "food": ["magic_herb", "crystal", "spirit_essence"]
+        "food": ["perfect_crystal", "diamond", "rainbow_stone"]
       },
       
-      "dragon_wolf": {
-        "id": "dragon_wolf",
-        "name": "🐉🐺 Драконий волк",
+      "young_dragon": {
+        "id": "young_dragon",
+        "name": "🐉 Молодой дракон",
         "rarity": "legendary",
-        "description": "Легендарное существо, сочетающее силу волка и мощь дракона.",
-        "level_req": 40,
-        "max_level": 50,
-        "base_stats": {
-          "damage": 50,
+        "description": "Детёныш дракона, только начинающий свой путь.",
+        "biome": "dragon_island",
+        "level_req": 58,
+        "unique": true,
+        "image": "pet_young_dragon.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 2500,
+          "max_level": 30
+        },
+        "base_bonus": {
+          "damage": 40,
+          "fire_damage": 30,
           "defense": 30,
-          "fire_damage": 20
+          "all_resist": 20
+        },
+        "per_level_bonus": {
+          "damage": 2.5,
+          "fire_damage": 2,
+          "defense": 2,
+          "all_resist": 1
+        },
+        "max_level_bonus": {
+          "damage": 112,
+          "fire_damage": 88,
+          "defense": 88,
+          "all_resist": 49
         },
         "abilities": [
           {
-            "name": "Драконье пламя",
-            "effect": "Выдыхает огонь, нанося урон всем врагам"
+            "name": "Огненное дыхание",
+            "level": 5,
+            "description": "Дышит огнём на врагов.",
+            "effect": "dragon_breath"
           },
           {
-            "name": "Волчья стая",
-            "effect": "Призывает двух теневых волков в бой"
+            "name": "Драконья чешуя",
+            "level": 10,
+            "description": "Увеличивает защиту владельца.",
+            "effect": "dragon_scale"
           },
           {
-            "name": "Легендарная стойкость",
-            "effect": "+50% к защите и сопротивлению магии"
+            "name": "Рёв дракона",
+            "level": 15,
+            "description": "Пугает врагов, снижая их атаку.",
+            "effect": "dragon_roar"
+          },
+          {
+            "name": "Полет",
+            "level": 20,
+            "description": "Позволяет летать над препятствиями.",
+            "effect": "flight"
+          },
+          {
+            "name": "Драконья ярость",
+            "level": 25,
+            "description": "Временно увеличивает всю мощь.",
+            "effect": "dragon_rage"
           }
         ],
-        "food": ["dragon_meat", "dragon_blood", "mythril_ingot"]
-      },
-      
-      "ancient_owl": {
-        "id": "ancient_owl",
-        "name": "🦉✨ Древняя сова",
-        "rarity": "legendary",
-        "description": "Мудрейшее существо, помнящее времена богов.",
-        "level_req": 35,
-        "max_level": 45,
-        "base_stats": {
-          "wisdom": 30,
-          "magic_damage": 25
+        "food": ["dragon_meat", "dragon_blood", "rainbow_stone"]
+      }
+    },
+    
+    "ancient": {
+      "dragon_king_cub": {
+        "id": "dragon_king_cub",
+        "name": "👑 Детёныш короля драконов",
+        "rarity": "ancient",
+        "description": "Наследник короля драконов. Будущий властелин.",
+        "biome": "dragon_island",
+        "level_req": 60,
+        "unique": true,
+        "image": "pet_dragon_king_cub.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 5000,
+          "max_level": 50
+        },
+        "base_bonus": {
+          "damage": 70,
+          "all_damage": 30,
+          "defense": 50,
+          "all_resist": 40,
+          "luck": 30,
+          "health_regen": 20,
+          "mana_regen": 20
+        },
+        "per_level_bonus": {
+          "damage": 2,
+          "all_damage": 1,
+          "defense": 1.5,
+          "all_resist": 1,
+          "luck": 1,
+          "health_regen": 0.5,
+          "mana_regen": 0.5
+        },
+        "max_level_bonus": {
+          "damage": 168,
+          "all_damage": 79,
+          "defense": 123,
+          "all_resist": 89,
+          "luck": 79,
+          "health_regen": 44,
+          "mana_regen": 44
         },
         "abilities": [
           {
-            "name": "Всевидящее око",
-            "effect": "Открывает все секреты в локации"
+            "name": "Королевский рёв",
+            "level": 10,
+            "description": "Парализует всех врагов страхом.",
+            "effect": "king_roar"
           },
           {
-            "name": "Мудрость богов",
-            "effect": "+30% к опыту"
+            "name": "Пламя короля",
+            "level": 15,
+            "description": "Огромный огненный шар.",
+            "effect": "king_fireball"
           },
           {
-            "name": "Пророчество",
-            "effect": "Может предсказать результат боя"
+            "name": "Драконья гордость",
+            "level": 20,
+            "description": "Увеличивает все характеристики.",
+            "effect": "dragon_pride"
+          },
+          {
+            "name": "Наследие предков",
+            "level": 25,
+            "description": "Призывает духов драконов.",
+            "effect": "ancestors_call"
+          },
+          {
+            "name": "Властелин неба",
+            "level": 30,
+            "description": "Полный контроль над воздухом.",
+            "effect": "sky_lord"
+          },
+          {
+            "name": "Бессмертный",
+            "level": 35,
+            "description": "Не может быть убит.",
+            "effect": "immortal_king"
+          },
+          {
+            "name": "Создатель миров",
+            "level": 40,
+            "description": "Может создавать небольшие острова.",
+            "effect": "world_creator"
+          },
+          {
+            "name": "Абсолютная власть",
+            "level": 45,
+            "description": "Полный контроль над боем.",
+            "effect": "absolute_power"
+          },
+          {
+            "name": "Божественность",
+            "level": 50,
+            "description": "Становится божеством.",
+            "effect": "ascension"
           }
         ],
-        "food": ["ancient_relic", "magic_crystal", "spirit_essence"]
+        "food": ["dragon_king_heart", "divine_essence", "rainbow_stone", 5]
       }
     },
     
     "mythic": {
-      "phoenix": {
-        "id": "phoenix",
-        "name": "🔥🐦 Феникс",
+      "world_turtle": {
+        "id": "world_turtle",
+        "name": "🐢 Мировая черепаха",
         "rarity": "mythic",
-        "description": "Легендарная птица, возрождающаяся из пепла.",
-        "level_req": 50,
-        "max_level": 60,
-        "base_stats": {
-          "damage": 40,
-          "fire_damage": 40,
-          "heal_power": 30
+        "description": "На спине этой черепахи покоится целый мир.",
+        "biome": "secret",
+        "level_req": 70,
+        "unique": true,
+        "image": "pet_world_turtle.jpg",
+        "stats": {
+          "level": 1,
+          "exp_needed": 10000,
+          "max_level": 100
+        },
+        "base_bonus": {
+          "health": 1000,
+          "defense": 200,
+          "all_resist": 100,
+          "carry_capacity": 1000,
+          "health_regen": 50,
+          "all_stats": 50
+        },
+        "per_level_bonus": {
+          "health": 20,
+          "defense": 3,
+          "all_resist": 1,
+          "carry_capacity": 20,
+          "health_regen": 0.5,
+          "all_stats": 0.5
+        },
+        "max_level_bonus": {
+          "health": 2980,
+          "defense": 497,
+          "all_resist": 199,
+          "carry_capacity": 2980,
+          "health_regen": 99,
+          "all_stats": 99
         },
         "abilities": [
           {
-            "name": "Возрождение",
-            "effect": "Если Феникс погибает, он возрождается 1 раз в бою"
+            "name": "Непоколебимость",
+            "level": 10,
+            "description": "Не получает урона 1 ход.",
+            "effect": "invulnerable"
           },
           {
-            "name": "Песнь жизни",
-            "effect": "Восстанавливает здоровье всей группе каждый ход"
+            "name": "Щит миров",
+            "level": 20,
+            "description": "Защищает всех союзников.",
+            "effect": "world_shield"
           },
           {
-            "name": "Огненная буря",
-            "effect": "Массовая атака огнём по всем врагам"
+            "name": "Древняя мудрость",
+            "level": 30,
+            "description": "Увеличивает опыт всех.",
+            "effect": "ancient_wisdom"
+          },
+          {
+            "name": "Создатель островов",
+            "level": 40,
+            "description": "Может создавать новые острова.",
+            "effect": "island_creator"
+          },
+          {
+            "name": "Хранитель времени",
+            "level": 50,
+            "description": "Замедляет время для врагов.",
+            "effect": "time_slow"
+          },
+          {
+            "name": "Мать всего сущего",
+            "level": 60,
+            "description": "Исцеляет весь мир.",
+            "effect": "world_heal"
+          },
+          {
+            "name": "Судьба",
+            "level": 70,
+            "description": "Контролирует удачу.",
+            "effect": "fate_control"
+          },
+          {
+            "name": "Бесконечность",
+            "level": 80,
+            "description": "Бесконечные ресурсы.",
+            "effect": "infinite_resources"
+          },
+          {
+            "name": "Абсолют",
+            "level": 90,
+            "description": "Становится абсолютом.",
+            "effect": "absolute"
+          },
+          {
+            "name": "Создатель",
+            "level": 100,
+            "description": "Может создавать всё что угодно.",
+            "effect": "creator"
           }
         ],
-        "how_to_get": "Собрать 3 пера феникса в жерле вулкана",
-        "food": ["phoenix_feather", "sun_crystal", "divine_essence"]
+        "food": ["divine_essence", 10, "rainbow_stone", 10, "dragon_king_heart", 5]
+      }
+    }
+  },
+  
+  "pet_system": {
+    "max_pets": 5,
+    "active_pet": 1,
+    "pet_house": {
+      "level_1": {
+        "capacity": 2,
+        "cost": {"wood": 100, "stone": 50}
       },
-      
-      "dragonling": {
-        "id": "dragonling",
-        "name": "🐉 Дракончик",
-        "rarity": "mythic",
-        "description": "Маленький дракон, который однажды станет королём.",
-        "level_req": 45,
-        "max_level": 60,
-        "base_stats": {
-          "damage": 30,
-          "defense": 30,
-          "fire_damage": 30
-        },
-        "abilities": [
-          {
-            "name": "Драконье дыхание",
-            "effect": "Огненная атака по площади"
-          },
-          {
-            "name": "Чешуя дракона",
-            "effect": "+30% к защите владельца"
-          },
-          {
-            "name": "Королевская кровь",
-            "effect": "Все характеристики +15%"
-          }
-        ],
-        "evolution": {
-          "level": 60,
-          "into": "dragon_king",
-          "cost": {"dragon_heart": 5, "rainbow_stone": 10, "divine_essence": 3}
-        },
-        "how_to_get": "Найти яйцо дракона на Острове драконов",
-        "food": ["dragon_meat", "dragon_blood", "gold_ingot"]
+      "level_2": {
+        "capacity": 4,
+        "cost": {"wood": 200, "iron_ingot": 20, "gold_ingot": 5}
       },
-      
-      "dragon_king": {
-        "id": "dragon_king",
-        "name": "👑🐉 Король драконов",
-        "rarity": "mythic",
-        "description": "Величайший из драконов, повелитель неба и огня.",
-        "level_req": 60,
-        "max_level": 70,
-        "base_stats": {
-          "damage": 80,
-          "defense": 50,
-          "fire_damage": 50,
-          "all_stats": 30
-        },
-        "abilities": [
-          {
-            "name": "Апокалипсис",
-            "effect": "Огромный урон всем врагам, 1 раз в бой"
-          },
-          {
-            "name": "Драконий страх",
-            "effect": "Враги имеют шанс сбежать в начале боя"
-          },
-          {
-            "name": "Королевское величие",
-            "effect": "Все союзники получают +25% к характеристикам"
-          }
-        ],
-        "how_to_get": "Эволюция Дракончика",
-        "food": ["divine_essence", "rainbow_stone", "dragon_heart"]
+      "level_3": {
+        "capacity": 6,
+        "cost": {"wood": 500, "mythril_ingot": 10, "glass": 30}
+      },
+      "level_4": {
+        "capacity": 8,
+        "cost": {"wood": 1000, "dragon_scale": 5, "rainbow_stone": 2}
+      },
+      "level_5": {
+        "capacity": 10,
+        "cost": {"wood": 2000, "divine_essence": 2, "rainbow_stone": 5}
       }
     },
     
-    "pet_system": {
-      "max_pets": 5,
-      "active_pet": 1,
-      "pet_inventory": 20,
-      "pet_food": {
-        "meat": "+10 опыта",
-        "fish": "+15 опыта",
-        "berry": "+5 опыта",
-        "magic_food": "+50 опыта"
-      },
+    "pet_care": {
       "happiness": {
-        "effects": {
-          "0-20": "грустный, нет бонусов",
-          "21-50": "нормальный, 50% бонусов",
-          "51-80": "довольный, 100% бонусов",
-          "81-100": "счастливый, 150% бонусов"
-        },
-        "decay_per_day": 5,
-        "food_happiness": {
-          "meat": 5,
-          "fish": 8,
-          "berry": 3,
-          "treat": 15,
-          "magic_treat": 30
+        "max": 100,
+        "decay_per_day": 10,
+        "bonus_per_happy": {
+          "exp_gain": 0.5,
+          "effectiveness": 1
         }
       },
-      "commands": {
-        "/pet": "Посмотреть информацию о питомце",
-        "/pet feed [item]": "Покормить питомца",
-        "/pet play": "Поиграть с питомцем (+5 счастья)",
-        "/pet rename [name]": "Переименовать питомца",
-        "/pet summon": "Призвать питомца",
-        "/pet dismiss": "Отпустить питомца"
+      "hunger": {
+        "max": 100,
+        "decay_per_day": 20,
+        "penalty_per_hunger": {
+          "below_50": {"effectiveness": -10},
+          "below_20": {"effectiveness": -30, "run_away_chance": 5}
+        }
+      },
+      "food_types": {
+        "common_food": {"happiness": 5, "hunger": 20},
+        "rare_food": {"happiness": 15, "hunger": 40},
+        "legendary_food": {"happiness": 30, "hunger": 60},
+        "favorite_food": {"happiness": 50, "hunger": 80}
+      }
+    },
+    
+    "pet_battles": {
+      "arena": {
+        "name": "🏟️ Арена питомцев",
+        "description": "Сражайся со своим питомцем против других игроков.",
+        "rewards": {
+          "win": {"pet_exp": 100, "gold": 500},
+          "lose": {"pet_exp": 20, "gold": 100}
+        },
+        "daily_limit": 5
+      },
+      "tournaments": {
+        "weekly": {
+          "name": "Еженедельный турнир",
+          "entry_fee": {"gold": 1000},
+          "rewards": {
+            "1": {"items": ["rainbow_shard", 5, "legendary_pet_food"], "title": "Чемпион арены"},
+            "2-3": {"items": ["rainbow_shard", 2, "epic_pet_food"]},
+            "4-10": {"items": ["rare_pet_food", 5]}
+          }
+        },
+        "monthly": {
+          "name": "Месячный чемпионат",
+          "entry_fee": {"rainbow_shard": 2},
+          "rewards": {
+            "1": {"items": ["rainbow_stone", 2, "mythic_pet_egg"], "title": "Легенда арены"},
+            "2-3": {"items": ["rainbow_stone", 1, "legendary_pet_egg"]},
+            "4-10": {"items": ["epic_pet_egg"]}
+          }
+        }
+      }
+    },
+    
+    "pet_breeding": {
+      "cost": {"gold": 10000},
+      "time": 86400,
+      "chance": 50,
+      "rare_chance": 10,
+      "legendary_chance": 1
+    },
+    
+    "pet_eggs": {
+      "common_egg": {
+        "name": "⚪ Обычное яйцо",
+        "chance": {"common": 80, "uncommon": 15, "rare": 4, "epic": 1},
+        "hatch_time": 3600
+      },
+      "uncommon_egg": {
+        "name": "🟢 Необычное яйцо",
+        "chance": {"common": 40, "uncommon": 40, "rare": 15, "epic": 4, "legendary": 1},
+        "hatch_time": 7200
+      },
+      "rare_egg": {
+        "name": "🔵 Редкое яйцо",
+        "chance": {"uncommon": 30, "rare": 40, "epic": 20, "legendary": 9, "ancient": 1},
+        "hatch_time": 14400
+      },
+      "epic_egg": {
+        "name": "🟣 Эпическое яйцо",
+        "chance": {"rare": 30, "epic": 40, "legendary": 25, "ancient": 4, "mythic": 1},
+        "hatch_time": 28800
+      },
+      "legendary_egg": {
+        "name": "🟡 Легендарное яйцо",
+        "chance": {"epic": 40, "legendary": 40, "ancient": 15, "mythic": 5},
+        "hatch_time": 43200
+      },
+      "ancient_egg": {
+        "name": "🔴 Древнее яйцо",
+        "chance": {"legendary": 50, "ancient": 40, "mythic": 10},
+        "hatch_time": 86400
+      },
+      "mythic_egg": {
+        "name": "💜 Мифическое яйцо",
+        "chance": {"mythic": 100},
+        "hatch_time": 172800
+      }
+    },
+    
+    "pet_food": {
+      "common_pet_food": {
+        "name": "⚪ Обычный корм",
+        "value": 10,
+        "happiness": 5,
+        "hunger": 20
+      },
+      "uncommon_pet_food": {
+        "name": "🟢 Необычный корм",
+        "value": 30,
+        "happiness": 10,
+        "hunger": 30
+      },
+      "rare_pet_food": {
+        "name": "🔵 Редкий корм",
+        "value": 80,
+        "happiness": 15,
+        "hunger": 40
+      },
+      "epic_pet_food": {
+        "name": "🟣 Эпический корм",
+        "value": 200,
+        "happiness": 25,
+        "hunger": 50
+      },
+      "legendary_pet_food": {
+        "name": "🟡 Легендарный корм",
+        "value": 500,
+        "happiness": 40,
+        "hunger": 70,
+        "exp_bonus": 1.5
+      },
+      "ancient_pet_food": {
+        "name": "🔴 Древний корм",
+        "value": 1000,
+        "happiness": 60,
+        "hunger": 90,
+        "exp_bonus": 2.0
+      },
+      "mythic_pet_food": {
+        "name": "💜 Мифический корм",
+        "value": 5000,
+        "happiness": 100,
+        "hunger": 100,
+        "exp_bonus": 3.0,
+        "evolution_chance": 10
       }
     }
   }
