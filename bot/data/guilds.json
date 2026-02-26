@@ -1,0 +1,51 @@
+{
+  "guilds": {},
+  
+  "guild_stats": {
+    "total_guilds": 0,
+    "total_members": 0,
+    "guilds_by_level": {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0
+    },
+    "total_gold": 0,
+    "total_dstn": 0
+  },
+  
+  "guild_ranking": {
+    "by_level": [],
+    "by_wins": [],
+    "by_members": []
+  },
+  
+  "guild_wars": {
+    "current_season": 1,
+    "next_war": "",
+    "registration_open": false,
+    "registered_guilds": [],
+    "previous_winners": [],
+    "war_history": []
+  },
+  
+  "guild_templates": {
+    "default_buildings": ["hall"],
+    "building_prices": {
+      "hall": 0,
+      "shop": 50000,
+      "arena": 100000,
+      "altar": 200000,
+      "bank": 150000,
+      "laboratory": 250000,
+      "tower": 500000
+    },
+    "level_requirements": {
+      "2": {"exp": 1000, "gold": 10000},
+      "3": {"exp": 5000, "gold": 50000},
+      "4": {"exp": 15000, "gold": 150000},
+      "5": {"exp": 30000, "gold": 300000}
+    }
+  }
+}
