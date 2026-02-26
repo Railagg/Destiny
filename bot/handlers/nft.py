@@ -473,4 +473,77 @@ def handle_callback(call, bot_instance, get_or_create_player_func, nft_data):
         bot_instance.answer_callback_query(call.id)
     
     else:
+        # ============================================
+# ФУНКЦИИ ДЛЯ СОВМЕСТИМОСТИ С __init__.py
+# ============================================
+
+def nft_list_command(message, bot_instance, get_or_create_player_func, nft_data):
+    """Команда /nft_list - список доступных NFT"""
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    text = "📋 *ДОСТУПНЫЕ NFT ОСКОЛКИ*\n\n"
+    
+    for shard_id, shard in NFT_SHARDS.items():
+        text += f"{shard['name']}\n"
+        text += f"├ {shard['element']}\n"
+        text += f"├ Цена: {shard['price_stars']}⭐ / {shard['price_ton']} TON / {shard['price_dstn']} DSTN\n"
+        text += f"└ Осталось: {shard['total_supply']}/10\n\n"
+    
+    text += "\nПодробнее о каждом: /nft"
+    
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("🔙 Назад", callback_data="nft:menu"))
+    
+    bot_instance.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
+
+def nft_owned_command(message, bot_instance, get_or_create_player_func, nft_data):
+    """Команда /nft_owned - мои NFT"""
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    collection = character.nft_collection if hasattr(character, 'nft_collection') else []
+    
+    if not collection:
+        text = "📦 *У тебя пока нет NFT осколков*\n\n"
+        text += "Купи осколки в магазине: /nft"
+        
+        markup = InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton("🔙 Назад", callback_data="nft:menu"))
+        
+        bot_instance.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
+        return
+    
+    text = f"📦 *ТВОИ NFT ОСКОЛКИ* ({len(collection)}/5)\n\n"
+    
+    for shard_id in collection:
+        if shard_id in NFT_SHARDS:
+            shard = NFT_SHARDS[shard_id]
+            text += f"• {shard['name']}\n"
+            text += f"  ├ {shard['element']}\n"
+            for bonus in shard['bonuses'][:2]:
+                text += f"  ├ {bonus}\n"
+            text += f"  └ Способность: {shard['ability']['name']}\n\n"
+    
+    # Сетовые бонусы
+    if len(collection) in SET_BONUSES:
+        set_bonus = SET_BONUSES[str(len(collection))]
+        text += f"\n🎯 *Активный сет:* {set_bonus['name']}\n"
+        text += f"  └ {set_bonus['bonus']}"
+    
+    markup = InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("🔙 Назад", callback_data="nft:menu"))
+    
+    bot_instance.send_message(message.chat.id, text, reply_markup=markup, parse_mode='Markdown')
+
+# ============================================
+# ЭКСПОРТ
+# ============================================
+
+__all__ = [
+    'nft_command',
+    'nft_list_command',
+    'nft_owned_command',
+    'handle_callback'
+]
         bot_instance.answer_callback_query(call.id, "⏳ Эта функция в разработке")
