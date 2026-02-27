@@ -16,7 +16,8 @@ ENERGY_COSTS = {
     "craft": 2,
     "rest": 0,
     "gather": 2,
-    "mine": 2
+    "mine": 2,
+    "dig_worms": 1
 }
 
 # Карта привалов (локация -> данные привала)
@@ -28,7 +29,7 @@ RESPOT_SPOTS = {
         "health_gain": 15,
         "cooldown": 3600,  # 1 час
         "connections": ["deep_forest"],  # Отсюда можно пойти в глухой лес
-        "image": "rest_lake.jpg"
+        "image": "rest_lake.jpeg"
     },
     "mountain_path": {
         "name": "⛰️ Горный привал",
@@ -37,7 +38,7 @@ RESPOT_SPOTS = {
         "health_gain": 10,
         "cooldown": 3600,
         "connections": ["mountain_peak", "mine_entrance"],
-        "image": "rest_mountain.jpg"
+        "image": "rest_mountain.jpeg"
     },
     "volcano_path": {
         "name": "🌋 Привал у вулкана",
@@ -47,7 +48,7 @@ RESPOT_SPOTS = {
         "magic_gain": 20,
         "cooldown": 3600,
         "connections": ["volcano_crater", "volcanic_beach"],
-        "image": "rest_volcano.jpg"
+        "image": "rest_volcano.jpeg"
     },
     "bridge_before_dragon": {
         "name": "🌉 Привал на мосту",
@@ -63,7 +64,7 @@ RESPOT_SPOTS = {
             "achievement": "Поджигатель шкур"
         },
         "connections": ["dragon_lair", "ancient_ruins"],
-        "image": "rest_bridge.jpg"
+        "image": "rest_bridge.jpeg"
     },
     "desert_oasis": {
         "name": "🏝️ Привал в оазисе",
@@ -72,7 +73,7 @@ RESPOT_SPOTS = {
         "health_gain": 25,
         "cooldown": 3600,
         "connections": ["desert", "desert_pyramid"],
-        "image": "rest_oasis.jpg"
+        "image": "rest_oasis.jpeg"
     },
     "ice_cave": {
         "name": "🧊 Привал в ледяной пещере",
@@ -82,7 +83,7 @@ RESPOT_SPOTS = {
         "magic_gain": 25,
         "cooldown": 3600,
         "connections": ["ice_plains", "frozen_ocean"],
-        "image": "rest_ice_cave.jpg"
+        "image": "rest_ice_cave.jpeg"
     },
     "witch_hut": {
         "name": "🏚️ Привал у ведьмы",
@@ -98,7 +99,7 @@ RESPOT_SPOTS = {
             "result": "witch_potion"
         },
         "connections": ["swamp", "swamp_depths"],
-        "image": "rest_witch.jpg"
+        "image": "rest_witch.jpeg"
     },
     "crystal_grove": {
         "name": "💎 Привал в кристальной роще",
@@ -108,7 +109,7 @@ RESPOT_SPOTS = {
         "magic_gain": 50,
         "cooldown": 7200,
         "connections": ["crystal_island", "crystal_dragon_lair"],
-        "image": "rest_crystal.jpg"
+        "image": "rest_crystal.jpeg"
     },
     "dragon_island_beach": {
         "name": "🐉 Привал на острове драконов",
@@ -118,7 +119,7 @@ RESPOT_SPOTS = {
         "magic_gain": 40,
         "cooldown": 7200,
         "connections": ["dragon_island", "dragon_king_throne"],
-        "image": "rest_dragon_beach.jpg"
+        "image": "rest_dragon_beach.jpeg"
     }
 }
 
@@ -441,6 +442,184 @@ def expedition_command(message, bot, get_or_create_player_func, expeditions_data
     
     bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
 
+# ========== ПОДБОР ПРЕДМЕТОВ ==========
+
+def take_item_action(call, bot, get_or_create_player_func, locations_data, items_data):
+    """Обработчик подбора предмета с земли (одноразовое действие)"""
+    user_id = call.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    parts = call.data.split(':')
+    if len(parts) >= 3:
+        item_id = parts[2]
+    else:
+        bot.answer_callback_query(call.id, "❌ Ошибка")
+        return
+    
+    # Добавляем предмет
+    character.add_item(item_id)
+    
+    # Запоминаем, что действие выполнено
+    if not hasattr(character, 'one_time_actions') or character.one_time_actions is None:
+        character.one_time_actions = []
+    
+    # Находим текст действия из локации
+    location_id = character.location or "start"
+    location = locations_data.get("locations", {}).get(location_id, {})
+    action_text = "⚔️ Подобрать ржавый меч"  # По умолчанию
+    
+    for action in location.get('actions', []):
+        if action.get('type') == 'take_item' and action.get('item') == item_id:
+            action_text = action.get('text', action_text)
+            break
+    
+    character.one_time_actions.append(action_text)
+    
+    from main import save_character
+    save_character(character)
+    
+    # Получаем название предмета
+    item = items_data.get("items", {}).get(item_id, {})
+    item_name = item.get('name', item_id)
+    
+    bot.answer_callback_query(call.id, f"✅ Вы подобрали {item_name}!")
+    
+    # Обновляем локацию (кнопка должна исчезнуть)
+    location_command(call.message, bot, get_or_create_player_func, locations_data, items_data)
+
+# ========== ПОИСК В ТАЙНИКЕ ==========
+
+def search_stash_action(call, bot, get_or_create_player_func, locations_data, items_data):
+    """Обработчик поиска в тайнике"""
+    user_id = call.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    parts = call.data.split(':')
+    if len(parts) >= 3:
+        location_id = parts[2]
+    else:
+        location_id = character.location or "start"
+    
+    location = locations_data.get("locations", {}).get(location_id, {})
+    stash = location.get('hidden_stash', {})
+    
+    if not stash:
+        bot.answer_callback_query(call.id, "❌ Здесь нет тайника")
+        return
+    
+    # Проверяем кулдаун
+    now = int(time.time())
+    last_search = character.last_stash_search.get(location_id, 0) if hasattr(character, 'last_stash_search') else 0
+    cooldown = stash.get('cooldown', 3600)
+    
+    if now - last_search < cooldown:
+        remaining = cooldown - (now - last_search)
+        minutes = remaining // 60
+        bot.answer_callback_query(call.id, f"⏳ Тайник ещё не восстановился. Подожди {minutes} мин.", show_alert=True)
+        return
+    
+    # Записываем время поиска
+    if not hasattr(character, 'last_stash_search'):
+        character.last_stash_search = {}
+    character.last_stash_search[location_id] = now
+    
+    # Гарантированное золото
+    gold = random.randint(
+        stash.get('guaranteed', {}).get('gold_min', 5),
+        stash.get('guaranteed', {}).get('gold_max', 15)
+    )
+    character.gold += gold
+    
+    result_text = f"🔍 *{stash.get('name', 'Тайник')}*\n\n"
+    result_text += f"💰 +{gold} золота\n"
+    
+    # Обычные предметы
+    for item_data in stash.get('items', []):
+        if random.randint(1, 100) <= item_data['chance']:
+            amount = random.randint(item_data['amount_min'], item_data['amount_max'])
+            character.add_item(item_data['item'], amount)
+            item_name = items_data.get("items", {}).get(item_data['item'], {}).get('name', item_data['item'])
+            emoji = items_data.get("items", {}).get(item_data['item'], {}).get('emoji', '📦')
+            result_text += f"📦 {emoji} {item_name} x{amount}\n"
+    
+    # Редкие предметы
+    for item_data in stash.get('rare_items', []):
+        if random.randint(1, 100) <= item_data['chance']:
+            amount = random.randint(item_data['amount_min'], item_data['amount_max'])
+            character.add_item(item_data['item'], amount)
+            item_name = items_data.get("items", {}).get(item_data['item'], {}).get('name', item_data['item'])
+            emoji = items_data.get("items", {}).get(item_data['item'], {}).get('emoji', '✨')
+            result_text += f"✨ {emoji} {item_name} x{amount} (редко!)\n"
+    
+    from main import save_character
+    save_character(character)
+    
+    bot.send_message(call.message.chat.id, result_text, parse_mode='Markdown')
+
+# ========== КОПКА ЧЕРВЕЙ ==========
+
+def dig_worms_action(call, bot, get_or_create_player_func):
+    """Копка червей на берегу озера (10 сек, 1-7 червей)"""
+    user_id = call.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    # Проверка энергии
+    if character.energy < 1:
+        bot.answer_callback_query(call.id, "❌ Нужна энергия для копки!", show_alert=True)
+        return
+    
+    # Проверка кулдауна (10 минут)
+    now = int(time.time())
+    last_dig = character.last_worm_dig or 0
+    cooldown = 600  # 10 минут
+    
+    if now - last_dig < cooldown:
+        remaining = cooldown - (now - last_dig)
+        minutes = remaining // 60
+        seconds = remaining % 60
+        bot.answer_callback_query(
+            call.id, 
+            f"⏳ Земля ещё не восстановилась. Подожди {minutes} мин {seconds} сек.",
+            show_alert=True
+        )
+        return
+    
+    # Тратим энергию
+    character.energy -= 1
+    
+    # Анимация копки
+    bot.answer_callback_query(call.id, "⏳ Копаю червей... 10 секунд")
+    
+    # Ждём 10 секунд
+    time.sleep(10)
+    
+    # Случайное количество червей (1-7)
+    worms = random.randint(1, 7)
+    
+    # Добавляем червей в инвентарь
+    from models import Item
+    worm_item = Item.get_or_none(Item.item_id == "worm")
+    if worm_item:
+        character.add_item("worm", worms)
+    
+    character.last_worm_dig = now
+    
+    # Опыт за копку
+    exp_gain = worms * 2
+    character.experience += exp_gain
+    
+    from main import save_character
+    save_character(character)
+    
+    bot.send_message(
+        call.message.chat.id,
+        f"🪱 *Копка червей!*\n\n"
+        f"Найдено червей: {worms} 🪱\n"
+        f"✨ +{exp_gain} опыта\n\n"
+        f"📌 Следующая копка через 10 минут",
+        parse_mode='Markdown'
+    )
+
 # ========== ЛОКАЦИИ И ПЕРЕМЕЩЕНИЕ ==========
 
 def location_command(message, bot, get_or_create_player_func, locations_data, items_data=None):
@@ -454,6 +633,9 @@ def location_command(message, bot, get_or_create_player_func, locations_data, it
     if not location:
         location = {"name": "Неизвестно", "description": "Локация не найдена"}
     
+    # Получаем список выполненных одноразовых действий
+    one_time_actions = character.one_time_actions or []
+    
     # Проверяем, рыночная ли это площадь
     if location_id == "market_square":
         text = "🏪 *Рыночная площадь*\n\n"
@@ -465,9 +647,9 @@ def location_command(message, bot, get_or_create_player_func, locations_data, it
         text += "└ 🏠 Риэлтор - продаёт дома\n\n"
         text += "Подойди к любому торговцу!"
         
-        # Показываем фотографию рыночной площади
+        # Показываем фотографию рыночной площади (исправлено на .jpeg)
         try:
-            with open('bot/data/images/market_square.jpg', 'rb') as photo:
+            with open('bot/data/images/market_square.jpeg', 'rb') as photo:
                 bot.send_photo(message.chat.id, photo, caption=text, parse_mode='Markdown')
         except:
             # Если фото не найдено, отправляем просто текст
@@ -525,9 +707,42 @@ def location_command(message, bot, get_or_create_player_func, locations_data, it
             ))
         actions_added += 1
     
+    # Добавляем кнопку поиска тайника, если есть
+    stash = location.get('hidden_stash', {})
+    if stash:
+        now = int(time.time())
+        last_search = character.last_stash_search.get(location_id, 0) if hasattr(character, 'last_stash_search') else 0
+        cooldown = stash.get('cooldown', 3600)
+        
+        if now - last_search < cooldown:
+            remaining = cooldown - (now - last_search)
+            minutes = remaining // 60
+            keyboard.add(InlineKeyboardButton(
+                f"⏳ {stash['name']} (ждём {minutes} мин)",
+                callback_data="game:stash_cooldown"
+            ))
+        else:
+            keyboard.add(InlineKeyboardButton(
+                f"🔍 Искать в {stash['name']}",
+                callback_data=f"game:search_stash:{location_id}"
+            ))
+        actions_added += 1
+    
+    # Специальная кнопка для копки червей на берегу озера
+    if location_id == "lake_shore":
+        keyboard.add(InlineKeyboardButton(
+            "🪱 Копать червей (10 сек, 1-7🪱)",
+            callback_data="game:dig_worms"
+        ))
+        actions_added += 1
+    
     # Стандартные действия из локации
     actions = location.get('actions', [])
     for action in actions:
+        # Пропускаем уже выполненные одноразовые действия
+        if action.get('one_time') and action['text'] in one_time_actions:
+            continue
+        
         if action['type'] == 'move':
             level_req = action.get('level_req', 1)
             if character.level >= level_req:
@@ -544,6 +759,13 @@ def location_command(message, bot, get_or_create_player_func, locations_data, it
                         callback_data="game:no_energy"
                     ))
                     actions_added += 1
+        elif action['type'] == 'take_item':
+            # Действие с подбором предмета
+            keyboard.add(InlineKeyboardButton(
+                action['text'],
+                callback_data=f"game:take_item:{action['item']}"
+            ))
+            actions_added += 1
         elif action['type'] == 'hunt':
             if character.energy >= 5:
                 keyboard.add(InlineKeyboardButton(
@@ -723,7 +945,8 @@ def move_command(message, bot, get_or_create_player_func, locations_data):
         text += "🏘️ *Деревня:*\n"
         for loc_id, name in village_locs:
             text += f"├ {name}\n"
-            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id.split()[0] if '⛺' in name else loc_id}"))
+            clean_id = loc_id.split()[0] if '⛺' in name else loc_id
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{clean_id}"))
             locations_found += 1
         text += "\n"
     
@@ -731,7 +954,8 @@ def move_command(message, bot, get_or_create_player_func, locations_data):
         text += "🌲 *Лес:*\n"
         for loc_id, name in forest_locs:
             text += f"├ {name}\n"
-            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id.split()[0] if '⛺' in name else loc_id}"))
+            clean_id = loc_id.split()[0] if '⛺' in name else loc_id
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{clean_id}"))
             locations_found += 1
         text += "\n"
     
@@ -739,7 +963,8 @@ def move_command(message, bot, get_or_create_player_func, locations_data):
         text += "⛰️ *Горы:*\n"
         for loc_id, name in mountain_locs:
             text += f"├ {name}\n"
-            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id.split()[0] if '⛺' in name else loc_id}"))
+            clean_id = loc_id.split()[0] if '⛺' in name else loc_id
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{clean_id}"))
             locations_found += 1
         text += "\n"
     
@@ -747,7 +972,8 @@ def move_command(message, bot, get_or_create_player_func, locations_data):
         text += "🏜️ *Пустыня:*\n"
         for loc_id, name in desert_locs:
             text += f"├ {name}\n"
-            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id.split()[0] if '⛺' in name else loc_id}"))
+            clean_id = loc_id.split()[0] if '⛺' in name else loc_id
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{clean_id}"))
             locations_found += 1
         text += "\n"
     
@@ -755,7 +981,8 @@ def move_command(message, bot, get_or_create_player_func, locations_data):
         text += "🌿 *Болото:*\n"
         for loc_id, name in swamp_locs:
             text += f"├ {name}\n"
-            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id.split()[0] if '⛺' in name else loc_id}"))
+            clean_id = loc_id.split()[0] if '⛺' in name else loc_id
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{clean_id}"))
             locations_found += 1
         text += "\n"
     
@@ -763,7 +990,8 @@ def move_command(message, bot, get_or_create_player_func, locations_data):
         text += "❄️ *Ледяные земли:*\n"
         for loc_id, name in ice_locs:
             text += f"├ {name}\n"
-            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id.split()[0] if '⛺' in name else loc_id}"))
+            clean_id = loc_id.split()[0] if '⛺' in name else loc_id
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{clean_id}"))
             locations_found += 1
         text += "\n"
     
@@ -771,7 +999,8 @@ def move_command(message, bot, get_or_create_player_func, locations_data):
         text += "🏝️ *Острова:*\n"
         for loc_id, name in island_locs:
             text += f"├ {name}\n"
-            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id.split()[0] if '⛺' in name else loc_id}"))
+            clean_id = loc_id.split()[0] if '⛺' in name else loc_id
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{clean_id}"))
             locations_found += 1
         text += "\n"
     
@@ -779,7 +1008,8 @@ def move_command(message, bot, get_or_create_player_func, locations_data):
         text += "🏛️ *Подземелья:*\n"
         for loc_id, name in dungeon_locs:
             text += f"├ {name}\n"
-            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id.split()[0] if '⛺' in name else loc_id}"))
+            clean_id = loc_id.split()[0] if '⛺' in name else loc_id
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{clean_id}"))
             locations_found += 1
         text += "\n"
     
@@ -902,7 +1132,10 @@ def rest_spot_action(call, bot, get_or_create_player_func):
             
             # Даём результат
             if 'achievement' in special_action:
-                character.add_achievement(special_action['achievement'])
+                if not hasattr(character, 'achievements'):
+                    character.achievements = []
+                if special_action['achievement'] not in character.achievements:
+                    character.achievements.append(special_action['achievement'])
             
             if 'result' in special_action:
                 character.add_item(special_action['result'])
@@ -1118,10 +1351,11 @@ def hunt_action(call, bot, get_or_create_player_func, locations_data, enemies_da
     
     result_text += f"\n✨ +{exp_gain} опыта"
     
+    from main import save_character
     save_character(character)
     bot.send_message(call.message.chat.id, result_text, parse_mode='Markdown')
 
-def fish_action(call, bot, get_or_create_player_func):
+def fish_action(call, bot, get_or_create_player_func, items_data):
     """Обработчик рыбалки с кулдауном и затратами энергии"""
     user_id = call.from_user.id
     user, character = get_or_create_player_func(user_id)
@@ -1227,7 +1461,7 @@ def fish_action(call, bot, get_or_create_player_func):
     
     bot.send_message(call.message.chat.id, result_text, parse_mode='Markdown')
 
-def gather_action(call, bot, get_or_create_player_func):
+def gather_action(call, bot, get_or_create_player_func, items_data):
     """Обработчик сбора трав с кулдауном и затратами энергии"""
     user_id = call.from_user.id
     user, character = get_or_create_player_func(user_id)
@@ -1309,7 +1543,7 @@ def gather_action(call, bot, get_or_create_player_func):
     
     bot.send_message(call.message.chat.id, result_text, parse_mode='Markdown')
 
-def mine_action(call, bot, get_or_create_player_func):
+def mine_action(call, bot, get_or_create_player_func, items_data):
     """Обработчик добычи руды с разными этажами"""
     user_id = call.from_user.id
     user, character = get_or_create_player_func(user_id)
@@ -1448,7 +1682,7 @@ def battle_command(message, bot, get_or_create_player_func, enemies_data):
         return
     
     # Получаем врагов в текущей локации
-    from utils import locations_data
+    from main import locations_data
     location_id = character.location or "start"
     location = locations_data.get("locations", {}).get(location_id, {})
     enemy_ids = location.get('enemies', [])
@@ -1675,11 +1909,11 @@ def handle_callback(call, bot, get_or_create_player_func, locations_data, items_
     elif data == "game:hunt":
         hunt_action(call, bot, get_or_create_player_func, locations_data, enemies_data, items_data)
     elif data == "game:fish":
-        fish_action(call, bot, get_or_create_player_func)
+        fish_action(call, bot, get_or_create_player_func, items_data)
     elif data == "game:gather":
-        gather_action(call, bot, get_or_create_player_func)
+        gather_action(call, bot, get_or_create_player_func, items_data)
     elif data == "game:mine":
-        mine_action(call, bot, get_or_create_player_func)
+        mine_action(call, bot, get_or_create_player_func, items_data)
     elif data == "game:rest_local":
         rest_action(call, bot, get_or_create_player_func)
     elif data.startswith("game:rest_spot:"):
@@ -1692,6 +1926,14 @@ def handle_callback(call, bot, get_or_create_player_func, locations_data, items_
         select_class_callback(call, bot, get_or_create_player_func)
     elif data == "game:no_energy":
         bot.answer_callback_query(call.id, "❌ Недостаточно энергии!", show_alert=True)
+    elif data.startswith("game:take_item:"):
+        take_item_action(call, bot, get_or_create_player_func, locations_data, items_data)
+    elif data.startswith("game:search_stash:"):
+        search_stash_action(call, bot, get_or_create_player_func, locations_data, items_data)
+    elif data == "game:dig_worms":
+        dig_worms_action(call, bot, get_or_create_player_func)
+    elif data == "game:stash_cooldown":
+        bot.answer_callback_query(call.id, "⏳ Тайник ещё не восстановился!", show_alert=True)
 
 # ========== ЭКСПОРТ ==========
 
@@ -1720,6 +1962,9 @@ __all__ = [
     'rest_spot_action',
     'move_to_location',
     'select_class_callback',
+    'take_item_action',
+    'search_stash_action',
+    'dig_worms_action',
     
     # Главный обработчик
     'handle_callback',
