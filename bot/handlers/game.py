@@ -178,6 +178,12 @@ def location_command(message, bot, get_or_create_player_func, locations_data):
                     callback_data="game:mine"
                 ))
                 actions_added += 1
+        elif action['type'] == 'special_craft':
+            keyboard.add(InlineKeyboardButton(
+                action['text'],
+                callback_data=f"craft:special:{action['recipe']}"
+            ))
+            actions_added += 1
     
     # Добавляем кнопку карты
     if actions_added < 4:
@@ -575,6 +581,67 @@ def rest_action(call, bot, get_or_create_player_func):
     
     bot.answer_callback_query(call.id, rest_text)
 
+# ========== БОЙ ==========
+
+def battle_command(message, bot, get_or_create_player_func, enemies_data):
+    """Команда /battle - начало боя"""
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    # Проверяем энергию
+    if character.energy < 10:
+        bot.send_message(
+            message.chat.id,
+            "❌ Недостаточно энергии! Нужно 10⚡ для боя.",
+            parse_mode='Markdown'
+        )
+        return
+    
+    # Получаем врагов в текущей локации
+    from utils import locations_data
+    location_id = character.location or "start"
+    location = locations_data.get("locations", {}).get(location_id, {})
+    enemy_ids = location.get('enemies', [])
+    
+    if not enemy_ids:
+        bot.send_message(
+            message.chat.id,
+            "❌ В этой локации нет врагов!",
+            parse_mode='Markdown'
+        )
+        return
+    
+    # Выбираем случайного врага
+    enemy_id = random.choice(enemy_ids)
+    enemy = enemies_data.get("enemies", {}).get(enemy_id, {})
+    
+    if not enemy:
+        bot.send_message(message.chat.id, "❌ Ошибка загрузки врага")
+        return
+    
+    # Показываем информацию о враге
+    text = f"⚔️ *Бой!*\n\n"
+    text += f"🐉 *Враг:* {enemy.get('name', enemy_id)}\n"
+    text += f"📊 Уровень: {enemy.get('level', 1)}\n"
+    text += f"❤️ Здоровье: {enemy.get('health', 50)}\n"
+    text += f"⚔️ Атака: {enemy.get('damage', 5)}\n"
+    
+    if enemy.get('description'):
+        text += f"\n📝 {enemy['description']}\n"
+    
+    keyboard = InlineKeyboardMarkup()
+    keyboard.add(
+        InlineKeyboardButton("⚔️ Атаковать", callback_data=f"combat:attack:{enemy_id}"),
+        InlineKeyboardButton("🏃 Сбежать", callback_data="game:location")
+    )
+    
+    bot.send_message(
+        message.chat.id,
+        text,
+        reply_markup=keyboard,
+        parse_mode='Markdown'
+    )
+
 # ========== КЛАССЫ ==========
 
 def class_command(message, bot, get_or_create_player_func):
@@ -683,23 +750,40 @@ def handle_callback(call, bot, get_or_create_player_func, locations_data, items_
         mine_action(call, bot, get_or_create_player_func)
     elif data == "game:rest":
         rest_action(call, bot, get_or_create_player_func)
-    elif data == "game:no_energy":
-        bot.answer_callback_query(call.id, "❌ Недостаточно энергии!", show_alert=True)
     elif data.startswith("game:move_to:"):
         move_to_location(call, bot, get_or_create_player_func, locations_data)
+    elif data == "game:select_class":
+        # Для обратной совместимости, но лучше использовать data.startswith
+        pass
     elif data.startswith("game:select_class:"):
         select_class_callback(call, bot, get_or_create_player_func)
-    else:
-        bot.answer_callback_query(call.id, "⏳ В разработке")
+    elif data == "game:no_energy":
+        bot.answer_callback_query(call.id, "❌ Недостаточно энергии!", show_alert=True)
 
 # ========== ЭКСПОРТ ==========
 
 __all__ = [
+    # Команды
     'profile_command',
     'stats_command',
     'location_command',
     'map_command',
     'move_command',
+    'battle_command',
     'class_command',
-    'handle_callback'
+    
+    # Обработчики действий
+    'hunt_action',
+    'fish_action',
+    'gather_action',
+    'mine_action',
+    'rest_action',
+    'move_to_location',
+    'select_class_callback',
+    
+    # Главный обработчик
+    'handle_callback',
+    
+    # Константы
+    'ENERGY_COSTS'
 ]
