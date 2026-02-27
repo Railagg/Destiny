@@ -150,6 +150,57 @@ def quest_command(message, bot, get_or_create_player_func, quests_data):
     
     bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
 
+# ========== КРАФТ ==========
+
+def craft_command(message, bot, get_or_create_player_func, crafting_data, items_data):
+    """Команда /craft - просмотр доступных рецептов крафта"""
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    text = "⚒️ *Мастерская крафта*\n\n"
+    
+    # Группируем рецепты по категориям
+    categories = {
+        "weapon": "⚔️ Оружие",
+        "armor": "🛡️ Броня",
+        "potion": "🧪 Зелья",
+        "food": "🍖 Еда",
+        "tool": "🔧 Инструменты",
+        "material": "📦 Материалы"
+    }
+    
+    available_recipes = 0
+    
+    for cat_id, cat_name in categories.items():
+        cat_recipes = []
+        for recipe_id, recipe in crafting_data.get("recipes", {}).items():
+            if recipe.get("category") == cat_id:
+                if character.level >= recipe.get("level_req", 1):
+                    cat_recipes.append((recipe_id, recipe))
+        
+        if cat_recipes:
+            text += f"\n*{cat_name}:*\n"
+            for recipe_id, recipe in cat_recipes[:3]:  # Показываем первые 3
+                text += f"├ {recipe.get('name', recipe_id)}\n"
+                available_recipes += 1
+    
+    if available_recipes == 0:
+        text += "❌ Нет доступных рецептов\n"
+    
+    text += f"\n📊 Доступно рецептов: {available_recipes}"
+    
+    keyboard = InlineKeyboardMarkup(row_width=2)
+    keyboard.add(
+        InlineKeyboardButton("⚔️ Оружие", callback_data="craft:weapon"),
+        InlineKeyboardButton("🛡️ Броня", callback_data="craft:armor"),
+        InlineKeyboardButton("🧪 Зелья", callback_data="craft:potion"),
+        InlineKeyboardButton("🍖 Еда", callback_data="craft:food"),
+        InlineKeyboardButton("📦 Все рецепты", callback_data="craft:all"),
+        InlineKeyboardButton("🔙 Назад", callback_data="start:menu")
+    )
+    
+    bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
+
 # ========== ЛОКАЦИИ И ПЕРЕМЕЩЕНИЕ ==========
 
 def location_command(message, bot, get_or_create_player_func, locations_data):
@@ -901,6 +952,7 @@ __all__ = [
     'profile_command',
     'stats_command',
     'quest_command',
+    'craft_command',
     'location_command',
     'map_command',
     'move_command',
