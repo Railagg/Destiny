@@ -253,6 +253,82 @@ def house_command(message, bot, get_or_create_player_func, house_data):
     
     bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
 
+# ========== ЭКСПЕДИЦИИ ==========
+
+def expedition_command(message, bot, get_or_create_player_func, expeditions_data):
+    """Команда /expedition - управление экспедициями"""
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    text = "🧭 *Экспедиции*\n\n"
+    
+    # Проверяем, есть ли активная экспедиция
+    if character.active_expedition:
+        expedition_id = character.active_expedition
+        expedition = expeditions_data.get("expeditions", {}).get(expedition_id, {})
+        
+        if expedition:
+            start_time = character.expedition_start_time or 0
+            duration = expedition.get("duration", 3600)  # в секундах
+            current_time = int(time.time())
+            time_left = max(0, start_time + duration - current_time)
+            
+            hours = time_left // 3600
+            minutes = (time_left % 3600) // 60
+            
+            text += f"*Активная экспедиция:*\n"
+            text += f"├ {expedition.get('name', expedition_id)}\n"
+            text += f"├ Локация: {expedition.get('location', 'Неизвестно')}\n"
+            text += f"├ Осталось: {hours}ч {minutes}м\n"
+            text += f"├ Шанс успеха: {expedition.get('success_chance', 70)}%\n\n"
+            
+            if time_left <= 0:
+                text += "✅ *Экспедиция завершена!*\n"
+                text += "Используй /expedition claim, чтобы получить награду!\n"
+                
+                keyboard = InlineKeyboardMarkup()
+                keyboard.add(
+                    InlineKeyboardButton("🎁 Забрать награду", callback_data="expedition:claim"),
+                    InlineKeyboardButton("🔙 Назад", callback_data="start:menu")
+                )
+            else:
+                keyboard = InlineKeyboardMarkup()
+                keyboard.add(InlineKeyboardButton("🔙 Назад", callback_data="start:menu"))
+    else:
+        # Показываем доступные экспедиции
+        location_id = character.location or "start"
+        available_expeditions = []
+        
+        for exp_id, exp_data in expeditions_data.get("expeditions", {}).items():
+            if location_id in exp_data.get("locations", []):
+                if character.level >= exp_data.get("level_req", 1):
+                    available_expeditions.append((exp_id, exp_data))
+        
+        if available_expeditions:
+            text += "*Доступные экспедиции:*\n\n"
+            for exp_id, exp_data in available_expeditions[:5]:
+                text += f"├ {exp_data.get('name', exp_id)}\n"
+                text += f"│  🎯 Уровень: {exp_data.get('level_req', 1)}\n"
+                text += f"│  ⏱️ Время: {exp_data.get('duration', 3600) // 60} мин\n"
+                text += f"│  🎁 Награда: {exp_data.get('reward_gold', 0)}💰"
+                if exp_data.get('reward_exp'):
+                    text += f", {exp_data.get('reward_exp')}✨"
+                text += "\n\n"
+            
+            keyboard = InlineKeyboardMarkup(row_width=2)
+            for exp_id, exp_data in available_expeditions[:4]:
+                keyboard.add(InlineKeyboardButton(
+                    exp_data.get('name', exp_id),
+                    callback_data=f"expedition:start:{exp_id}"
+                ))
+            keyboard.add(InlineKeyboardButton("🔙 Назад", callback_data="start:menu"))
+        else:
+            text += "❌ Нет доступных экспедиций в текущей локации."
+            keyboard = InlineKeyboardMarkup()
+            keyboard.add(InlineKeyboardButton("🔙 Назад", callback_data="start:menu"))
+    
+    bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
+
 # ========== ЛОКАЦИИ И ПЕРЕМЕЩЕНИЕ ==========
 
 def location_command(message, bot, get_or_create_player_func, locations_data):
@@ -1006,6 +1082,7 @@ __all__ = [
     'quest_command',
     'craft_command',
     'house_command',
+    'expedition_command',
     'location_command',
     'map_command',
     'move_command',
