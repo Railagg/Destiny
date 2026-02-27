@@ -19,6 +19,109 @@ ENERGY_COSTS = {
     "mine": 2
 }
 
+# Карта привалов (локация -> данные привала)
+RESPOT_SPOTS = {
+    "lake_shore": {
+        "name": "🪵 У озера",
+        "description": "Тихий уголок на берегу озера, чуть в стороне от домика рыбака. Шепот камышей и плеск воды успокаивают.",
+        "energy_gain": 25,
+        "health_gain": 15,
+        "cooldown": 3600,  # 1 час
+        "connections": ["deep_forest"],  # Отсюда можно пойти в глухой лес
+        "image": "rest_lake.jpg"
+    },
+    "mountain_path": {
+        "name": "⛰️ Горный привал",
+        "description": "Уютная площадка среди скал, защищённая от ветра. Отсюда открывается вид на долину.",
+        "energy_gain": 20,
+        "health_gain": 10,
+        "cooldown": 3600,
+        "connections": ["mountain_peak", "mine_entrance"],
+        "image": "rest_mountain.jpg"
+    },
+    "volcano_path": {
+        "name": "🌋 Привал у вулкана",
+        "description": "Тёплое место у подножия вулкана. Земля здесь нагрета лавой, можно погреть руки.",
+        "energy_gain": 15,
+        "health_gain": 5,
+        "magic_gain": 20,
+        "cooldown": 3600,
+        "connections": ["volcano_crater", "volcanic_beach"],
+        "image": "rest_volcano.jpg"
+    },
+    "bridge_before_dragon": {
+        "name": "🌉 Привал на мосту",
+        "description": "Костер, разожжённый предыдущими путниками. Отсюда виден вход в логово дракона.",
+        "energy_gain": 30,
+        "health_gain": 30,
+        "magic_gain": 30,
+        "cooldown": 7200,  # 2 часа - особенное место
+        "special_action": {
+            "name": "🔥 Разжечь костёр",
+            "description": "Разжечь костёр из шкуры и дров",
+            "ingredients": {"leather": 1, "wood": 5},
+            "achievement": "Поджигатель шкур"
+        },
+        "connections": ["dragon_lair", "ancient_ruins"],
+        "image": "rest_bridge.jpg"
+    },
+    "desert_oasis": {
+        "name": "🏝️ Привал в оазисе",
+        "description": "Прохладный оазис посреди пустыни. Пальмы дают тень, вода утоляет жажду.",
+        "energy_gain": 35,
+        "health_gain": 25,
+        "cooldown": 3600,
+        "connections": ["desert", "desert_pyramid"],
+        "image": "rest_oasis.jpg"
+    },
+    "ice_cave": {
+        "name": "🧊 Привал в ледяной пещере",
+        "description": "Укрытие от вечной пурги. Стены пещеры светятся голубым светом.",
+        "energy_gain": 20,
+        "health_gain": 15,
+        "magic_gain": 25,
+        "cooldown": 3600,
+        "connections": ["ice_plains", "frozen_ocean"],
+        "image": "rest_ice_cave.jpg"
+    },
+    "witch_hut": {
+        "name": "🏚️ Привал у ведьмы",
+        "description": "Поляна перед хижиной болотной ведьмы. В котле что-то варится.",
+        "energy_gain": 15,
+        "health_gain": 10,
+        "magic_gain": 40,
+        "cooldown": 7200,
+        "special_action": {
+            "name": "🧙 Сварить зелье",
+            "description": "Попросить ведьму сварить особенное зелье",
+            "ingredients": {"swamp_herb": 3, "mushroom": 2, "magic_dust": 1},
+            "result": "witch_potion"
+        },
+        "connections": ["swamp", "swamp_depths"],
+        "image": "rest_witch.jpg"
+    },
+    "crystal_grove": {
+        "name": "💎 Привал в кристальной роще",
+        "description": "Поляна, где растут кристальные деревья. Воздух искрится магией.",
+        "energy_gain": 25,
+        "health_gain": 20,
+        "magic_gain": 50,
+        "cooldown": 7200,
+        "connections": ["crystal_island", "crystal_dragon_lair"],
+        "image": "rest_crystal.jpg"
+    },
+    "dragon_island_beach": {
+        "name": "🐉 Привал на острове драконов",
+        "description": "Песчаный пляж, где драконы греются на солнце. Относительно безопасно.",
+        "energy_gain": 40,
+        "health_gain": 30,
+        "magic_gain": 40,
+        "cooldown": 7200,
+        "connections": ["dragon_island", "dragon_king_throne"],
+        "image": "rest_dragon_beach.jpg"
+    }
+}
+
 # ========== ПРОФИЛЬ И СТАТИСТИКА ==========
 
 def profile_command(message, bot, get_or_create_player_func, items_data):
@@ -41,6 +144,13 @@ def profile_command(message, bot, get_or_create_player_func, items_data):
     
     if character.player_class:
         text += f"⚔️ Класс: {character.player_class}\n"
+    
+    # Информация о последнем отдыхе
+    if character.last_rest_time:
+        last_rest = datetime.fromtimestamp(character.last_rest_time)
+        time_diff = datetime.utcnow() - last_rest
+        hours = time_diff.total_seconds() // 3600
+        text += f"⏰ Последний отдых: {int(hours)} ч назад\n"
     
     keyboard = InlineKeyboardMarkup(row_width=2)
     keyboard.add(
@@ -161,27 +271,29 @@ def craft_command(message, bot, get_or_create_player_func, crafting_data, items_
     
     # Группируем рецепты по категориям
     categories = {
-        "weapon": "⚔️ Оружие",
+        "weapons": "⚔️ Оружие",
         "armor": "🛡️ Броня",
-        "potion": "🧪 Зелья",
-        "food": "🍖 Еда",
-        "tool": "🔧 Инструменты",
-        "material": "📦 Материалы"
+        "tools": "🛠️ Инструменты",
+        "potions": "🧪 Зелья",
+        "food": "🍲 Еда",
+        "special": "✨ Особые"
     }
     
     available_recipes = 0
     
     for cat_id, cat_name in categories.items():
         cat_recipes = []
-        for recipe_id, recipe in crafting_data.get("recipes", {}).items():
-            if recipe.get("category") == cat_id:
+        # Ищем рецепты в codex.py структуре
+        if "crafting" in crafting_data and "categories" in crafting_data["crafting"]:
+            recipes_data = crafting_data["crafting"]["categories"].get(cat_id, {})
+            for recipe in recipes_data.get("recipes", []):
                 if character.level >= recipe.get("level_req", 1):
-                    cat_recipes.append((recipe_id, recipe))
+                    cat_recipes.append(recipe)
         
         if cat_recipes:
             text += f"\n*{cat_name}:*\n"
-            for recipe_id, recipe in cat_recipes[:3]:  # Показываем первые 3
-                text += f"├ {recipe.get('name', recipe_id)}\n"
+            for recipe in cat_recipes[:3]:  # Показываем первые 3
+                text += f"├ {recipe.get('name', 'Рецепт')}\n"
                 available_recipes += 1
     
     if available_recipes == 0:
@@ -191,10 +303,10 @@ def craft_command(message, bot, get_or_create_player_func, crafting_data, items_
     
     keyboard = InlineKeyboardMarkup(row_width=2)
     keyboard.add(
-        InlineKeyboardButton("⚔️ Оружие", callback_data="craft:weapon"),
+        InlineKeyboardButton("⚔️ Оружие", callback_data="craft:weapons"),
         InlineKeyboardButton("🛡️ Броня", callback_data="craft:armor"),
-        InlineKeyboardButton("🧪 Зелья", callback_data="craft:potion"),
-        InlineKeyboardButton("🍖 Еда", callback_data="craft:food"),
+        InlineKeyboardButton("🧪 Зелья", callback_data="craft:potions"),
+        InlineKeyboardButton("🍲 Еда", callback_data="craft:food"),
         InlineKeyboardButton("📦 Все рецепты", callback_data="craft:all"),
         InlineKeyboardButton("🔙 Назад", callback_data="start:menu")
     )
@@ -331,7 +443,7 @@ def expedition_command(message, bot, get_or_create_player_func, expeditions_data
 
 # ========== ЛОКАЦИИ И ПЕРЕМЕЩЕНИЕ ==========
 
-def location_command(message, bot, get_or_create_player_func, locations_data):
+def location_command(message, bot, get_or_create_player_func, locations_data, items_data=None):
     """Команда /location - текущая локация"""
     user_id = message.from_user.id
     user, character = get_or_create_player_func(user_id)
@@ -342,12 +454,78 @@ def location_command(message, bot, get_or_create_player_func, locations_data):
     if not location:
         location = {"name": "Неизвестно", "description": "Локация не найдена"}
     
+    # Проверяем, рыночная ли это площадь
+    if location_id == "market_square":
+        text = "🏪 *Рыночная площадь*\n\n"
+        text += "Оживлённое место, где кипит торговля. Здесь можно найти:\n"
+        text += "├ 🛡️ Оружейник - продаёт оружие и броню\n"
+        text += "├ 🧪 Алхимик - торгует зельями и ингредиентами\n"
+        text += "├ 🍖 Мясник - покупает мясо и шкуры\n"
+        text += "├ 🎣 Рыбак - покупает рыбу\n"
+        text += "└ 🏠 Риэлтор - продаёт дома\n\n"
+        text += "Подойди к любому торговцу!"
+        
+        # Показываем фотографию рыночной площади
+        try:
+            with open('bot/data/images/market_square.jpg', 'rb') as photo:
+                bot.send_photo(message.chat.id, photo, caption=text, parse_mode='Markdown')
+        except:
+            # Если фото не найдено, отправляем просто текст
+            bot.send_message(message.chat.id, text, parse_mode='Markdown')
+        
+        # Создаём клавиатуру с торговцами
+        keyboard = InlineKeyboardMarkup(row_width=2)
+        keyboard.add(
+            InlineKeyboardButton("🛡️ Оружейник", callback_data="shop:open:weaponsmith"),
+            InlineKeyboardButton("🧪 Алхимик", callback_data="shop:open:alchemist"),
+            InlineKeyboardButton("🍖 Мясник", callback_data="shop:open:butcher"),
+            InlineKeyboardButton("🎣 Рыбак", callback_data="shop:open:fisherman"),
+            InlineKeyboardButton("🏠 Риэлтор", callback_data="shop:open:realtor"),
+            InlineKeyboardButton("🔙 Назад", callback_data="start:menu")
+        )
+        bot.send_message(message.chat.id, "Выбери торговца:", reply_markup=keyboard)
+        return
+    
+    # Проверяем, есть ли здесь привал
+    rest_spot = RESPOT_SPOTS.get(location_id)
+    
     text = f"📍 *{location.get('name', 'Локация')}*\n\n"
     text += location.get('description', 'Описание отсутствует')
+    
+    # Добавляем информацию о привале, если есть
+    if rest_spot:
+        text += f"\n\n⛺ *{rest_spot['name']}*\n"
+        text += f"├ {rest_spot['description']}\n"
+        text += f"├ +{rest_spot['energy_gain']}⚡"
+        if rest_spot.get('health_gain'):
+            text += f", +{rest_spot['health_gain']}❤️"
+        if rest_spot.get('magic_gain'):
+            text += f", +{rest_spot['magic_gain']}🔮"
+        text += f"\n└ ⏱️ Перезарядка: {rest_spot['cooldown']//3600} ч"
     
     keyboard = InlineKeyboardMarkup(row_width=2)
     actions_added = 0
     
+    # Добавляем кнопку привала, если есть
+    if rest_spot:
+        now = int(time.time())
+        last_rest = character.last_rest_time or 0
+        
+        if now - last_rest < rest_spot['cooldown']:
+            remaining = rest_spot['cooldown'] - (now - last_rest)
+            minutes = remaining // 60
+            keyboard.add(InlineKeyboardButton(
+                f"⏳ {rest_spot['name']} (ждём {minutes} мин)",
+                callback_data="game:rest_cooldown"
+            ))
+        else:
+            keyboard.add(InlineKeyboardButton(
+                f"⛺ Отдохнуть на {rest_spot['name']}",
+                callback_data=f"game:rest_spot:{location_id}"
+            ))
+        actions_added += 1
+    
+    # Стандартные действия из локации
     actions = location.get('actions', [])
     for action in actions:
         if action['type'] == 'move':
@@ -374,11 +552,13 @@ def location_command(message, bot, get_or_create_player_func, locations_data):
                 ))
                 actions_added += 1
         elif action['type'] == 'rest':
-            keyboard.add(InlineKeyboardButton(
-                action['text'],
-                callback_data="game:rest"
-            ))
-            actions_added += 1
+            # Это обычный отдых из локации, не привал
+            if character.energy < character.max_energy:
+                keyboard.add(InlineKeyboardButton(
+                    action['text'],
+                    callback_data="game:rest_local"
+                ))
+                actions_added += 1
         elif action['type'] == 'open_shop':
             keyboard.add(InlineKeyboardButton(
                 action['text'],
@@ -442,27 +622,43 @@ def map_command(message, bot):
     text += "├ 🌿 Лесная тропа (ур. 2+)\n"
     text += "├ 🛤️ Лесная развилка (ур. 3+)\n"
     text += "├ 🌳 Глухой лес (ур. 2+)\n"
-    text += "├ 🏞️ Берег озера (ур. 3+)\n\n"
+    text += "├ 🏞️ Берег озера (ур. 3+) *⛺ Привал*\n\n"
     
     text += "⛰️ **Горные зоны:**\n"
-    text += "├ ⛰️ Горная тропа (ур. 10+)\n"
+    text += "├ ⛰️ Горная тропа (ур. 10+) *⛺ Привал*\n"
     text += "├ ⛏️ Вход в шахту (ур. 15+)\n"
     text += "├ 🏔️ Горная вершина (ур. 12+)\n"
-    text += "├ 🌋 Тропа к вулкану (ур. 25+)\n"
+    text += "├ 🌋 Тропа к вулкану (ур. 25+) *⛺ Привал*\n"
     text += "├ 🌋 Жерло вулкана (ур. 28+)\n"
     text += "├ 🏖️ Вулканический пляж (ур. 25+)\n\n"
     
-    text += "🏝️ **Острова:**\n"
-    text += "├ ⚓ Гавань островов (ур. 30+)\n"
-    text += "├ 🌋 Огненный остров (ур. 45+, 3🌈)\n"
-    text += "├ 💎 Кристальный остров (ур. 50+, 1💎)\n"
-    text += "├ 🐉 Остров драконов (ур. 55+, 5💎)\n\n"
+    text += "🏜️ **Пустыня:**\n"
+    text += "├ 🏜️ Пустыня забвения (ур. 30+)\n"
+    text += "├ 🏝️ Оазис (ур. 30+) *⛺ Привал*\n"
+    text += "├ 🏛️ Древняя пирамида (ур. 35+)\n\n"
+    
+    text += "🌿 **Болото:**\n"
+    text += "├ 🌿 Болото туманов (ур. 35+)\n"
+    text += "├ 🏚️ Хижина ведьмы (ур. 35+) *⛺ Привал*\n\n"
+    
+    text += "❄️ **Ледяные земли:**\n"
+    text += "├ ❄️ Ледяные равнины (ур. 40+)\n"
+    text += "├ 🧊 Ледяная пещера (ур. 42+) *⛺ Привал*\n"
+    text += "├ 🌊 Замёрзший океан (ур. 40+)\n\n"
     
     text += "🏛️ **Подземелья:**\n"
     text += "├ ⛏️ Шахта (5 уровней, ур. 15-30)\n"
     text += "├ 🏛️ Древние руины (ур. 35+)\n"
-    text += "├ 🌉 Мост перед драконом (ур. 40+)\n"
-    text += "├ 🐉 Логово дракона (ур. 50+)\n"
+    text += "├ 🌉 Мост перед драконом (ур. 40+) *⛺ Привал*\n"
+    text += "├ 🐉 Логово дракона (ур. 50+)\n\n"
+    
+    text += "🏝️ **Острова:**\n"
+    text += "├ ⚓ Гавань островов (ур. 30+)\n"
+    text += "├ 🌋 Огненный остров (ур. 45+, 3🌈)\n"
+    text += "├ 💎 Кристальный остров (ур. 50+, 1💎) *⛺ Привал*\n"
+    text += "├ 🐉 Остров драконов (ур. 55+, 5💎) *⛺ Привал*\n\n"
+    
+    text += "⛺ *Привалы* - места для отдыха с особыми бонусами (перезарядка 1-2ч)"
     
     keyboard = InlineKeyboardMarkup()
     keyboard.add(
@@ -493,6 +689,9 @@ def move_command(message, bot, get_or_create_player_func, locations_data):
     village_locs = []
     forest_locs = []
     mountain_locs = []
+    desert_locs = []
+    swamp_locs = []
+    ice_locs = []
     island_locs = []
     dungeon_locs = []
     
@@ -501,23 +700,30 @@ def move_command(message, bot, get_or_create_player_func, locations_data):
             level_req = loc_data.get('level_req', 1)
             if character.level >= level_req:
                 name = loc_data.get('name', loc_id)
+                has_rest = "⛺" if loc_id in RESPOT_SPOTS else ""
                 
                 if "дерев" in name.lower() or "площадь" in name.lower() or "таверн" in name.lower() or "рыночн" in name.lower() or "кузниц" in name.lower() or "башн" in name.lower():
-                    village_locs.append((loc_id, name))
+                    village_locs.append((loc_id, f"{has_rest} {name}" if has_rest else name))
                 elif "лес" in name.lower() or "троп" in name.lower() or "развил" in name.lower() or "озер" in name.lower():
-                    forest_locs.append((loc_id, name))
-                elif "гор" in name.lower() or "шахт" in name.lower() or "вулкан" in name.lower() or "пляж" in name.lower() or "вершин" in name.lower():
-                    mountain_locs.append((loc_id, name))
+                    forest_locs.append((loc_id, f"{has_rest} {name}" if has_rest else name))
+                elif "гор" in name.lower() or "шахт" in name.lower() or "вершин" in name.lower():
+                    mountain_locs.append((loc_id, f"{has_rest} {name}" if has_rest else name))
+                elif "пустын" in name.lower() or "оазис" in name.lower() or "пирамид" in name.lower():
+                    desert_locs.append((loc_id, f"{has_rest} {name}" if has_rest else name))
+                elif "болот" in name.lower() or "хижин" in name.lower():
+                    swamp_locs.append((loc_id, f"{has_rest} {name}" if has_rest else name))
+                elif "лед" in name.lower() or "снеж" in name.lower() or "мороз" in name.lower():
+                    ice_locs.append((loc_id, f"{has_rest} {name}" if has_rest else name))
                 elif "остров" in name.lower() or "гаван" in name.lower():
-                    island_locs.append((loc_id, name))
+                    island_locs.append((loc_id, f"{has_rest} {name}" if has_rest else name))
                 elif "руин" in name.lower() or "мост" in name.lower() or "логов" in name.lower():
-                    dungeon_locs.append((loc_id, name))
+                    dungeon_locs.append((loc_id, f"{has_rest} {name}" if has_rest else name))
     
     if village_locs:
         text += "🏘️ *Деревня:*\n"
         for loc_id, name in village_locs:
             text += f"├ {name}\n"
-            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id}"))
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id.split()[0] if '⛺' in name else loc_id}"))
             locations_found += 1
         text += "\n"
     
@@ -525,7 +731,7 @@ def move_command(message, bot, get_or_create_player_func, locations_data):
         text += "🌲 *Лес:*\n"
         for loc_id, name in forest_locs:
             text += f"├ {name}\n"
-            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id}"))
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id.split()[0] if '⛺' in name else loc_id}"))
             locations_found += 1
         text += "\n"
     
@@ -533,7 +739,31 @@ def move_command(message, bot, get_or_create_player_func, locations_data):
         text += "⛰️ *Горы:*\n"
         for loc_id, name in mountain_locs:
             text += f"├ {name}\n"
-            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id}"))
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id.split()[0] if '⛺' in name else loc_id}"))
+            locations_found += 1
+        text += "\n"
+    
+    if desert_locs:
+        text += "🏜️ *Пустыня:*\n"
+        for loc_id, name in desert_locs:
+            text += f"├ {name}\n"
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id.split()[0] if '⛺' in name else loc_id}"))
+            locations_found += 1
+        text += "\n"
+    
+    if swamp_locs:
+        text += "🌿 *Болото:*\n"
+        for loc_id, name in swamp_locs:
+            text += f"├ {name}\n"
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id.split()[0] if '⛺' in name else loc_id}"))
+            locations_found += 1
+        text += "\n"
+    
+    if ice_locs:
+        text += "❄️ *Ледяные земли:*\n"
+        for loc_id, name in ice_locs:
+            text += f"├ {name}\n"
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id.split()[0] if '⛺' in name else loc_id}"))
             locations_found += 1
         text += "\n"
     
@@ -541,7 +771,7 @@ def move_command(message, bot, get_or_create_player_func, locations_data):
         text += "🏝️ *Острова:*\n"
         for loc_id, name in island_locs:
             text += f"├ {name}\n"
-            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id}"))
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id.split()[0] if '⛺' in name else loc_id}"))
             locations_found += 1
         text += "\n"
     
@@ -549,7 +779,7 @@ def move_command(message, bot, get_or_create_player_func, locations_data):
         text += "🏛️ *Подземелья:*\n"
         for loc_id, name in dungeon_locs:
             text += f"├ {name}\n"
-            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id}"))
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id.split()[0] if '⛺' in name else loc_id}"))
             locations_found += 1
         text += "\n"
     
@@ -614,181 +844,567 @@ def move_to_location(call, bot, get_or_create_player_func, locations_data):
     bot.answer_callback_query(call.id, f"✅ Перемещён")
     location_command(call.message, bot, get_or_create_player_func, locations_data)
 
-# ========== ДЕЙСТВИЯ ==========
+# ========== ОТДЫХ НА ПРИВАЛАХ ==========
 
-def hunt_action(call, bot, get_or_create_player_func):
-    """Обработчик охоты"""
+def rest_spot_action(call, bot, get_or_create_player_func):
+    """Обработчик отдыха на привале"""
     user_id = call.from_user.id
     user, character = get_or_create_player_func(user_id)
     
-    if character.energy < 5:
-        bot.answer_callback_query(call.id, "❌ Нужно 5⚡ энергии!")
-        return
-    
-    character.energy -= 5
-    from main import save_character
-    save_character(character)
-    
-    bot.answer_callback_query(call.id, "⏳ Охота... 5 секунд")
-    
-    # Имитация задержки
-    time.sleep(5)
-    
-    # Случайный результат охоты
-    exp_gain = random.randint(10, 30)
-    gold_gain = random.randint(5, 15)
-    
-    # Шанс найти предмет
-    item_found = None
-    if random.random() < 0.3:  # 30% шанс
-        possible_items = ["wolf_fur", "boar_tusk", "spider_silk", "feather"]
-        item_found = random.choice(possible_items)
-        character.add_item(item_found)
-    
-    character.experience += exp_gain
-    character.gold += gold_gain
-    character.kills_total = (character.kills_total or 0) + 1
-    save_character(character)
-    
-    result_text = f"🎯 *Охота завершена!*\n\n✨ +{exp_gain} опыта\n💰 +{gold_gain} золота"
-    if item_found:
-        item_name = {
-            "wolf_fur": "🐺 Волчья шкура",
-            "boar_tusk": "🐗 Клык кабана",
-            "spider_silk": "🕷️ Паучий шёлк",
-            "feather": "🪶 Перо"
-        }.get(item_found, item_found)
-        result_text += f"\n📦 Найдено: {item_name}"
-    
-    bot.send_message(call.message.chat.id, result_text, parse_mode='Markdown')
-
-def fish_action(call, bot, get_or_create_player_func):
-    """Обработчик рыбалки"""
-    user_id = call.from_user.id
-    user, character = get_or_create_player_func(user_id)
-    
-    if character.energy < 2:
-        bot.answer_callback_query(call.id, "❌ Нужно 2⚡ энергии!")
-        return
-    
-    character.energy -= 2
-    from main import save_character
-    save_character(character)
-    
-    # Случайный результат рыбалки
-    exp_gain = random.randint(5, 15)
-    fish_gain = random.randint(1, 3)
-    
-    character.experience += exp_gain
-    for _ in range(fish_gain):
-        character.add_item("fish")
-    save_character(character)
-    
-    bot.send_message(
-        call.message.chat.id,
-        f"🎣 *Рыбалка!*\n\n🐟 Поймано рыб: {fish_gain}\n✨ +{exp_gain} опыта",
-        parse_mode='Markdown'
-    )
-
-def gather_action(call, bot, get_or_create_player_func):
-    """Обработчик сбора трав"""
-    user_id = call.from_user.id
-    user, character = get_or_create_player_func(user_id)
-    
-    if character.energy < 2:
-        bot.answer_callback_query(call.id, "❌ Нужно 2⚡ энергии!")
-        return
-    
-    character.energy -= 2
-    from main import save_character
-    save_character(character)
-    
-    # Случайный результат сбора
-    exp_gain = random.randint(5, 10)
-    herb_gain = random.randint(1, 3)
-    berry_gain = random.randint(0, 2)
-    
-    character.experience += exp_gain
-    for _ in range(herb_gain):
-        character.add_item("herb")
-    for _ in range(berry_gain):
-        character.add_item("berry")
-    save_character(character)
-    
-    bot.send_message(
-        call.message.chat.id,
-        f"🌿 *Сбор трав!*\n\n🌿 Трав: {herb_gain}\n🫐 Ягод: {berry_gain}\n✨ +{exp_gain} опыта",
-        parse_mode='Markdown'
-    )
-
-def mine_action(call, bot, get_or_create_player_func):
-    """Обработчик добычи руды"""
-    user_id = call.from_user.id
-    user, character = get_or_create_player_func(user_id)
-    
-    if character.energy < 2:
-        bot.answer_callback_query(call.id, "❌ Нужно 2⚡ энергии!")
-        return
-    
-    character.energy -= 2
-    from main import save_character
-    save_character(character)
-    
-    # Случайный результат добычи
-    exp_gain = random.randint(10, 20)
-    
-    # Определяем руду в зависимости от уровня шахты
-    location_id = character.location or "start"
-    if "mine_level1" in location_id:
-        ores = ["copper_ore", "copper_ore", "iron_ore"]
-    elif "mine_level2" in location_id:
-        ores = ["iron_ore", "iron_ore", "gold_ore"]
-    elif "mine_level3" in location_id:
-        ores = ["gold_ore", "gold_ore", "crystal"]
-    elif "mine_level4" in location_id:
-        ores = ["mythril_ore", "crystal", "ruby"]
+    parts = call.data.split(':')
+    if len(parts) >= 3:
+        location_id = parts[2]
     else:
-        ores = ["stone", "coal", "iron_ore"]
+        bot.answer_callback_query(call.id, "❌ Ошибка")
+        return
     
-    ore_found = random.choice(ores)
-    amount = random.randint(1, 3)
-    
-    character.experience += exp_gain
-    for _ in range(amount):
-        character.add_item(ore_found)
-    save_character(character)
-    
-    ore_names = {
-        "copper_ore": "Медная руда",
-        "iron_ore": "Железная руда",
-        "gold_ore": "Золотая руда",
-        "mythril_ore": "Мифриловая руда",
-        "crystal": "Кристалл",
-        "ruby": "Рубин",
-        "stone": "Камень",
-        "coal": "Уголь"
-    }
-    
-    bot.send_message(
-        call.message.chat.id,
-        f"⛏️ *Добыча руды!*\n\n📦 Найдено: {ore_names.get(ore_found, ore_found)} x{amount}\n✨ +{exp_gain} опыта",
-        parse_mode='Markdown'
-    )
-
-def rest_action(call, bot, get_or_create_player_func):
-    """Обработчик отдыха"""
-    user_id = call.from_user.id
-    user, character = get_or_create_player_func(user_id)
+    rest_spot = RESPOT_SPOTS.get(location_id)
+    if not rest_spot:
+        bot.answer_callback_query(call.id, "❌ Привал не найден")
+        return
     
     # Проверяем кулдаун
     now = int(time.time())
     last_rest = character.last_rest_time or 0
-    cooldown = 3600  # 1 час
+    cooldown = rest_spot['cooldown']
     
     if now - last_rest < cooldown:
         remaining = cooldown - (now - last_rest)
         minutes = remaining // 60
-        bot.answer_callback_query(call.id, f"⏳ Отдых ещё не доступен. Подожди {minutes} мин.")
+        bot.answer_callback_query(call.id, f"⏳ Отдых ещё не доступен. Подожди {minutes} мин.", show_alert=True)
+        return
+    
+    # Применяем бонусы
+    energy_gain = rest_spot.get('energy_gain', 20)
+    health_gain = rest_spot.get('health_gain', 0)
+    magic_gain = rest_spot.get('magic_gain', 0)
+    
+    character.energy = min(character.energy + energy_gain, character.max_energy)
+    character.health = min(character.health + health_gain, character.max_health)
+    character.mana = min(character.mana + magic_gain, character.max_mana)
+    character.last_rest_time = now
+    
+    # Проверяем особые действия на привале
+    special_action = rest_spot.get('special_action')
+    if special_action:
+        # Проверяем, есть ли ингредиенты
+        has_all = True
+        missing = []
+        for item, amount in special_action['ingredients'].items():
+            if not character.has_item(item, amount):
+                has_all = False
+                missing.append(f"{item} x{amount}")
+        
+        if has_all:
+            # Тратим ингредиенты
+            for item, amount in special_action['ingredients'].items():
+                character.remove_item(item, amount)
+            
+            # Даём результат
+            if 'achievement' in special_action:
+                character.add_achievement(special_action['achievement'])
+            
+            if 'result' in special_action:
+                character.add_item(special_action['result'])
+                
+            bot.send_message(
+                call.message.chat.id,
+                f"✨ *Особое событие на привале!*\n\n{special_action['description']}\n\n✅ Выполнено!",
+                parse_mode='Markdown'
+            )
+    
+    from main import save_character
+    save_character(character)
+    
+    # Пытаемся отправить картинку привала
+    try:
+        with open(f'bot/data/images/{rest_spot["image"]}', 'rb') as photo:
+            bot.send_photo(
+                call.message.chat.id,
+                photo,
+                caption=f"✅ *Отдохнул на {rest_spot['name']}!*\n\n+{energy_gain}⚡ энергии\n+{health_gain}❤️ здоровья\n+{magic_gain}🔮 маны",
+                parse_mode='Markdown'
+            )
+    except:
+        bot.send_message(
+            call.message.chat.id,
+            f"✅ *Отдохнул на {rest_spot['name']}!*\n\n+{energy_gain}⚡ энергии\n+{health_gain}❤️ здоровья\n+{magic_gain}🔮 маны",
+            parse_mode='Markdown'
+        )
+    
+    # Показываем доступные пути с привала
+    if rest_spot.get('connections'):
+        text = "🗺️ *С привала можно пойти:*\n\n"
+        keyboard = InlineKeyboardMarkup(row_width=2)
+        
+        from main import locations_data
+        for conn_id in rest_spot['connections']:
+            conn_loc = locations_data.get("locations", {}).get(conn_id, {})
+            if conn_loc:
+                text += f"├ {conn_loc.get('name', conn_id)}\n"
+                keyboard.add(InlineKeyboardButton(
+                    f"➡️ {conn_loc.get('name', conn_id)}",
+                    callback_data=f"game:move_to:{conn_id}"
+                ))
+        
+        keyboard.add(InlineKeyboardButton("🔙 Остаться здесь", callback_data="game:location"))
+        bot.send_message(call.message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
+
+# ========== ДЕЙСТВИЯ ==========
+
+def hunt_action(call, bot, get_or_create_player_func, locations_data, enemies_data, items_data):
+    """Обработчик охоты с новыми процентами:
+    40% - взрослое животное (шкура + мясо)
+    15% - тайник (hidden_stash из локации)
+    20% - детёныш (при атаке призовёт мать)
+    25% - горсть монет
+    """
+    user_id = call.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    # Проверка энергии
+    if character.energy < 5:
+        bot.answer_callback_query(call.id, "❌ Нужно 5⚡ энергии для охоты!", show_alert=True)
+        return
+    
+    # Тратим энергию
+    character.energy -= 5
+    from main import save_character
+    save_character(character)
+    
+    # Анимация охоты
+    bot.answer_callback_query(call.id, "🏹 Выслеживаю добычу...")
+    
+    # Определяем результат (сумма = 100%)
+    roll = random.randint(1, 100)
+    
+    exp_gain = random.randint(15, 30)
+    character.experience += exp_gain
+    character.kills_total = (character.kills_total or 0) + 1
+    
+    result_text = f"🏹 *Охота*\n\n"
+    
+    if roll <= 40:  # 40% - взрослое животное
+        # Выбираем случайное взрослое животное из локации
+        location_id = character.location or "start"
+        location = locations_data.get("locations", {}).get(location_id, {})
+        
+        possible_enemies = []
+        for enemy_id in location.get('enemies', []):
+            enemy = enemies_data.get("enemies", {}).get(enemy_id, {})
+            # Выбираем только взрослых (не детёнышей)
+            if enemy.get('gender') in ['male', 'female'] and enemy.get('type') != 'group':
+                possible_enemies.append(enemy)
+        
+        if possible_enemies:
+            enemy = random.choice(possible_enemies)
+            
+            # Собираем дроп
+            drops = []
+            for drop in enemy.get('drops', []):
+                if random.randint(1, 100) <= drop['chance']:
+                    amount = random.randint(drop['min'], drop['max'])
+                    character.add_item(drop['item'], amount)
+                    item_name = items_data.get("items", {}).get(drop['item'], {}).get('emoji', '📦')
+                    drops.append(f"{item_name} x{amount}")
+            
+            result_text += f"🐺 Ты выследил {enemy.get('name', 'зверя')}!\n"
+            result_text += f"📦 Добыча: {', '.join(drops) if drops else 'ничего'}\n"
+        else:
+            # Если врагов нет, даём монеты
+            gold = random.randint(20, 40)
+            character.gold += gold
+            result_text += f"💰 Ты нашёл горсть монет: +{gold} золота\n"
+    
+    elif roll <= 55:  # 15% - тайник
+        location_id = character.location or "start"
+        location = locations_data.get("locations", {}).get(location_id, {})
+        stash = location.get('hidden_stash', {})
+        
+        if stash:
+            gold = random.randint(
+                stash.get('guaranteed', {}).get('gold_min', 5),
+                stash.get('guaranteed', {}).get('gold_max', 15)
+            )
+            character.gold += gold
+            
+            result_text += f"🔍 Ты нашёл {stash.get('name', 'тайник')}!\n"
+            result_text += f"💰 +{gold} золота\n"
+            
+            # Шанс найти предметы из тайника
+            for item_data in stash.get('items', []):
+                if random.randint(1, 100) <= item_data['chance']:
+                    amount = random.randint(item_data['amount_min'], item_data['amount_max'])
+                    character.add_item(item_data['item'], amount)
+                    item_name = items_data.get("items", {}).get(item_data['item'], {}).get('emoji', '📦')
+                    result_text += f"📦 Найдено: {item_name} x{amount}\n"
+            
+            # Шанс найти редкие предметы
+            for item_data in stash.get('rare_items', []):
+                if random.randint(1, 100) <= item_data['chance']:
+                    amount = random.randint(item_data['amount_min'], item_data['amount_max'])
+                    character.add_item(item_data['item'], amount)
+                    item_name = items_data.get("items", {}).get(item_data['item'], {}).get('emoji', '📦')
+                    result_text += f"✨ Найдено редкое: {item_name} x{amount}\n"
+        else:
+            # Если тайника нет, даём монеты
+            gold = random.randint(15, 30)
+            character.gold += gold
+            result_text += f"💰 Ты нашёл горсть монет: +{gold} золота\n"
+    
+    elif roll <= 75:  # 20% - детёныш
+        # Определяем тип детёныша в зависимости от локации
+        location_id = character.location or "start"
+        
+        # Маппинг локаций на возможных детёнышей
+        cub_types = {
+            "deep_forest": ["wolf_cub", "boar_piglet", "bear_cub"],
+            "forest_path": ["moose_calf"],
+            "mountain_path": ["bear_cub"],
+            "desert": ["scorpion_hatchling"],
+            "swamp": ["frog_cub", "snake_cub"],
+            "ice_plains": ["ice_wolf_cub", "white_bear_cub"],
+            "volcanic_beach": ["crab_cub"],
+            "frozen_ocean": ["seal_cub", "walrus_cub"],
+            "mine_level1": ["giant_rat_cub"],
+            "mine_level2": ["cave_spider_cub"],
+            "mine_level3": ["cave_spider_cub"]
+        }
+        
+        possible_cubs = cub_types.get(location_id, ["wolf_cub"])
+        cub_id = random.choice(possible_cubs)
+        
+        # Ищем в бестиарии
+        cub = None
+        if "codex" in enemies_data and "bestiary" in enemies_data["codex"]:
+            for category in enemies_data["codex"]["bestiary"]["categories"].values():
+                for creature in category.get("creatures", []):
+                    if creature.get("id") == cub_id:
+                        cub = creature
+                        break
+        
+        if not cub:
+            cub = enemies_data.get("enemies", {}).get(cub_id, {})
+        
+        result_text += f"🐾 Ты нашёл {cub.get('name', 'детёныша')}!\n"
+        result_text += f"⚔️ *ВНИМАНИЕ!* При атаке он призовёт мать!\n"
+        result_text += f"📖 {cub.get('lore', 'Маленький и беззащитный... но мама рядом.')}\n\n"
+        
+        # Проверяем, можно ли приручить
+        can_be_tamed = cub.get('can_be_tamed', False)
+        
+        # Создаём клавиатуру для выбора
+        keyboard = InlineKeyboardMarkup()
+        keyboard.add(
+            InlineKeyboardButton("⚔️ Атаковать", callback_data=f"combat:attack:{cub_id}"),
+            InlineKeyboardButton("🏃 Отпустить", callback_data="game:location")
+        )
+        
+        if can_be_tamed:
+            tame_item = cub.get('tame_item', 'мясо')
+            tame_chance = cub.get('tame_chance', 30)
+            keyboard.add(InlineKeyboardButton(
+                f"🪤 Приручить ({tame_chance}%, нужен {tame_item})",
+                callback_data=f"pet:tame:{cub_id}"
+            ))
+        
+        bot.send_message(call.message.chat.id, result_text, reply_markup=keyboard, parse_mode='Markdown')
+        return
+    
+    else:  # 25% - горсть монет
+        gold = random.randint(20, 50)
+        character.gold += gold
+        result_text += f"💰 Ты нашёл горсть монет: +{gold} золота\n"
+    
+    result_text += f"\n✨ +{exp_gain} опыта"
+    
+    save_character(character)
+    bot.send_message(call.message.chat.id, result_text, parse_mode='Markdown')
+
+def fish_action(call, bot, get_or_create_player_func):
+    """Обработчик рыбалки с кулдауном и затратами энергии"""
+    user_id = call.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    # Проверка энергии
+    if character.energy < 2:
+        bot.answer_callback_query(call.id, "❌ Нужно 2⚡ энергии для рыбалки!", show_alert=True)
+        return
+    
+    # Проверка кулдауна (30 минут)
+    now = int(time.time())
+    last_fish = character.last_fish_time or 0
+    cooldown = 1800  # 30 минут
+    
+    if now - last_fish < cooldown:
+        remaining = cooldown - (now - last_fish)
+        minutes = remaining // 60
+        seconds = remaining % 60
+        bot.answer_callback_query(call.id, f"⏳ Рыбалка ещё не доступна. Подожди {minutes} мин {seconds} сек.", show_alert=True)
+        return
+    
+    # Тратим энергию
+    character.energy -= 2
+    character.last_fish_time = now
+    
+    # Определяем биом для разной рыбы
+    location_id = character.location or "start"
+    
+    fish_types = {
+        "lake_shore": [
+            {"id": "fish", "name": "🐟 Обычная рыба", "chance": 70, "min": 1, "max": 3, "exp": 10},
+            {"id": "pike", "name": "🐟 Щука", "chance": 20, "min": 1, "max": 1, "exp": 20},
+            {"id": "carp", "name": "🐟 Карп", "chance": 10, "min": 1, "max": 1, "exp": 25}
+        ],
+        "frozen_ocean": [
+            {"id": "frozen_fish", "name": "🐟 Ледяная рыба", "chance": 60, "min": 1, "max": 2, "exp": 15},
+            {"id": "salmon", "name": "🐟 Лосось", "chance": 30, "min": 1, "max": 1, "exp": 25},
+            {"id": "ice_fish", "name": "❄️ Ледяная форель", "chance": 10, "min": 1, "max": 1, "exp": 35}
+        ],
+        "volcanic_beach": [
+            {"id": "tropical_fish", "name": "🐠 Тропическая рыбка", "chance": 50, "min": 1, "max": 3, "exp": 12},
+            {"id": "crab", "name": "🦀 Краб", "chance": 30, "min": 1, "max": 2, "exp": 18},
+            {"id": "lobster", "name": "🦞 Лобстер", "chance": 20, "min": 1, "max": 1, "exp": 30}
+        ],
+        "swamp": [
+            {"id": "catfish", "name": "🐟 Сом", "chance": 50, "min": 1, "max": 2, "exp": 15},
+            {"id": "frog_legs", "name": "🐸 Лягушачьи лапки", "chance": 40, "min": 1, "max": 2, "exp": 10},
+            {"id": "eel", "name": "🐍 Угорь", "chance": 10, "min": 1, "max": 1, "exp": 25}
+        ]
+    }
+    
+    # Выбираем рыбу для текущей локации
+    fish_pool = fish_types.get(location_id, fish_types["lake_shore"])
+    
+    # Случайный результат
+    roll = random.randint(1, 100)
+    cumulative = 0
+    caught_fish = None
+    
+    for fish in fish_pool:
+        cumulative += fish['chance']
+        if roll <= cumulative:
+            caught_fish = fish
+            break
+    
+    if not caught_fish:
+        caught_fish = fish_pool[-1]
+    
+    # Количество рыбы
+    amount = random.randint(caught_fish['min'], caught_fish['max'])
+    
+    # Добавляем в инвентарь
+    for _ in range(amount):
+        character.add_item(caught_fish['id'])
+    
+    # Опыт
+    exp_gain = caught_fish['exp'] * amount
+    character.experience += exp_gain
+    
+    # Шанс найти сокровище (5%)
+    treasure_found = None
+    if random.random() < 0.05:
+        if location_id == "frozen_ocean":
+            treasure_found = "ancient_coin"
+            character.add_item("ancient_coin")
+        elif location_id == "volcanic_beach":
+            treasure_found = "pearl"
+            character.add_item("pearl")
+        elif location_id == "lake_shore":
+            treasure_found = "old_boot"
+            character.add_item("old_boot")
+    
+    from main import save_character
+    save_character(character)
+    
+    result_text = f"🎣 *Рыбалка!*\n\n"
+    result_text += f"🐟 Поймано: {caught_fish['name']} x{amount}\n"
+    result_text += f"✨ +{exp_gain} опыта\n"
+    
+    if treasure_found:
+        item_name = items_data.get("items", {}).get(treasure_found, {}).get('emoji', '📦')
+        result_text += f"✨ Найдено сокровище: {item_name}\n"
+    
+    bot.send_message(call.message.chat.id, result_text, parse_mode='Markdown')
+
+def gather_action(call, bot, get_or_create_player_func):
+    """Обработчик сбора трав с кулдауном и затратами энергии"""
+    user_id = call.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    # Проверка энергии
+    if character.energy < 2:
+        bot.answer_callback_query(call.id, "❌ Нужно 2⚡ энергии для сбора!", show_alert=True)
+        return
+    
+    # Проверка кулдауна (30 минут)
+    now = int(time.time())
+    last_gather = character.last_gather_time or 0
+    cooldown = 1800  # 30 минут
+    
+    if now - last_gather < cooldown:
+        remaining = cooldown - (now - last_gather)
+        minutes = remaining // 60
+        bot.answer_callback_query(call.id, f"⏳ Сбор ещё не доступен. Подожди {minutes} мин.", show_alert=True)
+        return
+    
+    # Тратим энергию
+    character.energy -= 2
+    character.last_gather_time = now
+    
+    # Определяем биом для разных трав
+    location_id = character.location or "start"
+    
+    herb_types = {
+        "deep_forest": [
+            {"id": "herb", "name": "🌿 Обычная трава", "chance": 80, "min": 2, "max": 5, "exp": 8},
+            {"id": "berry", "name": "🫐 Лесная ягода", "chance": 60, "min": 1, "max": 3, "exp": 5},
+            {"id": "mushroom", "name": "🍄 Гриб", "chance": 40, "min": 1, "max": 2, "exp": 10},
+            {"id": "magic_herb", "name": "✨ Магическая трава", "chance": 10, "min": 1, "max": 1, "exp": 25}
+        ],
+        "mountain_path": [
+            {"id": "herb", "name": "🌿 Горная трава", "chance": 70, "min": 1, "max": 3, "exp": 10},
+            {"id": "edelweiss", "name": "🏔️ Эдельвейс", "chance": 30, "min": 1, "max": 1, "exp": 20},
+            {"id": "mountain_herb", "name": "⛰️ Альпийская трава", "chance": 15, "min": 1, "max": 1, "exp": 25}
+        ],
+        "desert": [
+            {"id": "cactus_fruit", "name": "🌵 Плод кактуса", "chance": 70, "min": 1, "max": 2, "exp": 12},
+            {"id": "desert_herb", "name": "🏜️ Пустынная трава", "chance": 40, "min": 1, "max": 2, "exp": 15},
+            {"id": "desert_rose", "name": "🌹 Роза пустыни", "chance": 5, "min": 1, "max": 1, "exp": 40}
+        ],
+        "swamp": [
+            {"id": "swamp_herb", "name": "🌿 Болотная трава", "chance": 70, "min": 2, "max": 4, "exp": 10},
+            {"id": "mushroom", "name": "🍄 Болотный гриб", "chance": 50, "min": 1, "max": 2, "exp": 12},
+            {"id": "glowing_mushroom", "name": "✨ Светящийся гриб", "chance": 10, "min": 1, "max": 1, "exp": 30}
+        ],
+        "ice_plains": [
+            {"id": "ice_herb", "name": "❄️ Ледяная трава", "chance": 60, "min": 1, "max": 2, "exp": 15},
+            {"id": "frost_flower", "name": "🧊 Морозный цветок", "chance": 30, "min": 1, "max": 1, "exp": 25},
+            {"id": "eternal_ice", "name": "💎 Вечная мерзлота", "chance": 5, "min": 1, "max": 1, "exp": 50}
+        ]
+    }
+    
+    herb_pool = herb_types.get(location_id, herb_types["deep_forest"])
+    
+    # Собираем травы
+    collected = []
+    exp_gain = 0
+    
+    for herb in herb_pool:
+        if random.randint(1, 100) <= herb['chance']:
+            amount = random.randint(herb['min'], herb['max'])
+            character.add_item(herb['id'], amount)
+            collected.append(f"{herb['name']} x{amount}")
+            exp_gain += herb['exp'] * amount
+    
+    from main import save_character
+    save_character(character)
+    
+    if collected:
+        result_text = f"🌿 *Сбор трав!*\n\n"
+        result_text += f"📦 Найдено:\n├ " + "\n├ ".join(collected) + "\n"
+        result_text += f"\n✨ +{exp_gain} опыта"
+    else:
+        result_text = f"🌿 *Сбор трав!*\n\n❌ Ничего не найдено. В следующий раз повезёт!"
+    
+    bot.send_message(call.message.chat.id, result_text, parse_mode='Markdown')
+
+def mine_action(call, bot, get_or_create_player_func):
+    """Обработчик добычи руды с разными этажами"""
+    user_id = call.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    # Проверка энергии
+    if character.energy < 2:
+        bot.answer_callback_query(call.id, "❌ Нужно 2⚡ энергии для добычи!", show_alert=True)
+        return
+    
+    # Проверка кулдауна (30 минут)
+    now = int(time.time())
+    last_mine = character.last_mine_time or 0
+    cooldown = 1800  # 30 минут
+    
+    if now - last_mine < cooldown:
+        remaining = cooldown - (now - last_mine)
+        minutes = remaining // 60
+        bot.answer_callback_query(call.id, f"⏳ Добыча ещё не доступна. Подожди {minutes} мин.", show_alert=True)
+        return
+    
+    # Тратим энергию
+    character.energy -= 2
+    character.last_mine_time = now
+    
+    # Определяем руды в зависимости от уровня шахты
+    location_id = character.location or "start"
+    
+    # Руды по этажам
+    ores_by_level = {
+        "mine_level1": [  # 1 уровень - медная, оловянная
+            {"id": "copper_ore", "name": "🟤 Медная руда", "chance": 70, "min": 1, "max": 3, "exp": 8},
+            {"id": "tin_ore", "name": "⚪ Оловянная руда", "chance": 50, "min": 1, "max": 2, "exp": 7},
+            {"id": "stone", "name": "🪨 Камень", "chance": 80, "min": 1, "max": 5, "exp": 2}
+        ],
+        "mine_level2": [  # 2 уровень - железная, серебряная
+            {"id": "iron_ore", "name": "⚫ Железная руда", "chance": 60, "min": 1, "max": 3, "exp": 12},
+            {"id": "silver_ore", "name": "✨ Серебряная руда", "chance": 30, "min": 1, "max": 2, "exp": 15},
+            {"id": "coal", "name": "🪨 Уголь", "chance": 50, "min": 1, "max": 4, "exp": 5}
+        ],
+        "mine_level3": [  # 3 уровень - золотая, кристаллы
+            {"id": "gold_ore", "name": "🟡 Золотая руда", "chance": 40, "min": 1, "max": 2, "exp": 20},
+            {"id": "crystal", "name": "💎 Кристалл", "chance": 30, "min": 1, "max": 2, "exp": 18},
+            {"id": "ruby", "name": "🔴 Рубин", "chance": 10, "min": 1, "max": 1, "exp": 30}
+        ],
+        "mine_level4": [  # 4 уровень - мифриловая, платиновая
+            {"id": "mythril_ore", "name": "🔷 Мифриловая руда", "chance": 30, "min": 1, "max": 2, "exp": 30},
+            {"id": "platinum_ore", "name": "⚪✨ Платиновая руда", "chance": 25, "min": 1, "max": 1, "exp": 35},
+            {"id": "sapphire", "name": "🔵 Сапфир", "chance": 15, "min": 1, "max": 1, "exp": 40}
+        ],
+        "mine_level5": [  # 5 уровень - редкие самоцветы
+            {"id": "diamond", "name": "💎 Алмаз", "chance": 20, "min": 1, "max": 1, "exp": 50},
+            {"id": "emerald", "name": "💚 Изумруд", "chance": 20, "min": 1, "max": 1, "exp": 45},
+            {"id": "ancient_relic", "name": "🏺 Древний артефакт", "chance": 5, "min": 1, "max": 1, "exp": 100}
+        ]
+    }
+    
+    ore_pool = ores_by_level.get(location_id, ores_by_level["mine_level1"])
+    
+    # Добываем руду
+    mined = []
+    exp_gain = 0
+    
+    for ore in ore_pool:
+        if random.randint(1, 100) <= ore['chance']:
+            amount = random.randint(ore['min'], ore['max'])
+            character.add_item(ore['id'], amount)
+            mined.append(f"{ore['name']} x{amount}")
+            exp_gain += ore['exp'] * amount
+    
+    from main import save_character
+    save_character(character)
+    
+    if mined:
+        result_text = f"⛏️ *Добыча руды!*\n\n"
+        result_text += f"📦 Найдено:\n├ " + "\n├ ".join(mined) + "\n"
+        result_text += f"\n✨ +{exp_gain} опыта"
+    else:
+        result_text = f"⛏️ *Добыча руды!*\n\n❌ Ничего не найдено. Только порода..."
+    
+    bot.send_message(call.message.chat.id, result_text, parse_mode='Markdown')
+
+def rest_action(call, bot, get_or_create_player_func):
+    """Обработчик локального отдыха (не привал)"""
+    user_id = call.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    # Проверяем кулдаун для локального отдыха (30 минут)
+    now = int(time.time())
+    last_rest = character.last_rest_time or 0
+    cooldown = 1800  # 30 минут
+    
+    if now - last_rest < cooldown:
+        remaining = cooldown - (now - last_rest)
+        minutes = remaining // 60
+        bot.answer_callback_query(call.id, f"⏳ Отдых ещё не доступен. Подожди {minutes} мин.", show_alert=True)
         return
     
     # Определяем бонус отдыха в зависимости от локации
@@ -797,8 +1413,8 @@ def rest_action(call, bot, get_or_create_player_func):
     location = locations_data.get("locations", {}).get(location_id, {})
     rest_spot = location.get('rest_spot', {})
     
-    energy_gain = rest_spot.get('energy_gain', 30)
-    health_gain = rest_spot.get('health_gain', 20)
+    energy_gain = rest_spot.get('energy_gain', 15)
+    health_gain = rest_spot.get('health_gain', 10)
     magic_gain = rest_spot.get('magic_gain', 0)
     
     character.energy = min(character.energy + energy_gain, character.max_energy)
@@ -1051,21 +1667,25 @@ def handle_callback(call, bot, get_or_create_player_func, locations_data, items_
     elif data == "game:equipment":
         equipment_command(call.message, bot, get_or_create_player_func, items_data)
     elif data == "game:location":
-        location_command(call.message, bot, get_or_create_player_func, locations_data)
+        location_command(call.message, bot, get_or_create_player_func, locations_data, items_data)
     elif data == "game:map":
         map_command(call.message, bot)
     elif data == "game:move":
         move_command(call.message, bot, get_or_create_player_func, locations_data)
     elif data == "game:hunt":
-        hunt_action(call, bot, get_or_create_player_func)
+        hunt_action(call, bot, get_or_create_player_func, locations_data, enemies_data, items_data)
     elif data == "game:fish":
         fish_action(call, bot, get_or_create_player_func)
     elif data == "game:gather":
         gather_action(call, bot, get_or_create_player_func)
     elif data == "game:mine":
         mine_action(call, bot, get_or_create_player_func)
-    elif data == "game:rest":
+    elif data == "game:rest_local":
         rest_action(call, bot, get_or_create_player_func)
+    elif data.startswith("game:rest_spot:"):
+        rest_spot_action(call, bot, get_or_create_player_func)
+    elif data == "game:rest_cooldown":
+        bot.answer_callback_query(call.id, "⏳ Отдых ещё не доступен! Подожди.", show_alert=True)
     elif data.startswith("game:move_to:"):
         move_to_location(call, bot, get_or_create_player_func, locations_data)
     elif data.startswith("game:select_class:"):
@@ -1097,6 +1717,7 @@ __all__ = [
     'gather_action',
     'mine_action',
     'rest_action',
+    'rest_spot_action',
     'move_to_location',
     'select_class_callback',
     
@@ -1104,5 +1725,6 @@ __all__ = [
     'handle_callback',
     
     # Константы
-    'ENERGY_COSTS'
+    'ENERGY_COSTS',
+    'RESPOT_SPOTS'
 ]
