@@ -95,6 +95,61 @@ def stats_command(message, bot, get_or_create_player_func, items_data):
     
     bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
 
+# ========== КВЕСТЫ ==========
+
+def quest_command(message, bot, get_or_create_player_func, quests_data):
+    """Команда /quest - просмотр доступных квестов"""
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    text = "📜 *Доступные квесты*\n\n"
+    
+    # Получаем активные квесты
+    active_quests = character.active_quests or []
+    
+    if active_quests:
+        text += "*📋 Активные квесты:*\n"
+        for quest_id in active_quests[:3]:  # Показываем первые 3
+            quest = quests_data.get("quests", {}).get(quest_id, {})
+            if quest:
+                progress = character.quest_progress.get(quest_id, {})
+                current = progress.get("current", 0)
+                target = quest.get("target", 1)
+                text += f"├ {quest.get('name', quest_id)}: {current}/{target}\n"
+        text += "\n"
+    
+    # Доступные квесты в локации
+    location_id = character.location or "start"
+    location_quests = []
+    
+    for q_id, q_data in quests_data.get("quests", {}).items():
+        if q_id not in active_quests and q_id not in character.completed_quests:
+            if location_id in q_data.get("locations", []):
+                if character.level >= q_data.get("level_req", 1):
+                    location_quests.append((q_id, q_data))
+    
+    if location_quests:
+        text += "*📍 Квесты в текущей локации:*\n"
+        for q_id, q_data in location_quests[:5]:
+            text += f"├ {q_data.get('name')} (ур. {q_data.get('level_req', 1)})\n"
+            text += f"│  {q_data.get('description', '')[:50]}...\n"
+            text += f"│  🏆 Награда: {q_data.get('reward_gold', 0)}💰"
+            if q_data.get('reward_exp'):
+                text += f", {q_data.get('reward_exp')}✨"
+            text += "\n"
+    else:
+        text += "❌ В этой локации нет доступных квестов.\n"
+    
+    keyboard = InlineKeyboardMarkup(row_width=2)
+    keyboard.add(
+        InlineKeyboardButton("📋 Взять квест", callback_data="quest:available"),
+        InlineKeyboardButton("📊 Прогресс", callback_data="quest:progress"),
+        InlineKeyboardButton("✅ Завершённые", callback_data="quest:completed"),
+        InlineKeyboardButton("🔙 Назад", callback_data="start:menu")
+    )
+    
+    bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
+
 # ========== ЛОКАЦИИ И ПЕРЕМЕЩЕНИЕ ==========
 
 def location_command(message, bot, get_or_create_player_func, locations_data):
@@ -723,6 +778,84 @@ def select_class_callback(call, bot, get_or_create_player_func):
     from .start import start_command
     start_command(call.message, bot, get_or_create_player_func)
 
+# ========== ИНВЕНТАРЬ ==========
+
+def inventory_command(message, bot, get_or_create_player_func, items_data):
+    """Команда /inventory - просмотр инвентаря"""
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    text = f"📦 *Инвентарь*\n\n"
+    
+    if not character.inventory:
+        text += "🗂️ Инвентарь пуст"
+    else:
+        items_by_cat = {}
+        for item_id, quantity in character.inventory.items():
+            item = items_data.get("items", {}).get(item_id, {})
+            category = item.get("category", "other")
+            if category not in items_by_cat:
+                items_by_cat[category] = []
+            items_by_cat[category].append((item_id, item, quantity))
+        
+        category_names = {
+            "weapon": "⚔️ Оружие",
+            "armor": "🛡️ Броня",
+            "potion": "🧪 Зелья",
+            "food": "🍖 Еда",
+            "material": "📦 Материалы",
+            "quest": "📜 Квестовые",
+            "other": "📦 Прочее"
+        }
+        
+        for category, items in items_by_cat.items():
+            cat_name = category_names.get(category, f"📦 {category.capitalize()}")
+            text += f"\n*{cat_name}:*\n"
+            for item_id, item, quantity in items:
+                name = item.get("name", item_id)
+                emoji = item.get("emoji", "📦")
+                text += f"├ {emoji} {name} x{quantity}\n"
+    
+    keyboard = InlineKeyboardMarkup(row_width=2)
+    keyboard.add(
+        InlineKeyboardButton("⚔️ Экипировка", callback_data="game:equipment"),
+        InlineKeyboardButton("🔙 Назад", callback_data="game:profile")
+    )
+    
+    bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
+
+def equipment_command(message, bot, get_or_create_player_func, items_data):
+    """Команда просмотра экипировки"""
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    text = "⚔️ *Экипировка*\n\n"
+    
+    weapon_id = character.equipped_weapon
+    armor_id = character.equipped_armor
+    
+    weapon = items_data.get("items", {}).get(weapon_id, {}) if weapon_id else None
+    armor = items_data.get("items", {}).get(armor_id, {}) if armor_id else None
+    
+    if weapon:
+        text += f"⚔️ *Оружие:* {weapon.get('emoji', '')} {weapon.get('name', weapon_id)}\n"
+        text += f"├ Урон: +{weapon.get('damage', 0)}\n"
+    else:
+        text += "⚔️ *Оружие:* не экипировано\n"
+    
+    if armor:
+        text += f"\n🛡️ *Броня:* {armor.get('emoji', '')} {armor.get('name', armor_id)}\n"
+        text += f"├ Защита: +{armor.get('defense', 0)}\n"
+    else:
+        text += "\n🛡️ *Броня:* не экипирована\n"
+    
+    keyboard = InlineKeyboardMarkup()
+    keyboard.add(
+        InlineKeyboardButton("🔙 В инвентарь", callback_data="game:inventory")
+    )
+    
+    bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
+
 # ========== ОБРАБОТЧИК КОЛБЭКОВ ==========
 
 def handle_callback(call, bot, get_or_create_player_func, locations_data, items_data, 
@@ -734,6 +867,10 @@ def handle_callback(call, bot, get_or_create_player_func, locations_data, items_
         profile_command(call.message, bot, get_or_create_player_func, items_data)
     elif data == "game:stats":
         stats_command(call.message, bot, get_or_create_player_func, items_data)
+    elif data == "game:inventory":
+        inventory_command(call.message, bot, get_or_create_player_func, items_data)
+    elif data == "game:equipment":
+        equipment_command(call.message, bot, get_or_create_player_func, items_data)
     elif data == "game:location":
         location_command(call.message, bot, get_or_create_player_func, locations_data)
     elif data == "game:map":
@@ -752,9 +889,6 @@ def handle_callback(call, bot, get_or_create_player_func, locations_data, items_
         rest_action(call, bot, get_or_create_player_func)
     elif data.startswith("game:move_to:"):
         move_to_location(call, bot, get_or_create_player_func, locations_data)
-    elif data == "game:select_class":
-        # Для обратной совместимости, но лучше использовать data.startswith
-        pass
     elif data.startswith("game:select_class:"):
         select_class_callback(call, bot, get_or_create_player_func)
     elif data == "game:no_energy":
@@ -766,11 +900,14 @@ __all__ = [
     # Команды
     'profile_command',
     'stats_command',
+    'quest_command',
     'location_command',
     'map_command',
     'move_command',
     'battle_command',
     'class_command',
+    'inventory_command',
+    'equipment_command',
     
     # Обработчики действий
     'hunt_action',
