@@ -201,6 +201,58 @@ def craft_command(message, bot, get_or_create_player_func, crafting_data, items_
     
     bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
 
+# ========== ДОМ ==========
+
+def house_command(message, bot, get_or_create_player_func, house_data):
+    """Команда /house - управление домом"""
+    user_id = message.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    # Проверяем, есть ли у игрока дом
+    if not character.house_level:
+        text = "🏠 *У тебя пока нет дома*\n\n"
+        text += "Ты можешь купить дом на рыночной площади!\n\n"
+        text += "🏚️ *Домики:*\n"
+        text += "├ Ур. 1 - Маленький домик: 1000💰\n"
+        text += "├ Ур. 2 - Обычный дом: 5000💰\n"
+        text += "├ Ур. 3 - Большой дом: 15000💰\n"
+        text += "├ Ур. 4 - Особняк: 50000💰\n"
+        text += "└ Ур. 5 - Замок: 100000💰\n"
+        
+        keyboard = InlineKeyboardMarkup()
+        keyboard.add(
+            InlineKeyboardButton("🏚️ Купить дом", callback_data="house:buy:1"),
+            InlineKeyboardButton("🔙 Назад", callback_data="start:menu")
+        )
+    else:
+        house_level = character.house_level
+        house_info = house_data.get("houses", {}).get(str(house_level), {})
+        
+        text = f"🏠 *Твой дом (Ур. {house_level})*\n\n"
+        text += f"📦 Хранилище: {len(character.house_storage or [])}/{house_info.get('storage', 50)}\n"
+        text += f"⚡ Восстановление энергии: +{house_info.get('energy_bonus', 5)}/час\n"
+        text += f"❤️ Восстановление здоровья: +{house_info.get('health_bonus', 10)}/час\n\n"
+        
+        text += "*🛏️ Удобства:*\n"
+        if house_info.get('bed'):
+            text += "├ 🛏️ Кровать\n"
+        if house_info.get('crafting_table'):
+            text += "├ 🔨 Верстак\n"
+        if house_info.get('furnace'):
+            text += "├ 🔥 Печь\n"
+        if house_info.get('garden'):
+            text += "├ 🌿 Сад\n"
+        
+        keyboard = InlineKeyboardMarkup(row_width=2)
+        keyboard.add(
+            InlineKeyboardButton("📦 Хранилище", callback_data="house:storage"),
+            InlineKeyboardButton("🛏️ Отдохнуть", callback_data="house:rest"),
+            InlineKeyboardButton("🔨 Улучшить", callback_data=f"house:upgrade:{house_level}"),
+            InlineKeyboardButton("🔙 Назад", callback_data="start:menu")
+        )
+    
+    bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
+
 # ========== ЛОКАЦИИ И ПЕРЕМЕЩЕНИЕ ==========
 
 def location_command(message, bot, get_or_create_player_func, locations_data):
@@ -953,6 +1005,7 @@ __all__ = [
     'stats_command',
     'quest_command',
     'craft_command',
+    'house_command',
     'location_command',
     'map_command',
     'move_command',
