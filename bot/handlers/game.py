@@ -1,10 +1,23 @@
 # /bot/handlers/game.py
 import logging
 import random
+import time
 from datetime import datetime, timedelta
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 logger = logging.getLogger(__name__)
+
+# ========== КОНСТАНТЫ ==========
+
+ENERGY_COSTS = {
+    "move": 1,
+    "hunt": 5,
+    "fish": 2,
+    "craft": 2,
+    "rest": 0,
+    "gather": 2,
+    "mine": 2
+}
 
 # ========== ПРОФИЛЬ И СТАТИСТИКА ==========
 
@@ -13,7 +26,6 @@ def profile_command(message, bot, get_or_create_player_func, items_data):
     user_id = message.from_user.id
     user, character = get_or_create_player_func(user_id)
     
-    # Проверяем премиум статус
     premium_text = "✅" if user.premium_until and user.premium_until > datetime.utcnow() else "❌"
     
     text = f"👤 *Профиль игрока*\n\n"
@@ -25,13 +37,11 @@ def profile_command(message, bot, get_or_create_player_func, items_data):
     text += f"⚡ Энергия: {character.energy}/{character.max_energy}\n"
     text += f"💰 Золото: {character.gold}\n"
     text += f"💫 DSTN: {character.destiny_tokens or 0}\n"
-    text += f"⭐ Stars: {character.stars or 0}\n"
     text += f"👑 Премиум: {premium_text}\n"
     
     if character.player_class:
         text += f"⚔️ Класс: {character.player_class}\n"
     
-    # Клавиатура
     keyboard = InlineKeyboardMarkup(row_width=2)
     keyboard.add(
         InlineKeyboardButton("📊 Статистика", callback_data="game:stats"),
@@ -40,24 +50,17 @@ def profile_command(message, bot, get_or_create_player_func, items_data):
         InlineKeyboardButton("🔙 В меню", callback_data="start:menu")
     )
     
-    bot.send_message(
-        message.chat.id, 
-        text, 
-        reply_markup=keyboard, 
-        parse_mode='Markdown'
-    )
+    bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
 
 def stats_command(message, bot, get_or_create_player_func, items_data):
     """Команда /stats - детальная статистика персонажа"""
     user_id = message.from_user.id
     user, character = get_or_create_player_func(user_id)
     
-    # Рассчитываем боевые показатели
     attack = character.strength * 2 + (character.level * 2)
     defense = character.vitality * 2 + (character.level * 1)
     magic = character.intelligence * 2 + (character.level * 1)
     
-    # Учитываем экипировку
     if character.equipped_weapon:
         weapon = items_data.get("items", {}).get(character.equipped_weapon, {})
         attack += weapon.get("damage", 0)
@@ -67,20 +70,17 @@ def stats_command(message, bot, get_or_create_player_func, items_data):
         defense += armor.get("defense", 0)
     
     text = f"⚔️ *Детальная статистика*\n\n"
-    
     text += f"📊 *Основные параметры:*\n"
     text += f"├ Сила: {character.strength} (атака: {attack})\n"
     text += f"├ Ловкость: {character.agility} (шанс крита: {character.agility // 2}%)\n"
     text += f"├ Интеллект: {character.intelligence} (магия: {magic})\n"
     text += f"├ Выносливость: {character.vitality} (защита: {defense})\n"
     text += f"└ Удача: {character.luck} (шанс дропа: +{character.luck}%)\n\n"
-    
     text += f"⚔️ *Боевые показатели:*\n"
     text += f"├ Общая атака: {attack}\n"
     text += f"├ Общая защита: {defense}\n"
     text += f"├ Магическая сила: {magic}\n"
     text += f"└ Крит. урон: x{1.5 + (character.agility / 100):.2f}\n\n"
-    
     text += f"📈 *Прогресс:*\n"
     text += f"├ Убито мобов: {character.kills_total or 0}\n"
     text += f"├ Побед в PvP: {character.pvp_wins or 0}\n"
@@ -93,12 +93,7 @@ def stats_command(message, bot, get_or_create_player_func, items_data):
     keyboard = InlineKeyboardMarkup()
     keyboard.add(InlineKeyboardButton("🔙 Назад", callback_data="game:profile"))
     
-    bot.send_message(
-        message.chat.id, 
-        text, 
-        reply_markup=keyboard, 
-        parse_mode='Markdown'
-    )
+    bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
 
 # ========== ЛОКАЦИИ И ПЕРЕМЕЩЕНИЕ ==========
 
@@ -111,90 +106,132 @@ def location_command(message, bot, get_or_create_player_func, locations_data):
     location = locations_data.get("locations", {}).get(location_id, {})
     
     if not location:
-        location = {
-            "name": "Неизвестно",
-            "description": "Локация не найдена",
-            "enemies": []
-        }
+        location = {"name": "Неизвестно", "description": "Локация не найдена"}
     
     text = f"📍 *{location.get('name', 'Локация')}*\n\n"
     text += location.get('description', 'Описание отсутствует')
     
-    # Информация о врагах
-    enemies = location.get('enemies', [])
-    if enemies:
-        text += f"\n\n⚔️ *Враги в локации:*\n"
-        for enemy_id in enemies[:5]:  # Показываем первых 5
-            from utils import enemies_data
-            enemy = enemies_data.get("enemies", {}).get(enemy_id, {})
-            name = enemy.get('name', enemy_id)
-            level = enemy.get('level', 1)
-            text += f"├ {name} (ур. {level})\n"
-    
-    # Информация о ресурсах
-    resources = location.get('resources', [])
-    if resources:
-        text += f"\n🌿 *Ресурсы:*\n"
-        for resource in resources[:3]:
-            text += f"├ {resource}\n"
-    
-    # Клавиатура
     keyboard = InlineKeyboardMarkup(row_width=2)
-    keyboard.add(
-        InlineKeyboardButton("🗺️ Карта", callback_data="game:map"),
-        InlineKeyboardButton("⚔️ Атаковать", callback_data="combat:choose"),
-        InlineKeyboardButton("📦 Инвентарь", callback_data="game:inventory"),
-        InlineKeyboardButton("🏠 Домик", callback_data="house:menu")
-    )
+    actions_added = 0
     
-    bot.send_message(
-        message.chat.id, 
-        text, 
-        reply_markup=keyboard, 
-        parse_mode='Markdown'
-    )
+    actions = location.get('actions', [])
+    for action in actions:
+        if action['type'] == 'move':
+            level_req = action.get('level_req', 1)
+            if character.level >= level_req:
+                energy_cost = action.get('energy_cost', 1)
+                if character.energy >= energy_cost:
+                    keyboard.add(InlineKeyboardButton(
+                        action['text'],
+                        callback_data=f"game:move_to:{action['next']}"
+                    ))
+                    actions_added += 1
+                else:
+                    keyboard.add(InlineKeyboardButton(
+                        f"❌ {action['text']} (нужно {energy_cost}⚡)",
+                        callback_data="game:no_energy"
+                    ))
+                    actions_added += 1
+        elif action['type'] == 'hunt':
+            if character.energy >= 5:
+                keyboard.add(InlineKeyboardButton(
+                    action['text'],
+                    callback_data="game:hunt"
+                ))
+                actions_added += 1
+        elif action['type'] == 'rest':
+            keyboard.add(InlineKeyboardButton(
+                action['text'],
+                callback_data="game:rest"
+            ))
+            actions_added += 1
+        elif action['type'] == 'open_shop':
+            keyboard.add(InlineKeyboardButton(
+                action['text'],
+                callback_data=f"shop:open:{action['shop']}"
+            ))
+            actions_added += 1
+        elif action['type'] == 'craft':
+            keyboard.add(InlineKeyboardButton(
+                action['text'],
+                callback_data=f"craft:{action.get('category', 'menu')}"
+            ))
+            actions_added += 1
+        elif action['type'] == 'fish':
+            if character.energy >= 2:
+                keyboard.add(InlineKeyboardButton(
+                    action['text'],
+                    callback_data="game:fish"
+                ))
+                actions_added += 1
+        elif action['type'] == 'gather':
+            if character.energy >= 2:
+                keyboard.add(InlineKeyboardButton(
+                    action['text'],
+                    callback_data="game:gather"
+                ))
+                actions_added += 1
+        elif action['type'] == 'mine':
+            if character.energy >= 2:
+                keyboard.add(InlineKeyboardButton(
+                    action['text'],
+                    callback_data="game:mine"
+                ))
+                actions_added += 1
+    
+    # Добавляем кнопку карты
+    if actions_added < 4:
+        keyboard.add(InlineKeyboardButton("🗺️ Карта", callback_data="game:map"))
+    else:
+        keyboard.row(InlineKeyboardButton("🗺️ Карта", callback_data="game:map"))
+    
+    bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
 
 def map_command(message, bot):
     """Команда /map - карта мира"""
     text = "🗺️ *Карта мира Destiny*\n\n"
     
+    text += "🏘️ **Деревня:**\n"
+    text += "├ 🏪 Рыночная площадь (ур. 1+)\n"
+    text += "├ 🍺 Таверна (ур. 1+)\n"
+    text += "├ ⚒️ Кузница (ур. 5+)\n"
+    text += "├ 🔮 Башня мага (ур. 10+)\n\n"
+    
     text += "🌲 **Лесные зоны:**\n"
-    text += "├ Лесная опушка (ур. 1-5)\n"
-    text += "├ Дремучий лес (ур. 5-10)\n"
-    text += "├ Священная роща (ур. 15-20)\n\n"
+    text += "├ 🌲 Лесная опушка (ур. 1-5)\n"
+    text += "├ 🌿 Лесная тропа (ур. 2+)\n"
+    text += "├ 🛤️ Лесная развилка (ур. 3+)\n"
+    text += "├ 🌳 Глухой лес (ур. 2+)\n"
+    text += "├ 🏞️ Берег озера (ур. 3+)\n\n"
     
     text += "⛰️ **Горные зоны:**\n"
-    text += "├ Скалистые горы (ур. 10-15)\n"
-    text += "├ Пещеры гоблинов (ур. 15-20)\n"
-    text += "├ Заснеженные вершины (ур. 20-25)\n\n"
+    text += "├ ⛰️ Горная тропа (ур. 10+)\n"
+    text += "├ ⛏️ Вход в шахту (ур. 15+)\n"
+    text += "├ 🏔️ Горная вершина (ур. 12+)\n"
+    text += "├ 🌋 Тропа к вулкану (ур. 25+)\n"
+    text += "├ 🌋 Жерло вулкана (ур. 28+)\n"
+    text += "├ 🏖️ Вулканический пляж (ур. 25+)\n\n"
     
-    text += "🏜️ **Пустынные зоны:**\n"
-    text += "├ Песчаные дюны (ур. 15-20)\n"
-    text += "├ Древние руины (ур. 20-25)\n"
-    text += "├ Оазис (ур. 25-30)\n\n"
+    text += "🏝️ **Острова:**\n"
+    text += "├ ⚓ Гавань островов (ур. 30+)\n"
+    text += "├ 🌋 Огненный остров (ур. 45+, 3🌈)\n"
+    text += "├ 💎 Кристальный остров (ур. 50+, 1💎)\n"
+    text += "├ 🐉 Остров драконов (ур. 55+, 5💎)\n\n"
     
-    text += "🌊 **Водные зоны:**\n"
-    text += "├ Берег озера (ур. 5-10)\n"
-    text += "├ Глубокое озеро (ур. 10-15)\n"
-    text += "├ Замёрзший океан (ур. 25-30)\n\n"
-    
-    text += "🌋 **Особые зоны:**\n"
-    text += "├ Вулкан (ур. 30-35)\n"
-    text += "├ Вулканический пляж (ур. 35-40)\n"
-    text += "├ Логово дракона (ур. 50+)\n"
+    text += "🏛️ **Подземелья:**\n"
+    text += "├ ⛏️ Шахта (5 уровней, ур. 15-30)\n"
+    text += "├ 🏛️ Древние руины (ур. 35+)\n"
+    text += "├ 🌉 Мост перед драконом (ур. 40+)\n"
+    text += "├ 🐉 Логово дракона (ур. 50+)\n"
     
     keyboard = InlineKeyboardMarkup()
     keyboard.add(
         InlineKeyboardButton("📍 Текущая локация", callback_data="game:location"),
+        InlineKeyboardButton("🚶 Переместиться", callback_data="game:move"),
         InlineKeyboardButton("🔙 Назад", callback_data="start:menu")
     )
     
-    bot.send_message(
-        message.chat.id, 
-        text, 
-        reply_markup=keyboard, 
-        parse_mode='Markdown'
-    )
+    bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
 
 def move_command(message, bot, get_or_create_player_func, locations_data):
     """Команда /move - перемещение между локациями"""
@@ -202,46 +239,92 @@ def move_command(message, bot, get_or_create_player_func, locations_data):
     user, character = get_or_create_player_func(user_id)
     
     current_location = character.location or "start"
-    
-    # Получаем доступные локации для перемещения
     all_locations = locations_data.get("locations", {})
+    current_loc_data = all_locations.get(current_location, {})
     
     text = f"🗺️ *Куда отправимся?*\n\n"
-    text += f"📍 Текущая локация: {all_locations.get(current_location, {}).get('name', 'Неизвестно')}\n\n"
-    text += "🎯 *Доступные локации:*\n"
+    text += f"📍 Текущая локация: {current_loc_data.get('name', 'Неизвестно')}\n\n"
+    text += "🎯 *Доступные локации:*\n\n"
     
     keyboard = InlineKeyboardMarkup(row_width=2)
+    locations_found = 0
     
-    # Добавляем кнопки для каждой локации
-    for loc_id, loc_data in list(all_locations.items())[:8]:  # Ограничим 8 локациями
+    # Группируем по категориям
+    village_locs = []
+    forest_locs = []
+    mountain_locs = []
+    island_locs = []
+    dungeon_locs = []
+    
+    for loc_id, loc_data in all_locations.items():
         if loc_id != current_location:
-            name = loc_data.get('name', loc_id)
             level_req = loc_data.get('level_req', 1)
-            
             if character.level >= level_req:
-                text += f"├ {name} (ур. {level_req}+)\n"
-                keyboard.add(InlineKeyboardButton(
-                    f"➡️ {name}", 
-                    callback_data=f"game:move_to:{loc_id}"
-                ))
-            else:
-                text += f"├ {name} (🔒 ур. {level_req}+)\n"
+                name = loc_data.get('name', loc_id)
+                
+                if "дерев" in name.lower() or "площадь" in name.lower() or "таверн" in name.lower() or "рыночн" in name.lower() or "кузниц" in name.lower() or "башн" in name.lower():
+                    village_locs.append((loc_id, name))
+                elif "лес" in name.lower() or "троп" in name.lower() or "развил" in name.lower() or "озер" in name.lower():
+                    forest_locs.append((loc_id, name))
+                elif "гор" in name.lower() or "шахт" in name.lower() or "вулкан" in name.lower() or "пляж" in name.lower() or "вершин" in name.lower():
+                    mountain_locs.append((loc_id, name))
+                elif "остров" in name.lower() or "гаван" in name.lower():
+                    island_locs.append((loc_id, name))
+                elif "руин" in name.lower() or "мост" in name.lower() or "логов" in name.lower():
+                    dungeon_locs.append((loc_id, name))
+    
+    if village_locs:
+        text += "🏘️ *Деревня:*\n"
+        for loc_id, name in village_locs:
+            text += f"├ {name}\n"
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id}"))
+            locations_found += 1
+        text += "\n"
+    
+    if forest_locs:
+        text += "🌲 *Лес:*\n"
+        for loc_id, name in forest_locs:
+            text += f"├ {name}\n"
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id}"))
+            locations_found += 1
+        text += "\n"
+    
+    if mountain_locs:
+        text += "⛰️ *Горы:*\n"
+        for loc_id, name in mountain_locs:
+            text += f"├ {name}\n"
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id}"))
+            locations_found += 1
+        text += "\n"
+    
+    if island_locs:
+        text += "🏝️ *Острова:*\n"
+        for loc_id, name in island_locs:
+            text += f"├ {name}\n"
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id}"))
+            locations_found += 1
+        text += "\n"
+    
+    if dungeon_locs:
+        text += "🏛️ *Подземелья:*\n"
+        for loc_id, name in dungeon_locs:
+            text += f"├ {name}\n"
+            keyboard.add(InlineKeyboardButton(f"➡️ {name}", callback_data=f"game:move_to:{loc_id}"))
+            locations_found += 1
+        text += "\n"
+    
+    if locations_found == 0:
+        text += "❌ Нет доступных локаций для перемещения."
     
     keyboard.add(InlineKeyboardButton("🔙 Назад", callback_data="game:location"))
     
-    bot.send_message(
-        message.chat.id, 
-        text, 
-        reply_markup=keyboard, 
-        parse_mode='Markdown'
-    )
+    bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
 
 def move_to_location(call, bot, get_or_create_player_func, locations_data):
     """Обработчик перемещения в локацию"""
     user_id = call.from_user.id
     user, character = get_or_create_player_func(user_id)
     
-    # Получаем ID локации из callback_data
     parts = call.data.split(':')
     if len(parts) >= 3:
         new_location = parts[2]
@@ -258,33 +341,239 @@ def move_to_location(call, bot, get_or_create_player_func, locations_data):
     # Проверяем уровень
     level_req = location.get('level_req', 1)
     if character.level < level_req:
-        bot.answer_callback_query(
-            call.id, 
-            f"❌ Нужен уровень {level_req}!", 
-            show_alert=True
-        )
+        bot.answer_callback_query(call.id, f"❌ Нужен уровень {level_req}!", show_alert=True)
         return
+    
+    # Проверяем стоимость входа (радужные осколки/камни)
+    entry_cost = location.get('entry_cost', {})
+    if entry_cost:
+        if 'rainbow_shard' in entry_cost:
+            cost = entry_cost['rainbow_shard']
+            if character.rainbow_shards < cost:
+                bot.answer_callback_query(call.id, f"❌ Нужно {cost} радужных осколков!", show_alert=True)
+                return
+            character.rainbow_shards -= cost
+        if 'rainbow_stone' in entry_cost:
+            cost = entry_cost['rainbow_stone']
+            if character.rainbow_stones < cost:
+                bot.answer_callback_query(call.id, f"❌ Нужно {cost} радужных камней!", show_alert=True)
+                return
+            character.rainbow_stones -= cost
     
     # Проверяем энергию
-    energy_cost = location.get('travel_cost', 5)
+    energy_cost = 1
     if character.energy < energy_cost:
-        bot.answer_callback_query(
-            call.id, 
-            f"❌ Нужно {energy_cost} энергии!", 
-            show_alert=True
-        )
+        bot.answer_callback_query(call.id, "❌ Нет энергии!", show_alert=True)
         return
     
-    # Перемещаемся
     character.energy -= energy_cost
     character.location = new_location
     from main import save_character
     save_character(character)
     
-    bot.answer_callback_query(call.id, f"✅ Перемещён в {location.get('name')}")
-    
-    # Показываем новую локацию
+    bot.answer_callback_query(call.id, f"✅ Перемещён")
     location_command(call.message, bot, get_or_create_player_func, locations_data)
+
+# ========== ДЕЙСТВИЯ ==========
+
+def hunt_action(call, bot, get_or_create_player_func):
+    """Обработчик охоты"""
+    user_id = call.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    if character.energy < 5:
+        bot.answer_callback_query(call.id, "❌ Нужно 5⚡ энергии!")
+        return
+    
+    character.energy -= 5
+    from main import save_character
+    save_character(character)
+    
+    bot.answer_callback_query(call.id, "⏳ Охота... 5 секунд")
+    
+    # Имитация задержки
+    time.sleep(5)
+    
+    # Случайный результат охоты
+    exp_gain = random.randint(10, 30)
+    gold_gain = random.randint(5, 15)
+    
+    # Шанс найти предмет
+    item_found = None
+    if random.random() < 0.3:  # 30% шанс
+        possible_items = ["wolf_fur", "boar_tusk", "spider_silk", "feather"]
+        item_found = random.choice(possible_items)
+        character.add_item(item_found)
+    
+    character.experience += exp_gain
+    character.gold += gold_gain
+    character.kills_total = (character.kills_total or 0) + 1
+    save_character(character)
+    
+    result_text = f"🎯 *Охота завершена!*\n\n✨ +{exp_gain} опыта\n💰 +{gold_gain} золота"
+    if item_found:
+        item_name = {
+            "wolf_fur": "🐺 Волчья шкура",
+            "boar_tusk": "🐗 Клык кабана",
+            "spider_silk": "🕷️ Паучий шёлк",
+            "feather": "🪶 Перо"
+        }.get(item_found, item_found)
+        result_text += f"\n📦 Найдено: {item_name}"
+    
+    bot.send_message(call.message.chat.id, result_text, parse_mode='Markdown')
+
+def fish_action(call, bot, get_or_create_player_func):
+    """Обработчик рыбалки"""
+    user_id = call.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    if character.energy < 2:
+        bot.answer_callback_query(call.id, "❌ Нужно 2⚡ энергии!")
+        return
+    
+    character.energy -= 2
+    from main import save_character
+    save_character(character)
+    
+    # Случайный результат рыбалки
+    exp_gain = random.randint(5, 15)
+    fish_gain = random.randint(1, 3)
+    
+    character.experience += exp_gain
+    for _ in range(fish_gain):
+        character.add_item("fish")
+    save_character(character)
+    
+    bot.send_message(
+        call.message.chat.id,
+        f"🎣 *Рыбалка!*\n\n🐟 Поймано рыб: {fish_gain}\n✨ +{exp_gain} опыта",
+        parse_mode='Markdown'
+    )
+
+def gather_action(call, bot, get_or_create_player_func):
+    """Обработчик сбора трав"""
+    user_id = call.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    if character.energy < 2:
+        bot.answer_callback_query(call.id, "❌ Нужно 2⚡ энергии!")
+        return
+    
+    character.energy -= 2
+    from main import save_character
+    save_character(character)
+    
+    # Случайный результат сбора
+    exp_gain = random.randint(5, 10)
+    herb_gain = random.randint(1, 3)
+    berry_gain = random.randint(0, 2)
+    
+    character.experience += exp_gain
+    for _ in range(herb_gain):
+        character.add_item("herb")
+    for _ in range(berry_gain):
+        character.add_item("berry")
+    save_character(character)
+    
+    bot.send_message(
+        call.message.chat.id,
+        f"🌿 *Сбор трав!*\n\n🌿 Трав: {herb_gain}\n🫐 Ягод: {berry_gain}\n✨ +{exp_gain} опыта",
+        parse_mode='Markdown'
+    )
+
+def mine_action(call, bot, get_or_create_player_func):
+    """Обработчик добычи руды"""
+    user_id = call.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    if character.energy < 2:
+        bot.answer_callback_query(call.id, "❌ Нужно 2⚡ энергии!")
+        return
+    
+    character.energy -= 2
+    from main import save_character
+    save_character(character)
+    
+    # Случайный результат добычи
+    exp_gain = random.randint(10, 20)
+    
+    # Определяем руду в зависимости от уровня шахты
+    location_id = character.location or "start"
+    if "mine_level1" in location_id:
+        ores = ["copper_ore", "copper_ore", "iron_ore"]
+    elif "mine_level2" in location_id:
+        ores = ["iron_ore", "iron_ore", "gold_ore"]
+    elif "mine_level3" in location_id:
+        ores = ["gold_ore", "gold_ore", "crystal"]
+    elif "mine_level4" in location_id:
+        ores = ["mythril_ore", "crystal", "ruby"]
+    else:
+        ores = ["stone", "coal", "iron_ore"]
+    
+    ore_found = random.choice(ores)
+    amount = random.randint(1, 3)
+    
+    character.experience += exp_gain
+    for _ in range(amount):
+        character.add_item(ore_found)
+    save_character(character)
+    
+    ore_names = {
+        "copper_ore": "Медная руда",
+        "iron_ore": "Железная руда",
+        "gold_ore": "Золотая руда",
+        "mythril_ore": "Мифриловая руда",
+        "crystal": "Кристалл",
+        "ruby": "Рубин",
+        "stone": "Камень",
+        "coal": "Уголь"
+    }
+    
+    bot.send_message(
+        call.message.chat.id,
+        f"⛏️ *Добыча руды!*\n\n📦 Найдено: {ore_names.get(ore_found, ore_found)} x{amount}\n✨ +{exp_gain} опыта",
+        parse_mode='Markdown'
+    )
+
+def rest_action(call, bot, get_or_create_player_func):
+    """Обработчик отдыха"""
+    user_id = call.from_user.id
+    user, character = get_or_create_player_func(user_id)
+    
+    # Проверяем кулдаун
+    now = int(time.time())
+    last_rest = character.last_rest_time or 0
+    cooldown = 3600  # 1 час
+    
+    if now - last_rest < cooldown:
+        remaining = cooldown - (now - last_rest)
+        minutes = remaining // 60
+        bot.answer_callback_query(call.id, f"⏳ Отдых ещё не доступен. Подожди {minutes} мин.")
+        return
+    
+    # Определяем бонус отдыха в зависимости от локации
+    location_id = character.location or "start"
+    from main import locations_data
+    location = locations_data.get("locations", {}).get(location_id, {})
+    rest_spot = location.get('rest_spot', {})
+    
+    energy_gain = rest_spot.get('energy_gain', 30)
+    health_gain = rest_spot.get('health_gain', 20)
+    magic_gain = rest_spot.get('magic_gain', 0)
+    
+    character.energy = min(character.energy + energy_gain, character.max_energy)
+    character.health = min(character.health + health_gain, character.max_health)
+    character.mana = min(character.mana + magic_gain, character.max_mana)
+    character.last_rest_time = now
+    
+    from main import save_character
+    save_character(character)
+    
+    rest_text = f"✅ Отдохнул! +{energy_gain}⚡, +{health_gain}❤️"
+    if magic_gain > 0:
+        rest_text += f", +{magic_gain}🔮"
+    
+    bot.answer_callback_query(call.id, rest_text)
 
 # ========== КЛАССЫ ==========
 
@@ -294,56 +583,28 @@ def class_command(message, bot, get_or_create_player_func):
     user, character = get_or_create_player_func(user_id)
     
     if character.player_class:
-        text = f"⚔️ *Твой класс:*\n\n"
-        text += f"🎯 {character.player_class.capitalize()}\n"
-        text += f"📊 Уровень класса: {character.class_level or 1}\n\n"
-        
-        text += "Хочешь сменить класс? Используй /class_change"
-        
+        text = f"⚔️ *Твой класс:*\n\n🎯 {character.player_class.capitalize()}\n📊 Уровень класса: {character.class_level or 1}"
         keyboard = InlineKeyboardMarkup()
         keyboard.add(InlineKeyboardButton("🔙 Назад", callback_data="start:menu"))
-        
         bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
         return
     
     text = "⚔️ *Выбери свой класс:*\n\n"
-    
-    text += "🛡️ *Воин*\n"
-    text += "├ Сила: +5 | Выносливость: +3\n"
-    text += "└ Мастер ближнего боя\n\n"
-    
-    text += "🏹 *Лучник*\n"
-    text += "├ Ловкость: +5 | Удача: +2\n"
-    text += "└ Быстрые атаки издалека\n\n"
-    
-    text += "🔮 *Маг*\n"
-    text += "├ Интеллект: +5 | Мана: +50\n"
-    text += "└ Могущественные заклинания\n\n"
-    
-    text += "🛡️ *Паладин*\n"
-    text += "├ Сила: +3 | Выносливость: +3 | Интеллект: +2\n"
-    text += "└ Защита и поддержка\n\n"
-    
-    text += "🗡️ *Разбойник*\n"
-    text += "├ Ловкость: +4 | Удача: +3\n"
-    text += "└ Высокий шанс крита\n\n"
-    
-    text += "🌿 *Друид*\n"
-    text += "├ Интеллект: +4 | Выносливость: +2\n"
-    text += "└ Магия природы и исцеление\n"
+    text += "🛡️ *Воин* - Сила: +5 | Выносливость: +3\n"
+    text += "🏹 *Лучник* - Ловкость: +5 | Удача: +2\n"
+    text += "🔮 *Маг* - Интеллект: +5 | Мана: +50\n"
+    text += "🛡️ *Паладин* - Сила: +3 | Выносливость: +3 | Интеллект: +2\n"
+    text += "🗡️ *Разбойник* - Ловкость: +4 | Удача: +3\n"
+    text += "🌿 *Друид* - Интеллект: +4 | Выносливость: +2"
     
     keyboard = InlineKeyboardMarkup(row_width=2)
     classes = ["warrior", "archer", "mage", "paladin", "rogue", "druid"]
     class_names = ["Воин", "Лучник", "Маг", "Паладин", "Разбойник", "Друид"]
     
     for i, class_id in enumerate(classes):
-        keyboard.add(InlineKeyboardButton(
-            class_names[i], 
-            callback_data=f"game:select_class:{class_id}"
-        ))
+        keyboard.add(InlineKeyboardButton(class_names[i], callback_data=f"game:select_class:{class_id}"))
     
     keyboard.add(InlineKeyboardButton("🔙 Назад", callback_data="start:menu"))
-    
     bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
 
 def select_class_callback(call, bot, get_or_create_player_func):
@@ -362,7 +623,6 @@ def select_class_callback(call, bot, get_or_create_player_func):
         bot.answer_callback_query(call.id, "❌ Класс уже выбран!", show_alert=True)
         return
     
-    # Бонусы классов
     class_bonuses = {
         "warrior": {"strength": 5, "vitality": 3},
         "archer": {"agility": 5, "luck": 2},
@@ -374,7 +634,6 @@ def select_class_callback(call, bot, get_or_create_player_func):
     
     bonuses = class_bonuses.get(class_name, {})
     
-    # Применяем бонусы
     for stat, value in bonuses.items():
         if stat == "max_mana":
             character.max_mana += value
@@ -394,277 +653,8 @@ def select_class_callback(call, bot, get_or_create_player_func):
     }
     
     bot.answer_callback_query(call.id, f"✅ Ты стал {class_names.get(class_name, class_name)}!")
-    
-    # Показываем профиль
     from .start import start_command
     start_command(call.message, bot, get_or_create_player_func)
-
-# ========== БОЙ ==========
-
-def battle_command(message, bot, get_or_create_player_func, enemies_data):
-    """Команда /battle - начало боя"""
-    user_id = message.from_user.id
-    user, character = get_or_create_player_func(user_id)
-    
-    # Проверяем энергию
-    if character.energy < 10:
-        bot.send_message(
-            message.chat.id,
-            "❌ Недостаточно энергии! Отдохни в домике или подожди.",
-            parse_mode='Markdown'
-        )
-        return
-    
-    # Получаем врагов в текущей локации
-    from utils import locations_data
-    location_id = character.location or "start"
-    location = locations_data.get("locations", {}).get(location_id, {})
-    enemy_ids = location.get('enemies', [])
-    
-    if not enemy_ids:
-        bot.send_message(
-            message.chat.id,
-            "❌ В этой локации нет врагов!",
-            parse_mode='Markdown'
-        )
-        return
-    
-    # Выбираем случайного врага
-    enemy_id = random.choice(enemy_ids)
-    enemy = enemies_data.get("enemies", {}).get(enemy_id, {})
-    
-    if not enemy:
-        bot.send_message(message.chat.id, "❌ Ошибка загрузки врага")
-        return
-    
-    # Показываем информацию о враге
-    text = f"⚔️ *Бой!*\n\n"
-    text += f"🐉 *Враг:* {enemy.get('name', enemy_id)}\n"
-    text += f"📊 Уровень: {enemy.get('level', 1)}\n"
-    text += f"❤️ Здоровье: {enemy.get('health', 50)}\n"
-    text += f"⚔️ Атака: {enemy.get('damage', 5)}\n"
-    
-    if enemy.get('description'):
-        text += f"\n📝 {enemy['description']}\n"
-    
-    keyboard = InlineKeyboardMarkup()
-    keyboard.add(
-        InlineKeyboardButton("⚔️ Атаковать", callback_data=f"combat:attack:{enemy_id}"),
-        InlineKeyboardButton("🏃 Сбежать", callback_data="game:location")
-    )
-    
-    bot.send_message(
-        message.chat.id,
-        text,
-        reply_markup=keyboard,
-        parse_mode='Markdown'
-    )
-
-# ========== КВЕСТЫ ==========
-
-def quest_command(message, bot, get_or_create_player_func, quests_data):
-    """Команда /quest - список квестов"""
-    user_id = message.from_user.id
-    user, character = get_or_create_player_func(user_id)
-    
-    # Получаем доступные квесты
-    all_quests = quests_data.get("quests", {}).get("daily", {})
-    
-    text = "📜 *Доступные квесты*\n\n"
-    
-    keyboard = InlineKeyboardMarkup(row_width=1)
-    
-    for quest_id, quest in list(all_quests.items())[:5]:
-        name = quest.get('name', quest_id)
-        desc = quest.get('description', '')
-        reward = quest.get('rewards', {})
-        
-        reward_text = []
-        if reward.get('gold'):
-            reward_text.append(f"{reward['gold']}💰")
-        if reward.get('exp'):
-            reward_text.append(f"{reward['exp']}✨")
-        if reward.get('dstn'):
-            reward_text.append(f"{reward['dstn']}💫")
-        
-        text += f"*{name}*\n"
-        text += f"├ {desc}\n"
-        text += f"└ Награда: {', '.join(reward_text)}\n\n"
-        
-        keyboard.add(InlineKeyboardButton(
-            f"📋 {name[:20]}", 
-            callback_data=f"quest:accept:{quest_id}"
-        ))
-    
-    keyboard.add(InlineKeyboardButton("🔙 Назад", callback_data="start:menu"))
-    
-    bot.send_message(
-        message.chat.id,
-        text,
-        reply_markup=keyboard,
-        parse_mode='Markdown'
-    )
-
-# ========== КРАФТ ==========
-
-def craft_command(message, bot, get_or_create_player_func, crafting_data, items_data):
-    """Команда /craft - крафт предметов"""
-    user_id = message.from_user.id
-    user, character = get_or_create_player_func(user_id)
-    
-    recipes = crafting_data.get("crafting", {})
-    
-    text = "🔨 *Крафт предметов*\n\n"
-    
-    keyboard = InlineKeyboardMarkup(row_width=2)
-    
-    # Показываем категории крафта
-    categories = {
-        "weapons": "⚔️ Оружие",
-        "armor": "🛡️ Броня", 
-        "potions": "🧪 Зелья",
-        "materials": "📦 Материалы"
-    }
-    
-    for cat_id, cat_name in categories.items():
-        if cat_id in recipes:
-            text += f"├ {cat_name}\n"
-            keyboard.add(InlineKeyboardButton(
-                cat_name, 
-                callback_data=f"craft:category:{cat_id}"
-            ))
-    
-    text += "\nВыбери категорию для крафта"
-    
-    keyboard.add(InlineKeyboardButton("🔙 Назад", callback_data="start:menu"))
-    
-    bot.send_message(
-        message.chat.id,
-        text,
-        reply_markup=keyboard,
-        parse_mode='Markdown'
-    )
-
-# ========== ДОМИК ==========
-
-def house_command(message, bot, get_or_create_player_func, house_data):
-    """Команда /house - управление домиком"""
-    user_id = message.from_user.id
-    user, character = get_or_create_player_func(user_id)
-    
-    house_level = character.house_level or 0
-    house_info = house_data.get("house", {}).get("levels", {}).get(str(house_level), {})
-    
-    text = f"🏠 *Твой домик*\n\n"
-    text += f"📊 Уровень: {house_level}\n"
-    
-    if house_info:
-        text += f"📝 {house_info.get('description', '')}\n\n"
-        
-        # Бонусы дома
-        bonuses = house_info.get('bonuses', {})
-        if bonuses:
-            text += "✨ *Бонусы:*\n"
-            if bonuses.get('rest_multiplier'):
-                text += f"├ Отдых: x{bonuses['rest_multiplier']}\n"
-            if bonuses.get('storage'):
-                text += f"├ Хранилище: +{bonuses['storage']} слотов\n"
-            if bonuses.get('craft_discount'):
-                text += f"├ Скидка на крафт: {bonuses['craft_discount']}%\n"
-            text += "\n"
-    
-    # Количество отдыхающих питомцев
-    if character.house_pets:
-        text += f"🐾 Питомцев в доме: {len(character.house_pets)}\n"
-    
-    keyboard = InlineKeyboardMarkup(row_width=2)
-    keyboard.add(
-        InlineKeyboardButton("🛏️ Отдохнуть", callback_data="house:rest"),
-        InlineKeyboardButton("📦 Хранилище", callback_data="house:storage"),
-        InlineKeyboardButton("📈 Улучшить", callback_data="house:upgrade"),
-        InlineKeyboardButton("🔙 Назад", callback_data="start:menu")
-    )
-    
-    bot.send_message(
-        message.chat.id,
-        text,
-        reply_markup=keyboard,
-        parse_mode='Markdown'
-    )
-
-def rest_in_house(call, bot, get_or_create_player_func, house_data):
-    """Отдых в домике - восстановление энергии"""
-    user_id = call.from_user.id
-    user, character = get_or_create_player_func(user_id)
-    
-    house_level = character.house_level or 0
-    house_info = house_data.get("house", {}).get("levels", {}).get(str(house_level), {})
-    
-    # Бонус к отдыху
-    rest_multiplier = house_info.get('bonuses', {}).get('rest_multiplier', 1.0)
-    
-    # Восстанавливаем энергию
-    energy_recovered = int(50 * rest_multiplier)
-    old_energy = character.energy
-    character.energy = min(character.max_energy, character.energy + energy_recovered)
-    recovered = character.energy - old_energy
-    
-    from main import save_character
-    save_character(character)
-    
-    bot.answer_callback_query(
-        call.id, 
-        f"✨ Отдохнул! +{recovered} энергии"
-    )
-    
-    # Обновляем сообщение
-    house_command(call.message, bot, get_or_create_player_func, house_data)
-
-# ========== ЭКСПЕДИЦИИ ==========
-
-def expedition_command(message, bot, get_or_create_player_func, expeditions_data):
-    """Команда /expedition - экспедиции"""
-    user_id = message.from_user.id
-    user, character = get_or_create_player_func(user_id)
-    
-    text = "🧭 *Экспедиции*\n\n"
-    text += "Отправь своего питомца в экспедицию за ресурсами!\n\n"
-    
-    expeditions = expeditions_data.get("expeditions", {}).get("available", {})
-    
-    keyboard = InlineKeyboardMarkup(row_width=1)
-    
-    for exp_id, exp in expeditions.items():
-        name = exp.get('name', exp_id)
-        duration = exp.get('duration_hours', 1)
-        rewards = exp.get('rewards', {})
-        
-        reward_text = []
-        if rewards.get('gold'):
-            reward_text.append(f"{rewards['gold']}💰")
-        if rewards.get('items'):
-            reward_text.append("🎁")
-        
-        text += f"*{name}*\n"
-        text += f"├ ⏱️ {duration} ч.\n"
-        text += f"└ 🎁 Награда: {', '.join(reward_text)}\n\n"
-        
-        keyboard.add(InlineKeyboardButton(
-            f"🚀 {name}", 
-            callback_data=f"expedition:start:{exp_id}"
-        ))
-    
-    if character.current_expedition:
-        text += f"\n⏳ Текущая экспедиция: активна!"
-    
-    keyboard.add(InlineKeyboardButton("🔙 Назад", callback_data="start:menu"))
-    
-    bot.send_message(
-        message.chat.id,
-        text,
-        reply_markup=keyboard,
-        parse_mode='Markdown'
-    )
 
 # ========== ОБРАБОТЧИК КОЛБЭКОВ ==========
 
@@ -675,28 +665,30 @@ def handle_callback(call, bot, get_or_create_player_func, locations_data, items_
     
     if data == "game:profile":
         profile_command(call.message, bot, get_or_create_player_func, items_data)
-    
     elif data == "game:stats":
         stats_command(call.message, bot, get_or_create_player_func, items_data)
-    
     elif data == "game:location":
         location_command(call.message, bot, get_or_create_player_func, locations_data)
-    
     elif data == "game:map":
         map_command(call.message, bot)
-    
     elif data == "game:move":
         move_command(call.message, bot, get_or_create_player_func, locations_data)
-    
+    elif data == "game:hunt":
+        hunt_action(call, bot, get_or_create_player_func)
+    elif data == "game:fish":
+        fish_action(call, bot, get_or_create_player_func)
+    elif data == "game:gather":
+        gather_action(call, bot, get_or_create_player_func)
+    elif data == "game:mine":
+        mine_action(call, bot, get_or_create_player_func)
+    elif data == "game:rest":
+        rest_action(call, bot, get_or_create_player_func)
+    elif data == "game:no_energy":
+        bot.answer_callback_query(call.id, "❌ Недостаточно энергии!", show_alert=True)
     elif data.startswith("game:move_to:"):
         move_to_location(call, bot, get_or_create_player_func, locations_data)
-    
     elif data.startswith("game:select_class:"):
         select_class_callback(call, bot, get_or_create_player_func)
-    
-    elif data == "house:rest":
-        rest_in_house(call, bot, get_or_create_player_func, house_data)
-    
     else:
         bot.answer_callback_query(call.id, "⏳ В разработке")
 
@@ -709,10 +701,5 @@ __all__ = [
     'map_command',
     'move_command',
     'class_command',
-    'battle_command',
-    'quest_command',
-    'craft_command',
-    'house_command',
-    'expedition_command',
     'handle_callback'
 ]
