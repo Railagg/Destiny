@@ -2,8 +2,11 @@
 import logging
 import random
 import time
+import json
+import tempfile
+import os
 from datetime import datetime, timedelta
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +21,65 @@ ENERGY_COSTS = {
     "gather": 2,
     "mine": 2,
     "dig_worms": 1
+}
+
+# Данные из codex.py
+CLASS_INFO = {
+    "warrior": {
+        "name": "⚔️ Мечник",
+        "description": "Мастер клинка, наносящий огромный урон. Специализируется на критических ударах.",
+        "health": 120,
+        "damage": 15,
+        "defense": 8,
+        "mastery": "Критические удары наносят на 50% больше урона",
+        "difficulty": "⭐"
+    },
+    "archer": {
+        "name": "🏹 Лучник",
+        "description": "Меткий стрелок, поражающий цели издалека. Высокое уклонение и точность.",
+        "health": 100,
+        "damage": 12,
+        "defense": 5,
+        "mastery": "Критические удары игнорируют 50% защиты",
+        "difficulty": "⭐⭐"
+    },
+    "mage": {
+        "name": "🔮 Маг",
+        "description": "Повелитель стихий, обрушивающий на врагов мощь магии.",
+        "health": 80,
+        "magic_damage": 20,
+        "defense": 3,
+        "mastery": "Заклинания стоят на 20% меньше маны",
+        "difficulty": "⭐⭐⭐"
+    },
+    "paladin": {
+        "name": "⚔️✨ Паладин",
+        "description": "Святой воин, сочетающий мощь меча с божественной магией. Растущий щит.",
+        "health": 150,
+        "damage": 10,
+        "defense": 12,
+        "magic_damage": 8,
+        "mastery": "Щит растёт с каждым ударом (до 150)",
+        "difficulty": "⭐⭐"
+    },
+    "rogue": {
+        "name": "🗡️ Разбойник",
+        "description": "Тень в ночи, мастер скрытности и смертоносных атак из тени.",
+        "health": 90,
+        "damage": 12,
+        "defense": 4,
+        "mastery": "Атаки из скрытности наносят +50% урона",
+        "difficulty": "⭐⭐⭐"
+    },
+    "druid": {
+        "name": "🌿 Друид",
+        "description": "Хранитель леса, повелевающий силами природы. Может лечить и призывать.",
+        "health": 110,
+        "magic_damage": 12,
+        "defense": 6,
+        "mastery": "Призывы живут на 1 ход дольше",
+        "difficulty": "⭐⭐⭐"
+    }
 }
 
 # Карта привалов (локация -> данные привала)
@@ -144,7 +206,8 @@ def profile_command(message, bot, get_or_create_player_func, items_data):
     text += f"👑 Премиум: {premium_text}\n"
     
     if character.player_class:
-        text += f"⚔️ Класс: {character.player_class}\n"
+        class_name = CLASS_INFO.get(character.player_class, {}).get('name', character.player_class)
+        text += f"⚔️ Класс: {class_name}\n"
     
     # Информация о последнем отдыхе
     if character.last_rest_time:
@@ -199,7 +262,8 @@ def stats_command(message, bot, get_or_create_player_func, items_data):
     text += f"└ Собрано ресурсов: {character.resources_gathered or 0}\n"
     
     if character.player_class:
-        text += f"\n🎯 Класс: {character.player_class} (ур. {character.class_level or 1})"
+        class_name = CLASS_INFO.get(character.player_class, {}).get('name', character.player_class)
+        text += f"\n🎯 Класс: {class_name} (ур. {character.class_level or 1})"
     
     keyboard = InlineKeyboardMarkup()
     keyboard.add(InlineKeyboardButton("🔙 Назад", callback_data="game:profile"))
@@ -284,7 +348,7 @@ def craft_command(message, bot, get_or_create_player_func, crafting_data, items_
     
     for cat_id, cat_name in categories.items():
         cat_recipes = []
-        # Ищем рецепты в codex.py структуре
+        # Ищем рецепты
         if "crafting" in crafting_data and "categories" in crafting_data["crafting"]:
             recipes_data = crafting_data["crafting"]["categories"].get(cat_id, {})
             for recipe in recipes_data.get("recipes", []):
@@ -597,10 +661,8 @@ def dig_worms_action(call, bot, get_or_create_player_func):
     worms = random.randint(1, 7)
     
     # Добавляем червей в инвентарь
-    from models import Item
-    worm_item = Item.get_or_none(Item.item_id == "worm")
-    if worm_item:
-        character.add_item("worm", worms)
+    for _ in range(worms):
+        character.add_item("worm")
     
     character.last_worm_dig = now
     
@@ -647,7 +709,7 @@ def location_command(message, bot, get_or_create_player_func, locations_data, it
         text += "└ 🏠 Риэлтор - продаёт дома\n\n"
         text += "Подойди к любому торговцу!"
         
-        # Показываем фотографию рыночной площади (исправлено на .jpeg)
+        # Показываем фотографию рыночной площади
         try:
             with open('bot/data/images/market_square.jpeg', 'rb') as photo:
                 bot.send_photo(message.chat.id, photo, caption=text, parse_mode='Markdown')
@@ -830,7 +892,39 @@ def location_command(message, bot, get_or_create_player_func, locations_data, it
     bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
 
 def map_command(message, bot):
-    """Команда /map - карта мира"""
+    """Отправляет интерактивную HTML-карту"""
+    
+    # Пробуем загрузить HTML-карту
+    map_path = 'bot/data/map.html'
+    if os.path.exists(map_path):
+        try:
+            with open(map_path, 'r', encoding='utf-8') as file:
+                map_html = file.read()
+            
+            # Сохраняем во временный файл и отправляем
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=False, encoding='utf-8') as f:
+                f.write(map_html)
+                temp_path = f.name
+            
+            with open(temp_path, 'rb') as file:
+                bot.send_document(
+                    message.chat.id,
+                    file,
+                    caption="🗺️ *Карта мира Destiny*\n\n"
+                            "1. Скачай файл\n"
+                            "2. Открой в браузере\n"
+                            "3. Нажимай на иконки локаций!\n\n"
+                            "📱 На телефоне файл откроется автоматически",
+                    parse_mode='Markdown'
+                )
+            
+            # Удаляем временный файл
+            os.unlink(temp_path)
+            return
+        except Exception as e:
+            logger.error(f"Ошибка отправки HTML-карты: {e}")
+    
+    # Если HTML не работает, отправляем текстовую карту
     text = "🗺️ *Карта мира Destiny*\n\n"
     
     text += "🏘️ **Деревня:**\n"
@@ -856,8 +950,7 @@ def map_command(message, bot):
     
     text += "🏜️ **Пустыня:**\n"
     text += "├ 🏜️ Пустыня забвения (ур. 30+)\n"
-    text += "├ 🏝️ Оазис (ур. 30+) *⛺ Привал*\n"
-    text += "├ 🏛️ Древняя пирамида (ур. 35+)\n\n"
+    text += "├ 🏝️ Оазис (ур. 30+) *⛺ Привал*\n\n"
     
     text += "🌿 **Болото:**\n"
     text += "├ 🌿 Болото туманов (ур. 35+)\n"
@@ -930,15 +1023,15 @@ def move_command(message, bot, get_or_create_player_func, locations_data):
                     forest_locs.append((loc_id, f"{has_rest} {name}" if has_rest else name))
                 elif "гор" in name.lower() or "шахт" in name.lower() or "вершин" in name.lower():
                     mountain_locs.append((loc_id, f"{has_rest} {name}" if has_rest else name))
-                elif "пустын" in name.lower() or "оазис" in name.lower() or "пирамид" in name.lower():
+                elif "пустын" in name.lower() or "оазис" in name.lower():
                     desert_locs.append((loc_id, f"{has_rest} {name}" if has_rest else name))
                 elif "болот" in name.lower() or "хижин" in name.lower():
                     swamp_locs.append((loc_id, f"{has_rest} {name}" if has_rest else name))
-                elif "лед" in name.lower() or "снеж" in name.lower() or "мороз" in name.lower():
+                elif "лед" in name.lower() or "снеж" in name.lower() or "мороз" in name.lower() or "замёрз" in name.lower():
                     ice_locs.append((loc_id, f"{has_rest} {name}" if has_rest else name))
                 elif "остров" in name.lower() or "гаван" in name.lower():
                     island_locs.append((loc_id, f"{has_rest} {name}" if has_rest else name))
-                elif "руин" in name.lower() or "мост" in name.lower() or "логов" in name.lower():
+                elif "руин" in name.lower() or "мост" in name.lower() or "логов" in name.lower() or "шахт" in name.lower():
                     dungeon_locs.append((loc_id, f"{has_rest} {name}" if has_rest else name))
     
     if village_locs:
@@ -1049,16 +1142,16 @@ def move_to_location(call, bot, get_or_create_player_func, locations_data):
     if entry_cost:
         if 'rainbow_shard' in entry_cost:
             cost = entry_cost['rainbow_shard']
-            if character.rainbow_shards < cost:
+            if (character.rainbow_shards or 0) < cost:
                 bot.answer_callback_query(call.id, f"❌ Нужно {cost} радужных осколков!", show_alert=True)
                 return
-            character.rainbow_shards -= cost
+            character.rainbow_shards = (character.rainbow_shards or 0) - cost
         if 'rainbow_stone' in entry_cost:
             cost = entry_cost['rainbow_stone']
-            if character.rainbow_stones < cost:
+            if (character.rainbow_stones or 0) < cost:
                 bot.answer_callback_query(call.id, f"❌ Нужно {cost} радужных камней!", show_alert=True)
                 return
-            character.rainbow_stones -= cost
+            character.rainbow_stones = (character.rainbow_stones or 0) - cost
     
     # Проверяем энергию
     energy_cost = 1
@@ -1308,16 +1401,7 @@ def hunt_action(call, bot, get_or_create_player_func, locations_data, enemies_da
         cub_id = random.choice(possible_cubs)
         
         # Ищем в бестиарии
-        cub = None
-        if "codex" in enemies_data and "bestiary" in enemies_data["codex"]:
-            for category in enemies_data["codex"]["bestiary"]["categories"].values():
-                for creature in category.get("creatures", []):
-                    if creature.get("id") == cub_id:
-                        cub = creature
-                        break
-        
-        if not cub:
-            cub = enemies_data.get("enemies", {}).get(cub_id, {})
+        cub = enemies_data.get("enemies", {}).get(cub_id, {})
         
         result_text += f"🐾 Ты нашёл {cub.get('name', 'детёныша')}!\n"
         result_text += f"⚔️ *ВНИМАНИЕ!* При атаке он призовёт мать!\n"
@@ -1734,7 +1818,8 @@ def class_command(message, bot, get_or_create_player_func):
     user, character = get_or_create_player_func(user_id)
     
     if character.player_class:
-        text = f"⚔️ *Твой класс:*\n\n🎯 {character.player_class.capitalize()}\n📊 Уровень класса: {character.class_level or 1}"
+        class_name = CLASS_INFO.get(character.player_class, {}).get('name', character.player_class)
+        text = f"⚔️ *Твой класс:*\n\n🎯 {class_name}\n📊 Уровень класса: {character.class_level or 1}"
         keyboard = InlineKeyboardMarkup()
         keyboard.add(InlineKeyboardButton("🔙 Назад", callback_data="start:menu"))
         bot.send_message(message.chat.id, text, reply_markup=keyboard, parse_mode='Markdown')
@@ -1744,7 +1829,7 @@ def class_command(message, bot, get_or_create_player_func):
     text += "🛡️ *Воин* - Сила: +5 | Выносливость: +3\n"
     text += "🏹 *Лучник* - Ловкость: +5 | Удача: +2\n"
     text += "🔮 *Маг* - Интеллект: +5 | Мана: +50\n"
-    text += "🛡️ *Паладин* - Сила: +3 | Выносливость: +3 | Интеллект: +2\n"
+    text += "⚔️✨ *Паладин* - Сила: +3 | Выносливость: +3 | Интеллект: +2\n"
     text += "🗡️ *Разбойник* - Ловкость: +4 | Удача: +3\n"
     text += "🌿 *Друид* - Интеллект: +4 | Выносливость: +2"
     
@@ -1822,7 +1907,7 @@ def inventory_command(message, bot, get_or_create_player_func, items_data):
         items_by_cat = {}
         for item_id, quantity in character.inventory.items():
             item = items_data.get("items", {}).get(item_id, {})
-            category = item.get("category", "other")
+            category = item.get("type", "other")
             if category not in items_by_cat:
                 items_by_cat[category] = []
             items_by_cat[category].append((item_id, item, quantity))
@@ -1842,7 +1927,7 @@ def inventory_command(message, bot, get_or_create_player_func, items_data):
             text += f"\n*{cat_name}:*\n"
             for item_id, item, quantity in items:
                 name = item.get("name", item_id)
-                emoji = item.get("emoji", "📦")
+                emoji = item.get("icon", "📦")
                 text += f"├ {emoji} {name} x{quantity}\n"
     
     keyboard = InlineKeyboardMarkup(row_width=2)
@@ -1867,13 +1952,13 @@ def equipment_command(message, bot, get_or_create_player_func, items_data):
     armor = items_data.get("items", {}).get(armor_id, {}) if armor_id else None
     
     if weapon:
-        text += f"⚔️ *Оружие:* {weapon.get('emoji', '')} {weapon.get('name', weapon_id)}\n"
+        text += f"⚔️ *Оружие:* {weapon.get('icon', '')} {weapon.get('name', weapon_id)}\n"
         text += f"├ Урон: +{weapon.get('damage', 0)}\n"
     else:
         text += "⚔️ *Оружие:* не экипировано\n"
     
     if armor:
-        text += f"\n🛡️ *Броня:* {armor.get('emoji', '')} {armor.get('name', armor_id)}\n"
+        text += f"\n🛡️ *Броня:* {armor.get('icon', '')} {armor.get('name', armor_id)}\n"
         text += f"├ Защита: +{armor.get('defense', 0)}\n"
     else:
         text += "\n🛡️ *Броня:* не экипирована\n"
